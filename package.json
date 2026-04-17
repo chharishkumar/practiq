@@ -6,6 +6,7 @@
     "@codemirror/lang-sql": "^6.10.0",
     "@codemirror/state": "^6.6.0",
     "@codemirror/view": "^6.41.0",
+    "@monaco-editor/react": "^4.7.0",
     "@supabase/supabase-js": "^2.103.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -13,6 +14,7 @@
     "@testing-library/user-event": "^13.5.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
+    "react-router-dom": "^7.14.1",
     "react-scripts": "5.0.1",
     "sql.js": "^1.14.1",
     "web-vitals": "^2.1.4"
