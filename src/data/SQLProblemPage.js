@@ -27,12 +27,28 @@ export default function SQLProblemPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#fff", padding: "2rem", fontFamily: "Inter, sans-serif" }}>
-      <button
-        onClick={() => navigate("/sql/basics")}
-        style={{ padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#fff", cursor: "pointer", marginBottom: "1rem" }}
-      >
-        ← Back to SQL Basics
-      </button>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+        <button
+          onClick={() => navigate("/sql/basics")}
+          style={{ padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#fff", cursor: "pointer" }}
+        >
+          ← Back to SQL Basics
+        </button>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <button
+            onClick={() => navigate("/home")}
+            style={{ padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#fff", cursor: "pointer" }}
+          >
+            Home
+          </button>
+          <button
+            onClick={() => navigate("/profile")}
+            style={{ padding: "8px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#fff", cursor: "pointer" }}
+          >
+            Profile
+          </button>
+        </div>
+      </div>
 
       <h1 style={{ margin: "0 0 0.5rem" }}>{problem.title}</h1>
       <p style={{ color: "#64748b", marginTop: 0 }}>{problem.description}</p>

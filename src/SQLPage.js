@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SAMPLE_DATA = `
 CREATE TABLE customers (
@@ -139,16 +139,92 @@ export default function SQLPage() {
     <div style={{ background: "#ffffff", minHeight: "100vh", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
 
       {/* Nav */}
-      <nav style={{ padding: "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
-        <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
-        <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
-          <span onClick={() => navigate("/sql")} style={{ fontSize: "0.85rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Practice</span>
-          <span style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Leaderboard</span>
-          <button style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", border: "none", cursor: "pointer" }}>
-            Sign Up Free
-          </button>
-        </div>
-      </nav>
+
+
+<nav
+  style={{
+    padding: "1rem 2.5rem",
+    borderBottom: "1px solid #e2e8f0",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    position: "sticky",
+    top: 0,
+    background: "rgba(255,255,255,0.97)",
+    zIndex: 100,
+  }}
+>
+  {/* Logo */}
+  <span
+    onClick={() => navigate("/")}
+    style={{
+      fontWeight: 800,
+      fontSize: "1.1rem",
+      color: "#0f172a",
+      letterSpacing: "-0.3px",
+      cursor: "pointer",
+    }}
+  >
+    Data Rejected
+  </span>
+
+  {/* Right Menu */}
+  <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
+    <span
+      onClick={() => navigate("/home")}
+      style={{
+        fontSize: "0.85rem",
+        color: "#64748b",
+        fontWeight: 500,
+        cursor: "pointer",
+      }}
+    >
+      Home
+    </span>
+
+    {/* Practice */}
+    <span
+      onClick={() => navigate("/sql")}
+      style={{
+        fontSize: "0.85rem",
+        color: "#2563eb",
+        fontWeight: 600,
+        cursor: "pointer",
+        borderBottom: "2px solid #2563eb",
+        paddingBottom: "2px",
+      }}
+    >
+      Practice
+    </span>
+
+    {/* Leaderboard */}
+    <span
+      style={{
+        fontSize: "0.85rem",
+        color: "#64748b",
+        fontWeight: 500,
+        cursor: "pointer",
+      }}
+    >
+      Leaderboard
+    </span>
+
+    {/* ✅ PROFILE */}
+    <Link
+      to="/profile"
+      style={{
+        fontSize: "0.85rem",
+        color: "#64748b",
+        textDecoration: "none",
+        fontWeight: 500,
+        cursor: "pointer",
+      }}
+    >
+      Profile
+    </Link>
+
+  </div>
+</nav>
 
       {/* Hero Header */}
       <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: "3rem 2.5rem 2.5rem", textAlign: "center" }}>

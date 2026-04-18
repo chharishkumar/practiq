@@ -282,6 +282,18 @@ export default function SQLInterviewPage() {
           Data Rejected
         </span>
         <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+          <span
+            onClick={() => navigate("/home")}
+            style={{ cursor: "pointer", color: "#64748b", fontSize: "0.85rem", fontWeight: 500 }}
+          >
+            Home
+          </span>
+          <span
+            onClick={() => navigate("/profile")}
+            style={{ cursor: "pointer", color: "#64748b", fontSize: "0.85rem", fontWeight: 500 }}
+          >
+            Profile
+          </span>
           <div
             style={{
               fontSize: "0.78rem",
