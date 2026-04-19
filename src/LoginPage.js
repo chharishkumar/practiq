@@ -149,6 +149,12 @@ export default function LoginPage() {
             <Link to="/terms" style={{ color: "#2563eb", textDecoration: "none" }}>Terms of Use</Link>{" "}
             and{" "}
             <Link to="/privacy" style={{ color: "#2563eb", textDecoration: "none" }}>Privacy Policy</Link>
+          
+          </p>
+          <p style={{ marginTop: "1rem", textAlign: "center", fontSize: "0.72rem", color: "#94a3b8", lineHeight: 1.6 }}>
+          Have questions?{" "}
+            <Link to="/contact" style={{ color: "#2563eb", textDecoration: "none" }}>Contact Us</Link>
+            
           </p>
         </div>
       </div>

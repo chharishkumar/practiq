@@ -350,6 +350,7 @@ export default function ProfilePage() {
     { id: "activity",  label: "Activity" },
     { id: "problems",  label: "Solved problems" },
     { id: "settings",  label: "Settings" },
+    { id: "logout",  label: "Logout" },
   ];
 
   const sectionLabel = (text) => (
@@ -401,7 +402,13 @@ export default function ProfilePage() {
             {navItems.map(item => (
               <button
                 key={item.id}
-                onClick={() => setActiveSection(item.id)}
+                onClick={() => {
+                  if (item.id === "logout") {
+                    navigate("/");
+                    return;
+                  }
+                  setActiveSection(item.id);
+                }}
                 style={{ width: "100%", padding: "11px 16px", border: "none", background: activeSection === item.id ? "#eff6ff" : "transparent", color: activeSection === item.id ? "#2563eb" : "#64748b", fontWeight: activeSection === item.id ? 700 : 500, fontSize: "0.85rem", cursor: "pointer", textAlign: "left", borderLeft: activeSection === item.id ? "3px solid #2563eb" : "3px solid transparent", transition: "all 0.1s" }}
               >
                 {item.label}
@@ -661,6 +668,7 @@ export default function ProfilePage() {
               <div style={{ display: "flex", gap: "10px", marginTop: "1rem" }}>
                 <a href="https://linkedin.com" target="_blank" rel="noreferrer" style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>LinkedIn</a>
                 <a href="https://youtube.com" target="_blank" rel="noreferrer" style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>YouTube</a>
+                <a href="/contact" target="_blank" rel="noreferrer" style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>Contact Us</a>
               </div>
             </div>
             <div>

@@ -5,6 +5,7 @@ import SQLPage from "./SQLPage";
 import LoginPage from "./LoginPage";
 import ProfilePage from "./ProfilePage";
 import HomePage from "./HomePage";
+import ContactPage from "./ContactPage";
 import SQLBasicsPage from "./data/SQLBasicsPage";
 import SQLIntermediatePage from "./data/SQLIntermediate";
 import SQLAdvancedPage from "./data/SQLAdvanced";
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/home" element={<HomePage />} />
         

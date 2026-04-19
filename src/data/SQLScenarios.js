@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {SQL_SCENARIOS_PROBLEMS } from "./sqlScenariosProblems";
+import { matchesProblem, searchSqlProblems } from "./sqlSearch";
 import Editor from "@monaco-editor/react";
 
 const SAMPLE_DATA = `
@@ -61,6 +62,7 @@ let communityFeed = [];
 
 export default function SQLScenariosPage() {        
   const navigate = useNavigate();
+  const location = useLocation();
   const editorRef = useRef(null);
 
   const [expandedId, setExpandedId] = useState(null);
@@ -73,6 +75,8 @@ export default function SQLScenariosPage() {
   const [validationStatus, setValidationStatus] = useState(null);
   const [solvedIds, setSolvedIds] = useState(new Set());
   const [runCount, setRunCount] = useState(0);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Community post modal
   const [showModal, setShowModal] = useState(false);
@@ -131,6 +135,21 @@ export default function SQLScenariosPage() {
     setExpandedId((prev) => (prev === id ? null : id));
   };
 
+  useEffect(() => {
+    const incoming = location.state || {};
+    if (incoming.searchQuery) {
+      setSearchInput(incoming.searchQuery);
+      setSearchTerm(incoming.searchQuery);
+    }
+    if (incoming.focusProblemId !== undefined) {
+      const targetProblem = SQL_SCENARIOS_PROBLEMS.find((p) => p.id === incoming.focusProblemId);
+      if (targetProblem) {
+        handleSelectProblem(targetProblem);
+        setExpandedId(targetProblem.id);
+      }
+    }
+  }, [location.state]);
+
   const handlePostCommunity = () => {
     setShowModal(true);
     setModalComment("");
@@ -158,6 +177,16 @@ export default function SQLScenariosPage() {
   const diffStyle = {
     Easy: { color: "#16a34a", bg: "#f0fdf4", border: "#bbf7d0" },
   };
+
+  const filteredProblems = useMemo(() => {
+    if (!searchTerm.trim()) return SQL_SCENARIOS_PROBLEMS;
+    return SQL_SCENARIOS_PROBLEMS.filter((p) => matchesProblem(p, searchTerm));
+  }, [searchTerm]);
+
+  const crossCategoryMatches = useMemo(
+    () => searchSqlProblems(searchTerm).filter((m) => m.categoryKey !== "scenarios").slice(0, 10),
+    [searchTerm]
+  );
 
   const validationBanner = () => {
     if (!validationStatus) return null;
@@ -367,9 +396,52 @@ export default function SQLScenariosPage() {
             >
               Questions
             </span>
+            <div style={{ marginTop: "0.65rem", display: "flex", gap: "8px" }}>
+              <input
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") setSearchTerm(searchInput.trim());
+                }}
+                placeholder="Search SQL topics (joins, window...)"
+                style={{ flex: 1, fontSize: "0.75rem", border: "1px solid #cbd5e1", borderRadius: "8px", padding: "7px 9px", outline: "none" }}
+              />
+              <button
+                onClick={() => setSearchTerm(searchInput.trim())}
+                style={{ fontSize: "0.75rem", border: "1px solid #bfdbfe", color: "#2563eb", background: "#eff6ff", borderRadius: "8px", padding: "7px 10px", cursor: "pointer", fontWeight: 600 }}
+              >
+                Search
+              </button>
+            </div>
           </div>
 
-          {SQL_SCENARIOS_PROBLEMS.map((p) => {
+          {!!searchTerm && (
+            <div style={{ margin: "0 0.75rem 0.5rem", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "10px", padding: "0.625rem 0.75rem" }}>
+              <div style={{ fontSize: "0.72rem", color: "#1d4ed8", fontWeight: 700, marginBottom: "4px" }}>
+                Results: {filteredProblems.length} in Scenarios
+              </div>
+              {crossCategoryMatches.length > 0 && (
+                <div style={{ fontSize: "0.72rem", color: "#475569" }}>
+                  Also found in other categories:
+                  {crossCategoryMatches.map((m, i) => (
+                    <button
+                      key={`${m.categoryKey}-${m.problem.id}-${i}`}
+                      onClick={() =>
+                        navigate(m.route, {
+                          state: { searchQuery: searchTerm, focusProblemId: m.problem.id },
+                        })
+                      }
+                      style={{ marginLeft: "6px", marginTop: "6px", border: "1px solid #cbd5e1", background: "#fff", color: "#334155", borderRadius: "999px", padding: "3px 8px", fontSize: "0.68rem", cursor: "pointer" }}
+                    >
+                      {m.problem.title} ({m.categoryLabel})
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {filteredProblems.map((p) => {
             const isSelected = selectedProblem.id === p.id;
             const isExpanded = expandedId === p.id;
             const isSolved = solvedIds.has(p.id);
