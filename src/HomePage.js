@@ -153,7 +153,7 @@ function Nav({ user, navigate }) {
       <div style={{ display: "flex", gap: "28px", alignItems: "center" }}>
         <span onClick={() => navigate("/home")} style={{ fontSize: "0.85rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Home</span>
         <span onClick={() => navigate("/sql")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Practice</span>
-        <span style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Leaderboard</span>
+        <span onClick={() => navigate("/leaderboard")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Leaderboard</span>
         <span onClick={() => navigate("/profile")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Profile</span>
         {/* Avatar shortcut */}
         <div onClick={() => navigate("/profile")} style={{ width: "34px", height: "34px", borderRadius: "50%", background: "#eff6ff", border: "1.5px solid #bfdbfe", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: "0.75rem", color: "#2563eb", cursor: "pointer" }}>
@@ -598,6 +598,7 @@ export default function HomePage() {
                 <div key={link} style={{ fontSize: "0.82rem", color: "#64748b", marginBottom: "0.4rem", cursor: "pointer" }}>{link}</div>
               ))}
             </div>
+
             <div>
               <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.75rem" }}>Legal</div>
               {["Privacy Policy", "Terms of Use"].map(link => (

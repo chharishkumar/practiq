@@ -24,17 +24,44 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-    const { error: loginError } = await supabase.auth.signInWithPassword({
+  
+    const { data, error: loginError } = await supabase.auth.signInWithPassword({
       email: formData.email,
       password: formData.password,
     });
+  
     if (loginError) {
       setError(loginError.message);
       setIsLoading(false);
-    } else {
-      setIsLoading(false);
-      navigate("/sql");
+      return;
     }
+  
+    const user = data.user;
+  
+    if (!user) {
+      // setError("Login failed. Try again.");
+      // setIsLoading(false);
+      setError(loginError.message);
+console.log("LOGIN ERROR:", loginError);
+      return;
+    }
+  
+    // 🔥 OPTIONAL (but important for your platform)
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+  
+    if (profileError) {
+      console.warn("Profile fetch issue:", profileError.message);
+    } else {
+      console.log("User Profile:", profile);
+    }
+  
+    setIsLoading(false);
+  
+    navigate("/home");
   };
 
   return (

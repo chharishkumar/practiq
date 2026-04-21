@@ -51,25 +51,49 @@ export default function SignupPage() {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-    const { error: signupError } = await supabase.auth.signUp({
+  
+    const { data, error: signupError } = await supabase.auth.signUp({
       email: formData.email,
       password: formData.password,
-      options: {
-        data: {
-          full_name: formData.fullName,
-          mobile: `${formData.countryCode}${formData.mobile}`,
-          country: formData.country,
-          state: formData.state,
-        },
-      },
     });
+  
     if (signupError) {
       setError(signupError.message);
       setIsLoading(false);
-    } else {
-      setIsLoading(false);
-      navigate("/home");
+      return;
     }
+  
+    const user = data.user;
+  
+    if (!user) {
+      setError("Signup failed. Try again.");
+      setIsLoading(false);
+      return;
+    }
+  
+    // 🔥 INSERT INTO profiles table
+    const { error: profileError } = await supabase.from("profiles").insert([
+      {
+        id: user.id,
+        full_name: formData.fullName,
+        email: formData.email,
+        mobile: `${formData.countryCode}${formData.mobile}`,
+        country: formData.country,
+        state: formData.state,
+      },
+    ]);
+  
+    if (profileError) {
+      console.error(profileError);
+      // setError("Profile creation failed");
+      // setIsLoading(false);
+      console.error("PROFILE ERROR:", profileError);
+setError(profileError.message);
+      return;
+    }
+  
+    setIsLoading(false);
+    navigate("/home");
   };
 
   return (
