@@ -14,8 +14,6 @@ import SQLScenariosPage from "./data/SQLScenarios";
 import SQLProblemPage from "./data/SQLProblemPage";
 import LeaderboardPage from "./LeaderboardPage";
 
-import { supabase } from "./supabase";
-
 export default function App() {
   return (
     <BrowserRouter>
