@@ -3,6 +3,7 @@ import LandingPage from "./LandingPage";
 import SignupPage from "./SignupPage"; // Import the new page
 import SQLPage from "./SQLPage";
 import LoginPage from "./LoginPage";
+import ForgotPasswordPage from "./Forgotpasswordpage";
 import ProfilePage from "./ProfilePage";
 import HomePage from "./HomePage";
 import ContactPage from "./ContactPage";
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/home" element={<HomePage />} />
