@@ -69,7 +69,8 @@ export default function SQLBasicsPage() {
   const [runCountDisplay, setRunCountDisplay] = useState(0);
 
   // FIX #3: communityFeed moved into state so updates trigger re-renders
-  const [communityFeed, setCommunityFeed] = useState([]);
+  //const [communityFeed, setCommunityFeed] = useState([]);
+  const [setCommunityFeed] = useState([]);
 
   const [expandedId, setExpandedId] = useState(null);
   const [selectedProblem, setSelectedProblem] = useState(SQL_PROBLEMS[0]);
