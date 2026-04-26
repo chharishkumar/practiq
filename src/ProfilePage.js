@@ -175,7 +175,7 @@ function SettingsPanel({ profile, authEmail, onSaveProfile, onSignOut }) {
   const [saving, setSaving]   = useState(false);
   const [saved, setSaved]     = useState(false);
   const [pwMsg, setPwMsg]     = useState("");
-  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  //const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   const inputStyle  = { width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #e2e8f0", fontSize: "0.88rem", color: "#0f172a", outline: "none", boxSizing: "border-box", background: "#ffffff", fontFamily: "Inter, sans-serif" };
   const labelStyle  = { display: "block", fontSize: "0.7rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: "5px" };
@@ -420,7 +420,7 @@ export default function ProfilePage() {
   const solvedCount = solvedIdSet.size;
 
   // Total unique problems attempted
-  const attemptedSet = new Set(submissions.map((s) => s.problem_id));
+  //const attemptedSet = new Set(submissions.map((s) => s.problem_id));
 
   // Accuracy: solved on first run (run_count === 1)
   const firstTrySolves = correctSubs.filter((s) => s.run_count === 1).length;
@@ -467,7 +467,7 @@ export default function ProfilePage() {
   // XP
   const xp     = byDifficulty.Easy * 10 + byDifficulty.Medium * 25 + byDifficulty.Hard * 50;
   const level  = Math.floor(xp / 100) + 1;
-  const xpNext = level * 100;
+  //const xpNext = level * 100;
   const xpInLevel = xp % 100;
 
   // Streak from Supabase
