@@ -30,11 +30,12 @@ export default function App() {
         
         {/* Dashboard & Practice Areas */}
         <Route path="/sql" element={<SQLPage />} />
-        <Route path="/sql/basics" element={<SQLBasicsPage />} />
-        <Route path="/sql/intermediate" element={<SQLIntermediatePage />} />
-        <Route path="/sql/advanced" element={<SQLAdvancedPage />} />
-        <Route path="/sql/interview" element={<SQLInterviewPage />}/>
-        <Route path="/sql/scenarios" element={<SQLScenariosPage />}/>
+        {/* <Route path="/sql/basics" element={<SQLBasicsPage />} /> */}
+        <Route path="/sql/basics/:problemId?" element={<SQLBasicsPage />} />
+        <Route path="/sql/intermediate/:problemId?" element={<SQLIntermediatePage />} />
+        <Route path="/sql/advanced/:problemId?" element={<SQLAdvancedPage />} />
+        <Route path="/sql/interview/:problemId?" element={<SQLInterviewPage />}/>
+        <Route path="/sql/scenarios/:problemId?" element={<SQLScenariosPage />}/>
         <Route path="/sql/problem/:id" element={<SQLProblemPage />} />
         
         {/* Placeholder for future Login page to prevent 404s */}

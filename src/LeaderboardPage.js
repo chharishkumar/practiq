@@ -91,7 +91,7 @@ export default function LeaderboardPage() {
           <Link to="/sql" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Practice</Link>
           <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#2563eb", textDecoration: "none", fontWeight: 600, borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Leaderboard</Link>
           <Link to="/blog" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Blog</Link>
-          <Link to="/signup" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Sign Up Free</Link>
+          <Link to="/login" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Login </Link>
         </div>
       </nav>
 

@@ -10,15 +10,32 @@ import { SQL_SCENARIOS_PROBLEMS } from "./data/sqlScenariosProblems";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
-const DAILY_CHALLENGE = {
-  id: 17,
-  title: "Join customers and orders",
-  category: "Basics",
-  difficulty: "Easy",
-  description: "Return customer_name alongside each of their orders using an INNER JOIN.",
-  path: "/sql/basics",
-  solvedToday: 341,
-};
+function getDailyChallenge() {
+  const today = new Date();
+  const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+
+  // Combine intermediate + advanced as the pool
+  const pool = [
+    ...SQL_INTERMEDIATE_PROBLEMS.map(p => ({ ...p, category: "Intermediate", difficulty: "Medium", path: `/sql/intermediate/${p.id}` })),
+    ...SQL_ADVANCED_PROBLEMS.map(p => ({ ...p, category: "Advanced", difficulty: "Hard", path: `/sql/advanced/${p.id}` })),
+  ];
+
+  // Pick one deterministically based on today's date
+  const index = seed % pool.length;
+  const picked = pool[index];
+
+  return {
+    id:          picked.id,
+    title:       picked.title,
+    category:    picked.category,
+    difficulty:  picked.difficulty,
+    description: picked.description,
+    path:        picked.path,
+    solvedToday: ((seed * 7) % 300) + 100, // fake but stable number per day
+  };
+}
+
+const DAILY_CHALLENGE = getDailyChallenge();
 
 const RECOMMENDED = [
   { id: 17, title: "Join customers and orders",     category: "Basics", difficulty: "Easy",   reason: "Next in sequence",  path: "/sql/basics" },
@@ -38,7 +55,7 @@ const CATEGORY_PATH_MAP = {
   sql_intermediate:  "/sql/intermediate",
   sql_advanced:      "/sql/advanced",
   sql_interview:     "/sql/interview",
-  sql_scenarios:     "/sql/scenarios",
+  sql_scenario:     "/sql/scenarios",
 };
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
@@ -325,19 +342,52 @@ function ProgressFeedback({ user }) {
 // ─── RECOMMENDED PROBLEMS ─────────────────────────────────────────────────────
 
 function RecommendedProblems({ navigate, solvedIds }) {
-  // Filter out already-solved ones, fall back to full list if all solved
-  const unsolved = RECOMMENDED.filter((p) => !solvedIds.has(p.id));
-  const list = unsolved.length > 0 ? unsolved.slice(0, 4) : RECOMMENDED.slice(0, 4);
+  const ALL_PROBLEMS = [
+    ...SQL_PROBLEMS.map(p => ({ ...p, category: "sql_basics", difficulty: "Easy", path: `/sql/basics/${p.id}` })),
+    ...SQL_INTERMEDIATE_PROBLEMS.map(p => ({ ...p, category: "sql_intermediate", difficulty: "Medium", path: `/sql/intermediate/${p.id}` })),
+    ...SQL_ADVANCED_PROBLEMS.map(p => ({ ...p, category: "sql_advanced", difficulty: "Hard", path: `/sql/advanced/${p.id}` })),
+    ...SQL_INTERVIEW_PROBLEMS.map(p => ({ ...p, category: "sql_interview", difficulty: "Medium", path: `/sql/interview/${p.id}` })),
+    ...SQL_SCENARIOS_PROBLEMS.map(p => ({ ...p, category: "sql_scenario", difficulty: "Hard", path: `/sql/scenarios/${p.id}` })),
+  ];
+
+  // Pick unsolved problems, prioritise basics first then others
+  const unsolved = ALL_PROBLEMS.filter(p => !solvedIds.has(p.id));
+  
+  // Get next 4 unsolved — first from basics, then others
+  const fromBasics = unsolved.filter(p => p.category === "sql_basics").slice(0, 2);
+  const fromOthers = unsolved.filter(p => p.category !== "sql_basics").slice(0, 2);
+  const list = [...fromBasics, ...fromOthers].slice(0, 4);
+
+  const CATEGORY_LABEL = {
+    sql_basics:       "Basics",
+    sql_intermediate: "Intermediate",
+    sql_advanced:     "Advanced",
+    sql_interview:    "Interview",
+    sql_scenario:     "Scenarios",
+  };
+
+  const REASON_MAP = {
+    sql_basics:       "Next in sequence",
+    sql_intermediate: "Level up",
+    sql_advanced:     "Challenge yourself",
+    sql_interview:    "Interview prep",
+    sql_scenario:     "Real-world practice",
+  };
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
       {list.map((p) => (
-        <Card key={p.id} onClick={() => navigate(p.path)} style={{ padding: "1rem 1.125rem" }}>
+        <Card key={`${p.category}-${p.id}`} onClick={() => navigate(p.path)} style={{ padding: "1rem 1.125rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
             <DiffPill d={p.difficulty} />
-            <span style={{ fontSize: "0.65rem", color: "#94a3b8", background: "#f8fafc", padding: "2px 7px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>{p.reason}</span>
+            <span style={{ fontSize: "0.65rem", color: "#94a3b8", background: "#f8fafc", padding: "2px 7px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+              {REASON_MAP[p.category]}
+            </span>
           </div>
           <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#0f172a", margin: "6px 0 4px" }}>{p.title}</div>
+          <div style={{ display: "flex", gap: "6px", alignItems: "center", marginBottom: "6px" }}>
+            <CatPill cat={CATEGORY_LABEL[p.category]} />
+          </div>
           <div style={{ fontSize: "0.72rem", color: "#2563eb", fontWeight: 600 }}>Solve this →</div>
         </Card>
       ))}
@@ -607,13 +657,13 @@ export default function HomePage() {
       // Last problem worked on
       const lastSub     = subs[0];
       const lastProblem = lastSub
-        ? {
-            title:      lastSub.problem_title || "Unnamed problem",
-            path:       CATEGORY_PATH_MAP[lastSub.category] || "/sql/basics",
-            category:   lastSub.category,
-            difficulty: "Easy",
-          }
-        : null;
+      ? {
+          title:      lastSub.problem_title || "Unnamed problem",
+          path:       `${CATEGORY_PATH_MAP[lastSub.category] || "/sql/basics"}/${lastSub.problem_id}`,
+          category:   lastSub.category,
+          difficulty: "Easy",
+        }
+      : null;
 
       // 4. Fetch streak for this user
       const { data: streakRow } = await supabase

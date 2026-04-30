@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Editor from "@monaco-editor/react";
+import { supabase } from "./supabase";
 
 const SAMPLE_DATA = `
 CREATE TABLE customers (
@@ -38,20 +39,14 @@ INSERT INTO products VALUES (4, 'Analytics Add-on', 'addon', 49.00);
 INSERT INTO products VALUES (5, 'Priority Support', 'services', 79.00);
 `;
 
-const COMMUNITY = [
-  { user: "Rahul S.", problem: "Customer Churn Analysis", category: "Scenarios", time: "2m ago" },
-  { user: "Priya M.", problem: "Monthly Revenue Trend", category: "Intermediate", time: "8m ago" },
-  { user: "Arjun K.", problem: "TOP N Products by Sales", category: "Advanced", time: "15m ago" },
-  { user: "Sneha R.", problem: "Find Duplicate Emails", category: "Basics", time: "22m ago" },
-  { user: "Vikram D.", problem: "Self Join Employee Manager", category: "Interview", time: "34m ago" },
-];
+
 
 const CATEGORIES = [
-  { label: "SQL Basics", desc: "SELECT, WHERE, ORDER BY, LIMIT — the foundation every analyst needs.", count: "40+ problems", path: "/sql/basics" },
-  { label: "SQL Intermediate", desc: "JOINs, GROUP BY, HAVING, subqueries — where real analysis begins.", count: "35+ problems", path: "/sql/intermediate" },
-  { label: "SQL Advanced", desc: "Window functions, CTEs, performance tuning — senior analyst territory.", count: "30+ problems", path: "/sql/advanced" },
-  { label: "SQL Interview ⭐", desc: "The exact questions asked at top companies. Practice until they feel easy.", count: "50+ problems", path: "/sql/interview" },
-  { label: "Real-world Scenarios", desc: "Customer churn, revenue analysis, cohort retention — actual business problems.", count: "45+ problems", path: "/sql/scenarios" },
+  { label: "SQL Basics", desc: "SELECT, WHERE, ORDER BY, LIMIT — the foundation every analyst needs.",  path: "/sql/basics" },
+  { label: "SQL Intermediate", desc: "JOINs, GROUP BY, HAVING, subqueries — where real analysis begins.", path: "/sql/intermediate" },
+  { label: "SQL Advanced", desc: "Window functions, CTEs, performance tuning — senior analyst territory.", path: "/sql/advanced" },
+  { label: "SQL Interview ⭐", desc: "The exact questions asked at top companies. Practice until they feel easy.", count: "100+ problems", path: "/sql/interview" },
+  { label: "Real-world Scenarios", desc: "Customer churn, revenue analysis, cohort retention — actual business problems.", count: "100+ problems", path: "/sql/scenarios" },
 ];
 
 export default function LandingPage() {
@@ -63,7 +58,51 @@ export default function LandingPage() {
   const [dbReady, setDbReady] = useState(false);
   const [editorTheme, setEditorTheme] = useState("dark");
   const [fullView, setFullView] = useState(false);
-  const [signupEmail, setSignupEmail] = useState("");
+  
+
+  const [community, setCommunity] = useState([]);
+
+useEffect(() => {
+  const fetchCommunity = async () => {
+    const { data: recentCorrect } = await supabase
+      .from("submissions")
+      .select("id, user_id, problem_title, category, created_at")
+      .eq("status", "correct")
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    if (!recentCorrect) return;
+
+    // Fetch profile names for these user_ids
+    const userIds = [...new Set(recentCorrect.map(r => r.user_id))];
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("id, full_name")
+      .in("id", userIds);
+
+    const profileMap = {};
+    (profiles || []).forEach(p => { profileMap[p.id] = p.full_name || "Anonymous"; });
+
+    const feed = recentCorrect.map(row => ({
+      user: profileMap[row.user_id] || "Anonymous",
+      problem: row.problem_title,
+      category: row.category.replace("sql_", "").replace(/^\w/, c => c.toUpperCase()),
+      time: timeAgo(row.created_at),
+    }));
+
+    setCommunity(feed);
+  };
+
+  fetchCommunity();
+}, []);
+
+function timeAgo(dateStr) {
+  const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+  if (diff < 60) return `${diff}s ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+}
 
   useEffect(() => {
     const initDb = async () => {
@@ -96,10 +135,10 @@ export default function LandingPage() {
     }
   };
 
-  const handleInitialSignup = (e) => {
-    e.preventDefault();
-    navigate("/signup", { state: { email: signupEmail } });
-  };
+  // const handleInitialSignup = (e) => {
+  //   e.preventDefault();
+  //   navigate("/signup", { state: { email: signupEmail } });
+  // };
 
   return (
     <div style={{ background: "#ffffff", minHeight: "100vh", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
@@ -112,7 +151,7 @@ export default function LandingPage() {
           <Link to="/sql" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Practice</Link>
           <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Leaderboard</Link>
           <Link to="/blog" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Blog</Link>
-          <Link to="/signup" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Sign Up Free</Link>
+          <Link to="/login" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Login</Link>
         </div>
       </nav>
 
@@ -277,7 +316,7 @@ export default function LandingPage() {
           <p style={{ color: "#64748b", fontSize: "0.95rem", lineHeight: 1.7 }}>Join thousands of data professionals practicing every day.</p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "10px" }}>
-          {COMMUNITY.map((item, i) => (
+          {community.map((item, i) => (
             <div key={i} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "10px", padding: "1rem", display: "flex", gap: "10px", alignItems: "flex-start" }}>
               <div style={{ width: "34px", height: "34px", borderRadius: "50%", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 700, color: "#2563eb", flexShrink: 0 }}>
                 {item.user.split(" ").map(n => n[0]).join("")}
@@ -303,18 +342,13 @@ export default function LandingPage() {
         </div>
         <h2 style={{ fontSize: "2.2rem", fontWeight: 800, marginBottom: "1rem", letterSpacing: "-1px" }}>Ready to solve real data problems?</h2>
         <p style={{ color: "#94a3b8", marginBottom: "2.5rem", fontSize: "1rem", lineHeight: 1.7 }}>Stop watching tutorials. Start writing real SQL on real data. Free forever to start.</p>
-        <form onSubmit={handleInitialSignup} style={{ display: "flex", gap: "10px", justifyContent: "center", flexWrap: "wrap" }}>
-          <input
-            type="email" placeholder="Enter your work email" required value={signupEmail}
-            onChange={(e) => setSignupEmail(e.target.value)}
-            style={{ padding: "13px 18px", borderRadius: "8px", border: "1px solid #1e293b", background: "#1e293b", color: "#fff", width: "280px", fontSize: "0.9rem", outline: "none" }}
-          />
-          <button type="submit" style={{ padding: "13px 24px", background: "#2563eb", color: "#fff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "0.9rem", cursor: "pointer" }}>
-            Start Practicing Free →
-          </button>
-        </form>
-        <p style={{ marginTop: "1rem", fontSize: "0.75rem", color: "#475569" }}>No credit card. No setup. Just SQL.</p>
-      </div>
+        <button
+  onClick={() => navigate("/signup")}
+  style={{ padding: "14px 32px", background: "#2563eb", color: "#fff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "0.95rem", cursor: "pointer" }}
+>
+  Start Practicing Free →
+</button>
+<p style={{ marginTop: "1rem", fontSize: "0.75rem", color: "#475569" }}>No credit card. No setup. Just SQL.</p> </div>
 
       {/* Footer */}
       <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: "3rem 2.5rem 2rem" }}>

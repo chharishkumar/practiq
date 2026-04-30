@@ -1,6 +1,7 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {SQL_SCENARIOS_PROBLEMS } from "./sqlScenariosProblems";
+import { supabase } from "../supabase";
+import { SQL_SCENARIOS_PROBLEMS } from "./sqlScenariosProblems";
 import { matchesProblem, searchSqlProblems } from "./sqlSearch";
 import Editor from "@monaco-editor/react";
 
@@ -57,13 +58,19 @@ function validateResults(results, problem) {
   return "wrong";
 }
 
-// Community feed stored in module scope so it persists across renders
-let communityFeed = [];
-
-export default function SQLScenariosPage() {        
+export default function SQLBasicsPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const editorRef = useRef(null);
+  const startTimeRef = useRef(Date.now());
+
+  // FIX #4: Use a ref for runCount so runQuery always has the latest value
+  const runCountRef = useRef(0);
+  const [runCountDisplay, setRunCountDisplay] = useState(0);
+
+  // FIX #3: communityFeed moved into state so updates trigger re-renders
+  //const [communityFeed, setCommunityFeed] = useState([]);
+  const [setCommunityFeed] = useState([]);
 
   const [expandedId, setExpandedId] = useState(null);
   const [selectedProblem, setSelectedProblem] = useState(SQL_SCENARIOS_PROBLEMS[0]);
@@ -74,7 +81,7 @@ export default function SQLScenariosPage() {
   const [dbReady, setDbReady] = useState(false);
   const [validationStatus, setValidationStatus] = useState(null);
   const [solvedIds, setSolvedIds] = useState(new Set());
-  const [runCount, setRunCount] = useState(0);
+  const [isGuest, setIsGuest] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -83,72 +90,197 @@ export default function SQLScenariosPage() {
   const [modalComment, setModalComment] = useState("");
   const [postSuccess, setPostSuccess] = useState(false);
 
+  // FIX #2: Keep a ref to query so Monaco onMount always calls the latest runQuery
+  const queryRef = useRef(query);
+  useEffect(() => {
+    queryRef.current = query;
+  }, [query]);
+
+  // Keep a ref to selectedProblem for use inside runQuery without stale closure
+  const selectedProblemRef = useRef(selectedProblem);
+  useEffect(() => {
+    selectedProblemRef.current = selectedProblem;
+  }, [selectedProblem]);
+
+  const dbRef = useRef(db);
+  useEffect(() => {
+    dbRef.current = db;
+  }, [db]);
+
   useEffect(() => {
     const initDb = async () => {
-      const initSqlJs = (await import("sql.js")).default;
-      const SQL = await initSqlJs({
-        locateFile: () => `${process.env.PUBLIC_URL}/sql-wasm.wasm`,
-      });
-      const database = new SQL.Database();
-      database.run(SAMPLE_DATA);
-      setDb(database);
-      setDbReady(true);
+      try {
+        const initSqlJs = (await import("sql.js")).default;
+        const SQL = await initSqlJs({
+          locateFile: () => `${process.env.PUBLIC_URL}/sql-wasm.wasm`,
+        });
+        const database = new SQL.Database();
+        database.run(SAMPLE_DATA);
+        setDb(database);
+        setDbReady(true);
+      } catch (err) {
+        console.error("SQL.js init failed:", err);
+      }
     };
     initDb();
   }, []);
 
-  const runQuery = () => {
-    if (!db) return;
+  useEffect(() => {
+    const fetchSolvedProblems = async () => {
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData?.session) {
+        setIsGuest(true);
+        return;
+      }
+
+      const userId = sessionData.session.user.id;
+
+      const { data, error } = await supabase
+        .from("submissions")
+        .select("problem_id")
+        .eq("user_id", userId)
+        .eq("category", "sql_scenario")
+        .eq("status", "correct");
+
+      if (error || !data) return;
+
+      const ids = new Set(data.map((row) => row.problem_id));
+      setSolvedIds(ids);
+    };
+
+    fetchSolvedProblems();
+  }, []);
+
+  // FIX #2 + #4: runQuery uses refs so it's always fresh, wrapped in useCallback
+  const runQuery = useCallback(async () => {
+    const currentDb = dbRef.current;
+    const currentQuery = queryRef.current;
+    const currentProblem = selectedProblemRef.current;
+
+    if (!currentDb) return;
     setError(null);
     setResults(null);
     setValidationStatus(null);
+
     try {
-      const res = db.exec(query);
+      const res = currentDb.exec(currentQuery);
       if (res.length === 0) {
         setError("Query executed (no rows returned). Check your query logic.");
         return;
       }
+
       const resultData = res[0];
       setResults(resultData);
-      setRunCount((c) => c + 1);
 
-      const status = validateResults(resultData, selectedProblem);
+      // FIX #4: Increment via ref to avoid stale closure
+      runCountRef.current += 1;
+      const newRunCount = runCountRef.current;
+      setRunCountDisplay(newRunCount);
+
+      const status = validateResults(resultData, currentProblem);
       setValidationStatus(status);
+
       if (status === "correct") {
-        setSolvedIds((prev) => new Set([...prev, selectedProblem.id]));
+        setSolvedIds((prev) => new Set([...prev, currentProblem.id]));
+      }
+
+      // Supabase: save submission if logged in
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (sessionData?.session) {
+        const userId = sessionData.session.user.id;
+
+        const { data: existing } = await supabase
+          .from("submissions")
+          .select("id, status")
+          .eq("user_id", userId)
+          .eq("problem_id", currentProblem.id)
+          .eq("category", "sql_scenario")
+          .maybeSingle();
+
+        if (existing?.status === "correct" && status !== "correct") return;
+
+        if (existing) {
+          await supabase
+            .from("submissions")
+            .update({
+              query: currentQuery,
+              status,
+              run_count: newRunCount,
+              is_best_attempt: status === "correct",
+              time_taken_seconds: Math.floor(
+                (Date.now() - startTimeRef.current) / 1000
+              ),
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", existing.id);
+        } else {
+          await supabase.from("submissions").insert({
+            user_id: userId,
+            problem_id: currentProblem.id,
+            category: "sql_scenario",
+            problem_title: currentProblem.title,
+            query: currentQuery,
+            status,
+            run_count: newRunCount,
+            is_best_attempt: status === "correct",
+            time_taken_seconds: Math.floor(
+              (Date.now() - startTimeRef.current) / 1000
+            ),
+          });
+        }
       }
     } catch (err) {
       setError(err.message);
     }
-  };
+  }, []); // stable — reads everything from refs
 
-  const handleSelectProblem = (p) => {
+  // FIX #5: handleSelectProblem wrapped in useCallback so it can safely go in deps
+  const handleSelectProblem = useCallback((p) => {
+    startTimeRef.current = Date.now();
+    runCountRef.current = 0;
+    setRunCountDisplay(0);
     setSelectedProblem(p);
-    setQuery(p.starterQuery);
+    setQuery("-- Explore the data first, then write your solution below\nSELECT * FROM customers LIMIT 5;");
     setResults(null);
     setError(null);
     setValidationStatus(null);
-    setRunCount(0);
-  };
+    navigate(`/sql/scenarios/${p.id}`); // ADD THIS LINE
+  }, [navigate]); // also add `navigate` to the deps array
 
   const handleToggleExpand = (id) => {
     setExpandedId((prev) => (prev === id ? null : id));
   };
 
+  // FIX #5: handleSelectProblem is now stable so it's safe in deps
   useEffect(() => {
     const incoming = location.state || {};
     if (incoming.searchQuery) {
       setSearchInput(incoming.searchQuery);
       setSearchTerm(incoming.searchQuery);
     }
+  
     if (incoming.focusProblemId !== undefined) {
-      const targetProblem = SQL_SCENARIOS_PROBLEMS.find((p) => p.id === incoming.focusProblemId);
+      // Priority 1: came from another page with state (e.g. search)
+      const targetProblem = SQL_SCENARIOS_PROBLEMS.find(
+        (p) => p.id === incoming.focusProblemId
+      );
       if (targetProblem) {
         handleSelectProblem(targetProblem);
         setExpandedId(targetProblem.id);
       }
+    } else {
+      // Priority 2: direct URL like /sql/basics/12
+      const pathParts = location.pathname.split("/");
+      const idFromUrl = parseInt(pathParts[pathParts.length - 1]);
+      if (!isNaN(idFromUrl)) {
+        const target = SQL_SCENARIOS_PROBLEMS.find((p) => p.id === idFromUrl);
+        if (target) {
+          handleSelectProblem(target);
+          setExpandedId(target.id);
+        }
+      }
     }
-  }, [location.state]);
+  }, [location.state, location.pathname, handleSelectProblem]);
 
   const handlePostCommunity = () => {
     setShowModal(true);
@@ -165,11 +297,20 @@ export default function SQLScenariosPage() {
       comment: modalComment,
       time: "Just now",
     };
-    communityFeed.unshift(post);
+
+    // FIX #3: use state setter so re-renders fire
+    setCommunityFeed((prev) => [post, ...prev]);
+
     try {
-      const existing = JSON.parse(sessionStorage.getItem("communityPosts") || "[]");
-      sessionStorage.setItem("communityPosts", JSON.stringify([post, ...existing]));
+      const existing = JSON.parse(
+        sessionStorage.getItem("communityPosts") || "[]"
+      );
+      sessionStorage.setItem(
+        "communityPosts",
+        JSON.stringify([post, ...existing])
+      );
     } catch (_) {}
+
     setPostSuccess(true);
     setTimeout(() => setShowModal(false), 1800);
   };
@@ -184,7 +325,10 @@ export default function SQLScenariosPage() {
   }, [searchTerm]);
 
   const crossCategoryMatches = useMemo(
-    () => searchSqlProblems(searchTerm).filter((m) => m.categoryKey !== "scenarios").slice(0, 10),
+    () =>
+      searchSqlProblems(searchTerm)
+        .filter((m) => m.categoryKey !== "basics")
+        .slice(0, 10),
     [searchTerm]
   );
 
@@ -251,10 +395,22 @@ export default function SQLScenariosPage() {
           {c.icon}
         </div>
         <div>
-          <div style={{ fontSize: "0.85rem", fontWeight: 700, color: c.titleColor }}>
+          <div
+            style={{
+              fontSize: "0.85rem",
+              fontWeight: 700,
+              color: c.titleColor,
+            }}
+          >
             {c.title}
           </div>
-          <div style={{ fontSize: "0.8rem", color: "#475569", marginTop: "2px" }}>
+          <div
+            style={{
+              fontSize: "0.8rem",
+              color: "#475569",
+              marginTop: "2px",
+            }}
+          >
             {c.msg}
           </div>
           {validationStatus === "correct" && (
@@ -306,20 +462,35 @@ export default function SQLScenariosPage() {
       >
         <span
           onClick={() => navigate("/")}
-          style={{ fontWeight: 800, cursor: "pointer", fontSize: "1.1rem", letterSpacing: "-0.3px" }}
+          style={{
+            fontWeight: 800,
+            cursor: "pointer",
+            fontSize: "1.1rem",
+            letterSpacing: "-0.3px",
+          }}
         >
           Data Rejected
         </span>
         <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
           <span
             onClick={() => navigate("/home")}
-            style={{ cursor: "pointer", color: "#64748b", fontSize: "0.85rem", fontWeight: 500 }}
+            style={{
+              cursor: "pointer",
+              color: "#64748b",
+              fontSize: "0.85rem",
+              fontWeight: 500,
+            }}
           >
             Home
           </span>
           <span
             onClick={() => navigate("/profile")}
-            style={{ cursor: "pointer", color: "#64748b", fontSize: "0.85rem", fontWeight: 500 }}
+            style={{
+              cursor: "pointer",
+              color: "#64748b",
+              fontSize: "0.85rem",
+              fontWeight: 500,
+            }}
           >
             Profile
           </span>
@@ -338,14 +509,19 @@ export default function SQLScenariosPage() {
           </div>
           <span
             onClick={() => navigate("/sql")}
-            style={{ cursor: "pointer", color: "#2563eb", fontSize: "0.85rem", fontWeight: 600 }}
+            style={{
+              cursor: "pointer",
+              color: "#2563eb",
+              fontSize: "0.85rem",
+              fontWeight: 600,
+            }}
           >
             ← Back to Practice
           </span>
         </div>
       </nav>
 
-      {/* PAGE TITLE STRIP */}
+      {/* FIX #1: PAGE TITLE STRIP — both inner and outer divs are now properly closed */}
       <div
         style={{
           background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)",
@@ -369,8 +545,10 @@ export default function SQLScenariosPage() {
           >
             SQL Scenarios
           </h1>
-          </div>
         </div>
+      </div>
+      {/* END PAGE TITLE STRIP */}
+
       {/* MAIN SPLIT */}
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         {/* LEFT PANEL */}
@@ -404,11 +582,27 @@ export default function SQLScenariosPage() {
                   if (e.key === "Enter") setSearchTerm(searchInput.trim());
                 }}
                 placeholder="Search SQL topics (joins, window...)"
-                style={{ flex: 1, fontSize: "0.75rem", border: "1px solid #cbd5e1", borderRadius: "8px", padding: "7px 9px", outline: "none" }}
+                style={{
+                  flex: 1,
+                  fontSize: "0.75rem",
+                  border: "1px solid #cbd5e1",
+                  borderRadius: "8px",
+                  padding: "7px 9px",
+                  outline: "none",
+                }}
               />
               <button
                 onClick={() => setSearchTerm(searchInput.trim())}
-                style={{ fontSize: "0.75rem", border: "1px solid #bfdbfe", color: "#2563eb", background: "#eff6ff", borderRadius: "8px", padding: "7px 10px", cursor: "pointer", fontWeight: 600 }}
+                style={{
+                  fontSize: "0.75rem",
+                  border: "1px solid #bfdbfe",
+                  color: "#2563eb",
+                  background: "#eff6ff",
+                  borderRadius: "8px",
+                  padding: "7px 10px",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                }}
               >
                 Search
               </button>
@@ -416,9 +610,24 @@ export default function SQLScenariosPage() {
           </div>
 
           {!!searchTerm && (
-            <div style={{ margin: "0 0.75rem 0.5rem", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "10px", padding: "0.625rem 0.75rem" }}>
-              <div style={{ fontSize: "0.72rem", color: "#1d4ed8", fontWeight: 700, marginBottom: "4px" }}>
-                Results: {filteredProblems.length} in Scenarios
+            <div
+              style={{
+                margin: "0 0.75rem 0.5rem",
+                background: "#eff6ff",
+                border: "1px solid #bfdbfe",
+                borderRadius: "10px",
+                padding: "0.625rem 0.75rem",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "0.72rem",
+                  color: "#1d4ed8",
+                  fontWeight: 700,
+                  marginBottom: "4px",
+                }}
+              >
+                Results: {filteredProblems.length} in Basics
               </div>
               {crossCategoryMatches.length > 0 && (
                 <div style={{ fontSize: "0.72rem", color: "#475569" }}>
@@ -428,10 +637,23 @@ export default function SQLScenariosPage() {
                       key={`${m.categoryKey}-${m.problem.id}-${i}`}
                       onClick={() =>
                         navigate(m.route, {
-                          state: { searchQuery: searchTerm, focusProblemId: m.problem.id },
+                          state: {
+                            searchQuery: searchTerm,
+                            focusProblemId: m.problem.id,
+                          },
                         })
                       }
-                      style={{ marginLeft: "6px", marginTop: "6px", border: "1px solid #cbd5e1", background: "#fff", color: "#334155", borderRadius: "999px", padding: "3px 8px", fontSize: "0.68rem", cursor: "pointer" }}
+                      style={{
+                        marginLeft: "6px",
+                        marginTop: "6px",
+                        border: "1px solid #cbd5e1",
+                        background: "#fff",
+                        color: "#334155",
+                        borderRadius: "999px",
+                        padding: "3px 8px",
+                        fontSize: "0.68rem",
+                        cursor: "pointer",
+                      }}
                     >
                       {m.problem.title} ({m.categoryLabel})
                     </button>
@@ -445,6 +667,7 @@ export default function SQLScenariosPage() {
             const isSelected = selectedProblem.id === p.id;
             const isExpanded = expandedId === p.id;
             const isSolved = solvedIds.has(p.id);
+            const isLocked = isGuest && p.id > 10;
 
             return (
               <div
@@ -457,15 +680,17 @@ export default function SQLScenariosPage() {
                   borderRadius: "10px",
                   overflow: "hidden",
                   transition: "border-color 0.15s",
-                  boxShadow: isSelected ? "0 0 0 3px rgba(37,99,235,0.08)" : "none",
+                  boxShadow: isSelected
+                    ? "0 0 0 3px rgba(37,99,235,0.08)"
+                    : "none",
                 }}
               >
                 <div
-                  onClick={() => {
-                    handleSelectProblem(p);
-                    handleToggleExpand(p.id);
-                    if (editorRef.current) editorRef.current.focus();
-                  }}
+onClick={() => {   // ← fixed
+  handleSelectProblem(p);
+  handleToggleExpand(p.id);
+  if (!isLocked && editorRef.current) editorRef.current.focus();
+}}
                   style={{
                     padding: "0.75rem 0.875rem",
                     cursor: "pointer",
@@ -479,13 +704,21 @@ export default function SQLScenariosPage() {
                       width: "22px",
                       height: "22px",
                       borderRadius: "50%",
-                      background: isSolved ? "#16a34a" : isSelected ? "#eff6ff" : "#f1f5f9",
+                      background: isSolved
+                        ? "#16a34a"
+                        : isSelected
+                        ? "#eff6ff"
+                        : "#f1f5f9",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       fontSize: "0.62rem",
                       fontWeight: 700,
-                      color: isSolved ? "#fff" : isSelected ? "#2563eb" : "#94a3b8",
+                      color: isSolved
+                        ? "#fff"
+                        : isSelected
+                        ? "#2563eb"
+                        : "#94a3b8",
                       flexShrink: 0,
                     }}
                   >
@@ -523,7 +756,9 @@ export default function SQLScenariosPage() {
                     style={{
                       fontSize: "0.7rem",
                       color: isExpanded ? "#2563eb" : "#94a3b8",
-                      transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                      transform: isExpanded
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
                       transition: "transform 0.2s",
                       lineHeight: 1,
                     }}
@@ -541,35 +776,159 @@ export default function SQLScenariosPage() {
                     }}
                   >
                     <div style={{ marginBottom: "0.875rem" }}>
-                      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Task</div>
-                      <p style={{ margin: 0, fontSize: "0.8rem", color: "#0f172a", lineHeight: 1.6, fontWeight: 500 }}>{p.description}</p>
+                      <div
+                        style={{
+                          fontSize: "0.67rem",
+                          fontWeight: 700,
+                          color: "#94a3b8",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                          marginBottom: "4px",
+                        }}
+                      >
+                        Task
+                      </div>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "0.8rem",
+                          color: "#0f172a",
+                          lineHeight: 1.6,
+                          fontWeight: 500,
+                        }}
+                      >
+                        {p.description}
+                      </p>
                     </div>
 
                     <div style={{ marginBottom: "0.875rem" }}>
-                      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Explanation</div>
-                      <p style={{ margin: 0, fontSize: "0.78rem", color: "#475569", lineHeight: 1.65 }}>{p.explanation}</p>
+                      <div
+                        style={{
+                          fontSize: "0.67rem",
+                          fontWeight: 700,
+                          color: "#94a3b8",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                          marginBottom: "4px",
+                        }}
+                      >
+                        Explanation
+                      </div>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "0.78rem",
+                          color: "#475569",
+                          lineHeight: 1.65,
+                        }}
+                      >
+                        {p.explanation}
+                      </p>
                     </div>
 
-                    <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "8px", padding: "0.625rem 0.75rem", marginBottom: "0.875rem" }}>
-                      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "3px" }}>Real-world scenario</div>
-                      <p style={{ margin: 0, fontSize: "0.78rem", color: "#1e40af", lineHeight: 1.6 }}>{p.scenario}</p>
+                    <div
+                      style={{
+                        background: "#eff6ff",
+                        border: "1px solid #bfdbfe",
+                        borderRadius: "8px",
+                        padding: "0.625rem 0.75rem",
+                        marginBottom: "0.875rem",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: "0.67rem",
+                          fontWeight: 700,
+                          color: "#1d4ed8",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                          marginBottom: "3px",
+                        }}
+                      >
+                        Real-world scenario
+                      </div>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "0.78rem",
+                          color: "#1e40af",
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {p.scenario}
+                      </p>
                     </div>
 
                     <div style={{ marginBottom: "0.875rem" }}>
-                      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "5px" }}>Common use cases</div>
+                      <div
+                        style={{
+                          fontSize: "0.67rem",
+                          fontWeight: 700,
+                          color: "#94a3b8",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                          marginBottom: "5px",
+                        }}
+                      >
+                        Common use cases
+                      </div>
                       {p.useCases.map((uc, i) => (
-                        <div key={i} style={{ display: "flex", gap: "6px", alignItems: "flex-start", marginBottom: "3px" }}>
-                          <span style={{ color: "#2563eb", fontSize: "0.7rem", marginTop: "2px" }}>→</span>
-                          <span style={{ fontSize: "0.77rem", color: "#475569", lineHeight: 1.5 }}>{uc}</span>
+                        <div
+                          key={i}
+                          style={{
+                            display: "flex",
+                            gap: "6px",
+                            alignItems: "flex-start",
+                            marginBottom: "3px",
+                          }}
+                        >
+                          <span
+                            style={{
+                              color: "#2563eb",
+                              fontSize: "0.7rem",
+                              marginTop: "2px",
+                            }}
+                          >
+                            →
+                          </span>
+                          <span
+                            style={{
+                              fontSize: "0.77rem",
+                              color: "#475569",
+                              lineHeight: 1.5,
+                            }}
+                          >
+                            {uc}
+                          </span>
                         </div>
                       ))}
                     </div>
 
                     <details>
-                      <summary style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", listStyle: "none" }}>
+                      <summary
+                        style={{
+                          fontSize: "0.78rem",
+                          color: "#2563eb",
+                          fontWeight: 600,
+                          cursor: "pointer",
+                          listStyle: "none",
+                        }}
+                      >
                         💡 Show hint
                       </summary>
-                      <div style={{ marginTop: "6px", padding: "0.5rem 0.625rem", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "6px", fontSize: "0.78rem", color: "#92400e", lineHeight: 1.6, fontFamily: "monospace" }}>
+                      <div
+                        style={{
+                          marginTop: "6px",
+                          padding: "0.5rem 0.625rem",
+                          background: "#fffbeb",
+                          border: "1px solid #fde68a",
+                          borderRadius: "6px",
+                          fontSize: "0.78rem",
+                          color: "#92400e",
+                          lineHeight: 1.6,
+                          fontFamily: "monospace",
+                        }}
+                      >
                         {p.hint}
                       </div>
                     </details>
@@ -583,173 +942,614 @@ export default function SQLScenariosPage() {
         </div>
 
         {/* RIGHT PANEL */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "#ffffff" }}>
-
-          {/* Problem Header */}
-          <div style={{ padding: "1.25rem 1.75rem 1rem", borderBottom: "1px solid #f1f5f9", flexShrink: 0 }}>
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-              <div>
-                <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "6px" }}>
-                  <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", fontWeight: 600 }}>Easy</span>
-                  <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>#{selectedProblem.id}</span>
-                  {solvedIds.has(selectedProblem.id) && (
-                    <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", fontWeight: 600 }}>✓ Solved</span>
-                  )}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+            background: "#ffffff",
+          }}
+        >
+          {selectedProblem.id > 10 && isGuest ? (
+            /* LOCK SCREEN */
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "2rem",
+              }}
+            >
+              <div style={{ textAlign: "center", maxWidth: "360px" }}>
+                <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>
+                  🔒
                 </div>
-                <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>
-                  {selectedProblem.title}
-                </h2>
+                <h3
+                  style={{
+                    fontSize: "1.2rem",
+                    fontWeight: 800,
+                    color: "#0f172a",
+                    margin: "0 0 0.5rem",
+                  }}
+                >
+                  Sign in to unlock this problem
+                </h3>
+                <p
+                  style={{
+                    fontSize: "0.88rem",
+                    color: "#64748b",
+                    lineHeight: 1.7,
+                    marginBottom: "1.5rem",
+                  }}
+                >
+                  You've explored the first 10 problems. Sign up to access
+                  all SQL problems and save your progress.
+                </p>
+                <button
+                  onClick={() => navigate("/signup")}
+                  style={{
+                    width: "100%",
+                    padding: "11px",
+                    borderRadius: "8px",
+                    background: "#2563eb",
+                    color: "#fff",
+                    fontWeight: 700,
+                    fontSize: "0.88rem",
+                    border: "none",
+                    cursor: "pointer",
+                    marginBottom: "8px",
+                  }}
+                >
+                  Sign Up Free →
+                </button>
+                <button
+                  onClick={() => navigate("/login")}
+                  style={{
+                    width: "100%",
+                    padding: "11px",
+                    borderRadius: "8px",
+                    background: "#ffffff",
+                    color: "#2563eb",
+                    fontWeight: 600,
+                    fontSize: "0.88rem",
+                    border: "1.5px solid #bfdbfe",
+                    cursor: "pointer",
+                  }}
+                >
+                  Already have an account? Sign in
+                </button>
               </div>
-              <button
-                onClick={handlePostCommunity}
-                style={{ padding: "8px 16px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.8rem", border: "1.5px solid #bfdbfe", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}
+            </div>
+          ) : (
+            /* NORMAL CONTENT */
+            <>
+              {/* Problem Header */}
+              <div
+                style={{
+                  padding: "1.25rem 1.75rem 1rem",
+                  borderBottom: "1px solid #f1f5f9",
+                  flexShrink: 0,
+                }}
               >
-                🌐 Post to Community
-              </button>
-            </div>
-
-            <div style={{ marginTop: "0.875rem", background: "#f8fafc", border: "1px solid #e2e8f0", borderLeft: "3px solid #2563eb", borderRadius: "0 8px 8px 0", padding: "0.625rem 0.875rem" }}>
-              <span style={{ fontSize: "0.67rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "3px" }}>Task</span>
-              <p style={{ margin: 0, fontSize: "0.88rem", color: "#0f172a", lineHeight: 1.6 }}>{selectedProblem.description}</p>
-            </div>
-          </div>
-
-          {/* Scrollable editor + results */}
-          <div style={{ flex: 1, overflowY: "auto", padding: "1.25rem 1.75rem" }}>
-
-            {validationBanner()}
-
-            {/* Editor */}
-            <div style={{ border: "1.5px solid #e2e8f0", borderRadius: "12px", overflow: "hidden", marginBottom: "1rem" }}>
-              <div style={{ background: "#f8fafc", padding: "0.625rem 1rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                  <span style={{ fontSize: "0.7rem", background: "#e2e8f0", color: "#0f172a", padding: "3px 9px", borderRadius: "20px", fontWeight: 700 }}>SQL</span>
-                  <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>Ctrl+Enter to run</span>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "8px",
+                        alignItems: "center",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: "0.7rem",
+                          padding: "3px 10px",
+                          borderRadius: "10px",
+                          background: "#f0fdf4",
+                          color: "#16a34a",
+                          border: "1px solid #bbf7d0",
+                          fontWeight: 600,
+                        }}
+                      >
+                        Easy
+                      </span>
+                      <span
+                        style={{ fontSize: "0.7rem", color: "#94a3b8" }}
+                      >
+                        #{selectedProblem.id}
+                      </span>
+                      {solvedIds.has(selectedProblem.id) && (
+                        <span
+                          style={{
+                            fontSize: "0.7rem",
+                            padding: "3px 10px",
+                            borderRadius: "10px",
+                            background: "#f0fdf4",
+                            color: "#16a34a",
+                            fontWeight: 600,
+                          }}
+                        >
+                          ✓ Solved
+                        </span>
+                      )}
+                    </div>
+                    <h2
+                      style={{
+                        margin: 0,
+                        fontSize: "1.2rem",
+                        fontWeight: 800,
+                        letterSpacing: "-0.3px",
+                        color: "#0f172a",
+                      }}
+                    >
+                      {selectedProblem.title}
+                    </h2>
+                  </div>
+                  <button
+                    onClick={handlePostCommunity}
+                    style={{
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      background: "#ffffff",
+                      color: "#2563eb",
+                      fontWeight: 600,
+                      fontSize: "0.8rem",
+                      border: "1.5px solid #bfdbfe",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    🌐 Post to Community
+                  </button>
                 </div>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <button
-                    onClick={() => { setQuery(selectedProblem.starterQuery); setResults(null); setError(null); setValidationStatus(null); }}
-                    style={{ fontSize: "0.75rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 10px", cursor: "pointer" }}
+
+                <div
+                  style={{
+                    marginTop: "0.875rem",
+                    background: "#f8fafc",
+                    border: "1px solid #e2e8f0",
+                    borderLeft: "3px solid #2563eb",
+                    borderRadius: "0 8px 8px 0",
+                    padding: "0.625rem 0.875rem",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: "0.67rem",
+                      fontWeight: 700,
+                      color: "#64748b",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      display: "block",
+                      marginBottom: "3px",
+                    }}
                   >
-                    Reset
-                  </button>
-                  <button
-                    onClick={runQuery}
-                    disabled={!dbReady}
-                    style={{ padding: "6px 18px", borderRadius: "6px", background: dbReady ? "#2563eb" : "#94a3b8", color: "#fff", fontWeight: 700, fontSize: "0.8rem", border: "none", cursor: dbReady ? "pointer" : "not-allowed" }}
+                    Task
+                  </span>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: "0.88rem",
+                      color: "#0f172a",
+                      lineHeight: 1.6,
+                    }}
                   >
-                    {dbReady ? "▶ Run" : "Loading…"}
-                  </button>
+                    {selectedProblem.description}
+                  </p>
                 </div>
               </div>
 
-              <Editor
-  height="300px"
-  language="sql"
-  value={query}
-  onChange={(value) => setQuery(value || "")}
-  theme="vs-dark"
-  options={{
-    fontSize: 14,
-    minimap: { enabled: false },
-    wordWrap: "on",
-    scrollBeyondLastLine: false,
-    padding: { top: 10, bottom: 10 },
-    lineNumbers: "on",
-  }}
-  onMount={(editor) => {
-    editor.addCommand(
-      window.monaco.KeyMod.CtrlCmd | window.monaco.KeyCode.Enter,
-      () => runQuery()
-    );
-  }}
-/>  
-            </div>
+              {/* Scrollable editor + results */}
+              <div
+                style={{
+                  flex: 1,
+                  overflowY: "auto",
+                  padding: "1.25rem 1.75rem",
+                }}
+              >
+                {validationBanner()}
 
-            {/* Results */}
-            <div style={{ border: "1.5px solid #e2e8f0", borderRadius: "12px", overflow: "hidden" }}>
-              <div style={{ background: "#f8fafc", padding: "0.625rem 1rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Output</span>
-                {results && <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>{results.values.length} row{results.values.length !== 1 ? "s" : ""}</span>}
-              </div>
+                {/* Editor */}
+                <div
+                  style={{
+                    border: "1.5px solid #e2e8f0",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  <div
+                    style={{
+                      background: "#f8fafc",
+                      padding: "0.625rem 1rem",
+                      borderBottom: "1px solid #e2e8f0",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "8px",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: "0.7rem",
+                          background: "#e2e8f0",
+                          color: "#0f172a",
+                          padding: "3px 9px",
+                          borderRadius: "20px",
+                          fontWeight: 700,
+                        }}
+                      >
+                        SQL
+                      </span>
+                      <span
+                        style={{ fontSize: "0.72rem", color: "#94a3b8" }}
+                      >
+                        Ctrl+Enter to run
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <button
+                        onClick={() => {
+                          setQuery(selectedProblem.starterQuery);
+                          setResults(null);
+                          setError(null);
+                          setValidationStatus(null);
+                        }}
+                        style={{
+                          fontSize: "0.75rem",
+                          color: "#64748b",
+                          background: "transparent",
+                          border: "1px solid #e2e8f0",
+                          borderRadius: "6px",
+                          padding: "4px 10px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Reset
+                      </button>
+                      <button
+                        onClick={runQuery}
+                        disabled={!dbReady}
+                        style={{
+                          padding: "6px 18px",
+                          borderRadius: "6px",
+                          background: dbReady ? "#2563eb" : "#94a3b8",
+                          color: "#fff",
+                          fontWeight: 700,
+                          fontSize: "0.8rem",
+                          border: "none",
+                          cursor: dbReady ? "pointer" : "not-allowed",
+                        }}
+                      >
+                        {dbReady ? "▶ Run" : "Loading…"}
+                      </button>
+                    </div>
+                  </div>
 
-              <div style={{ minHeight: "120px", padding: "0.875rem 1rem", background: "#ffffff" }}>
-                {!results && !error && (
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100px", color: "#94a3b8", fontSize: "0.82rem" }}>
-                    Run your query to see results here
+                  <Editor
+                    height="400px"
+                    language="sql"
+                    value={query}
+                    onChange={(value) => setQuery(value || "")}
+                    theme="vs-dark"
+                    options={{
+                      fontSize: 14,
+                      minimap: { enabled: false },
+                      wordWrap: "on",
+                      scrollBeyondLastLine: false,
+                      padding: { top: 10, bottom: 10 },
+                      lineNumbers: "on",
+                    }}
+                    onMount={(editor) => {
+                      editorRef.current = editor;
+                      // FIX #2: use the stable runQuery (reads query from ref internally)
+                      editor.addCommand(
+                        window.monaco.KeyMod.CtrlCmd |
+                          window.monaco.KeyCode.Enter,
+                        () => runQuery()
+                      );
+                    }}
+                  />
+                </div>
+
+                {/* Results */}
+                <div
+                  style={{
+                    border: "1.5px solid #e2e8f0",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      background: "#f8fafc",
+                      padding: "0.625rem 1rem",
+                      borderBottom: "1px solid #e2e8f0",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "0.7rem",
+                        fontWeight: 700,
+                        color: "#64748b",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      Output
+                    </span>
+                    {results && (
+                      <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>
+                        {results.values.length} row
+                        {results.values.length !== 1 ? "s" : ""}
+                      </span>
+                    )}
                   </div>
-                )}
-                {error && (
-                  <div style={{ color: "#ef4444", fontSize: "0.82rem", fontFamily: "monospace", lineHeight: 1.6, background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: "8px", padding: "0.75rem" }}>
-                    {error}
-                  </div>
-                )}
-                {results && (
-                  <div style={{ overflowX: "auto" }}>
-                    <table style={{ borderCollapse: "collapse", fontSize: "0.8rem", width: "100%" }}>
-                      <thead>
-                        <tr>
-                          {results.columns.map((col) => (
-                            <th key={col} style={{ textAlign: "left", padding: "6px 12px", color: "#64748b", fontWeight: 600, borderBottom: "2px solid #e2e8f0", whiteSpace: "nowrap", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.03em" }}>{col}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {results.values.map((row, i) => (
-                          <tr key={i} style={{ background: i % 2 === 0 ? "#ffffff" : "#f8fafc" }}>
-                            {row.map((cell, j) => (
-                              <td key={j} style={{ padding: "7px 12px", color: "#0f172a", borderBottom: "1px solid #f1f5f9", whiteSpace: "nowrap" }}>{cell}</td>
+
+                  <div
+                    style={{
+                      minHeight: "120px",
+                      padding: "0.875rem 1rem",
+                      background: "#ffffff",
+                    }}
+                  >
+                    {!results && !error && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          height: "100px",
+                          color: "#94a3b8",
+                          fontSize: "0.82rem",
+                        }}
+                      >
+                        Run your query to see results here
+                      </div>
+                    )}
+                    {error && (
+                      <div
+                        style={{
+                          color: "#ef4444",
+                          fontSize: "0.82rem",
+                          fontFamily: "monospace",
+                          lineHeight: 1.6,
+                          background: "#fef2f2",
+                          border: "1px solid #fca5a5",
+                          borderRadius: "8px",
+                          padding: "0.75rem",
+                        }}
+                      >
+                        {error}
+                      </div>
+                    )}
+                    {results && (
+                      <div style={{ overflowX: "auto" }}>
+                        <table
+                          style={{
+                            borderCollapse: "collapse",
+                            fontSize: "0.8rem",
+                            width: "100%",
+                          }}
+                        >
+                          <thead>
+                            <tr>
+                              {results.columns.map((col) => (
+                                <th
+                                  key={col}
+                                  style={{
+                                    textAlign: "left",
+                                    padding: "6px 12px",
+                                    color: "#64748b",
+                                    fontWeight: 600,
+                                    borderBottom: "2px solid #e2e8f0",
+                                    whiteSpace: "nowrap",
+                                    fontSize: "0.75rem",
+                                    textTransform: "uppercase",
+                                    letterSpacing: "0.03em",
+                                  }}
+                                >
+                                  {col}
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {results.values.map((row, i) => (
+                              <tr
+                                key={i}
+                                style={{
+                                  background:
+                                    i % 2 === 0 ? "#ffffff" : "#f8fafc",
+                                }}
+                              >
+                                {row.map((cell, j) => (
+                                  <td
+                                    key={j}
+                                    style={{
+                                      padding: "7px 12px",
+                                      color: "#0f172a",
+                                      borderBottom: "1px solid #f1f5f9",
+                                      whiteSpace: "nowrap",
+                                    }}
+                                  >
+                                    {cell}
+                                  </td>
+                                ))}
+                              </tr>
                             ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* FIX #4: use runCountDisplay (state) for rendering */}
+                {runCountDisplay > 2 && validationStatus !== "correct" && (
+                  <div
+                    style={{
+                      marginTop: "1rem",
+                      background: "#fffbeb",
+                      border: "1px solid #fde68a",
+                      borderRadius: "8px",
+                      padding: "0.75rem 1rem",
+                      fontSize: "0.8rem",
+                      color: "#92400e",
+                    }}
+                  >
+                    <strong>Stuck?</strong> Click the question on the left and
+                    expand the hint section.
                   </div>
                 )}
-              </div>
-            </div>
 
-            {runCount > 2 && validationStatus !== "correct" && (
-              <div style={{ marginTop: "1rem", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "8px", padding: "0.75rem 1rem", fontSize: "0.8rem", color: "#92400e" }}>
-                <strong>Stuck?</strong> Click the question on the left and expand the hint section.
+                <div style={{ height: "2rem" }} />
               </div>
-            )}
-
-            <div style={{ height: "2rem" }} />
-          </div>
+            </>
+          )}
         </div>
       </div>
 
       {/* COMMUNITY POST MODAL */}
       {showModal && (
         <div
-          style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}
-          onClick={(e) => { if (e.target === e.currentTarget) setShowModal(false); }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(15,23,42,0.55)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowModal(false);
+          }}
         >
-          <div style={{ background: "#ffffff", borderRadius: "16px", padding: "1.75rem", width: "480px", maxWidth: "90vw", boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}>
+          <div
+            style={{
+              background: "#ffffff",
+              borderRadius: "16px",
+              padding: "1.75rem",
+              width: "480px",
+              maxWidth: "90vw",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+            }}
+          >
             {postSuccess ? (
               <div style={{ textAlign: "center", padding: "1.5rem 0" }}>
-                <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>🎉</div>
-                <div style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a" }}>Posted to Community!</div>
-                <div style={{ fontSize: "0.85rem", color: "#64748b", marginTop: "4px" }}>Your solution is now live on the community feed.</div>
+                <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>
+                  🎉
+                </div>
+                <div
+                  style={{
+                    fontWeight: 800,
+                    fontSize: "1.1rem",
+                    color: "#0f172a",
+                  }}
+                >
+                  Posted to Community!
+                </div>
+                <div
+                  style={{
+                    fontSize: "0.85rem",
+                    color: "#64748b",
+                    marginTop: "4px",
+                  }}
+                >
+                  Your solution is now live on the community feed.
+                </div>
               </div>
             ) : (
               <>
                 <div style={{ marginBottom: "1.25rem" }}>
-                  <h3 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: 800, color: "#0f172a" }}>Share to Community</h3>
-                  <p style={{ margin: 0, fontSize: "0.82rem", color: "#64748b" }}>Your query and comment will appear in the community feed on the main SQL practice page.</p>
+                  <h3
+                    style={{
+                      margin: "0 0 4px",
+                      fontSize: "1rem",
+                      fontWeight: 800,
+                      color: "#0f172a",
+                    }}
+                  >
+                    Share to Community
+                  </h3>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: "0.82rem",
+                      color: "#64748b",
+                    }}
+                  >
+                    Your query and comment will appear in the community feed on
+                    the main SQL practice page.
+                  </p>
                 </div>
 
-                <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "0.625rem 0.875rem", marginBottom: "1rem", fontSize: "0.82rem", color: "#0f172a", fontWeight: 600 }}>
+                <div
+                  style={{
+                    background: "#f8fafc",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "8px",
+                    padding: "0.625rem 0.875rem",
+                    marginBottom: "1rem",
+                    fontSize: "0.82rem",
+                    color: "#0f172a",
+                    fontWeight: 600,
+                  }}
+                >
                   📝 {selectedProblem.title}
                 </div>
 
-                <div style={{ background: "#0f172a", borderRadius: "8px", padding: "0.75rem 1rem", marginBottom: "1rem", fontFamily: "monospace", fontSize: "0.8rem", color: "#7dd3fc", whiteSpace: "pre-wrap", maxHeight: "100px", overflowY: "auto" }}>
+                <div
+                  style={{
+                    background: "#0f172a",
+                    borderRadius: "8px",
+                    padding: "0.75rem 1rem",
+                    marginBottom: "1rem",
+                    fontFamily: "monospace",
+                    fontSize: "0.8rem",
+                    color: "#7dd3fc",
+                    whiteSpace: "pre-wrap",
+                    maxHeight: "100px",
+                    overflowY: "auto",
+                  }}
+                >
                   {query}
                 </div>
 
                 <div style={{ marginBottom: "1.25rem" }}>
-                  <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.04em", display: "block", marginBottom: "6px" }}>
+                  <label
+                    style={{
+                      fontSize: "0.75rem",
+                      fontWeight: 700,
+                      color: "#64748b",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.04em",
+                      display: "block",
+                      marginBottom: "6px",
+                    }}
+                  >
                     Add a comment (optional)
                   </label>
                   <textarea
@@ -757,17 +1557,58 @@ export default function SQLScenariosPage() {
                     onChange={(e) => setModalComment(e.target.value)}
                     placeholder="Share what you learned, a tip, or a question..."
                     rows={3}
-                    style={{ width: "100%", padding: "0.625rem 0.75rem", border: "1.5px solid #e2e8f0", borderRadius: "8px", fontSize: "0.85rem", fontFamily: "Inter, sans-serif", outline: "none", resize: "none", color: "#0f172a", boxSizing: "border-box" }}
+                    style={{
+                      width: "100%",
+                      padding: "0.625rem 0.75rem",
+                      border: "1.5px solid #e2e8f0",
+                      borderRadius: "8px",
+                      fontSize: "0.85rem",
+                      fontFamily: "Inter, sans-serif",
+                      outline: "none",
+                      resize: "none",
+                      color: "#0f172a",
+                      boxSizing: "border-box",
+                    }}
                     onFocus={(e) => (e.target.style.borderColor = "#2563eb")}
                     onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
                   />
                 </div>
 
-                <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
-                  <button onClick={() => setShowModal(false)} style={{ padding: "8px 18px", borderRadius: "8px", border: "1.5px solid #e2e8f0", background: "#ffffff", color: "#64748b", fontWeight: 600, fontSize: "0.85rem", cursor: "pointer" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "10px",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <button
+                    onClick={() => setShowModal(false)}
+                    style={{
+                      padding: "8px 18px",
+                      borderRadius: "8px",
+                      border: "1.5px solid #e2e8f0",
+                      background: "#ffffff",
+                      color: "#64748b",
+                      fontWeight: 600,
+                      fontSize: "0.85rem",
+                      cursor: "pointer",
+                    }}
+                  >
                     Cancel
                   </button>
-                  <button onClick={submitPost} style={{ padding: "8px 22px", borderRadius: "8px", border: "none", background: "#2563eb", color: "#ffffff", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer" }}>
+                  <button
+                    onClick={submitPost}
+                    style={{
+                      padding: "8px 22px",
+                      borderRadius: "8px",
+                      border: "none",
+                      background: "#2563eb",
+                      color: "#ffffff",
+                      fontWeight: 700,
+                      fontSize: "0.85rem",
+                      cursor: "pointer",
+                    }}
+                  >
                     Post →
                   </button>
                 </div>

@@ -228,11 +228,61 @@ export default function SQLBasicsPage() {
             ),
           });
         }
+        if (status === "correct") {
+          await updateStreak(userId);
+        }
       }
     } catch (err) {
       setError(err.message);
     }
   }, []); // stable — reads everything from refs
+
+  async function updateStreak(userId) {
+    const today = new Date().toISOString().split("T")[0]; // "2026-04-30"
+  
+    const { data: existing } = await supabase
+      .from("user_streaks")
+      .select("*")
+      .eq("user_id", userId)
+      .maybeSingle();
+  
+    if (!existing) {
+      // First time ever — create the row
+      await supabase.from("user_streaks").insert({
+        user_id:          userId,
+        current_streak:   1,
+        longest_streak:   1,
+        last_solved_date: today,
+      });
+      return;
+    }
+  
+    const last = existing.last_solved_date; // "2026-04-29"
+  
+    if (last === today) {
+      // Already updated today, do nothing
+      return;
+    }
+  
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split("T")[0];
+  
+    let newStreak;
+    if (last === yesterdayStr) {
+      // Solved yesterday — continue streak
+      newStreak = (existing.current_streak || 0) + 1;
+    } else {
+      // Gap in days — reset streak
+      newStreak = 1;
+    }
+  
+    await supabase.from("user_streaks").update({
+      current_streak:   newStreak,
+      longest_streak:   Math.max(newStreak, existing.longest_streak || 0),
+      last_solved_date: today,
+    }).eq("user_id", userId);
+  }
 
   // FIX #5: handleSelectProblem wrapped in useCallback so it can safely go in deps
   const handleSelectProblem = useCallback((p) => {
@@ -240,13 +290,12 @@ export default function SQLBasicsPage() {
     runCountRef.current = 0;
     setRunCountDisplay(0);
     setSelectedProblem(p);
-    setQuery(
-      "-- Explore the data first, then write your solution below\nSELECT * FROM customers LIMIT 5;"
-    );
+    setQuery("-- Explore the data first, then write your solution below\nSELECT * FROM customers LIMIT 5;");
     setResults(null);
     setError(null);
     setValidationStatus(null);
-  }, []);
+    navigate(`/sql/basics/${p.id}`); // ADD THIS LINE
+  }, [navigate]); // also add `navigate` to the deps array []);
 
   const handleToggleExpand = (id) => {
     setExpandedId((prev) => (prev === id ? null : id));
@@ -259,7 +308,9 @@ export default function SQLBasicsPage() {
       setSearchInput(incoming.searchQuery);
       setSearchTerm(incoming.searchQuery);
     }
+  
     if (incoming.focusProblemId !== undefined) {
+      // Priority 1: came from another page with state (e.g. search)
       const targetProblem = SQL_PROBLEMS.find(
         (p) => p.id === incoming.focusProblemId
       );
@@ -267,8 +318,19 @@ export default function SQLBasicsPage() {
         handleSelectProblem(targetProblem);
         setExpandedId(targetProblem.id);
       }
+    } else {
+      // Priority 2: direct URL like /sql/basics/12
+      const pathParts = location.pathname.split("/");
+      const idFromUrl = parseInt(pathParts[pathParts.length - 1]);
+      if (!isNaN(idFromUrl)) {
+        const target = SQL_PROBLEMS.find((p) => p.id === idFromUrl);
+        if (target) {
+          handleSelectProblem(target);
+          setExpandedId(target.id);
+        }
+      }
     }
-  }, [location.state, handleSelectProblem]);
+  }, [location.state, location.pathname, handleSelectProblem]);
 
   const handlePostCommunity = () => {
     setShowModal(true);
@@ -522,7 +584,7 @@ export default function SQLBasicsPage() {
         }}
       >
         <div>
-          <h1
+          <h2
             style={{
               margin: 0,
               fontSize: "1rem",
@@ -532,7 +594,7 @@ export default function SQLBasicsPage() {
             }}
           >
             SQL Basics
-          </h1>
+          </h2>
         </div>
       </div>
       {/* END PAGE TITLE STRIP */}
@@ -674,12 +736,11 @@ export default function SQLBasicsPage() {
                 }}
               >
                 <div
-                  onClick={() => {
-                    if (isLocked) return;
-                    handleSelectProblem(p);
-                    handleToggleExpand(p.id);
-                    if (editorRef.current) editorRef.current.focus();
-                  }}
+onClick={() => {   // ← fixed
+  handleSelectProblem(p);
+  handleToggleExpand(p.id);
+  if (!isLocked && editorRef.current) editorRef.current.focus();
+}}
                   style={{
                     padding: "0.75rem 0.875rem",
                     cursor: "pointer",
@@ -1191,7 +1252,6 @@ export default function SQLBasicsPage() {
                       <span
                         style={{ fontSize: "0.72rem", color: "#94a3b8" }}
                       >
-                        Ctrl+Enter to run
                       </span>
                     </div>
                     <div style={{ display: "flex", gap: "8px" }}>
@@ -1234,7 +1294,7 @@ export default function SQLBasicsPage() {
                   </div>
 
                   <Editor
-                    height="300px"
+                    height="400px"
                     language="sql"
                     value={query}
                     onChange={(value) => setQuery(value || "")}
