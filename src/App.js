@@ -14,6 +14,9 @@ import SQLInterviewPage from "./data/SQLInterview";
 import SQLScenariosPage from "./data/SQLScenarios";
 import SQLProblemPage from "./data/SQLProblemPage";
 import LeaderboardPage from "./LeaderboardPage";
+import BlogPage from "./BlogPage";
+import BlogWritePage from "./BlogWritePage";
+import BlogPostPage from "./BlogPostPage";
 
 export default function App() {
   return (
@@ -41,6 +44,9 @@ export default function App() {
         {/* Placeholder for future Login page to prevent 404s */}
         <Route path="/login" element={<SignupPage />} /> 
         <Route path="/leaderboard" element={<LeaderboardPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/write" element={<BlogWritePage />} />
+        <Route path="/blog/:slug" element={<BlogPostPage />} />
       </Routes>
     </BrowserRouter>
   );

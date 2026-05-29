@@ -37,13 +37,6 @@ function getDailyChallenge() {
 
 const DAILY_CHALLENGE = getDailyChallenge();
 
-const RECOMMENDED = [
-  { id: 17, title: "Join customers and orders",     category: "Basics", difficulty: "Easy",   reason: "Next in sequence",  path: "/sql/basics" },
-  { id: 18, title: "LEFT JOIN — find missing rows", category: "Basics", difficulty: "Easy",   reason: "Related to joins",  path: "/sql/basics" },
-  { id: 11, title: "Count orders per customer",     category: "Basics", difficulty: "Easy",   reason: "Practice GROUP BY", path: "/sql/basics" },
-  { id: 15, title: "Filter groups with HAVING",     category: "Basics", difficulty: "Easy",   reason: "Weak area",         path: "/sql/basics" },
-];
-
 const DIFF = {
   Easy:   { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
   Medium: { bg: "#fffbeb", color: "#d97706", border: "#fde68a" },
@@ -145,19 +138,21 @@ function Nav({ user, navigate, onSignOut }) {
       </span>
       <div style={{ display: "flex", gap: "28px", alignItems: "center" }}>
         <span onClick={() => navigate("/home")}     style={{ fontSize: "0.85rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Home</span>
-        <span onClick={() => navigate("/sql")}      style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Practice</span>
-        <span onClick={() => navigate("/leaderboard")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Leaderboard</span>
-        <span onClick={() => navigate("/profile")}  style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Profile</span>
+        <span onClick={() => navigate("/sql")}      style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Practice</span>
+        <span onClick={() => navigate("/leaderboard")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Leaderboard</span>
+        <span onClick={() => navigate("/Blog")}  style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Blog</span>
+        {/* <span onClick={() => navigate("/profile")}  style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Profile</span> */}
         <div
           onClick={() => navigate("/profile")}
           title={user?.fullName}
           style={{ width: "34px", height: "34px", borderRadius: "50%", background: "#eff6ff", border: "1.5px solid #bfdbfe", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: "0.75rem", color: "#2563eb", cursor: "pointer" }}
         >
+          
           {getInitials(user?.fullName)}
         </div>
         <button
           onClick={onSignOut}
-          style={{ fontSize: "0.78rem", color: "#64748b", background: "none", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "5px 12px", cursor: "pointer", fontWeight: 500 }}
+          style={{ fontSize: "0.78rem", color: "#64748b", background: "none", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}
         >
           Sign out
         </button>
@@ -464,9 +459,11 @@ function CommunityFeed({ feed }) {
   }
 
   function timeAgo(dateStr) {
-    const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
-    if (diff < 60) return `${diff}s ago`;
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    // Force UTC parsing — Supabase sometimes returns without Z suffix
+    const utcStr = dateStr.endsWith("Z") ? dateStr : dateStr + "Z";
+    const diff = Math.floor((Date.now() - new Date(utcStr)) / 1000);
+    if (diff < 60)    return `${diff}s ago`;
+    if (diff < 3600)  return `${Math.floor(diff / 60)}m ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
     return `${Math.floor(diff / 86400)}d ago`;
   }

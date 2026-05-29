@@ -5,57 +5,72 @@ import { SQL_INTERMEDIATE_PROBLEMS } from "./sqlIntermediateProblems";
 import { matchesProblem, searchSqlProblems } from "./sqlSearch";
 import Editor from "@monaco-editor/react";
 
-const SAMPLE_DATA = `
-CREATE TABLE customers (
-  customer_id INTEGER PRIMARY KEY,
-  customer_name TEXT,
-  email TEXT,
-  signup_date TEXT
-);
-CREATE TABLE orders (
-  order_id INTEGER PRIMARY KEY,
-  customer_id INTEGER,
-  order_date TEXT,
-  amount REAL
-);
-CREATE TABLE products (
-  product_id INTEGER PRIMARY KEY,
-  product_name TEXT,
-  category TEXT,
-  price REAL
-);
-INSERT INTO customers VALUES (1, 'Alice Johnson', 'alice@email.com', '2023-01-15');
-INSERT INTO customers VALUES (2, 'Bob Smith', 'bob@email.com', '2023-02-20');
-INSERT INTO customers VALUES (3, 'Carol White', 'carol@email.com', '2023-03-10');
-INSERT INTO customers VALUES (4, 'David Brown', 'david@email.com', '2023-04-05');
-INSERT INTO customers VALUES (5, 'Emma Davis', 'emma@email.com', '2023-05-12');
-INSERT INTO orders VALUES (1, 1, '2024-01-10', 250.00);
-INSERT INTO orders VALUES (2, 1, '2024-02-15', 180.00);
-INSERT INTO orders VALUES (3, 3, '2024-03-20', 320.00);
-INSERT INTO orders VALUES (4, 5, '2024-01-25', 150.00);
-INSERT INTO orders VALUES (5, 2, '2024-04-08', 410.00);
-INSERT INTO products VALUES (1, 'Starter Plan', 'subscription', 29.00);
-INSERT INTO products VALUES (2, 'Pro Plan', 'subscription', 99.00);
-INSERT INTO products VALUES (3, 'Onboarding Kit', 'services', 199.00);
-INSERT INTO products VALUES (4, 'Analytics Add-on', 'addon', 49.00);
-INSERT INTO products VALUES (5, 'Priority Support', 'services', 79.00);
-`;
+function normalizeValue(v) {
+  if (v === null || v === undefined) return "";
+  const str = String(v).trim();
+  // If it looks like a number, parse and round to 4 decimal places
+  const num = parseFloat(str);
+  if (!isNaN(num) && str !== "") {
+    return num.toFixed(4);
+  }
+  return str.toLowerCase(); // case insensitive string comparison
+}
 
-// Validation: check if user results match expected output
-function validateResults(results, problem) {
-  if (!results) return null;
-  const { expectedColumns, expectedRowCount } = problem;
+function validateResults(userResult, referenceResult) {
+  if (!userResult || !referenceResult) return null;
 
-  const colMatch =
-    expectedColumns &&
-    expectedColumns.every((col) => results.columns.includes(col));
-  const rowMatch =
-    expectedRowCount !== undefined &&
-    results.values.length === expectedRowCount;
+  // Row count check
+  if (userResult.values.length !== referenceResult.values.length) {
+    return "almost";
+  }
 
-  if (colMatch && rowMatch) return "correct";
-  if (colMatch && !rowMatch) return "almost";
-  return "wrong";
+  // Column count check
+  if (userResult.columns.length !== referenceResult.columns.length) {
+    return "wrong";
+  }
+
+  // Normalize column names
+  const normalizeColumn = (col) =>
+    String(col).trim().toLowerCase();
+
+  const userCols = userResult.columns.map(normalizeColumn).sort();
+  const refCols = referenceResult.columns.map(normalizeColumn).sort();
+
+  // Column names mismatch
+  if (JSON.stringify(userCols) !== JSON.stringify(refCols)) {
+    return "wrong";
+  }
+
+  // Normalize values
+  const normalizeValue = (v) => {
+    if (v === null || v === undefined) return "null";
+
+    // Handle numbers
+    if (!isNaN(v) && v !== "") {
+      return Number(v).toFixed(2);
+    }
+
+    return String(v).trim().toLowerCase();
+  };
+
+  // Normalize rows independent of column order
+  const normalizeRows = (result) => {
+    return result.values
+      .map((row) =>
+        row.map(normalizeValue).sort().join("|")
+      )
+      .sort()
+      .join("\n");
+  };
+
+  const userNormalized = normalizeRows(userResult);
+  const refNormalized = normalizeRows(referenceResult);
+
+  if (userNormalized === refNormalized) {
+    return "correct";
+  }
+
+  return "almost";
 }
 
 export default function SQLBasicsPage() {
@@ -63,15 +78,12 @@ export default function SQLBasicsPage() {
   const location = useLocation();
   const editorRef = useRef(null);
   const startTimeRef = useRef(Date.now());
+  const selectedItemRef = useRef(null);
 
-  // FIX #4: Use a ref for runCount so runQuery always has the latest value
+
   const runCountRef = useRef(0);
   const [runCountDisplay, setRunCountDisplay] = useState(0);
-
-  // FIX #3: communityFeed moved into state so updates trigger re-renders
-  //const [communityFeed, setCommunityFeed] = useState([]);
-  const [setCommunityFeed] = useState([]);
-
+  const [, setCommunityFeed] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
   const [selectedProblem, setSelectedProblem] = useState(SQL_INTERMEDIATE_PROBLEMS[0]);
   const [query, setQuery] = useState(SQL_INTERMEDIATE_PROBLEMS[0].starterQuery);
@@ -79,33 +91,23 @@ export default function SQLBasicsPage() {
   const [error, setError] = useState(null);
   const [db, setDb] = useState(null);
   const [dbReady, setDbReady] = useState(false);
-  const [validationStatus, setValidationStatus] = useState(null);
   const [solvedIds, setSolvedIds] = useState(new Set());
   const [isGuest, setIsGuest] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-
-  // Community post modal
   const [showModal, setShowModal] = useState(false);
   const [modalComment, setModalComment] = useState("");
   const [postSuccess, setPostSuccess] = useState(false);
+  const [validationStatus, setValidationStatus] = useState(null);
 
-  // FIX #2: Keep a ref to query so Monaco onMount always calls the latest runQuery
   const queryRef = useRef(query);
-  useEffect(() => {
-    queryRef.current = query;
-  }, [query]);
+  useEffect(() => { queryRef.current = query; }, [query]);
 
-  // Keep a ref to selectedProblem for use inside runQuery without stale closure
   const selectedProblemRef = useRef(selectedProblem);
-  useEffect(() => {
-    selectedProblemRef.current = selectedProblem;
-  }, [selectedProblem]);
+  useEffect(() => { selectedProblemRef.current = selectedProblem; }, [selectedProblem]);
 
   const dbRef = useRef(db);
-  useEffect(() => {
-    dbRef.current = db;
-  }, [db]);
+  useEffect(() => { dbRef.current = db; }, [db]);
 
   useEffect(() => {
     const initDb = async () => {
@@ -115,11 +117,52 @@ export default function SQLBasicsPage() {
           locateFile: () => `${process.env.PUBLIC_URL}/sql-wasm.wasm`,
         });
         const database = new SQL.Database();
-        database.run(SAMPLE_DATA);
+
+        const tables = [
+          { name: "customers", columns: ["customer_id","customer_name","email","phone","city","state","country","postal_code","created_date","activated_date","last_login_date","last_order_date","status","customer_type","acquisition_channel","lifetime_value","is_verified"] },
+          { name: "orders", columns: ["order_id","customer_id","order_date","order_status","payment_status","delivery_partner_id","subtotal_amount","tax_amount","discount_amount","delivery_fee","total_amount","currency","estimated_delivery_time","delivered_date","cancelled_date","cancellation_reason"] },
+          { name: "order_items", columns: ["order_item_id","order_id","product_id","quantity","unit_price","discount_amount","tax_amount","total_price","item_status","currency"] },
+          { name: "products", columns: ["product_id","product_name","product_description","category","subcategory","brand","sku","price","cost_price","currency","is_active"] },
+          { name: "payments", columns: ["payment_id","order_id","payment_method","payment_provider","transaction_reference","payment_status","amount","currency","refund_amount","refund_date","failure_reason","payment_date","attempt_number"] },
+          { name: "delivery_partners", columns: ["delivery_partner_id","partner_name","phone","vehicle_type","vehicle_number","city","status","joining_date","last_active_date","rating","total_deliveries"] },
+          { name: "feedback", columns: ["feedback_id","customer_id","order_id","rating","review_text","feedback_channel","issue_category"] },
+        ];
+
+        for (const table of tables) {
+          const { data, error } = await supabase
+            .from(table.name)
+            .select(table.columns.join(","))
+            .limit(500);
+
+          if (error || !data || data.length === 0) continue;
+
+          const colDefs = table.columns.map(c => `"${c}" TEXT`).join(", ");
+          database.run(`CREATE TABLE IF NOT EXISTS ${table.name} (${colDefs});`);
+
+          const batchSize = 50;
+          for (let i = 0; i < data.length; i += batchSize) {
+            const batch = data.slice(i, i + batchSize);
+            const placeholders = batch.map(() =>
+              `(${table.columns.map(() => "?").join(",")})`
+            ).join(",");
+            const values = batch.flatMap(row =>
+              table.columns.map(col => {
+                const val = row[col];
+                if (val === null || val === undefined) return null;
+                return String(val);
+              })
+            );
+            database.run(
+              `INSERT INTO ${table.name} (${table.columns.map(c => `"${c}"`).join(",")}) VALUES ${placeholders}`,
+              values
+            );
+          }
+        }
+
         setDb(database);
         setDbReady(true);
       } catch (err) {
-        console.error("SQL.js init failed:", err);
+        console.error("SQL.js failed to load:", err);
       }
     };
     initDb();
@@ -132,26 +175,55 @@ export default function SQLBasicsPage() {
         setIsGuest(true);
         return;
       }
-
       const userId = sessionData.session.user.id;
-
       const { data, error } = await supabase
         .from("submissions")
         .select("problem_id")
         .eq("user_id", userId)
         .eq("category", "sql_intermediate")
         .eq("status", "correct");
-
       if (error || !data) return;
-
       const ids = new Set(data.map((row) => row.problem_id));
       setSolvedIds(ids);
     };
-
     fetchSolvedProblems();
   }, []);
 
-  // FIX #2 + #4: runQuery uses refs so it's always fresh, wrapped in useCallback
+  async function updateStreak(userId) {
+    const today = new Date().toISOString().split("T")[0];
+    const { data: existing } = await supabase
+      .from("user_streaks")
+      .select("*")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (!existing) {
+      await supabase.from("user_streaks").insert({
+        user_id: userId,
+        current_streak: 1,
+        longest_streak: 1,
+        last_solved_date: today,
+      });
+      return;
+    }
+
+    if (existing.last_solved_date === today) return;
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split("T")[0];
+
+    const newStreak = existing.last_solved_date === yesterdayStr
+      ? (existing.current_streak || 0) + 1
+      : 1;
+
+    await supabase.from("user_streaks").update({
+      current_streak: newStreak,
+      longest_streak: Math.max(newStreak, existing.longest_streak || 0),
+      last_solved_date: today,
+    }).eq("user_id", userId);
+  }
+
   const runQuery = useCallback(async () => {
     const currentDb = dbRef.current;
     const currentQuery = queryRef.current;
@@ -160,35 +232,43 @@ export default function SQLBasicsPage() {
     if (!currentDb) return;
     setError(null);
     setResults(null);
-    setValidationStatus(null);
 
     try {
       const res = currentDb.exec(currentQuery);
       if (res.length === 0) {
-        setError("Query executed (no rows returned). Check your query logic.");
+        setError("Query executed but returned no rows. Check your logic.");
         return;
       }
-
+    
       const resultData = res[0];
       setResults(resultData);
-
-      // FIX #4: Increment via ref to avoid stale closure
+    
       runCountRef.current += 1;
       const newRunCount = runCountRef.current;
       setRunCountDisplay(newRunCount);
-
-      const status = validateResults(resultData, currentProblem);
-      setValidationStatus(status);
-
-      if (status === "correct") {
-        setSolvedIds((prev) => new Set([...prev, currentProblem.id]));
+    
+      // Run reference solution and validate
+      let status = "attempted";
+      if (currentProblem.solutionQuery) {
+        try {
+          const ref = currentDb.exec(currentProblem.solutionQuery);
+          if (ref.length > 0) {
+            status = validateResults(resultData, ref[0]);
+            setValidationStatus(status);
+            if (status === "correct") {
+              setSolvedIds(prev => new Set([...prev, currentProblem.id]));
+            }
+          }
+        } catch (_) {
+          // solution query failed silently — dont block user
+        }
       }
-
-      // Supabase: save submission if logged in
+    
+      // Save to Supabase
       const { data: sessionData } = await supabase.auth.getSession();
       if (sessionData?.session) {
         const userId = sessionData.session.user.id;
-
+    
         const { data: existing } = await supabase
           .from("submissions")
           .select("id, status")
@@ -196,23 +276,22 @@ export default function SQLBasicsPage() {
           .eq("problem_id", currentProblem.id)
           .eq("category", "sql_intermediate")
           .maybeSingle();
-
-        if (existing?.status === "correct" && status !== "correct") return;
-
+    
+        // Never overwrite correct with worse
+        if (existing?.status === "correct" && status !== "correct") {
+          await updateStreak(userId);
+          return;
+        }
+    
         if (existing) {
-          await supabase
-            .from("submissions")
-            .update({
-              query: currentQuery,
-              status,
-              run_count: newRunCount,
-              is_best_attempt: status === "correct",
-              time_taken_seconds: Math.floor(
-                (Date.now() - startTimeRef.current) / 1000
-              ),
-              updated_at: new Date().toISOString(),
-            })
-            .eq("id", existing.id);
+          await supabase.from("submissions").update({
+            query: currentQuery,
+            status,
+            run_count: newRunCount,
+            is_best_attempt: status === "correct",
+            time_taken_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
+            updated_at: new Date().toISOString(),
+          }).eq("id", existing.id);
         } else {
           await supabase.from("submissions").insert({
             user_id: userId,
@@ -223,18 +302,17 @@ export default function SQLBasicsPage() {
             status,
             run_count: newRunCount,
             is_best_attempt: status === "correct",
-            time_taken_seconds: Math.floor(
-              (Date.now() - startTimeRef.current) / 1000
-            ),
+            time_taken_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
           });
         }
+    
+        await updateStreak(userId);
       }
     } catch (err) {
       setError(err.message);
     }
-  }, []); // stable — reads everything from refs
+  }, []);
 
-  // FIX #5: handleSelectProblem wrapped in useCallback so it can safely go in deps
   const handleSelectProblem = useCallback((p) => {
     startTimeRef.current = Date.now();
     runCountRef.current = 0;
@@ -244,32 +322,26 @@ export default function SQLBasicsPage() {
     setResults(null);
     setError(null);
     setValidationStatus(null);
-    navigate(`/sql/intermediate/${p.id}`); // ADD THIS LINE
-  }, [navigate]); // also add `navigate` to the deps array
+    navigate(`/sql/intermediate/${p.id}`);
+  }, [navigate]);
 
   const handleToggleExpand = (id) => {
     setExpandedId((prev) => (prev === id ? null : id));
   };
 
-  // FIX #5: handleSelectProblem is now stable so it's safe in deps
   useEffect(() => {
     const incoming = location.state || {};
     if (incoming.searchQuery) {
       setSearchInput(incoming.searchQuery);
       setSearchTerm(incoming.searchQuery);
     }
-  
     if (incoming.focusProblemId !== undefined) {
-      // Priority 1: came from another page with state (e.g. search)
-      const targetProblem = SQL_INTERMEDIATE_PROBLEMS.find(
-        (p) => p.id === incoming.focusProblemId
-      );
+      const targetProblem = SQL_INTERMEDIATE_PROBLEMS.find((p) => p.id === incoming.focusProblemId);
       if (targetProblem) {
         handleSelectProblem(targetProblem);
         setExpandedId(targetProblem.id);
       }
     } else {
-      // Priority 2: direct URL like /sql/basics/12
       const pathParts = location.pathname.split("/");
       const idFromUrl = parseInt(pathParts[pathParts.length - 1]);
       if (!isNaN(idFromUrl)) {
@@ -282,35 +354,46 @@ export default function SQLBasicsPage() {
     }
   }, [location.state, location.pathname, handleSelectProblem]);
 
+  useEffect(() => {
+    if (selectedItemRef.current) {
+      selectedItemRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [selectedProblem]);
+
   const handlePostCommunity = () => {
     setShowModal(true);
     setModalComment("");
     setPostSuccess(false);
   };
 
-  const submitPost = () => {
-    const post = {
+  const submitPost = async () => {
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (sessionData?.session) {
+      const userId = sessionData.session.user.id;
+      await supabase.from("submissions").upsert({
+        user_id: userId,
+        problem_id: selectedProblem.id,
+        category: "sql_intermediate",
+        problem_title: selectedProblem.title,
+        query: query,
+        status: "attempted",
+        is_best_attempt: true,
+        comment: modalComment,
+        run_count: runCountRef.current,
+        time_taken_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
+      });
+    }
+    setCommunityFeed((prev) => [{
       user: "You",
       problem: selectedProblem.title,
-      category: "Basics",
+      category: "sql_intermediate",
       query: query,
       comment: modalComment,
       time: "Just now",
-    };
-
-    // FIX #3: use state setter so re-renders fire
-    setCommunityFeed((prev) => [post, ...prev]);
-
-    try {
-      const existing = JSON.parse(
-        sessionStorage.getItem("communityPosts") || "[]"
-      );
-      sessionStorage.setItem(
-        "communityPosts",
-        JSON.stringify([post, ...existing])
-      );
-    } catch (_) {}
-
+    }, ...prev]);
     setPostSuccess(true);
     setTimeout(() => setShowModal(false), 1800);
   };
@@ -325,108 +408,43 @@ export default function SQLBasicsPage() {
   }, [searchTerm]);
 
   const crossCategoryMatches = useMemo(
-    () =>
-      searchSqlProblems(searchTerm)
-        .filter((m) => m.categoryKey !== "basics")
-        .slice(0, 10),
+    () => searchSqlProblems(searchTerm).filter((m) => m.categoryKey !== "intermediate").slice(0, 10),
     [searchTerm]
   );
 
+  // ← ADD THIS BEFORE return
   const validationBanner = () => {
     if (!validationStatus) return null;
     const configs = {
       correct: {
-        bg: "#f0fdf4",
-        border: "#86efac",
-        icon: "✓",
-        iconColor: "#16a34a",
-        title: "Correct!",
-        msg: "Your output matches the expected result perfectly.",
+        bg: "#f0fdf4", border: "#86efac", icon: "✓", iconColor: "#16a34a",
+        title: "Correct!", msg: "Your output matches the expected result perfectly.",
         titleColor: "#15803d",
       },
       almost: {
-        bg: "#fffbeb",
-        border: "#fcd34d",
-        icon: "~",
-        iconColor: "#d97706",
-        title: "Almost there",
-        msg: `Your columns look right but the row count doesn't match. Expected ${selectedProblem.expectedRowCount} rows.`,
+        bg: "#fffbeb", border: "#fcd34d", icon: "~", iconColor: "#d97706",
+        title: "Almost there", msg: "Your result structure looks right but the values don't match. Check your filters or logic.",
         titleColor: "#b45309",
       },
       wrong: {
-        bg: "#fef2f2",
-        border: "#fca5a5",
-        icon: "✗",
-        iconColor: "#dc2626",
-        title: "Not quite",
-        msg: "Your result doesn't match the expected output. Re-read the description and try again.",
+        bg: "#fef2f2", border: "#fca5a5", icon: "✗", iconColor: "#dc2626",
+        title: "Not quite", msg: "Your result doesn't match. Check the number of columns and re-read the task.",
         titleColor: "#b91c1c",
       },
     };
     const c = configs[validationStatus];
     return (
-      <div
-        style={{
-          background: c.bg,
-          border: `1px solid ${c.border}`,
-          borderRadius: "10px",
-          padding: "0.875rem 1rem",
-          marginBottom: "1rem",
-          display: "flex",
-          gap: "10px",
-          alignItems: "flex-start",
-        }}
-      >
-        <div
-          style={{
-            width: "24px",
-            height: "24px",
-            borderRadius: "50%",
-            background: c.iconColor,
-            color: "#fff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "0.75rem",
-            fontWeight: 700,
-            flexShrink: 0,
-          }}
-        >
+      <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: "10px", padding: "0.875rem 1rem", marginBottom: "1rem", display: "flex", gap: "10px", alignItems: "flex-start" }}>
+        <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: c.iconColor, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 700, flexShrink: 0 }}>
           {c.icon}
         </div>
         <div>
-          <div
-            style={{
-              fontSize: "0.85rem",
-              fontWeight: 700,
-              color: c.titleColor,
-            }}
-          >
-            {c.title}
-          </div>
-          <div
-            style={{
-              fontSize: "0.8rem",
-              color: "#475569",
-              marginTop: "2px",
-            }}
-          >
-            {c.msg}
-          </div>
+          <div style={{ fontSize: "0.85rem", fontWeight: 700, color: c.titleColor }}>{c.title}</div>
+          <div style={{ fontSize: "0.8rem", color: "#475569", marginTop: "2px" }}>{c.msg}</div>
           {validationStatus === "correct" && (
             <button
               onClick={handlePostCommunity}
-              style={{
-                marginTop: "0.5rem",
-                fontSize: "0.78rem",
-                color: "#2563eb",
-                background: "#eff6ff",
-                border: "1px solid #bfdbfe",
-                borderRadius: "6px",
-                padding: "4px 12px",
-                cursor: "pointer",
-                fontWeight: 600,
-              }}
+              style={{ marginTop: "0.5rem", fontSize: "0.78rem", color: "#2563eb", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "6px", padding: "4px 12px", cursor: "pointer", fontWeight: 600 }}
             >
               🎉 Share to Community
             </button>
@@ -437,172 +455,44 @@ export default function SQLBasicsPage() {
   };
 
   return (
-    <div
-      style={{
-        background: "#ffffff",
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        fontFamily: "Inter, -apple-system, sans-serif",
-        color: "#0f172a",
-        overflow: "hidden",
-      }}
-    >
+    <div style={{ background: "#ffffff", height: "100vh", display: "flex", flexDirection: "column", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a", overflow: "hidden" }}>
+
       {/* NAV */}
-      <nav
-        style={{
-          padding: "0.85rem 2rem",
-          borderBottom: "1px solid #e2e8f0",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          background: "rgba(255,255,255,0.97)",
-          flexShrink: 0,
-        }}
-      >
-        <span
-          onClick={() => navigate("/")}
-          style={{
-            fontWeight: 800,
-            cursor: "pointer",
-            fontSize: "1.1rem",
-            letterSpacing: "-0.3px",
-          }}
-        >
-          Data Rejected
-        </span>
+      <nav style={{ padding: "0.85rem 2rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.97)", flexShrink: 0 }}>
+        <span onClick={() => navigate("/")} style={{ fontWeight: 800, cursor: "pointer", fontSize: "1.1rem", letterSpacing: "-0.3px" }}>Data Rejected</span>
         <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-          <span
-            onClick={() => navigate("/home")}
-            style={{
-              cursor: "pointer",
-              color: "#64748b",
-              fontSize: "0.85rem",
-              fontWeight: 500,
-            }}
-          >
-            Home
-          </span>
-          <span
-            onClick={() => navigate("/profile")}
-            style={{
-              cursor: "pointer",
-              color: "#64748b",
-              fontSize: "0.85rem",
-              fontWeight: 500,
-            }}
-          >
-            Profile
-          </span>
-          <div
-            style={{
-              fontSize: "0.78rem",
-              color: "#16a34a",
-              background: "#f0fdf4",
-              border: "1px solid #bbf7d0",
-              borderRadius: "20px",
-              padding: "4px 12px",
-              fontWeight: 600,
-            }}
-          >
-            ✓ {solvedIds.size} / {SQL_INTERMEDIATE_PROBLEMS.length} solved
+          <span onClick={() => navigate("/home")} style={{ cursor: "pointer", color: "#64748b", fontSize: "0.85rem", fontWeight: 500 }}>Home</span>
+          <span onClick={() => navigate("/profile")} style={{ cursor: "pointer", color: "#64748b", fontSize: "0.85rem", fontWeight: 500 }}>Profile</span>
+          <div style={{ fontSize: "0.78rem", color: "#16a34a", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "20px", padding: "4px 12px", fontWeight: 600 }}>
+            ✓ {solvedIds.size} / {SQL_INTERMEDIATE_PROBLEMS.length} attempted
           </div>
-          <span
-            onClick={() => navigate("/sql")}
-            style={{
-              cursor: "pointer",
-              color: "#2563eb",
-              fontSize: "0.85rem",
-              fontWeight: 600,
-            }}
-          >
-            ← Back to Practice
-          </span>
+          <span onClick={() => navigate("/sql")} style={{ cursor: "pointer", color: "#2563eb", fontSize: "0.85rem", fontWeight: 600 }}>← Back to Practice</span>
         </div>
       </nav>
 
-      {/* FIX #1: PAGE TITLE STRIP — both inner and outer divs are now properly closed */}
-      <div
-        style={{
-          background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)",
-          borderBottom: "1px solid #e2e8f0",
-          padding: "0.875rem 2rem",
-          display: "flex",
-          alignItems: "center",
-          gap: "16px",
-          flexShrink: 0,
-        }}
-      >
-        <div>
-          <h1
-            style={{
-              margin: 0,
-              fontSize: "1rem",
-              fontWeight: 800,
-              letterSpacing: "-0.3px",
-              color: "#0f172a",
-            }}
-          >
-            SQL Intermediate
-          </h1>
-        </div>
+      {/* PAGE TITLE */}
+      <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: "0.875rem 2rem", display: "flex", alignItems: "center", gap: "16px", flexShrink: 0 }}>
+        <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>SQL Intermediate</h2>
       </div>
-      {/* END PAGE TITLE STRIP */}
 
       {/* MAIN SPLIT */}
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+
         {/* LEFT PANEL */}
-        <div
-          style={{
-            width: "340px",
-            minWidth: "300px",
-            borderRight: "1px solid #e2e8f0",
-            overflowY: "auto",
-            background: "#f8fafc",
-            flexShrink: 0,
-          }}
-        >
+        <div style={{ width: "340px", minWidth: "300px", borderRight: "1px solid #e2e8f0", overflowY: "auto", background: "#f8fafc", flexShrink: 0 }}>
           <div style={{ padding: "1rem 1rem 0.5rem" }}>
-            <span
-              style={{
-                fontSize: "0.68rem",
-                color: "#64748b",
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.06em",
-              }}
-            >
-              Questions
-            </span>
+            <span style={{ fontSize: "0.68rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Questions</span>
             <div style={{ marginTop: "0.65rem", display: "flex", gap: "8px" }}>
               <input
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") setSearchTerm(searchInput.trim());
-                }}
+                onKeyDown={(e) => { if (e.key === "Enter") setSearchTerm(searchInput.trim()); }}
                 placeholder="Search SQL topics (joins, window...)"
-                style={{
-                  flex: 1,
-                  fontSize: "0.75rem",
-                  border: "1px solid #cbd5e1",
-                  borderRadius: "8px",
-                  padding: "7px 9px",
-                  outline: "none",
-                }}
+                style={{ flex: 1, fontSize: "0.75rem", border: "1px solid #cbd5e1", borderRadius: "8px", padding: "7px 9px", outline: "none" }}
               />
               <button
                 onClick={() => setSearchTerm(searchInput.trim())}
-                style={{
-                  fontSize: "0.75rem",
-                  border: "1px solid #bfdbfe",
-                  color: "#2563eb",
-                  background: "#eff6ff",
-                  borderRadius: "8px",
-                  padding: "7px 10px",
-                  cursor: "pointer",
-                  fontWeight: 600,
-                }}
+                style={{ fontSize: "0.75rem", border: "1px solid #bfdbfe", color: "#2563eb", background: "#eff6ff", borderRadius: "8px", padding: "7px 10px", cursor: "pointer", fontWeight: 600 }}
               >
                 Search
               </button>
@@ -610,24 +500,9 @@ export default function SQLBasicsPage() {
           </div>
 
           {!!searchTerm && (
-            <div
-              style={{
-                margin: "0 0.75rem 0.5rem",
-                background: "#eff6ff",
-                border: "1px solid #bfdbfe",
-                borderRadius: "10px",
-                padding: "0.625rem 0.75rem",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "0.72rem",
-                  color: "#1d4ed8",
-                  fontWeight: 700,
-                  marginBottom: "4px",
-                }}
-              >
-                Results: {filteredProblems.length} in Basics
+            <div style={{ margin: "0 0.75rem 0.5rem", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "10px", padding: "0.625rem 0.75rem" }}>
+              <div style={{ fontSize: "0.72rem", color: "#1d4ed8", fontWeight: 700, marginBottom: "4px" }}>
+                Results: {filteredProblems.length} in Intermediate
               </div>
               {crossCategoryMatches.length > 0 && (
                 <div style={{ fontSize: "0.72rem", color: "#475569" }}>
@@ -635,25 +510,8 @@ export default function SQLBasicsPage() {
                   {crossCategoryMatches.map((m, i) => (
                     <button
                       key={`${m.categoryKey}-${m.problem.id}-${i}`}
-                      onClick={() =>
-                        navigate(m.route, {
-                          state: {
-                            searchQuery: searchTerm,
-                            focusProblemId: m.problem.id,
-                          },
-                        })
-                      }
-                      style={{
-                        marginLeft: "6px",
-                        marginTop: "6px",
-                        border: "1px solid #cbd5e1",
-                        background: "#fff",
-                        color: "#334155",
-                        borderRadius: "999px",
-                        padding: "3px 8px",
-                        fontSize: "0.68rem",
-                        cursor: "pointer",
-                      }}
+                      onClick={() => navigate(m.route, { state: { searchQuery: searchTerm, focusProblemId: m.problem.id } })}
+                      style={{ marginLeft: "6px", marginTop: "6px", border: "1px solid #cbd5e1", background: "#fff", color: "#334155", borderRadius: "999px", padding: "3px 8px", fontSize: "0.68rem", cursor: "pointer" }}
                     >
                       {m.problem.title} ({m.categoryLabel})
                     </button>
@@ -667,268 +525,62 @@ export default function SQLBasicsPage() {
             const isSelected = selectedProblem.id === p.id;
             const isExpanded = expandedId === p.id;
             const isSolved = solvedIds.has(p.id);
-            const isLocked = isGuest && p.id > 10;
+            const isLocked = isGuest && p.id > 10;  // TODO: Change this to the number of intermediate problems when we have more problems
 
             return (
               <div
                 key={p.id}
-                style={{
-                  margin: "0 0.75rem 0.5rem",
-                  background: "#ffffff",
-                  border: "1.5px solid",
-                  borderColor: isSelected ? "#2563eb" : "#e2e8f0",
-                  borderRadius: "10px",
-                  overflow: "hidden",
-                  transition: "border-color 0.15s",
-                  boxShadow: isSelected
-                    ? "0 0 0 3px rgba(37,99,235,0.08)"
-                    : "none",
-                }}
+                ref={isSelected ? selectedItemRef : null}
+                style={{ margin: "0 0.75rem 0.5rem", background: "#ffffff", border: "1.5px solid", borderColor: isSelected ? "#2563eb" : "#e2e8f0", borderRadius: "10px", overflow: "hidden", transition: "border-color 0.15s", boxShadow: isSelected ? "0 0 0 3px rgba(37,99,235,0.08)" : "none" }}
               >
                 <div
-onClick={() => {   // ← fixed
-  handleSelectProblem(p);
-  handleToggleExpand(p.id);
-  if (!isLocked && editorRef.current) editorRef.current.focus();
-}}
-                  style={{
-                    padding: "0.75rem 0.875rem",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
+                  onClick={() => {
+                    handleSelectProblem(p);
+                    handleToggleExpand(p.id);
+                    if (!isLocked && editorRef.current) editorRef.current.focus();
                   }}
+                  style={{ padding: "0.75rem 0.875rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
                 >
-                  <div
-                    style={{
-                      width: "22px",
-                      height: "22px",
-                      borderRadius: "50%",
-                      background: isSolved
-                        ? "#16a34a"
-                        : isSelected
-                        ? "#eff6ff"
-                        : "#f1f5f9",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "0.62rem",
-                      fontWeight: 700,
-                      color: isSolved
-                        ? "#fff"
-                        : isSelected
-                        ? "#2563eb"
-                        : "#94a3b8",
-                      flexShrink: 0,
-                    }}
-                  >
+                  <div style={{ width: "22px", height: "22px", borderRadius: "50%", background: isSolved ? "#16a34a" : isSelected ? "#eff6ff" : "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.62rem", fontWeight: 700, color: isSolved ? "#fff" : isSelected ? "#2563eb" : "#94a3b8", flexShrink: 0 }}>
                     {isSolved ? "✓" : p.id}
                   </div>
-
-                  <span
-                    style={{
-                      fontSize: "0.83rem",
-                      fontWeight: isSelected ? 700 : 500,
-                      color: isSelected ? "#0f172a" : "#334155",
-                      flex: 1,
-                      lineHeight: 1.35,
-                    }}
-                  >
+                  <span style={{ fontSize: "0.83rem", fontWeight: isSelected ? 700 : 500, color: isSelected ? "#0f172a" : "#334155", flex: 1, lineHeight: 1.35 }}>
                     {p.title}
                   </span>
-
-                  <span
-                    style={{
-                      fontSize: "0.62rem",
-                      padding: "2px 7px",
-                      borderRadius: "10px",
-                      background: diffStyle.Easy.bg,
-                      color: diffStyle.Easy.color,
-                      border: `1px solid ${diffStyle.Easy.border}`,
-                      fontWeight: 600,
-                      whiteSpace: "nowrap",
-                    }}
-                  >
+                  <span style={{ fontSize: "0.62rem", padding: "2px 7px", borderRadius: "10px", background: diffStyle.Easy.bg, color: diffStyle.Easy.color, border: `1px solid ${diffStyle.Easy.border}`, fontWeight: 600, whiteSpace: "nowrap" }}>
                     Easy
                   </span>
-
-                  <span
-                    style={{
-                      fontSize: "0.7rem",
-                      color: isExpanded ? "#2563eb" : "#94a3b8",
-                      transform: isExpanded
-                        ? "rotate(180deg)"
-                        : "rotate(0deg)",
-                      transition: "transform 0.2s",
-                      lineHeight: 1,
-                    }}
-                  >
+                  <span style={{ fontSize: "0.7rem", color: isExpanded ? "#2563eb" : "#94a3b8", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", lineHeight: 1 }}>
                     ▾
                   </span>
                 </div>
 
                 {isExpanded && (
-                  <div
-                    style={{
-                      borderTop: "1px solid #f1f5f9",
-                      padding: "0.875rem",
-                      background: "#fafbfc",
-                    }}
-                  >
+                  <div style={{ borderTop: "1px solid #f1f5f9", padding: "0.875rem", background: "#fafbfc" }}>
                     <div style={{ marginBottom: "0.875rem" }}>
-                      <div
-                        style={{
-                          fontSize: "0.67rem",
-                          fontWeight: 700,
-                          color: "#94a3b8",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                          marginBottom: "4px",
-                        }}
-                      >
-                        Task
-                      </div>
-                      <p
-                        style={{
-                          margin: 0,
-                          fontSize: "0.8rem",
-                          color: "#0f172a",
-                          lineHeight: 1.6,
-                          fontWeight: 500,
-                        }}
-                      >
-                        {p.description}
-                      </p>
+                      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Task</div>
+                      <p style={{ margin: 0, fontSize: "0.8rem", color: "#0f172a", lineHeight: 1.6, fontWeight: 500 }}>{p.description}</p>
                     </div>
-
                     <div style={{ marginBottom: "0.875rem" }}>
-                      <div
-                        style={{
-                          fontSize: "0.67rem",
-                          fontWeight: 700,
-                          color: "#94a3b8",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                          marginBottom: "4px",
-                        }}
-                      >
-                        Explanation
-                      </div>
-                      <p
-                        style={{
-                          margin: 0,
-                          fontSize: "0.78rem",
-                          color: "#475569",
-                          lineHeight: 1.65,
-                        }}
-                      >
-                        {p.explanation}
-                      </p>
+                      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Explanation</div>
+                      <p style={{ margin: 0, fontSize: "0.78rem", color: "#475569", lineHeight: 1.65 }}>{p.explanation}</p>
                     </div>
-
-                    <div
-                      style={{
-                        background: "#eff6ff",
-                        border: "1px solid #bfdbfe",
-                        borderRadius: "8px",
-                        padding: "0.625rem 0.75rem",
-                        marginBottom: "0.875rem",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: "0.67rem",
-                          fontWeight: 700,
-                          color: "#1d4ed8",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                          marginBottom: "3px",
-                        }}
-                      >
-                        Real-world scenario
-                      </div>
-                      <p
-                        style={{
-                          margin: 0,
-                          fontSize: "0.78rem",
-                          color: "#1e40af",
-                          lineHeight: 1.6,
-                        }}
-                      >
-                        {p.scenario}
-                      </p>
+                    <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "8px", padding: "0.625rem 0.75rem", marginBottom: "0.875rem" }}>
+                      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "3px" }}>Real-world scenario</div>
+                      <p style={{ margin: 0, fontSize: "0.78rem", color: "#1e40af", lineHeight: 1.6 }}>{p.scenario}</p>
                     </div>
-
                     <div style={{ marginBottom: "0.875rem" }}>
-                      <div
-                        style={{
-                          fontSize: "0.67rem",
-                          fontWeight: 700,
-                          color: "#94a3b8",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                          marginBottom: "5px",
-                        }}
-                      >
-                        Common use cases
-                      </div>
+                      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "5px" }}>Common use cases</div>
                       {p.useCases.map((uc, i) => (
-                        <div
-                          key={i}
-                          style={{
-                            display: "flex",
-                            gap: "6px",
-                            alignItems: "flex-start",
-                            marginBottom: "3px",
-                          }}
-                        >
-                          <span
-                            style={{
-                              color: "#2563eb",
-                              fontSize: "0.7rem",
-                              marginTop: "2px",
-                            }}
-                          >
-                            →
-                          </span>
-                          <span
-                            style={{
-                              fontSize: "0.77rem",
-                              color: "#475569",
-                              lineHeight: 1.5,
-                            }}
-                          >
-                            {uc}
-                          </span>
+                        <div key={i} style={{ display: "flex", gap: "6px", alignItems: "flex-start", marginBottom: "3px" }}>
+                          <span style={{ color: "#2563eb", fontSize: "0.7rem", marginTop: "2px" }}>→</span>
+                          <span style={{ fontSize: "0.77rem", color: "#475569", lineHeight: 1.5 }}>{uc}</span>
                         </div>
                       ))}
                     </div>
-
                     <details>
-                      <summary
-                        style={{
-                          fontSize: "0.78rem",
-                          color: "#2563eb",
-                          fontWeight: 600,
-                          cursor: "pointer",
-                          listStyle: "none",
-                        }}
-                      >
-                        💡 Show hint
-                      </summary>
-                      <div
-                        style={{
-                          marginTop: "6px",
-                          padding: "0.5rem 0.625rem",
-                          background: "#fffbeb",
-                          border: "1px solid #fde68a",
-                          borderRadius: "6px",
-                          fontSize: "0.78rem",
-                          color: "#92400e",
-                          lineHeight: 1.6,
-                          fontFamily: "monospace",
-                        }}
-                      >
+                      <summary style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", listStyle: "none" }}>💡 Show hint</summary>
+                      <div style={{ marginTop: "6px", padding: "0.5rem 0.625rem", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "6px", fontSize: "0.78rem", color: "#92400e", lineHeight: 1.6, fontFamily: "monospace" }}>
                         {p.hint}
                       </div>
                     </details>
@@ -937,439 +589,122 @@ onClick={() => {   // ← fixed
               </div>
             );
           })}
-
           <div style={{ height: "1.5rem" }} />
         </div>
 
         {/* RIGHT PANEL */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-            background: "#ffffff",
-          }}
-        >
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "#ffffff" }}>
           {selectedProblem.id > 10 && isGuest ? (
-            /* LOCK SCREEN */
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "2rem",
-              }}
-            >
+            <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
               <div style={{ textAlign: "center", maxWidth: "360px" }}>
-                <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>
-                  🔒
-                </div>
-                <h3
-                  style={{
-                    fontSize: "1.2rem",
-                    fontWeight: 800,
-                    color: "#0f172a",
-                    margin: "0 0 0.5rem",
-                  }}
-                >
-                  Sign in to unlock this problem
-                </h3>
-                <p
-                  style={{
-                    fontSize: "0.88rem",
-                    color: "#64748b",
-                    lineHeight: 1.7,
-                    marginBottom: "1.5rem",
-                  }}
-                >
-                  You've explored the first 10 problems. Sign up free to access
-                  all {SQL_INTERMEDIATE_PROBLEMS.length} SQL problems and save your progress.
+                <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🔒</div>
+                <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.5rem" }}>Sign in to unlock this problem</h3>
+                <p style={{ fontSize: "0.88rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>
+                  You've explored the first 10 problems. Sign up free to access all {SQL_INTERMEDIATE_PROBLEMS.length} SQL problems and save your progress.
                 </p>
-                <button
-                  onClick={() => navigate("/signup")}
-                  style={{
-                    width: "100%",
-                    padding: "11px",
-                    borderRadius: "8px",
-                    background: "#2563eb",
-                    color: "#fff",
-                    fontWeight: 700,
-                    fontSize: "0.88rem",
-                    border: "none",
-                    cursor: "pointer",
-                    marginBottom: "8px",
-                  }}
-                >
+                <button onClick={() => navigate("/signup")} style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer", marginBottom: "8px" }}>
                   Sign Up Free →
                 </button>
-                <button
-                  onClick={() => navigate("/login")}
-                  style={{
-                    width: "100%",
-                    padding: "11px",
-                    borderRadius: "8px",
-                    background: "#ffffff",
-                    color: "#2563eb",
-                    fontWeight: 600,
-                    fontSize: "0.88rem",
-                    border: "1.5px solid #bfdbfe",
-                    cursor: "pointer",
-                  }}
-                >
+                <button onClick={() => navigate("/login")} style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.88rem", border: "1.5px solid #bfdbfe", cursor: "pointer" }}>
                   Already have an account? Sign in
                 </button>
               </div>
             </div>
           ) : (
-            /* NORMAL CONTENT */
             <>
               {/* Problem Header */}
-              <div
-                style={{
-                  padding: "1.25rem 1.75rem 1rem",
-                  borderBottom: "1px solid #f1f5f9",
-                  flexShrink: 0,
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    justifyContent: "space-between",
-                  }}
-                >
+              <div style={{ padding: "1.25rem 1.75rem 1rem", borderBottom: "1px solid #f1f5f9", flexShrink: 0 }}>
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
                   <div>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "8px",
-                        alignItems: "center",
-                        marginBottom: "6px",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: "0.7rem",
-                          padding: "3px 10px",
-                          borderRadius: "10px",
-                          background: "#f0fdf4",
-                          color: "#16a34a",
-                          border: "1px solid #bbf7d0",
-                          fontWeight: 600,
-                        }}
-                      >
-                        Easy
-                      </span>
-                      <span
-                        style={{ fontSize: "0.7rem", color: "#94a3b8" }}
-                      >
-                        #{selectedProblem.id}
-                      </span>
+                    <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "6px" }}>
+                      <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", fontWeight: 600 }}>Intermediate</span>
+                      <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>#{selectedProblem.id}</span>
                       {solvedIds.has(selectedProblem.id) && (
-                        <span
-                          style={{
-                            fontSize: "0.7rem",
-                            padding: "3px 10px",
-                            borderRadius: "10px",
-                            background: "#f0fdf4",
-                            color: "#16a34a",
-                            fontWeight: 600,
-                          }}
-                        >
-                          ✓ Solved
-                        </span>
+                        <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", fontWeight: 600 }}>✓ Attempted</span>
                       )}
                     </div>
-                    <h2
-                      style={{
-                        margin: 0,
-                        fontSize: "1.2rem",
-                        fontWeight: 800,
-                        letterSpacing: "-0.3px",
-                        color: "#0f172a",
-                      }}
-                    >
-                      {selectedProblem.title}
-                    </h2>
+                    <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>{selectedProblem.title}</h2>
                   </div>
                   <button
                     onClick={handlePostCommunity}
-                    style={{
-                      padding: "8px 16px",
-                      borderRadius: "8px",
-                      background: "#ffffff",
-                      color: "#2563eb",
-                      fontWeight: 600,
-                      fontSize: "0.8rem",
-                      border: "1.5px solid #bfdbfe",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      whiteSpace: "nowrap",
-                    }}
+                    style={{ padding: "8px 16px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.8rem", border: "1.5px solid #bfdbfe", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}
                   >
                     🌐 Post to Community
                   </button>
                 </div>
-
-                <div
-                  style={{
-                    marginTop: "0.875rem",
-                    background: "#f8fafc",
-                    border: "1px solid #e2e8f0",
-                    borderLeft: "3px solid #2563eb",
-                    borderRadius: "0 8px 8px 0",
-                    padding: "0.625rem 0.875rem",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: "0.67rem",
-                      fontWeight: 700,
-                      color: "#64748b",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                      display: "block",
-                      marginBottom: "3px",
-                    }}
-                  >
-                    Task
-                  </span>
-                  <p
-                    style={{
-                      margin: 0,
-                      fontSize: "0.88rem",
-                      color: "#0f172a",
-                      lineHeight: 1.6,
-                    }}
-                  >
-                    {selectedProblem.description}
-                  </p>
+                <div style={{ marginTop: "0.875rem", background: "#f8fafc", border: "1px solid #e2e8f0", borderLeft: "3px solid #2563eb", borderRadius: "0 8px 8px 0", padding: "0.625rem 0.875rem" }}>
+                  <span style={{ fontSize: "0.67rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "3px" }}>Task</span>
+                  <p style={{ margin: 0, fontSize: "0.88rem", color: "#0f172a", lineHeight: 1.6 }}>{selectedProblem.description}</p>
                 </div>
               </div>
 
-              {/* Scrollable editor + results */}
-              <div
-                style={{
-                  flex: 1,
-                  overflowY: "auto",
-                  padding: "1.25rem 1.75rem",
-                }}
-              >
-                {validationBanner()}
+              {/* Editor + Results */}
+              <div style={{ flex: 1, overflowY: "auto", padding: "1.25rem 1.75rem" }}>
+              {validationBanner()}
 
                 {/* Editor */}
-                <div
-                  style={{
-                    border: "1.5px solid #e2e8f0",
-                    borderRadius: "12px",
-                    overflow: "hidden",
-                    marginBottom: "1rem",
-                  }}
-                >
-                  <div
-                    style={{
-                      background: "#f8fafc",
-                      padding: "0.625rem 1rem",
-                      borderBottom: "1px solid #e2e8f0",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "8px",
-                        alignItems: "center",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: "0.7rem",
-                          background: "#e2e8f0",
-                          color: "#0f172a",
-                          padding: "3px 9px",
-                          borderRadius: "20px",
-                          fontWeight: 700,
-                        }}
-                      >
-                        SQL
-                      </span>
-                      <span
-                        style={{ fontSize: "0.72rem", color: "#94a3b8" }}
-                      >
-                        Ctrl+Enter to run
-                      </span>
+                <div style={{ border: "1.5px solid #e2e8f0", borderRadius: "12px", overflow: "hidden", marginBottom: "1rem" }}>
+                  <div style={{ background: "#f8fafc", padding: "0.625rem 1rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                      <span style={{ fontSize: "0.7rem", background: "#e2e8f0", color: "#0f172a", padding: "3px 9px", borderRadius: "20px", fontWeight: 700 }}>SQL</span>
+                      <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>Ctrl+Enter to run</span>
                     </div>
                     <div style={{ display: "flex", gap: "8px" }}>
                       <button
-                        onClick={() => {
-                          setQuery(selectedProblem.starterQuery);
-                          setResults(null);
-                          setError(null);
-                          setValidationStatus(null);
-                        }}
-                        style={{
-                          fontSize: "0.75rem",
-                          color: "#64748b",
-                          background: "transparent",
-                          border: "1px solid #e2e8f0",
-                          borderRadius: "6px",
-                          padding: "4px 10px",
-                          cursor: "pointer",
-                        }}
+                        onClick={() => { setQuery(selectedProblem.starterQuery); setResults(null); setError(null); }}
+                        style={{ fontSize: "0.75rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 10px", cursor: "pointer" }}
                       >
                         Reset
                       </button>
                       <button
                         onClick={runQuery}
                         disabled={!dbReady}
-                        style={{
-                          padding: "6px 18px",
-                          borderRadius: "6px",
-                          background: dbReady ? "#2563eb" : "#94a3b8",
-                          color: "#fff",
-                          fontWeight: 700,
-                          fontSize: "0.8rem",
-                          border: "none",
-                          cursor: dbReady ? "pointer" : "not-allowed",
-                        }}
+                        style={{ padding: "6px 18px", borderRadius: "6px", background: dbReady ? "#2563eb" : "#94a3b8", color: "#fff", fontWeight: 700, fontSize: "0.8rem", border: "none", cursor: dbReady ? "pointer" : "not-allowed" }}
                       >
                         {dbReady ? "▶ Run" : "Loading…"}
                       </button>
                     </div>
                   </div>
-
                   <Editor
                     height="400px"
                     language="sql"
                     value={query}
                     onChange={(value) => setQuery(value || "")}
                     theme="vs-dark"
-                    options={{
-                      fontSize: 14,
-                      minimap: { enabled: false },
-                      wordWrap: "on",
-                      scrollBeyondLastLine: false,
-                      padding: { top: 10, bottom: 10 },
-                      lineNumbers: "on",
-                    }}
+                    options={{ fontSize: 14, minimap: { enabled: false }, wordWrap: "on", scrollBeyondLastLine: false, padding: { top: 10, bottom: 10 }, lineNumbers: "on" }}
                     onMount={(editor) => {
                       editorRef.current = editor;
-                      // FIX #2: use the stable runQuery (reads query from ref internally)
-                      editor.addCommand(
-                        window.monaco.KeyMod.CtrlCmd |
-                          window.monaco.KeyCode.Enter,
-                        () => runQuery()
-                      );
+                      editor.addCommand(window.monaco.KeyMod.CtrlCmd | window.monaco.KeyCode.Enter, () => runQuery());
                     }}
                   />
                 </div>
 
                 {/* Results */}
-                <div
-                  style={{
-                    border: "1.5px solid #e2e8f0",
-                    borderRadius: "12px",
-                    overflow: "hidden",
-                  }}
-                >
-                  <div
-                    style={{
-                      background: "#f8fafc",
-                      padding: "0.625rem 1rem",
-                      borderBottom: "1px solid #e2e8f0",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: "0.7rem",
-                        fontWeight: 700,
-                        color: "#64748b",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.05em",
-                      }}
-                    >
-                      Output
-                    </span>
+                <div style={{ border: "1.5px solid #e2e8f0", borderRadius: "12px", overflow: "hidden" }}>
+                  <div style={{ background: "#f8fafc", padding: "0.625rem 1rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>Output</span>
                     {results && (
-                      <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>
-                        {results.values.length} row
-                        {results.values.length !== 1 ? "s" : ""}
-                      </span>
+                      <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>{results.values.length} row{results.values.length !== 1 ? "s" : ""}</span>
                     )}
                   </div>
-
-                  <div
-                    style={{
-                      minHeight: "120px",
-                      padding: "0.875rem 1rem",
-                      background: "#ffffff",
-                    }}
-                  >
+                  <div style={{ minHeight: "120px", padding: "0.875rem 1rem", background: "#ffffff" }}>
                     {!results && !error && (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          height: "100px",
-                          color: "#94a3b8",
-                          fontSize: "0.82rem",
-                        }}
-                      >
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100px", color: "#94a3b8", fontSize: "0.82rem" }}>
                         Run your query to see results here
                       </div>
                     )}
                     {error && (
-                      <div
-                        style={{
-                          color: "#ef4444",
-                          fontSize: "0.82rem",
-                          fontFamily: "monospace",
-                          lineHeight: 1.6,
-                          background: "#fef2f2",
-                          border: "1px solid #fca5a5",
-                          borderRadius: "8px",
-                          padding: "0.75rem",
-                        }}
-                      >
+                      <div style={{ color: "#ef4444", fontSize: "0.82rem", fontFamily: "monospace", lineHeight: 1.6, background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: "8px", padding: "0.75rem" }}>
                         {error}
                       </div>
                     )}
                     {results && (
                       <div style={{ overflowX: "auto" }}>
-                        <table
-                          style={{
-                            borderCollapse: "collapse",
-                            fontSize: "0.8rem",
-                            width: "100%",
-                          }}
-                        >
+                        <table style={{ borderCollapse: "collapse", fontSize: "0.8rem", width: "100%" }}>
                           <thead>
                             <tr>
                               {results.columns.map((col) => (
-                                <th
-                                  key={col}
-                                  style={{
-                                    textAlign: "left",
-                                    padding: "6px 12px",
-                                    color: "#64748b",
-                                    fontWeight: 600,
-                                    borderBottom: "2px solid #e2e8f0",
-                                    whiteSpace: "nowrap",
-                                    fontSize: "0.75rem",
-                                    textTransform: "uppercase",
-                                    letterSpacing: "0.03em",
-                                  }}
-                                >
+                                <th key={col} style={{ textAlign: "left", padding: "6px 12px", color: "#64748b", fontWeight: 600, borderBottom: "2px solid #e2e8f0", whiteSpace: "nowrap", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.03em" }}>
                                   {col}
                                 </th>
                               ))}
@@ -1377,23 +712,9 @@ onClick={() => {   // ← fixed
                           </thead>
                           <tbody>
                             {results.values.map((row, i) => (
-                              <tr
-                                key={i}
-                                style={{
-                                  background:
-                                    i % 2 === 0 ? "#ffffff" : "#f8fafc",
-                                }}
-                              >
+                              <tr key={i} style={{ background: i % 2 === 0 ? "#ffffff" : "#f8fafc" }}>
                                 {row.map((cell, j) => (
-                                  <td
-                                    key={j}
-                                    style={{
-                                      padding: "7px 12px",
-                                      color: "#0f172a",
-                                      borderBottom: "1px solid #f1f5f9",
-                                      whiteSpace: "nowrap",
-                                    }}
-                                  >
+                                  <td key={j} style={{ padding: "7px 12px", color: "#0f172a", borderBottom: "1px solid #f1f5f9", whiteSpace: "nowrap" }}>
                                     {cell}
                                   </td>
                                 ))}
@@ -1405,22 +726,9 @@ onClick={() => {   // ← fixed
                     )}
                   </div>
                 </div>
-
-                {/* FIX #4: use runCountDisplay (state) for rendering */}
                 {runCountDisplay > 2 && validationStatus !== "correct" && (
-                  <div
-                    style={{
-                      marginTop: "1rem",
-                      background: "#fffbeb",
-                      border: "1px solid #fde68a",
-                      borderRadius: "8px",
-                      padding: "0.75rem 1rem",
-                      fontSize: "0.8rem",
-                      color: "#92400e",
-                    }}
-                  >
-                    <strong>Stuck?</strong> Click the question on the left and
-                    expand the hint section.
+                  <div style={{ marginTop: "1rem", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "8px", padding: "0.75rem 1rem", fontSize: "0.8rem", color: "#92400e" }}>
+                    <strong>Stuck?</strong> Click the question on the left and expand the hint section.
                   </div>
                 )}
 
@@ -1434,122 +742,30 @@ onClick={() => {   // ← fixed
       {/* COMMUNITY POST MODAL */}
       {showModal && (
         <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(15,23,42,0.55)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setShowModal(false);
-          }}
+          style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}
+          onClick={(e) => { if (e.target === e.currentTarget) setShowModal(false); }}
         >
-          <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "16px",
-              padding: "1.75rem",
-              width: "480px",
-              maxWidth: "90vw",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
-            }}
-          >
+          <div style={{ background: "#ffffff", borderRadius: "16px", padding: "1.75rem", width: "480px", maxWidth: "90vw", boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}>
             {postSuccess ? (
               <div style={{ textAlign: "center", padding: "1.5rem 0" }}>
-                <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>
-                  🎉
-                </div>
-                <div
-                  style={{
-                    fontWeight: 800,
-                    fontSize: "1.1rem",
-                    color: "#0f172a",
-                  }}
-                >
-                  Posted to Community!
-                </div>
-                <div
-                  style={{
-                    fontSize: "0.85rem",
-                    color: "#64748b",
-                    marginTop: "4px",
-                  }}
-                >
-                  Your solution is now live on the community feed.
-                </div>
+                <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>🎉</div>
+                <div style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a" }}>Posted to Community!</div>
+                <div style={{ fontSize: "0.85rem", color: "#64748b", marginTop: "4px" }}>Your solution is now live on the community feed.</div>
               </div>
             ) : (
               <>
                 <div style={{ marginBottom: "1.25rem" }}>
-                  <h3
-                    style={{
-                      margin: "0 0 4px",
-                      fontSize: "1rem",
-                      fontWeight: 800,
-                      color: "#0f172a",
-                    }}
-                  >
-                    Share to Community
-                  </h3>
-                  <p
-                    style={{
-                      margin: 0,
-                      fontSize: "0.82rem",
-                      color: "#64748b",
-                    }}
-                  >
-                    Your query and comment will appear in the community feed on
-                    the main SQL practice page.
-                  </p>
+                  <h3 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: 800, color: "#0f172a" }}>Share to Community</h3>
+                  <p style={{ margin: 0, fontSize: "0.82rem", color: "#64748b" }}>Your query and comment will appear in the community feed.</p>
                 </div>
-
-                <div
-                  style={{
-                    background: "#f8fafc",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: "8px",
-                    padding: "0.625rem 0.875rem",
-                    marginBottom: "1rem",
-                    fontSize: "0.82rem",
-                    color: "#0f172a",
-                    fontWeight: 600,
-                  }}
-                >
+                <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "0.625rem 0.875rem", marginBottom: "1rem", fontSize: "0.82rem", color: "#0f172a", fontWeight: 600 }}>
                   📝 {selectedProblem.title}
                 </div>
-
-                <div
-                  style={{
-                    background: "#0f172a",
-                    borderRadius: "8px",
-                    padding: "0.75rem 1rem",
-                    marginBottom: "1rem",
-                    fontFamily: "monospace",
-                    fontSize: "0.8rem",
-                    color: "#7dd3fc",
-                    whiteSpace: "pre-wrap",
-                    maxHeight: "100px",
-                    overflowY: "auto",
-                  }}
-                >
+                <div style={{ background: "#0f172a", borderRadius: "8px", padding: "0.75rem 1rem", marginBottom: "1rem", fontFamily: "monospace", fontSize: "0.8rem", color: "#7dd3fc", whiteSpace: "pre-wrap", maxHeight: "100px", overflowY: "auto" }}>
                   {query}
                 </div>
-
                 <div style={{ marginBottom: "1.25rem" }}>
-                  <label
-                    style={{
-                      fontSize: "0.75rem",
-                      fontWeight: 700,
-                      color: "#64748b",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.04em",
-                      display: "block",
-                      marginBottom: "6px",
-                    }}
-                  >
+                  <label style={{ fontSize: "0.75rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.04em", display: "block", marginBottom: "6px" }}>
                     Add a comment (optional)
                   </label>
                   <textarea
@@ -1557,58 +773,16 @@ onClick={() => {   // ← fixed
                     onChange={(e) => setModalComment(e.target.value)}
                     placeholder="Share what you learned, a tip, or a question..."
                     rows={3}
-                    style={{
-                      width: "100%",
-                      padding: "0.625rem 0.75rem",
-                      border: "1.5px solid #e2e8f0",
-                      borderRadius: "8px",
-                      fontSize: "0.85rem",
-                      fontFamily: "Inter, sans-serif",
-                      outline: "none",
-                      resize: "none",
-                      color: "#0f172a",
-                      boxSizing: "border-box",
-                    }}
+                    style={{ width: "100%", padding: "0.625rem 0.75rem", border: "1.5px solid #e2e8f0", borderRadius: "8px", fontSize: "0.85rem", fontFamily: "Inter, sans-serif", outline: "none", resize: "none", color: "#0f172a", boxSizing: "border-box" }}
                     onFocus={(e) => (e.target.style.borderColor = "#2563eb")}
                     onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
                   />
                 </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "10px",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <button
-                    onClick={() => setShowModal(false)}
-                    style={{
-                      padding: "8px 18px",
-                      borderRadius: "8px",
-                      border: "1.5px solid #e2e8f0",
-                      background: "#ffffff",
-                      color: "#64748b",
-                      fontWeight: 600,
-                      fontSize: "0.85rem",
-                      cursor: "pointer",
-                    }}
-                  >
+                <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+                  <button onClick={() => setShowModal(false)} style={{ padding: "8px 18px", borderRadius: "8px", border: "1.5px solid #e2e8f0", background: "#ffffff", color: "#64748b", fontWeight: 600, fontSize: "0.85rem", cursor: "pointer" }}>
                     Cancel
                   </button>
-                  <button
-                    onClick={submitPost}
-                    style={{
-                      padding: "8px 22px",
-                      borderRadius: "8px",
-                      border: "none",
-                      background: "#2563eb",
-                      color: "#ffffff",
-                      fontWeight: 700,
-                      fontSize: "0.85rem",
-                      cursor: "pointer",
-                    }}
-                  >
+                  <button onClick={submitPost} style={{ padding: "8px 22px", borderRadius: "8px", border: "none", background: "#2563eb", color: "#ffffff", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer" }}>
                     Post →
                   </button>
                 </div>

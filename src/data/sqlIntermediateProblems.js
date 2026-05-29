@@ -12,6 +12,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
       starterQuery: "SELECT c.customer_name, COUNT(o.order_id) as order_count \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.customer_name \nHAVING order_count > 1;",
       expectedColumns: ["customer_name", "order_count"],
       expectedRowCount: 1,
+      solutionQuery: "SELECT c.customer_name, COUNT(o.order_id) AS order_count FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id, c.customer_name HAVING COUNT(o.order_id) > 1;",
     },
     {
       id: 2,
@@ -25,6 +26,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
       starterQuery: "SELECT order_date, amount, \nSUM(amount) OVER (ORDER BY order_date) as running_total \nFROM orders;",
       expectedColumns: ["order_date", "amount", "running_total"],
       expectedRowCount: 5,
+      solutionQuery: "SELECT order_date, total_amount, SUM(total_amount) OVER (ORDER BY order_date) AS running_total FROM orders;",
     },
     {
       id: 3,
@@ -38,6 +40,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
       starterQuery: "SELECT c.customer_name, MAX(o.amount) as max_spent \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.customer_name;",
       expectedColumns: ["customer_name", "max_spent"],
       expectedRowCount: 4,
+      solutionQuery: "SELECT c.customer_name, MAX(o.total_amount) AS max_spent FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id, c.customer_name;",
     },
     {
       id: 4,
@@ -51,6 +54,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
       starterQuery: "SELECT * FROM orders \nWHERE amount > (SELECT AVG(amount) FROM orders);",
       expectedColumns: ["order_id", "customer_id", "order_date", "amount"],
       expectedRowCount: 3,
+      solutionQuery: "SELECT order_id, customer_id, order_date, total_amount FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders);",
+
     },
     {
       id: 5,
@@ -64,6 +69,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
       starterQuery: "SELECT p.category, SUM(o.amount) as revenue \nFROM orders o \nJOIN products p ON o.order_id = p.product_id \nGROUP BY p.category \nORDER BY revenue DESC;",
       expectedColumns: ["category", "revenue"],
       expectedRowCount: 3,
+      solutionQuery: "SELECT p.category, SUM(oi.total_price) AS revenue FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.category ORDER BY revenue DESC;",
+
     },
     {
       id: 6,
@@ -77,6 +84,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
       starterQuery: "SELECT product_name, category, price, \nRANK() OVER (PARTITION BY category ORDER BY price DESC) as rank \nFROM products;",
       expectedColumns: ["product_name", "category", "price", "rank"],
       expectedRowCount: 5,
+      solutionQuery: "SELECT product_name, category, price, RANK() OVER (PARTITION BY category ORDER BY price DESC) AS rank FROM products;",
     },
     {
       id: 7,
@@ -90,6 +98,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
       starterQuery: "WITH MonthlyRev AS ( \n  SELECT strftime('%m', order_date) as month, SUM(amount) as total \n  FROM orders \n  GROUP BY month \n) \nSELECT * FROM MonthlyRev;",
       expectedColumns: ["month", "total"],
       expectedRowCount: 4,
+      solutionQuery: "WITH MonthlyRevenue AS ( SELECT strftime('%m', order_date) AS month, SUM(total_amount) AS total_revenue FROM orders GROUP BY strftime('%m', order_date) ) SELECT * FROM MonthlyRevenue;",
+
     },
     {
       id: 8,
@@ -103,6 +113,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
       starterQuery: "SELECT customer_name, email \nFROM customers \nWHERE customer_id NOT IN (SELECT customer_id FROM orders);",
       expectedColumns: ["customer_name", "email"],
       expectedRowCount: 1,
+      solutionQuery: "SELECT customer_name, email FROM customers WHERE customer_id NOT IN (SELECT customer_id FROM orders);",
     },
     {
       id: 9,
@@ -116,6 +127,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
       starterQuery: "SELECT order_id, amount, \n(amount * 100.0 / SUM(amount) OVER()) as pct_of_total \nFROM orders;",
       expectedColumns: ["order_id", "amount", "pct_of_total"],
       expectedRowCount: 5,
+      solutionQuery: "SELECT order_id, total_amount, (total_amount * 100.0 / SUM(total_amount) OVER()) AS pct_of_total FROM orders;",
     },
     {
       id: 10,
@@ -129,6 +141,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
       starterQuery: "SELECT c.customer_name, \nMIN(julianday(o.order_date) - julianday(c.signup_date)) as days_to_convert \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.customer_id;",
       expectedColumns: ["customer_name", "days_to_convert"],
       expectedRowCount: 4,
+      solutionQuery: "SELECT c.customer_name, MIN(julianday(o.order_date) - julianday(c.created_date)) AS days_to_convert FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id, c.customer_name;",
     },
         {
           id: 11,
@@ -142,6 +155,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
           starterQuery: "SELECT DISTINCT c.customer_name \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nWHERE o.order_date >= DATE('now','-30 days') \nAND c.created_date <= DATE('now','-365 days');",
           expectedColumns: ["customer_name"],
           expectedRowCount: 3,
+          solutionQuery: "SELECT DISTINCT c.customer_name FROM customers c JOIN orders o ON c.customer_id = o.customer_id WHERE o.order_date >= DATE('now','-30 days') AND c.created_date <= DATE('now','-365 days');",
         },
         {
           id: 12,
@@ -155,6 +169,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
           starterQuery: "SELECT customer_id, AVG(total_amount) as avg_order_value \nFROM orders \nGROUP BY customer_id;",
           expectedColumns: ["customer_id", "avg_order_value"],
           expectedRowCount: 5,
+          solutionQuery: "SELECT customer_id, AVG(total_amount) AS avg_order_value FROM orders GROUP BY customer_id;",
         },
         {
           id: 13,
@@ -168,6 +183,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
           starterQuery: "SELECT p.category, SUM(oi.total_price) as revenue \nFROM order_items oi \nJOIN products p ON oi.product_id = p.product_id \nGROUP BY p.category \nORDER BY revenue DESC LIMIT 1;",
           expectedColumns: ["category", "revenue"],
           expectedRowCount: 1,
+          solutionQuery: "SELECT p.category, SUM(oi.total_price) AS revenue FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.category ORDER BY revenue DESC LIMIT 1;",
         },
         {
           id: 14,
@@ -181,6 +197,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
           starterQuery: "SELECT order_id, COUNT(order_item_id) as item_count \nFROM order_items \nGROUP BY order_id \nHAVING item_count > 3;",
           expectedColumns: ["order_id", "item_count"],
           expectedRowCount: 4,
+          solutionQuery: "SELECT order_id, COUNT(order_item_id) AS item_count FROM order_items GROUP BY order_id HAVING COUNT(order_item_id) > 3;",
         },
         {
           id: 15,
@@ -194,6 +211,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
           starterQuery: "SELECT \n(COUNT(CASE WHEN payment_status = 'Success' THEN 1 END) * 100.0 / COUNT(*)) as success_rate \nFROM payments;",
           expectedColumns: ["success_rate"],
           expectedRowCount: 1,
+          solutionQuery: "SELECT (COUNT(CASE WHEN payment_status = 'Success' THEN 1 END) * 100.0 / COUNT(*)) AS success_rate FROM payments;",
         },
         {
           id: 16,
@@ -207,6 +225,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
           starterQuery: "SELECT c.customer_name, SUM(p.refund_amount) as total_refund \nFROM payments p \nJOIN orders o ON p.order_id = o.order_id \nJOIN customers c ON o.customer_id = c.customer_id \nGROUP BY c.customer_name \nORDER BY total_refund DESC;",
           expectedColumns: ["customer_name", "total_refund"],
           expectedRowCount: 5,
+          solutionQuery: "SELECT c.customer_name, SUM(p.refund_amount) AS total_refund FROM payments p JOIN orders o ON p.order_id = o.order_id JOIN customers c ON o.customer_id = c.customer_id GROUP BY c.customer_id, c.customer_name ORDER BY total_refund DESC;",
         },
         {
           id: 17,
@@ -220,6 +239,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
           starterQuery: "SELECT partner_name \nFROM delivery_partners \nWHERE last_active_date < DATE('now','-60 days');",
           expectedColumns: ["partner_name"],
           expectedRowCount: 3,
+          solutionQuery: "SELECT partner_name FROM delivery_partners WHERE last_active_date < DATE('now','-60 days');",
         },
         {
           id: 18,
@@ -233,6 +253,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
           starterQuery: "SELECT customer_id, COUNT(order_id) as total_orders, \nRANK() OVER (ORDER BY COUNT(order_id) DESC) as rank \nFROM orders \nGROUP BY customer_id;",
           expectedColumns: ["customer_id", "total_orders", "rank"],
           expectedRowCount: 5,
+          solutionQuery: "SELECT customer_id, COUNT(order_id) AS total_orders, RANK() OVER (ORDER BY COUNT(order_id) DESC) AS rank FROM orders GROUP BY customer_id;",
         },
         {
           id: 19,
@@ -246,6 +267,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
           starterQuery: "SELECT COUNT(*) as delayed_orders \nFROM orders \nWHERE delivered_date > estimated_delivery_time;",
           expectedColumns: ["delayed_orders"],
           expectedRowCount: 1,
+          solutionQuery: "SELECT COUNT(*) AS delayed_orders FROM orders WHERE delivered_date > estimated_delivery_time;",
         },
         {
           id: 20,
@@ -259,19 +281,25 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
           starterQuery: "SELECT payment_method, COUNT(*) as usage_count \nFROM payments \nGROUP BY payment_method \nORDER BY usage_count DESC LIMIT 1;",
           expectedColumns: ["payment_method", "usage_count"],
           expectedRowCount: 1,
+          solutionQuery: "SELECT payment_method, COUNT(*) AS usage_count FROM payments GROUP BY payment_method ORDER BY usage_count DESC LIMIT 1;",
         },
         {
           id: 21,
           title: "Customers with Negative Feedback",
           difficulty: "Intermediate",
           description: "Find customers who gave rating less than 3.",
-          explanation: "Joining feedback with customers provides insights into dissatisfied users.",
-          scenario: "Support team wants to reach out to unhappy customers.",
-          useCases: ["Customer support", "Churn prevention"],
+          explanation: "Joining feedback with customers helps identify dissatisfied customers and enables support teams to take corrective actions.",
+          scenario: "Customer support teams want to proactively contact unhappy customers before they churn.",
+          useCases: [
+            "Customer support",
+            "Churn prevention",
+            "Customer satisfaction analysis"
+          ],
           hint: "JOIN feedback and customers WHERE rating < 3",
           starterQuery: "SELECT c.customer_name, f.rating \nFROM feedback f \nJOIN customers c ON f.customer_id = c.customer_id \nWHERE f.rating < 3;",
           expectedColumns: ["customer_name", "rating"],
           expectedRowCount: 4,
+          solutionQuery: "SELECT c.customer_name, f.rating FROM feedback f JOIN customers c ON f.customer_id = c.customer_id WHERE f.rating < 3;",
         },
         {
           id: 22,
@@ -285,6 +313,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
           starterQuery: "SELECT AVG(julianday(delivered_date) - julianday(order_date)) as avg_delivery_days \nFROM orders;",
           expectedColumns: ["avg_delivery_days"],
           expectedRowCount: 1,
+          solutionQuery: "SELECT AVG(julianday(delivered_date) - julianday(order_date)) AS avg_delivery_days FROM orders;",
         },
         {
           id: 23,
@@ -298,6 +327,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
           starterQuery: "SELECT p.product_name \nFROM products p \nLEFT JOIN order_items oi ON p.product_id = oi.product_id \nWHERE oi.product_id IS NULL;",
           expectedColumns: ["product_name"],
           expectedRowCount: 3,
+          solutionQuery: "SELECT p.product_name FROM products p LEFT JOIN order_items oi ON p.product_id = oi.product_id WHERE oi.product_id IS NULL;",
         },
         {
           id: 24,
@@ -311,6 +341,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
           starterQuery: "SELECT customer_id, order_date, \nLAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date) as prev_order_date \nFROM orders;",
           expectedColumns: ["customer_id", "order_date", "prev_order_date"],
           expectedRowCount: 6,
+          solutionQuery: "SELECT customer_id, order_date, LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date) AS prev_order_date FROM orders;",
         },
         {
           id: 25,
@@ -324,6 +355,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
           starterQuery: "SELECT order_id \nFROM orders \nWHERE discount_amount * 1.0 / subtotal_amount > 0.2;",
           expectedColumns: ["order_id"],
           expectedRowCount: 2,
+          solutionQuery: "SELECT order_id FROM orders WHERE discount_amount * 1.0 / subtotal_amount > 0.2;",
         },
         
             {
@@ -338,6 +370,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT o.order_id \nFROM orders o \nLEFT JOIN order_items oi ON o.order_id = oi.order_id \nWHERE oi.order_id IS NULL;",
               expectedColumns: ["order_id"],
               expectedRowCount: 2,
+              solutionQuery: "SELECT o.order_id FROM orders o LEFT JOIN order_items oi ON o.order_id = oi.order_id WHERE oi.order_id IS NULL;",
             },
             {
               id: 27,
@@ -351,6 +384,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT product_id, SUM(quantity) as total_sold \nFROM order_items \nGROUP BY product_id;",
               expectedColumns: ["product_id", "total_sold"],
               expectedRowCount: 5,
+              solutionQuery: "SELECT product_id, SUM(quantity) AS total_sold FROM order_items GROUP BY product_id;",
             },
             {
               id: 28,
@@ -364,6 +398,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT customer_id, SUM(total_amount) as lifetime_spend \nFROM orders \nGROUP BY customer_id;",
               expectedColumns: ["customer_id", "lifetime_spend"],
               expectedRowCount: 5,
+              solutionQuery: "SELECT customer_id, SUM(total_amount) AS lifetime_spend FROM orders GROUP BY customer_id;",
             },
             {
               id: 29,
@@ -377,6 +412,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT order_id, COUNT(payment_id) as attempts \nFROM payments \nGROUP BY order_id \nHAVING attempts > 1;",
               expectedColumns: ["order_id", "attempts"],
               expectedRowCount: 3,
+              solutionQuery: "SELECT order_id, COUNT(payment_id) AS attempts FROM payments GROUP BY order_id HAVING COUNT(payment_id) > 1;",
             },
             {
               id: 30,
@@ -390,6 +426,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT customer_id, AVG(rating) as avg_rating \nFROM feedback \nGROUP BY customer_id;",
               expectedColumns: ["customer_id", "avg_rating"],
               expectedRowCount: 5,
+              solutionQuery: "SELECT customer_id, AVG(rating) AS avg_rating FROM feedback GROUP BY customer_id;",
             },
             {
               id: 31,
@@ -403,7 +440,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT delivery_partner_id, COUNT(*) as delivered_orders \nFROM orders \nWHERE order_status = 'Delivered' \nGROUP BY delivery_partner_id;",
               expectedColumns: ["delivery_partner_id", "delivered_orders"],
               expectedRowCount: 4,
-            },
+              solutionQuery: "SELECT delivery_partner_id, COUNT(*) AS delivered_orders FROM orders WHERE order_status = 'Delivered' GROUP BY delivery_partner_id;",
+              },
             {
               id: 32,
               title: "Revenue by City",
@@ -416,6 +454,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT c.city, SUM(o.total_amount) as revenue \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.city;",
               expectedColumns: ["city", "revenue"],
               expectedRowCount: 5,
+              solutionQuery: "SELECT c.city, SUM(o.total_amount) AS revenue FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.city;",
             },
             {
               id: 33,
@@ -428,7 +467,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               hint: "GROUP BY is_active",
               starterQuery: "SELECT is_active, COUNT(*) as count \nFROM products \nGROUP BY is_active;",
               expectedColumns: ["is_active", "count"],
-              expectedRowCount: 2,
+              expectedRowCount: 2,  
+              solutionQuery: "SELECT is_active, COUNT(*) AS count FROM products GROUP BY is_active;",
             },
             {
               id: 34,
@@ -442,6 +482,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT order_id \nFROM orders \nWHERE tax_amount * 1.0 / subtotal_amount > 0.15;",
               expectedColumns: ["order_id"],
               expectedRowCount: 3,
+              solutionQuery: "SELECT order_id FROM orders WHERE tax_amount * 1.0 / subtotal_amount > 0.15;",
             },
             {
               id: 35,
@@ -455,6 +496,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT customer_id \nFROM orders \nGROUP BY customer_id \nHAVING COUNT(order_id) = 1;",
               expectedColumns: ["customer_id"],
               expectedRowCount: 3,
+              solutionQuery: "SELECT customer_id FROM orders GROUP BY customer_id HAVING COUNT(order_id) = 1;",
             },
             {
               id: 36,
@@ -468,6 +510,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT partner_name \nFROM delivery_partners \nWHERE rating > (SELECT AVG(rating) FROM delivery_partners);",
               expectedColumns: ["partner_name"],
               expectedRowCount: 3,
+              solutionQuery: "SELECT partner_name FROM delivery_partners WHERE rating > (SELECT AVG(rating) FROM delivery_partners);",
             },
             {
               id: 37,
@@ -481,6 +524,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT cancellation_reason, COUNT(*) as count \nFROM orders \nWHERE cancellation_reason IS NOT NULL \nGROUP BY cancellation_reason;",
               expectedColumns: ["cancellation_reason", "count"],
               expectedRowCount: 4,
+              solutionQuery: "SELECT cancellation_reason, COUNT(*) AS count FROM orders WHERE cancellation_reason IS NOT NULL GROUP BY cancellation_reason;",
             },
             {
               id: 38,
@@ -494,6 +538,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT customer_id, SUM(total_amount) as total, \nSUM(total_amount) * 100.0 / SUM(SUM(total_amount)) OVER() as pct \nFROM orders \nGROUP BY customer_id;",
               expectedColumns: ["customer_id", "total", "pct"],
               expectedRowCount: 5,
+              solutionQuery: "SELECT customer_id, SUM(total_amount) AS total, SUM(total_amount) * 100.0 / SUM(SUM(total_amount)) OVER() AS pct FROM orders GROUP BY customer_id;",
             },
             {
               id: 39,
@@ -507,6 +552,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT product_name, price \nFROM products \nWHERE price > (SELECT AVG(price) FROM products);",
               expectedColumns: ["product_name", "price"],
               expectedRowCount: 3,
+              solutionQuery: "SELECT product_name, price FROM products WHERE price > (SELECT AVG(price) FROM products);",
             },
             {
               id: 40,
@@ -520,6 +566,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT order_date, COUNT(*) as total_orders \nFROM orders \nGROUP BY order_date;",
               expectedColumns: ["order_date", "total_orders"],
               expectedRowCount: 6,
+              solutionQuery: "SELECT order_date, COUNT(*) AS total_orders FROM orders GROUP BY order_date;",
             },
             {
               id: 41,
@@ -533,6 +580,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT c.customer_name \nFROM customers c \nLEFT JOIN feedback f ON c.customer_id = f.customer_id \nWHERE f.customer_id IS NULL;",
               expectedColumns: ["customer_name"],
               expectedRowCount: 2,
+              solutionQuery: "SELECT c.customer_name FROM customers c LEFT JOIN feedback f ON c.customer_id = f.customer_id WHERE f.customer_id IS NULL;",
             },
             {
               id: 42,
@@ -546,6 +594,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT order_date, MAX(total_amount) as max_order \nFROM orders \nGROUP BY order_date;",
               expectedColumns: ["order_date", "max_order"],
               expectedRowCount: 6,
+              solutionQuery: "SELECT order_date, MAX(total_amount) AS max_order FROM orders GROUP BY order_date;",
             },
             {
               id: 43,
@@ -559,6 +608,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT payment_provider, COUNT(*) as failures \nFROM payments \nWHERE payment_status = 'Failed' \nGROUP BY payment_provider;",
               expectedColumns: ["payment_provider", "failures"],
               expectedRowCount: 3,
+              solutionQuery: "SELECT payment_provider, COUNT(*) AS failures FROM payments WHERE payment_status = 'Failed' GROUP BY payment_provider;",
             },
             {
               id: 44,
@@ -572,6 +622,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT order_id \nFROM orders \nWHERE discount_amount = 0;",
               expectedColumns: ["order_id"],
               expectedRowCount: 4,
+              solutionQuery: "SELECT order_id FROM orders WHERE discount_amount = 0;",
             },
             {
               id: 45,
@@ -585,7 +636,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT customer_id, COUNT(*) as total_orders \nFROM orders \nGROUP BY customer_id \nORDER BY total_orders DESC LIMIT 3;",
               expectedColumns: ["customer_id", "total_orders"],
               expectedRowCount: 3,
-            },
+              solutionQuery: "SELECT customer_id, COUNT(*) AS total_orders FROM orders GROUP BY customer_id ORDER BY total_orders DESC LIMIT 3;",
+              },
             {
               id: 46,
               title: "Revenue per Product",
@@ -598,7 +650,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT p.product_name, SUM(oi.total_price) as revenue \nFROM order_items oi \nJOIN products p ON oi.product_id = p.product_id \nGROUP BY p.product_name;",
               expectedColumns: ["product_name", "revenue"],
               expectedRowCount: 5,
-            },
+              solutionQuery: "SELECT p.product_name, SUM(oi.total_price) AS revenue FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.product_name;",
+              },
             {
               id: 47,
               title: "Customers with High Lifetime Value",
@@ -611,7 +664,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT customer_name \nFROM customers \nWHERE lifetime_value > (SELECT AVG(lifetime_value) FROM customers);",
               expectedColumns: ["customer_name"],
               expectedRowCount: 3,
-            },
+              solutionQuery: "SELECT customer_name FROM customers WHERE lifetime_value > (SELECT AVG(lifetime_value) FROM customers);",
+              },
             {
               id: 48,
               title: "Orders by Payment Status",
@@ -624,7 +678,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT payment_status, COUNT(*) as count \nFROM orders \nGROUP BY payment_status;",
               expectedColumns: ["payment_status", "count"],
               expectedRowCount: 3,
-            },
+              solutionQuery: "SELECT payment_status, COUNT(*) AS count FROM orders GROUP BY payment_status;",
+              },
             {
               id: 49,
               title: "Products per Category Count",
@@ -637,7 +692,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT category, COUNT(*) as product_count \nFROM products \nGROUP BY category;",
               expectedColumns: ["category", "product_count"],
               expectedRowCount: 4,
-            },
+              solutionQuery: "SELECT category, COUNT(*) AS product_count FROM products GROUP BY category;",
+              },
             {
               id: 50,
               title: "Customers with Verified Accounts Only",
@@ -650,7 +706,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
               starterQuery: "SELECT customer_name \nFROM customers \nWHERE is_verified = 1 AND status = 'Active';",
               expectedColumns: ["customer_name"],
               expectedRowCount: 4,
-            },
+              solutionQuery: "SELECT customer_name FROM customers WHERE is_verified = 1 AND status = 'Active';",
+              },
                 {
                   id: 51,
                   title: "Orders with Partial Payments",
@@ -663,6 +720,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT o.order_id, SUM(p.amount) as paid_amount, o.total_amount \nFROM orders o \nJOIN payments p ON o.order_id = p.order_id \nGROUP BY o.order_id \nHAVING paid_amount < o.total_amount;",
                   expectedColumns: ["order_id", "paid_amount", "total_amount"],
                   expectedRowCount: 3,
+                  solutionQuery: "SELECT o.order_id, SUM(p.amount) AS paid_amount, o.total_amount FROM orders o JOIN payments p ON o.order_id = p.order_id GROUP BY o.order_id HAVING paid_amount < o.total_amount;",
                 },
                 {
                   id: 52,
@@ -676,6 +734,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT o.customer_id \nFROM orders o \nJOIN delivery_partners d ON o.delivery_partner_id = d.delivery_partner_id \nGROUP BY o.customer_id \nHAVING COUNT(DISTINCT d.city) > 1;",
                   expectedColumns: ["customer_id"],
                   expectedRowCount: 3,
+                  solutionQuery: "SELECT o.customer_id FROM orders o JOIN delivery_partners d ON o.delivery_partner_id = d.delivery_partner_id GROUP BY o.customer_id HAVING COUNT(DISTINCT d.city) > 1;",
                 },
                 {
                   id: 53,
@@ -689,6 +748,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT AVG(item_count) as avg_items \nFROM (SELECT order_id, COUNT(*) as item_count FROM order_items GROUP BY order_id);",
                   expectedColumns: ["avg_items"],
                   expectedRowCount: 1,
+                  solutionQuery: "SELECT AVG(item_count) AS avg_items FROM (SELECT order_id, COUNT(*) AS item_count FROM order_items GROUP BY order_id);",
                 },
                 {
                   id: 54,
@@ -702,6 +762,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT customer_id \nFROM (SELECT customer_id, total_amount, LAG(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date) as prev_amt FROM orders) t \nWHERE total_amount < prev_amt;",
                   expectedColumns: ["customer_id"],
                   expectedRowCount: 3,
+                  solutionQuery: "SELECT customer_id FROM (SELECT customer_id, total_amount, LAG(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date) AS prev_amt FROM orders) t WHERE total_amount < prev_amt;",
                 },
                 {
                   id: 55,
@@ -715,6 +776,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT order_id, MAX(total_price) as max_item \nFROM order_items \nGROUP BY order_id;",
                   expectedColumns: ["order_id", "max_item"],
                   expectedRowCount: 5,
+                  solutionQuery: "SELECT order_id, MAX(total_price) AS max_item FROM order_items GROUP BY order_id;",
                 },
                 {
                   id: 56,
@@ -728,6 +790,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT delivery_partner_id, COUNT(*) as total_orders, \nCOUNT(*) * 100.0 / SUM(COUNT(*)) OVER() as pct_share \nFROM orders \nGROUP BY delivery_partner_id;",
                   expectedColumns: ["delivery_partner_id", "total_orders", "pct_share"],
                   expectedRowCount: 4,
+                  solutionQuery: "SELECT delivery_partner_id, COUNT(*) AS total_orders, COUNT(*) * 100.0 / SUM(COUNT(*)) OVER() AS pct_share FROM orders GROUP BY delivery_partner_id;",
                 },
                 {
                   id: 57,
@@ -741,7 +804,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT product_id, SUM(quantity) as total_qty \nFROM order_items \nGROUP BY product_id \nHAVING total_qty < (SELECT AVG(qty) FROM (SELECT SUM(quantity) as qty FROM order_items GROUP BY product_id));",
                   expectedColumns: ["product_id", "total_qty"],
                   expectedRowCount: 3,
-                },
+                  solutionQuery: "SELECT product_id, SUM(quantity) AS total_qty FROM order_items GROUP BY product_id HAVING SUM(quantity) < (SELECT AVG(qty) FROM (SELECT SUM(quantity) AS qty FROM order_items GROUP BY product_id));",
+                  },
                 {
                   id: 58,
                   title: "Customers Ordering After Long Gap",
@@ -754,7 +818,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT customer_id \nFROM (SELECT customer_id, order_date, LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date) as prev_date FROM orders) t \nWHERE julianday(order_date) - julianday(prev_date) > 60;",
                   expectedColumns: ["customer_id"],
                   expectedRowCount: 3,
-                },
+                  solutionQuery: "SELECT customer_id FROM (SELECT customer_id, order_date, LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date) AS prev_date FROM orders) t WHERE julianday(order_date) - julianday(prev_date) > 60;",
+                  },
                 {
                   id: 59,
                   title: "Revenue by Acquisition Channel",
@@ -767,7 +832,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT c.acquisition_channel, SUM(o.total_amount) as revenue \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.acquisition_channel;",
                   expectedColumns: ["acquisition_channel", "revenue"],
                   expectedRowCount: 4,
-                },
+                  solutionQuery: "SELECT c.acquisition_channel, SUM(o.total_amount) AS revenue FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.acquisition_channel;",
+                  },
                 {
                   id: 60,
                   title: "Orders with Multiple Product Categories",
@@ -780,7 +846,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT oi.order_id \nFROM order_items oi \nJOIN products p ON oi.product_id = p.product_id \nGROUP BY oi.order_id \nHAVING COUNT(DISTINCT p.category) > 1;",
                   expectedColumns: ["order_id"],
                   expectedRowCount: 3,
-                },
+                  solutionQuery: "SELECT oi.order_id FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY oi.order_id HAVING COUNT(DISTINCT p.category) > 1;",
+                  },
                 {
                   id: 61,
                   title: "Average Refund per Order",
@@ -793,7 +860,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT order_id, AVG(refund_amount) as avg_refund \nFROM payments \nGROUP BY order_id;",
                   expectedColumns: ["order_id", "avg_refund"],
                   expectedRowCount: 5,
-                },
+                  solutionQuery: "SELECT order_id, AVG(refund_amount) AS avg_refund FROM payments GROUP BY order_id;",
+                  },
                 {
                   id: 62,
                   title: "Orders with High Delivery Fee",
@@ -806,7 +874,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT order_id \nFROM orders \nWHERE delivery_fee > (SELECT AVG(delivery_fee) FROM orders);",
                   expectedColumns: ["order_id"],
                   expectedRowCount: 3,
-                },
+                  solutionQuery: "SELECT order_id FROM orders WHERE delivery_fee > (SELECT AVG(delivery_fee) FROM orders);",
+                  },
                 {
                   id: 63,
                   title: "Customers with No Successful Payments",
@@ -819,7 +888,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT o.customer_id \nFROM orders o \nJOIN payments p ON o.order_id = p.order_id \nGROUP BY o.customer_id \nHAVING SUM(CASE WHEN p.payment_status = 'Success' THEN 1 ELSE 0 END) = 0;",
                   expectedColumns: ["customer_id"],
                   expectedRowCount: 2,
-                },
+                  solutionQuery: "SELECT o.customer_id FROM orders o JOIN payments p ON o.order_id = p.order_id GROUP BY o.customer_id HAVING SUM(CASE WHEN p.payment_status = 'Success' THEN 1 ELSE 0 END) = 0;",
+                  },
                 {
                   id: 64,
                   title: "Product Profit per Item",
@@ -832,7 +902,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT product_name, price - cost_price as profit \nFROM products;",
                   expectedColumns: ["product_name", "profit"],
                   expectedRowCount: 5,
-                },
+                  solutionQuery: "SELECT product_name, price - cost_price AS profit FROM products;",
+                  },
                 {
                   id: 65,
                   title: "Orders by Customer Type",
@@ -845,7 +916,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT c.customer_type, COUNT(*) as total_orders \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.customer_type;",
                   expectedColumns: ["customer_type", "total_orders"],
                   expectedRowCount: 3,
-                },
+                  solutionQuery: "SELECT c.customer_type, COUNT(*) AS total_orders FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_type;",
+                  },
                 {
                   id: 66,
                   title: "Top Rated Products",
@@ -858,7 +930,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT p.product_name, AVG(f.rating) as avg_rating \nFROM feedback f \nJOIN orders o ON f.order_id = o.order_id \nJOIN order_items oi ON o.order_id = oi.order_id \nJOIN products p ON oi.product_id = p.product_id \nGROUP BY p.product_name \nORDER BY avg_rating DESC;",
                   expectedColumns: ["product_name", "avg_rating"],
                   expectedRowCount: 5,
-                },
+                  solutionQuery: "SELECT p.product_name, AVG(f.rating) AS avg_rating FROM feedback f JOIN orders o ON f.order_id = o.order_id JOIN order_items oi ON o.order_id = oi.order_id JOIN products p ON oi.product_id = p.product_id GROUP BY p.product_name ORDER BY avg_rating DESC;",
+                  },
                 {
                   id: 67,
                   title: "Orders per Currency",
@@ -871,7 +944,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT currency, COUNT(*) as total_orders \nFROM orders \nGROUP BY currency;",
                   expectedColumns: ["currency", "total_orders"],
                   expectedRowCount: 3,
-                },
+                  solutionQuery: "SELECT currency, COUNT(*) AS total_orders FROM orders GROUP BY currency;",
+                  },
                 {
                   id: 68,
                   title: "Customers with High Avg Order Value",
@@ -884,7 +958,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT customer_id, AVG(total_amount) as avg_val \nFROM orders \nGROUP BY customer_id \nHAVING avg_val > (SELECT AVG(total_amount) FROM orders);",
                   expectedColumns: ["customer_id", "avg_val"],
                   expectedRowCount: 3,
-                },
+                  solutionQuery: "SELECT customer_id, AVG(total_amount) AS avg_val FROM orders GROUP BY customer_id HAVING avg_val > (SELECT AVG(total_amount) FROM orders);",
+                  },
                 {
                   id: 69,
                   title: "Orders with Maximum Discount Item",
@@ -897,7 +972,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT order_id, MAX(discount_amount) as max_discount \nFROM order_items \nGROUP BY order_id;",
                   expectedColumns: ["order_id", "max_discount"],
                   expectedRowCount: 5,
-                },
+                  solutionQuery: "SELECT order_id, MAX(discount_amount) AS max_discount FROM order_items GROUP BY order_id;",
+                  },
                 {
                   id: 70,
                   title: "Customers by Signup Month",
@@ -910,7 +986,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT strftime('%m', created_date) as month, COUNT(*) as total \nFROM customers \nGROUP BY month;",
                   expectedColumns: ["month", "total"],
                   expectedRowCount: 6,
-                },
+                  solutionQuery: "SELECT strftime('%m', created_date) AS month, COUNT(*) AS total FROM customers GROUP BY month;",
+                  },
                 {
                   id: 71,
                   title: "Orders with High Item Count",
@@ -923,7 +1000,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT order_id, COUNT(*) as cnt \nFROM order_items \nGROUP BY order_id \nHAVING cnt > (SELECT AVG(c) FROM (SELECT COUNT(*) as c FROM order_items GROUP BY order_id));",
                   expectedColumns: ["order_id", "cnt"],
                   expectedRowCount: 3,
-                },
+                  solutionQuery: "SELECT order_id, COUNT(*) AS cnt FROM order_items GROUP BY order_id HAVING cnt > (SELECT AVG(c) FROM (SELECT COUNT(*) AS c FROM order_items GROUP BY order_id));",
+                  },
                 {
                   id: 72,
                   title: "Revenue Trend by State",
@@ -936,7 +1014,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT c.state, SUM(o.total_amount) as revenue \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.state;",
                   expectedColumns: ["state", "revenue"],
                   expectedRowCount: 5,
-                },
+                  solutionQuery: "SELECT c.state, SUM(o.total_amount) AS revenue FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.state;",
+                  },
                 {
                   id: 73,
                   title: "Orders Delivered Late per Partner",
@@ -949,7 +1028,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT delivery_partner_id, COUNT(*) as delayed \nFROM orders \nWHERE delivered_date > estimated_delivery_time \nGROUP BY delivery_partner_id;",
                   expectedColumns: ["delivery_partner_id", "delayed"],
                   expectedRowCount: 4,
-                },
+                  solutionQuery: "SELECT delivery_partner_id, COUNT(*) AS delayed FROM orders WHERE delivered_date > estimated_delivery_time GROUP BY delivery_partner_id;",
+                  },
                 {
                   id: 74,
                   title: "Customers with High Feedback Volume",
@@ -962,7 +1042,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT customer_id, COUNT(*) as cnt \nFROM feedback \nGROUP BY customer_id \nHAVING cnt > (SELECT AVG(c) FROM (SELECT COUNT(*) as c FROM feedback GROUP BY customer_id));",
                   expectedColumns: ["customer_id", "cnt"],
                   expectedRowCount: 3,
-                },
+                  solutionQuery: "SELECT customer_id, COUNT(*) AS cnt FROM feedback GROUP BY customer_id HAVING cnt > (SELECT AVG(c) FROM (SELECT COUNT(*) AS c FROM feedback GROUP BY customer_id));",
+                  },
                 {
                   id: 75,
                   title: "Orders with Tax Higher Than Discount",
@@ -975,7 +1056,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                   starterQuery: "SELECT order_id \nFROM orders \nWHERE tax_amount > discount_amount;",
                   expectedColumns: ["order_id"],
                   expectedRowCount: 4,
-                },
+                  solutionQuery: "SELECT order_id FROM orders WHERE tax_amount > discount_amount;",
+                  },
                     {
                       id: 76,
                       title: "Orders Without Successful Payment",
@@ -988,7 +1070,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT o.order_id \nFROM orders o \nLEFT JOIN payments p ON o.order_id = p.order_id AND p.payment_status = 'Success' \nWHERE p.payment_id IS NULL;",
                       expectedColumns: ["order_id"],
                       expectedRowCount: 3,
-                    },
+                      solutionQuery: "SELECT o.order_id FROM orders o LEFT JOIN payments p ON o.order_id = p.order_id AND p.payment_status = 'Success' WHERE p.payment_id IS NULL;",
+                      },
                     {
                       id: 77,
                       title: "Average Order Value by City",
@@ -1001,7 +1084,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT c.city, AVG(o.total_amount) as avg_value \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.city;",
                       expectedColumns: ["city", "avg_value"],
                       expectedRowCount: 5,
-                    },
+                      solutionQuery: "SELECT c.city, AVG(o.total_amount) AS avg_value FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.city;",
+                      },
                     {
                       id: 78,
                       title: "Products with Highest Profit Margin",
@@ -1014,7 +1098,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT product_name, (price - cost_price) * 1.0 / price as margin \nFROM products \nORDER BY margin DESC;",
                       expectedColumns: ["product_name", "margin"],
                       expectedRowCount: 5,
-                    },
+                      solutionQuery: "SELECT product_name, (price - cost_price) * 1.0 / price AS margin FROM products ORDER BY margin DESC;",
+                      },
                     {
                       id: 79,
                       title: "Customers with Multiple Payment Methods",
@@ -1027,7 +1112,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT o.customer_id \nFROM orders o \nJOIN payments p ON o.order_id = p.order_id \nGROUP BY o.customer_id \nHAVING COUNT(DISTINCT p.payment_method) > 1;",
                       expectedColumns: ["customer_id"],
                       expectedRowCount: 3,
-                    },
+                      solutionQuery: "SELECT o.customer_id FROM orders o JOIN payments p ON o.order_id = p.order_id GROUP BY o.customer_id HAVING COUNT(DISTINCT p.payment_method) > 1;",
+                      },
                     {
                       id: 80,
                       title: "Orders with More Than Average Value",
@@ -1040,7 +1126,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT order_id, total_amount \nFROM orders \nWHERE total_amount > (SELECT AVG(total_amount) FROM orders);",
                       expectedColumns: ["order_id", "total_amount"],
                       expectedRowCount: 4,
-                    },
+                      solutionQuery: "SELECT order_id, total_amount FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders);",
+                      },
                     {
                       id: 81,
                       title: "Customers with Orders in Consecutive Days",
@@ -1053,7 +1140,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT customer_id \nFROM (SELECT customer_id, order_date, LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date) as prev_date FROM orders) t \nWHERE julianday(order_date) - julianday(prev_date) = 1;",
                       expectedColumns: ["customer_id"],
                       expectedRowCount: 3,
-                    },
+                      solutionQuery: "SELECT customer_id FROM (SELECT customer_id, order_date, LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date) AS prev_date FROM orders) t WHERE julianday(order_date) - julianday(prev_date) = 1;",
+                      },
                     {
                       id: 82,
                       title: "Orders with Highest Tax Percentage",
@@ -1066,7 +1154,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT order_id, tax_amount * 1.0 / subtotal_amount as tax_pct \nFROM orders \nORDER BY tax_pct DESC LIMIT 5;",
                       expectedColumns: ["order_id", "tax_pct"],
                       expectedRowCount: 5,
-                    },
+                      solutionQuery: "SELECT order_id, tax_amount * 1.0 / subtotal_amount AS tax_pct FROM orders ORDER BY tax_pct DESC LIMIT 5;",
+                      },
                     {
                       id: 83,
                       title: "Customers with More Refunds Than Payments",
@@ -1079,7 +1168,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT o.customer_id \nFROM orders o \nJOIN payments p ON o.order_id = p.order_id \nGROUP BY o.customer_id \nHAVING SUM(p.refund_amount) > SUM(p.amount);",
                       expectedColumns: ["customer_id"],
                       expectedRowCount: 2,
-                    },
+                      solutionQuery: "SELECT o.customer_id FROM orders o JOIN payments p ON o.order_id = p.order_id GROUP BY o.customer_id HAVING SUM(p.refund_amount) > SUM(p.amount);",
+                      },
                     {
                       id: 84,
                       title: "Orders per Customer per Month",
@@ -1092,7 +1182,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT customer_id, strftime('%m', order_date) as month, COUNT(*) as total \nFROM orders \nGROUP BY customer_id, month;",
                       expectedColumns: ["customer_id", "month", "total"],
                       expectedRowCount: 6,
-                    },
+                      solutionQuery: "SELECT customer_id, strftime('%m', order_date) AS month, COUNT(*) AS total FROM orders GROUP BY customer_id, month;",
+                      },
                     {
                       id: 85,
                       title: "Orders with Highest Delivery Fee per City",
@@ -1105,7 +1196,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT c.city, MAX(o.delivery_fee) as max_fee \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.city;",
                       expectedColumns: ["city", "max_fee"],
                       expectedRowCount: 5,
-                    },
+                      solutionQuery: "SELECT c.city, MAX(o.delivery_fee) AS max_fee FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.city;",
+                      },
                     {
                       id: 86,
                       title: "Products Ordered by More Than 3 Customers",
@@ -1118,7 +1210,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT oi.product_id \nFROM order_items oi \nJOIN orders o ON oi.order_id = o.order_id \nGROUP BY oi.product_id \nHAVING COUNT(DISTINCT o.customer_id) > 3;",
                       expectedColumns: ["product_id"],
                       expectedRowCount: 3,
-                    },
+                      solutionQuery: "SELECT oi.product_id FROM order_items oi JOIN orders o ON oi.order_id = o.order_id GROUP BY oi.product_id HAVING COUNT(DISTINCT o.customer_id) > 3;",
+                      },
                     {
                       id: 87,
                       title: "Customers with Only Failed Orders",
@@ -1131,7 +1224,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT customer_id \nFROM orders \nGROUP BY customer_id \nHAVING SUM(CASE WHEN order_status != 'Cancelled' THEN 1 ELSE 0 END) = 0;",
                       expectedColumns: ["customer_id"],
                       expectedRowCount: 2,
-                    },
+                      solutionQuery: "SELECT customer_id FROM orders GROUP BY customer_id HAVING SUM(CASE WHEN order_status != 'Cancelled' THEN 1 ELSE 0 END) = 0;",
+                      },
                     {
                       id: 88,
                       title: "Revenue from Verified vs Non-Verified Customers",
@@ -1144,7 +1238,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT c.is_verified, SUM(o.total_amount) as revenue \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.is_verified;",
                       expectedColumns: ["is_verified", "revenue"],
                       expectedRowCount: 2,
-                    },
+                      solutionQuery: "SELECT c.is_verified, SUM(o.total_amount) AS revenue FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.is_verified;",
+                      },
                     {
                       id: 89,
                       title: "Orders with More Than One Category",
@@ -1157,7 +1252,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT oi.order_id \nFROM order_items oi \nJOIN products p ON oi.product_id = p.product_id \nGROUP BY oi.order_id \nHAVING COUNT(DISTINCT p.category) > 1;",
                       expectedColumns: ["order_id"],
                       expectedRowCount: 3,
-                    },
+                      solutionQuery: "SELECT oi.order_id FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY oi.order_id HAVING COUNT(DISTINCT p.category) > 1;",
+                      },
                     {
                       id: 90,
                       title: "Average Rating per Order",
@@ -1170,7 +1266,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT order_id, AVG(rating) as avg_rating \nFROM feedback \nGROUP BY order_id;",
                       expectedColumns: ["order_id", "avg_rating"],
                       expectedRowCount: 5,
-                    },
+                      solutionQuery: "SELECT order_id, AVG(rating) AS avg_rating FROM feedback GROUP BY order_id;",
+                      },
                     {
                       id: 91,
                       title: "Customers with Orders in Different States",
@@ -1183,7 +1280,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT o.customer_id \nFROM orders o \nJOIN customers c ON o.customer_id = c.customer_id \nGROUP BY o.customer_id \nHAVING COUNT(DISTINCT c.state) > 1;",
                       expectedColumns: ["customer_id"],
                       expectedRowCount: 2,
-                    },
+                      solutionQuery: "SELECT o.customer_id FROM orders o JOIN customers c ON o.customer_id = c.customer_id GROUP BY o.customer_id HAVING COUNT(DISTINCT c.state) > 1;",
+                      },
                     {
                       id: 92,
                       title: "Orders with Maximum Items per Customer",
@@ -1196,7 +1294,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT o.customer_id, o.order_id, COUNT(oi.order_item_id) as item_count \nFROM orders o \nJOIN order_items oi ON o.order_id = oi.order_id \nGROUP BY o.customer_id, o.order_id;",
                       expectedColumns: ["customer_id", "order_id", "item_count"],
                       expectedRowCount: 6,
-                    },
+                      solutionQuery: "SELECT o.customer_id, o.order_id, COUNT(oi.order_item_id) AS item_count FROM orders o JOIN order_items oi ON o.order_id = oi.order_id GROUP BY o.customer_id, o.order_id;",
+                      },
                     {
                       id: 93,
                       title: "Revenue by Payment Method",
@@ -1209,7 +1308,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT payment_method, SUM(amount) as revenue \nFROM payments \nGROUP BY payment_method;",
                       expectedColumns: ["payment_method", "revenue"],
                       expectedRowCount: 3,
-                    },
+                      solutionQuery: "SELECT payment_method, SUM(amount) AS revenue FROM payments GROUP BY payment_method;",
+                      },
                     {
                       id: 94,
                       title: "Customers with Orders Above Their Average",
@@ -1222,7 +1322,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT o.order_id, o.customer_id \nFROM orders o \nWHERE o.total_amount > (SELECT AVG(total_amount) FROM orders WHERE customer_id = o.customer_id);",
                       expectedColumns: ["order_id", "customer_id"],
                       expectedRowCount: 4,
-                    },
+                      solutionQuery: "SELECT o.order_id, o.customer_id FROM orders o WHERE o.total_amount > (SELECT AVG(total_amount) FROM orders WHERE customer_id = o.customer_id);",
+                      },
                     {
                       id: 95,
                       title: "Products Never Reviewed",
@@ -1235,7 +1336,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT p.product_name \nFROM products p \nLEFT JOIN order_items oi ON p.product_id = oi.product_id \nLEFT JOIN feedback f ON oi.order_id = f.order_id \nWHERE f.feedback_id IS NULL;",
                       expectedColumns: ["product_name"],
                       expectedRowCount: 3,
-                    },
+                      solutionQuery: "SELECT p.product_name FROM products p LEFT JOIN order_items oi ON p.product_id = oi.product_id LEFT JOIN feedback f ON oi.order_id = f.order_id WHERE f.feedback_id IS NULL;",
+                      },
                     {
                       id: 96,
                       title: "Orders with Above Average Items Value",
@@ -1248,7 +1350,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT order_id, SUM(total_price) as total \nFROM order_items \nGROUP BY order_id \nHAVING total > (SELECT AVG(total_price) FROM order_items);",
                       expectedColumns: ["order_id", "total"],
                       expectedRowCount: 3,
-                    },
+                      solutionQuery: "SELECT order_id, SUM(total_price) AS total FROM order_items GROUP BY order_id HAVING total > (SELECT AVG(total_price) FROM order_items);",
+                      },
                     {
                       id: 97,
                       title: "Customers with Frequent Orders",
@@ -1261,7 +1364,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT customer_id, COUNT(*) as cnt \nFROM orders \nGROUP BY customer_id \nHAVING cnt > (SELECT AVG(c) FROM (SELECT COUNT(*) as c FROM orders GROUP BY customer_id));",
                       expectedColumns: ["customer_id", "cnt"],
                       expectedRowCount: 3,
-                    },
+                      solutionQuery: "SELECT customer_id, COUNT(*) AS cnt FROM orders GROUP BY customer_id HAVING cnt > (SELECT AVG(c) FROM (SELECT COUNT(*) AS c FROM orders GROUP BY customer_id));",
+                      },
                     {
                       id: 98,
                       title: "Orders with Multiple Feedback Entries",
@@ -1274,7 +1378,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT order_id, COUNT(*) as cnt \nFROM feedback \nGROUP BY order_id \nHAVING cnt > 1;",
                       expectedColumns: ["order_id", "cnt"],
                       expectedRowCount: 2,
-                    },
+                      solutionQuery: "SELECT order_id, COUNT(*) AS cnt FROM feedback GROUP BY order_id HAVING cnt > 1;",
+                      },
                     {
                       id: 99,
                       title: "Revenue by Product Brand",
@@ -1287,7 +1392,8 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT p.brand, SUM(oi.total_price) as revenue \nFROM order_items oi \nJOIN products p ON oi.product_id = p.product_id \nGROUP BY p.brand;",
                       expectedColumns: ["brand", "revenue"],
                       expectedRowCount: 4,
-                    },
+                      solutionQuery: "SELECT p.brand, SUM(oi.total_price) AS revenue FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.brand;",
+                      },
                     {
                       id: 100,
                       title: "Customers with High Refund Ratio",
@@ -1300,6 +1406,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
                       starterQuery: "SELECT o.customer_id \nFROM orders o \nJOIN payments p ON o.order_id = p.order_id \nGROUP BY o.customer_id \nHAVING SUM(p.refund_amount) * 1.0 / SUM(p.amount) > 0.3;",
                       expectedColumns: ["customer_id"],
                       expectedRowCount: 2,
+                      solutionQuery: "SELECT o.customer_id FROM orders o JOIN payments p ON o.order_id = p.order_id GROUP BY o.customer_id HAVING SUM(p.refund_amount) * 1.0 / SUM(p.amount) > 0.3;",
                     }
                 
               

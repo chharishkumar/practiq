@@ -31,6 +31,7 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  
 
   const selectedCountry = COUNTRIES.find(c => c.name === formData.country) || COUNTRIES[0];
 
@@ -43,9 +44,12 @@ export default function SignupPage() {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
-
   const handleGoogleSignup = async () => {
-    await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin + "/sql" } });
+    const { error } = await supabase.auth.signInWithOAuth({ 
+      provider: "google", 
+      options: { redirectTo: window.location.origin + "/home" } 
+    });
+    if (error) setError(error.message);
   };
 
   const handleSignup = async (e) => {
@@ -53,9 +57,37 @@ export default function SignupPage() {
     setIsLoading(true);
     setError(null);
   
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address.");
+      setIsLoading(false);
+      return;
+    }
+  
+    // Validate password length
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      setIsLoading(false);
+      return;
+    }
+  
+    // Validate mobile number
+    const mobileRegex = /^[0-9]{7,15}$/;
+    if (!mobileRegex.test(formData.mobile)) {
+      setError("Please enter a valid mobile number.");
+      setIsLoading(false);
+      return;
+    }
+  
     const { data, error: signupError } = await supabase.auth.signUp({
       email: formData.email,
       password: formData.password,
+      options: {
+        data: {
+          full_name: formData.fullName,
+        }
+      }
     });
   
     if (signupError) {
@@ -64,33 +96,27 @@ export default function SignupPage() {
       return;
     }
   
-    const user = data.user;
-  
+    const user = data?.user;
     if (!user) {
-      setError("Signup failed. Try again.");
+      setError("Signup failed. Please try again.");
       setIsLoading(false);
       return;
     }
   
-    // 🔥 INSERT INTO profiles table
-    const { error: profileError } = await supabase.from("profiles").insert([
-      {
+    // Save profile data
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .upsert({
         id: user.id,
         full_name: formData.fullName,
         email: formData.email,
         mobile: `${formData.countryCode}${formData.mobile}`,
         country: formData.country,
         state: formData.state,
-      },
-    ]);
+      });
   
     if (profileError) {
-      console.error(profileError);
-      // setError("Profile creation failed");
-      // setIsLoading(false);
-      console.error("PROFILE ERROR:", profileError);
-setError(profileError.message);
-      return;
+      console.error("Profile error:", profileError.message);
     }
   
     setIsLoading(false);
@@ -128,133 +154,153 @@ setError(profileError.message);
         <div style={{ fontSize: "0.75rem", color: "#475569" }}>© 2025 Data Rejected. All rights reserved.</div>
       </div>
 
-      {/* Right Panel — Form */}
-      <div style={{ flex: 1, background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem", overflowY: "auto" }}>
-        <div style={{ width: "100%", maxWidth: "420px" }}>
-
-          <div style={{ marginBottom: "2rem", textAlign: "center" }}>
-            <h2 style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-1px", margin: "0 0 8px" }}>Create your account</h2>
-            <p style={{ fontSize: "0.88rem", color: "#64748b" }}>Start solving 1,000+ real-world SQL problems.</p>
-          </div>
-
-          {/* Google Button */}
-          <button
-            onClick={handleGoogleSignup}
-            style={{ width: "100%", padding: "11px", borderRadius: "8px", border: "1.5px solid #e2e8f0", background: "#ffffff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", fontSize: "0.88rem", fontWeight: 600, color: "#0f172a", marginBottom: "1.25rem" }}
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18">
-              <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
-              <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"/>
-              <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
-              <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
-            </svg>
-            Continue with Google
-          </button>
-
-          {/* Divider */}
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.25rem" }}>
-            <div style={{ flex: 1, height: "1px", background: "#e2e8f0" }}></div>
-            <span style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 500 }}>or sign up with email</span>
-            <div style={{ flex: 1, height: "1px", background: "#e2e8f0" }}></div>
-          </div>
-
-          {error && (
-            <div style={{ marginBottom: "1.25rem", padding: "10px 14px", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "8px", color: "#dc2626", fontSize: "0.82rem" }}>
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSignup}>
-
-            {/* Full Name */}
-            <div style={{ marginBottom: "1rem" }}>
-              <label style={labelStyle}>Full Name</label>
-              <input name="fullName" type="text" required placeholder="John Doe" onChange={handleChange} style={inputStyle} />
-            </div>
-
-            {/* Email */}
-            <div style={{ marginBottom: "1rem" }}>
-              <label style={labelStyle}>Work Email</label>
-              <input name="email" type="email" required placeholder="name@company.com" onChange={handleChange} style={inputStyle} />
-            </div>
-
-            {/* Password */}
-            <div style={{ marginBottom: "1rem" }}>
-              <label style={labelStyle}>Password</label>
-              <div style={{ position: "relative" }}>
-                <input name="password" type={showPassword ? "text" : "password"} required placeholder="Min. 8 characters" onChange={handleChange} style={{ ...inputStyle, paddingRight: "44px" }} />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: "0.75rem", color: "#64748b", fontWeight: 600 }}>
-                  {showPassword ? "Hide" : "Show"}
-                </button>
-              </div>
-            </div>
-
-            {/* Mobile + Country Code */}
-            <div style={{ marginBottom: "1rem" }}>
-              <label style={labelStyle}>Mobile Number</label>
-              <div style={{ display: "flex", gap: "8px" }}>
-                <select
-                  name="countryCode"
-                  value={formData.countryCode}
-                  onChange={handleChange}
-                  style={{ ...inputStyle, width: "110px", flexShrink: 0, paddingLeft: "10px" }}
-                >
-                  {COUNTRIES.map(c => (
-                    <option key={c.name} value={c.code}>{c.code} {c.name.slice(0, 8)}</option>
-                  ))}
-                </select>
-                <input name="mobile" type="tel" required placeholder="9876543210" onChange={handleChange} style={{ ...inputStyle, flex: 1 }} />
-              </div>
-            </div>
-
-            {/* Country */}
-            <div style={{ marginBottom: "1rem" }}>
-              <label style={labelStyle}>Country</label>
-              <select name="country" value={formData.country} onChange={handleChange} style={{ ...inputStyle, paddingLeft: "14px" }}>
-                {COUNTRIES.map(c => (
-                  <option key={c.name} value={c.name}>{c.name}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* State — auto filtered */}
-            <div style={{ marginBottom: "1.75rem" }}>
-              <label style={labelStyle}>State / Province</label>
-              <select name="state" value={formData.state} onChange={handleChange} required style={{ ...inputStyle, paddingLeft: "14px" }}>
-                <option value="">Select state</option>
-                {selectedCountry.states.map(s => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              style={{ width: "100%", padding: "12px", background: "#2563eb", color: "#ffffff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "0.9rem", cursor: isLoading ? "not-allowed" : "pointer", opacity: isLoading ? 0.8 : 1 }}
-            >
-              {isLoading ? "Creating account..." : "Create Account →"}
-            </button>
-          </form>
-
-          <p style={{ marginTop: "1.5rem", textAlign: "center", fontSize: "0.83rem", color: "#64748b" }}>
-            Already have an account?{" "}
-            <Link to="/login" style={{ color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>Sign in</Link>
-          </p>
-
-          <p style={{ marginTop: "1rem", textAlign: "center", fontSize: "0.72rem", color: "#94a3b8", lineHeight: 1.6 }}>
-            By signing up you agree to our{" "}
-            <Link to="/terms" style={{ color: "#2563eb", textDecoration: "none" }}>Terms of Use</Link>{" "}
-            and{" "}
-            <Link to="/privacy" style={{ color: "#2563eb", textDecoration: "none" }}>Privacy Policy</Link>
-          </p>
-          <p style={{ marginTop: "1rem", textAlign: "center", fontSize: "0.72rem", color: "#94a3b8", lineHeight: 1.6 }}>
-          Have questions?{" "}
-            <Link to="/contact" style={{ color: "#2563eb", textDecoration: "none" }}>Contact Us</Link>
-            
-          </p>
+     {/* Right Panel — Form */}
+<div style={{ flex: 1, background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem", overflowY: "auto" }}>
+  <div style={{ width: "100%", maxWidth: "420px" }}>
+      /* SIGNUP FORM */
+      <>
+        <div style={{ marginBottom: "2rem", textAlign: "center" }}>
+          <h2 style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-1px", margin: "0 0 8px" }}>Create your account</h2>
+          <p style={{ fontSize: "0.88rem", color: "#64748b" }}>Start solving 1,000+ real-world SQL problems.</p>
         </div>
-      </div>
+
+        {/* Google Button */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "1.25rem" }}>
+
+{/* Google */}
+<button
+  onClick={handleGoogleSignup}
+  style={{ width: "100%", padding: "11px", borderRadius: "8px", border: "1.5px solid #e2e8f0", background: "#ffffff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", fontSize: "0.88rem", fontWeight: 600, color: "#0f172a" }}
+>
+  <svg width="18" height="18" viewBox="0 0 18 18">
+    <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+    <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"/>
+    <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+    <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+  </svg>
+  Continue with Google
+</button>
+
+{/* LinkedIn — coming soon */}
+<button
+  disabled
+  style={{ width: "100%", padding: "11px", borderRadius: "8px", border: "1.5px solid #e2e8f0", background: "#f8fafc", cursor: "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", fontSize: "0.88rem", fontWeight: 600, color: "#94a3b8" }}
+>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="#94a3b8">
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+  </svg>
+  Continue with LinkedIn
+  <span style={{ fontSize: "0.7rem", background: "#e2e8f0", padding: "2px 6px", borderRadius: "4px", color: "#94a3b8" }}>Soon</span>
+</button>
+
+</div>
+
+        {/* Divider */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "1.25rem" }}>
+          <div style={{ flex: 1, height: "1px", background: "#e2e8f0" }}></div>
+          <span style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 500 }}>or sign up with email</span>
+          <div style={{ flex: 1, height: "1px", background: "#e2e8f0" }}></div>
+        </div>
+
+        {error && (
+          <div style={{ marginBottom: "1.25rem", padding: "10px 14px", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "8px", color: "#dc2626", fontSize: "0.82rem" }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSignup}>
+
+          {/* Full Name */}
+          <div style={{ marginBottom: "1rem" }}>
+            <label style={labelStyle}>Full Name</label>
+            <input name="fullName" type="text" required placeholder="John Doe" onChange={handleChange} style={inputStyle} />
+          </div>
+
+          {/* Email */}
+          <div style={{ marginBottom: "1rem" }}>
+            <label style={labelStyle}>Work Email</label>
+            <input name="email" type="email" required placeholder="name@company.com" onChange={handleChange} style={inputStyle} />
+          </div>
+
+          {/* Password */}
+          <div style={{ marginBottom: "1rem" }}>
+            <label style={labelStyle}>Password</label>
+            <div style={{ position: "relative" }}>
+              <input name="password" type={showPassword ? "text" : "password"} required placeholder="Min. 8 characters" onChange={handleChange} style={{ ...inputStyle, paddingRight: "44px" }} />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: "0.75rem", color: "#64748b", fontWeight: 600 }}>
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile + Country Code */}
+          <div style={{ marginBottom: "1rem" }}>
+            <label style={labelStyle}>Mobile Number</label>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <select
+                name="countryCode"
+                value={formData.countryCode}
+                onChange={handleChange}
+                style={{ ...inputStyle, width: "110px", flexShrink: 0, paddingLeft: "10px" }}
+              >
+                {COUNTRIES.map(c => (
+                  <option key={c.name} value={c.code}>{c.code} {c.name.slice(0, 8)}</option>
+                ))}
+              </select>
+              <input name="mobile" type="tel" required placeholder="9876543210" onChange={handleChange} style={{ ...inputStyle, flex: 1 }} />
+            </div>
+          </div>
+
+          {/* Country */}
+          <div style={{ marginBottom: "1rem" }}>
+            <label style={labelStyle}>Country</label>
+            <select name="country" value={formData.country} onChange={handleChange} style={{ ...inputStyle, paddingLeft: "14px" }}>
+              {COUNTRIES.map(c => (
+                <option key={c.name} value={c.name}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* State */}
+          <div style={{ marginBottom: "1.75rem" }}>
+            <label style={labelStyle}>State / Province</label>
+            <select name="state" value={formData.state} onChange={handleChange} required style={{ ...inputStyle, paddingLeft: "14px" }}>
+              <option value="">Select state</option>
+              {selectedCountry.states.map(s => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            style={{ width: "100%", padding: "12px", background: "#2563eb", color: "#ffffff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "0.9rem", cursor: isLoading ? "not-allowed" : "pointer", opacity: isLoading ? 0.8 : 1 }}
+          >
+            {isLoading ? "Creating account..." : "Create Account →"}
+          </button>
+        </form>
+
+        <p style={{ marginTop: "1.5rem", textAlign: "center", fontSize: "0.83rem", color: "#64748b" }}>
+          Already have an account?{" "}
+          <Link to="/login" style={{ color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>Sign in</Link>
+        </p>
+
+        <p style={{ marginTop: "1rem", textAlign: "center", fontSize: "0.72rem", color: "#94a3b8", lineHeight: 1.6 }}>
+          By signing up you agree to our{" "}
+          <Link to="/terms" style={{ color: "#2563eb", textDecoration: "none" }}>Terms of Use</Link>{" "}
+          and{" "}
+          <Link to="/privacy" style={{ color: "#2563eb", textDecoration: "none" }}>Privacy Policy</Link>
+        </p>
+        <p style={{ marginTop: "1rem", textAlign: "center", fontSize: "0.72rem", color: "#94a3b8", lineHeight: 1.6 }}>
+          Have questions?{" "}
+          <Link to="/contact" style={{ color: "#2563eb", textDecoration: "none" }}>Contact Us</Link>
+        </p>
+      </>
+    
+
+  </div>
+</div>
     </div>
   );
 }

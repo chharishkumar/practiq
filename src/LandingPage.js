@@ -3,41 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { supabase } from "./supabase";
 
-const SAMPLE_DATA = `
-CREATE TABLE customers (
-  customer_id INTEGER PRIMARY KEY,
-  customer_name TEXT,
-  email TEXT,
-  signup_date TEXT
-);
-CREATE TABLE orders (
-  order_id INTEGER PRIMARY KEY,
-  customer_id INTEGER,
-  order_date TEXT,
-  amount REAL
-);
-CREATE TABLE products (
-  product_id INTEGER PRIMARY KEY,
-  product_name TEXT,
-  category TEXT,
-  price REAL
-);
-INSERT INTO customers VALUES (1, 'Alice Johnson', 'alice@email.com', '2023-01-15');
-INSERT INTO customers VALUES (2, 'Bob Smith', 'bob@email.com', '2023-02-20');
-INSERT INTO customers VALUES (3, 'Carol White', 'carol@email.com', '2023-03-10');
-INSERT INTO customers VALUES (4, 'David Brown', 'david@email.com', '2023-04-05');
-INSERT INTO customers VALUES (5, 'Emma Davis', 'emma@email.com', '2023-05-12');
-INSERT INTO orders VALUES (1, 1, '2024-01-10', 250.00);
-INSERT INTO orders VALUES (2, 1, '2024-02-15', 180.00);
-INSERT INTO orders VALUES (3, 3, '2024-03-20', 320.00);
-INSERT INTO orders VALUES (4, 5, '2024-01-25', 150.00);
-INSERT INTO orders VALUES (5, 2, '2024-04-08', 410.00);
-INSERT INTO products VALUES (1, 'Starter Plan', 'subscription', 29.00);
-INSERT INTO products VALUES (2, 'Pro Plan', 'subscription', 99.00);
-INSERT INTO products VALUES (3, 'Onboarding Kit', 'services', 199.00);
-INSERT INTO products VALUES (4, 'Analytics Add-on', 'addon', 49.00);
-INSERT INTO products VALUES (5, 'Priority Support', 'services', 79.00);
-`;
 
 
 
@@ -97,30 +62,76 @@ useEffect(() => {
 }, []);
 
 function timeAgo(dateStr) {
-  const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
-  if (diff < 60) return `${diff}s ago`;
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  // Force UTC parsing — Supabase sometimes returns without Z suffix
+  const utcStr = dateStr.endsWith("Z") ? dateStr : dateStr + "Z";
+  const diff = Math.floor((Date.now() - new Date(utcStr)) / 1000);
+  if (diff < 60)    return `${diff}s ago`;
+  if (diff < 3600)  return `${Math.floor(diff / 60)}m ago`;
   if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
   return `${Math.floor(diff / 86400)}d ago`;
 }
 
-  useEffect(() => {
-    const initDb = async () => {
-      try {
-        const initSqlJs = (await import("sql.js")).default;
-        const SQL = await initSqlJs({
-          locateFile: () => `${process.env.PUBLIC_URL}/sql-wasm.wasm`,
-        });
-        const database = new SQL.Database();
-        database.run(SAMPLE_DATA);
-        setDb(database);
-        setDbReady(true);
-      } catch (err) {
-        console.error("SQL.js failed to load:", err);
+useEffect(() => {
+  const initDb = async () => {
+    try {
+      const initSqlJs = (await import("sql.js")).default;
+      const SQL = await initSqlJs({
+        locateFile: () => `${process.env.PUBLIC_URL}/sql-wasm.wasm`,
+      });
+      const database = new SQL.Database();
+
+      // Fetch real data from Supabase — 500 rows per table
+      const tables = [
+        { name: "customers", columns: ["customer_id","customer_name","email","phone","city","state","country","postal_code","created_date","activated_date","last_login_date","last_order_date","status","customer_type","acquisition_channel","lifetime_value","is_verified"] },
+        { name: "orders", columns: ["order_id","customer_id","order_date","order_status","payment_status","delivery_partner_id","subtotal_amount","tax_amount","discount_amount","delivery_fee","total_amount","currency","estimated_delivery_time","delivered_date","cancelled_date","cancellation_reason"] },
+        { name: "order_items", columns: ["order_item_id","order_id","product_id","quantity","unit_price","discount_amount","tax_amount","total_price","item_status","currency"] },
+        { name: "products", columns: ["product_id","product_name","product_description","category","subcategory","brand","sku","price","cost_price","currency","is_active"] },
+        { name: "payments", columns: ["payment_id","order_id","payment_method","payment_provider","transaction_reference","payment_status","amount","currency","refund_amount","refund_date","failure_reason","payment_date","attempt_number"] },
+        { name: "delivery_partners", columns: ["delivery_partner_id","partner_name","phone","vehicle_type","vehicle_number","city","status","joining_date","last_active_date","rating","total_deliveries"] },
+        { name: "feedback", columns: ["feedback_id","customer_id","order_id","rating","review_text","feedback_channel","issue_category"] },
+      ];
+
+      for (const table of tables) {
+        const { data, error } = await supabase
+          .from(table.name)
+          .select(table.columns.join(","))
+          .limit(500);
+
+        if (error || !data || data.length === 0) continue;
+
+        // Create table in sql.js
+        const colDefs = table.columns.map(c => `"${c}" TEXT`).join(", ");
+        database.run(`CREATE TABLE IF NOT EXISTS ${table.name} (${colDefs});`);
+
+        // Insert rows in batches of 50
+        const batchSize = 50;
+        for (let i = 0; i < data.length; i += batchSize) {
+          const batch = data.slice(i, i + batchSize);
+          const placeholders = batch.map(() =>
+            `(${table.columns.map(() => "?").join(",")})`
+          ).join(",");
+          const values = batch.flatMap(row =>
+            table.columns.map(col => {
+              const val = row[col];
+              if (val === null || val === undefined) return null;
+              return String(val);
+            })
+          );
+          database.run(
+            `INSERT INTO ${table.name} (${table.columns.map(c => `"${c}"`).join(",")}) VALUES ${placeholders}`,
+            values
+          );
+        }
       }
-    };
-    initDb();
-  }, []);
+
+      setDb(database);
+      setDbReady(true);
+    } catch (err) {
+      console.error("SQL.js failed to load:", err);
+    }
+  };
+  initDb();
+}, []);
 
   const runQuery = () => {
     if (!db) return;
@@ -148,9 +159,9 @@ function timeAgo(dateStr) {
         <span style={{ fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.3px", cursor: "pointer" }} onClick={() => navigate("/")}>Data Rejected</span>
         <div style={{ display: "flex", gap: "28px", alignItems: "center" }}>
           {/* <Link to="/home" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Home</Link> */}
-          <Link to="/sql" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Practice</Link>
-          <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Leaderboard</Link>
-          <Link to="/blog" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Blog</Link>
+          <Link to="/sql" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Practice</Link>
+          <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Leaderboard</Link>
+          <Link to="/blog" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Blog</Link>
           <Link to="/login" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Login</Link>
         </div>
       </nav>
@@ -171,10 +182,10 @@ function timeAgo(dateStr) {
 
         {/* Live SQL Sandbox */}
         <div style={{
-          background: "#ffffff", border: "1.5px solid #e2e8f0", borderRadius: "16px", overflow: "hidden",
-          textAlign: "left", boxShadow: "0 8px 40px rgba(0,0,0,0.08)", margin: "0 auto 1rem",
-          width: "100%", position: fullView ? "fixed" : "relative", inset: fullView ? "16px" : "auto", zIndex: fullView ? 999 : "auto"
-        }}>
+  background: "#ffffff", border: "1.5px solid #e2e8f0", borderRadius: "16px", overflow: "visible",
+  textAlign: "left", boxShadow: "0 8px 40px rgba(0,0,0,0.08)", margin: "0 auto 1rem",
+  width: "100%", position: fullView ? "fixed" : "relative", inset: fullView ? "16px" : "auto", zIndex: fullView ? 999 : "auto"
+}}>
           <div style={{ padding: "0.85rem 1.25rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#f8fafc" }}>
             <span style={{ fontSize: "0.78rem", color: "#0f172a", background: "#e2e8f0", padding: "4px 10px", borderRadius: "20px", fontWeight: 700 }}>SQL Sandbox</span>
             <div style={{ display: "flex", gap: "8px" }}>
@@ -188,28 +199,32 @@ function timeAgo(dateStr) {
               <div style={{ borderRight: "1px solid #e2e8f0", background: "#f8fafc", padding: "1rem", overflowY: "auto" }}>
                 <div style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", marginBottom: "1rem", letterSpacing: "0.05em" }}>Schema</div>
                 {[
-                  { name: "customers", cols: [["customer_id", "INT"], ["customer_name", "TEXT"], ["email", "TEXT"], ["signup_date", "TEXT"]] },
-                  { name: "orders", cols: [["order_id", "INT"], ["customer_id", "INT"], ["order_date", "TEXT"], ["amount", "REAL"]] },
-                  { name: "products", cols: [["product_id", "INT"], ["product_name", "TEXT"], ["category", "TEXT"], ["price", "REAL"]] },
-                ].map(table => (
-                  <div key={table.name} style={{ border: "1px solid #e2e8f0", borderRadius: "8px", background: "#fff", marginBottom: "1rem", overflow: "hidden" }}>
-                    <div style={{ fontSize: "0.75rem", fontWeight: 700, padding: "8px 10px", background: "#f1f5f9", color: "#0f172a" }}>{table.name}</div>
-                    <table style={{ width: "100%", fontSize: "0.72rem", borderCollapse: "collapse" }}>
-                      <tbody>
-                        {table.cols.map(([col, type]) => (
-                          <tr key={col}>
-                            <td style={{ padding: "4px 10px", borderBottom: "1px solid #f1f5f9", color: "#0f172a" }}>{col}</td>
-                            <td style={{ padding: "4px 10px", borderBottom: "1px solid #f1f5f9", color: "#94a3b8" }}>{type}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ))}
+  { name: "customers", cols: [["customer_id","INT"],["customer_name","TEXT"],["email","TEXT"],["phone","TEXT"],["city","TEXT"],["state","TEXT"],["country","TEXT"],["status","TEXT"],["customer_type","TEXT"],["lifetime_value","REAL"]] },
+  { name: "orders", cols: [["order_id","INT"],["customer_id","INT"],["order_date","TEXT"],["order_status","TEXT"],["payment_status","TEXT"],["total_amount","REAL"],["currency","TEXT"],["delivered_date","TEXT"]] },
+  // { name: "order_items", cols: [["order_item_id","INT"],["order_id","INT"],["product_id","INT"],["quantity","INT"],["unit_price","REAL"],["total_price","REAL"]] },
+  // { name: "products", cols: [["product_id","INT"],["product_name","TEXT"],["category","TEXT"],["brand","TEXT"],["price","REAL"],["cost_price","REAL"]] },
+  // { name: "payments", cols: [["payment_id","INT"],["order_id","INT"],["payment_method","TEXT"],["payment_status","TEXT"],["amount","REAL"],["currency","TEXT"]] },
+  // { name: "delivery_partners", cols: [["delivery_partner_id","INT"],["partner_name","TEXT"],["vehicle_type","TEXT"],["city","TEXT"],["status","TEXT"],["rating","REAL"]] },
+  // { name: "feedback", cols: [["feedback_id","INT"],["customer_id","INT"],["order_id","INT"],["rating","INT"],["review_text","TEXT"],["issue_category","TEXT"]] },
+].map(table => (
+  <div key={table.name} style={{ border: "1px solid #e2e8f0", borderRadius: "8px", background: "#fff", marginBottom: "1rem", overflow: "hidden" }}>
+    <div style={{ fontSize: "0.75rem", fontWeight: 700, padding: "8px 10px", background: "#f1f5f9", color: "#0f172a" }}>{table.name}</div>
+    <table style={{ width: "100%", fontSize: "0.72rem", borderCollapse: "collapse" }}>
+      <tbody>
+        {table.cols.map(([col, type]) => (
+          <tr key={col}>
+            <td style={{ padding: "4px 10px", borderBottom: "1px solid #f1f5f9", color: "#0f172a" }}>{col}</td>
+            <td style={{ padding: "4px 10px", borderBottom: "1px solid #f1f5f9", color: "#94a3b8" }}>{type}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+))}
               </div>
             )}
 
-            <div style={{ display: "flex", flexDirection: "column", padding: "1rem", background: "#fff" }}>
+<div style={{ display: "flex", flexDirection: "column", padding: "1rem", background: "#fff", minWidth: 0, overflow: "hidden" }}>
               <Editor
                 height="300px"
                 language="sql"
@@ -221,24 +236,44 @@ function timeAgo(dateStr) {
               <button onClick={runQuery} disabled={!dbReady} style={{ margin: "1rem 0 0.75rem", padding: "10px 20px", background: dbReady ? "#2563eb" : "#94a3b8", color: "#fff", border: "none", borderRadius: "6px", cursor: dbReady ? "pointer" : "not-allowed", fontWeight: 700, fontSize: "0.88rem", alignSelf: "flex-start" }}>
                 {dbReady ? "▶ Run Query" : "Loading..."}
               </button>
-              <div style={{ flex: 1, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "1rem", overflow: "auto", minHeight: "120px" }}>
-                {!results && !error && <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>Results appear here after you run a query</span>}
-                {error && <div style={{ color: "#ef4444", fontFamily: "monospace", fontSize: "0.8rem" }}>{error}</div>}
-                {results && (
-                  <div style={{ overflowX: "auto" }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem" }}>
-                      <thead>
-                        <tr>{results.columns.map(col => <th key={col} style={{ textAlign: "left", padding: "6px 10px", borderBottom: "2px solid #e2e8f0", color: "#64748b", fontWeight: 500 }}>{col}</th>)}</tr>
-                      </thead>
-                      <tbody>
-                        {results.values.map((row, i) => (
-                          <tr key={i}>{row.map((cell, j) => <td key={j} style={{ padding: "6px 10px", borderBottom: "1px solid #f1f5f9", color: "#0f172a" }}>{cell}</td>)}</tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
+              <div style={{ flex: 1, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", minHeight: "120px", maxHeight: "250px", overflow: "auto", display: "flex", flexDirection: "column" }}>
+  {!results && !error && (
+    <span style={{ padding: "1rem", fontSize: "0.8rem", color: "#94a3b8" }}>
+      Results appear here after you run a query
+    </span>
+  )}
+  {error && (
+    <div style={{ padding: "1rem", color: "#ef4444", fontFamily: "monospace", fontSize: "0.8rem" }}>
+      {error}
+    </div>
+  )}
+{results && (
+  <div style={{ overflowX: "scroll", overflowY: "auto", width: "100%", WebkitOverflowScrolling: "touch" }}>
+    <table style={{ minWidth: "max-content", borderCollapse: "collapse", fontSize: "0.8rem" }}>
+      <thead>
+        <tr>
+          {results.columns.map(col => (
+            <th key={col} style={{ textAlign: "left", padding: "8px 12px", borderBottom: "2px solid #e2e8f0", color: "#64748b", fontWeight: 500, whiteSpace: "nowrap", position: "sticky", top: 0, background: "#f8fafc", zIndex: 1 }}>
+              {col}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {results.values.map((row, i) => (
+          <tr key={i} style={{ background: i % 2 === 0 ? "#ffffff" : "#f8fafc" }}>
+            {row.map((cell, j) => (
+              <td key={j} style={{ padding: "7px 12px", borderBottom: "1px solid #f1f5f9", color: "#0f172a", whiteSpace: "nowrap" }}>
+                {cell === null ? <span style={{ color: "#94a3b8", fontStyle: "italic" }}>null</span> : String(cell)}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+</div>
             </div>
           </div>
         </div>

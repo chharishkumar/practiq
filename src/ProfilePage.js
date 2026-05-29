@@ -31,6 +31,7 @@ const CATEGORY_PATH_MAP = {
   sql_intermediate: "/sql/intermediate",
   sql_advanced:     "/sql/advanced",
   sql_interview:    "/sql/interview",
+  sql_scenario:     "/sql/scenarios",
   sql_scenarios:    "/sql/scenarios",
 };
 
@@ -40,6 +41,7 @@ const CATEGORY_LABEL_MAP = {
   sql_intermediate: "Intermediate",
   sql_advanced:     "Advanced",
   sql_interview:    "Interview",
+  sql_scenario:     "Scenarios",  // ← add this
   sql_scenarios:    "Scenarios",
 };
 
@@ -476,6 +478,11 @@ export default function ProfilePage() {
 
   const totalProblems = ALL_SQL_PROBLEMS.length;
 
+const lastSub = submissions[0];
+const lastProblemPath = lastSub
+  ? `${CATEGORY_PATH_MAP[lastSub.category] || "/sql/basics"}/${lastSub.problem_id}`
+  : "/sql/basics";
+
   // Build solved problems list for the table (most recent first, correct only)
   // De-duplicate: one row per problem_id (keep most recent correct)
   const seenProblems = new Set();
@@ -764,10 +771,13 @@ export default function ProfilePage() {
                   );
                 })}
                 {solvedProblems.length === 0 && (
-                  <div style={{ textAlign: "center", padding: "1.5rem", color: "#94a3b8", fontSize: "0.85rem" }}>
-                    No solves yet. <button onClick={() => navigate("/sql/basics")} style={{ color: "#2563eb", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>Start now →</button>
-                  </div>
-                )}
+  <div style={{ padding: "2rem", textAlign: "center", color: "#94a3b8", fontSize: "0.85rem" }}>
+    No problems solved yet.{" "}
+    <button onClick={() => navigate(lastProblemPath)} style={{ color: "#2563eb", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+      Start now →
+    </button>
+  </div>
+)}
               </Card>
             </>
           )}
@@ -782,9 +792,9 @@ export default function ProfilePage() {
                     {solvedCount} solved · {accuracy}% first-try accuracy
                   </span>
                 </div>
-                <button onClick={() => navigate("/sql/basics")} style={{ padding: "8px 16px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.8rem", border: "none", cursor: "pointer" }}>
-                  + Solve more
-                </button>
+                <button onClick={() => navigate(lastProblemPath)} style={{ padding: "8px 16px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.8rem", border: "none", cursor: "pointer" }}>
+  + Solve more
+</button>
               </div>
 
               {/* Table header */}
@@ -793,20 +803,17 @@ export default function ProfilePage() {
               </div>
 
               {solvedProblems.length === 0 && (
-                <div style={{ padding: "2rem", textAlign: "center", color: "#94a3b8", fontSize: "0.85rem" }}>
-                  No problems solved yet.{" "}
-                  <button onClick={() => navigate("/sql/basics")} style={{ color: "#2563eb", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
-                    Start now →
-                  </button>
-                </div>
-              )}
+  <div style={{ textAlign: "center", padding: "1.5rem", color: "#94a3b8", fontSize: "0.85rem" }}>
+    No solves yet. <button onClick={() => navigate(lastProblemPath)} style={{ color: "#2563eb", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>Start now →</button>
+  </div>
+)}
 
               {solvedProblems.map((p) => {
                 const ds = DIFF_STYLE[p.difficulty] || DIFF_STYLE.Easy;
                 return (
                   <div
                     key={`${p.problem_id}-${p.category}`}
-                    onClick={() => navigate(p.path)}
+                    onClick={() => navigate(`${p.path}/${p.problem_id}`)}
                     style={{ display: "grid", gridTemplateColumns: "1fr 90px 80px 80px 80px", gap: "8px", padding: "10px 0", borderBottom: "1px solid #f1f5f9", cursor: "pointer", alignItems: "center" }}
                     onMouseEnter={(e) => (e.currentTarget.style.background = "#f8faff")}
                     onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
@@ -836,9 +843,9 @@ export default function ProfilePage() {
                   <div style={{ fontSize: "0.8rem", color: "#64748b", marginBottom: "8px" }}>
                     {totalProblems - solvedCount} problems remaining
                   </div>
-                  <button onClick={() => navigate("/sql/basics")} style={{ padding: "8px 20px", borderRadius: "8px", border: "1.5px solid #bfdbfe", background: "#eff6ff", color: "#2563eb", fontWeight: 700, fontSize: "0.82rem", cursor: "pointer" }}>
-                    Continue solving →
-                  </button>
+                  <button onClick={() => navigate(lastProblemPath)} style={{ padding: "8px 20px", borderRadius: "8px", border: "1.5px solid #bfdbfe", background: "#eff6ff", color: "#2563eb", fontWeight: 700, fontSize: "0.82rem", cursor: "pointer" }}>
+  Continue solving →
+</button>
                 </div>
               )}
             </Card>

@@ -10,32 +10,6 @@ import { SQL_SCENARIOS_PROBLEMS } from "./data/sqlScenariosProblems";
 
 // ─── SAMPLE DATA ──────────────────────────────────────────────────────────────
 
-const SAMPLE_DATA = `
-CREATE TABLE customers (
-  customer_id INTEGER PRIMARY KEY, customer_name TEXT, email TEXT, signup_date TEXT
-);
-CREATE TABLE orders (
-  order_id INTEGER PRIMARY KEY, customer_id INTEGER, order_date TEXT, amount REAL
-);
-CREATE TABLE products (
-  product_id INTEGER PRIMARY KEY, product_name TEXT, category TEXT, price REAL
-);
-INSERT INTO customers VALUES (1,'Alice Johnson','alice@email.com','2023-01-15');
-INSERT INTO customers VALUES (2,'Bob Smith','bob@email.com','2023-02-20');
-INSERT INTO customers VALUES (3,'Carol White','carol@email.com','2023-03-10');
-INSERT INTO customers VALUES (4,'David Brown','david@email.com','2023-04-05');
-INSERT INTO customers VALUES (5,'Emma Davis','emma@email.com','2023-05-12');
-INSERT INTO orders VALUES (1,1,'2024-01-10',250.00);
-INSERT INTO orders VALUES (2,1,'2024-02-15',180.00);
-INSERT INTO orders VALUES (3,3,'2024-03-20',320.00);
-INSERT INTO orders VALUES (4,5,'2024-01-25',150.00);
-INSERT INTO orders VALUES (5,2,'2024-04-08',410.00);
-INSERT INTO products VALUES (1,'Starter Plan','subscription',29.00);
-INSERT INTO products VALUES (2,'Pro Plan','subscription',99.00);
-INSERT INTO products VALUES (3,'Onboarding Kit','services',199.00);
-INSERT INTO products VALUES (4,'Analytics Add-on','addon',49.00);
-INSERT INTO products VALUES (5,'Priority Support','services',79.00);
-`;
 
 // ─── CATEGORIES ───────────────────────────────────────────────────────────────
 
@@ -127,33 +101,59 @@ const FEATURED_PROBLEMS = buildFeaturedProblems();
 
 const TABLE_DATA = {
   customers: {
-    columns: ["customer_id", "customer_name", "email", "signup_date"],
+    columns: ["customer_id","customer_name","email","phone"],
     rows: [
-      [1, "Alice Johnson", "alice@email.com", "2023-01-15"],
-      [2, "Bob Smith",     "bob@email.com",   "2023-02-20"],
-      [3, "Carol White",   "carol@email.com", "2023-03-10"],
-      [4, "David Brown",   "david@email.com", "2023-04-05"],
-      [5, "Emma Davis",    "emma@email.com",  "2023-05-12"],
+      [1,"Alice Johnson","alice@email.com","9876543210"],
+      [2,"Bob Smith","bob@email.com","9012345678"],
+      [3,"Carol White","carol@email.com","8765432109"],
     ],
   },
   orders: {
-    columns: ["order_id", "customer_id", "order_date", "amount"],
+    columns: ["order_id","customer_id","order_date","order_status","payment_status"],
     rows: [
-      [1, 1, "2024-01-10", "$250.00"],
-      [2, 1, "2024-02-15", "$180.00"],
-      [3, 3, "2024-03-20", "$320.00"],
-      [4, 5, "2024-01-25", "$150.00"],
-      [5, 2, "2024-04-08", "$410.00"],
+      [1001,1,"2024-01-10","delivered","paid"],
+      [1002,1,"2024-02-15","delivered","paid"],
+      [1003,2,"2024-03-20","shipped","paid"],
+    ],
+  },
+  order_items: {
+    columns: ["order_item_id","order_id","product_id","quantity","unit_price","total_price"],
+    rows: [
+      [1,1001,101,2,"250.00","500.00"],
+      [2,1001,102,1,"750.00","750.00"],
+      [3,1002,103,3,"296.67","890.00"],
     ],
   },
   products: {
-    columns: ["product_id", "product_name", "category", "price"],
+    columns: ["product_id","product_name","category","subcategory"],
     rows: [
-      [1, "Starter Plan",     "subscription", "$29.00"],
-      [2, "Pro Plan",         "subscription", "$99.00"],
-      [3, "Onboarding Kit",   "services",     "$199.00"],
-      [4, "Analytics Add-on", "addon",        "$49.00"],
-      [5, "Priority Support", "services",     "$79.00"],
+      [101,"Starter Plan","subscription","monthly"],
+      [102,"Pro Plan","subscription","annual"],
+      [103,"Analytics Kit","services","onboarding"],
+    ],
+  },
+  payments: {
+    columns: ["payment_id","order_id","payment_method","payment_status","amount","currency"],
+    rows: [
+      [5001,1001,"UPI","success","1250.00","INR"],
+      [5002,1002,"credit_card","success","890.00","INR"],
+      [5003,1003,"net_banking","success","2100.00","INR"],
+    ],
+  },
+  delivery_partners: {
+    columns: ["delivery_partner_id","partner_name","vehicle_type","city","status","rating"],
+    rows: [
+      [201,"Raju Kumar","bike","Mumbai","active","4.8"],
+      [202,"Suresh Patel","scooter","Delhi","active","4.5"],
+      [203,"Amit Singh","bike","Bangalore","inactive","4.2"],
+    ],
+  },
+  feedback: {
+    columns: ["feedback_id","customer_id","order_id","rating","issue_category"],
+    rows: [
+      [301,1,1001,5,"none"],
+      [302,2,1003,3,"late_delivery"],
+      [303,3,1002,4,"product_quality"],
     ],
   },
 };
@@ -205,13 +205,14 @@ const FALLBACK_COMMUNITY = [
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 
 function timeAgo(dateStr) {
-  const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+  // Force UTC parsing — Supabase sometimes returns without Z suffix
+  const utcStr = dateStr.endsWith("Z") ? dateStr : dateStr + "Z";
+  const diff = Math.floor((Date.now() - new Date(utcStr)) / 1000);
   if (diff < 60)    return `${diff}s ago`;
   if (diff < 3600)  return `${Math.floor(diff / 60)}m ago`;
   if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
   return `${Math.floor(diff / 86400)}d ago`;
 }
-
 function getInitials(name = "") {
   return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 }
@@ -244,56 +245,13 @@ function CatPill({ cat }) {
   );
 }
 
-// ─── FULLSCREEN EDITOR MODAL ──────────────────────────────────────────────────
-
-function FullscreenEditor({ query, setQuery, onClose, onRun, dbReady }) {
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "#0f172a", zIndex: 9999, display: "flex", flexDirection: "column" }}>
-      {/* Top bar */}
-      <div style={{ padding: "0.75rem 1.5rem", borderBottom: "1px solid #1e293b", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontSize: "0.75rem", color: "#0f172a", background: "#e2e8f0", padding: "4px 10px", borderRadius: "20px", fontWeight: 700 }}>SQL</span>
-          <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>Fullscreen editor · Ctrl+Enter to run</span>
-        </div>
-        <div style={{ display: "flex", gap: "8px" }}>
-          <button
-            onClick={onRun}
-            disabled={!dbReady}
-            style={{ padding: "8px 20px", borderRadius: "6px", background: dbReady ? "#2563eb" : "#475569", color: "#fff", fontWeight: 700, fontSize: "0.82rem", border: "none", cursor: dbReady ? "pointer" : "not-allowed" }}
-          >
-            ▶ Run Query
-          </button>
-          <button
-            onClick={onClose}
-            style={{ padding: "8px 16px", borderRadius: "6px", background: "#1e293b", color: "#94a3b8", fontWeight: 600, fontSize: "0.82rem", border: "1px solid #334155", cursor: "pointer" }}
-          >
-            ✕ Exit fullscreen
-          </button>
-        </div>
-      </div>
-      {/* Editor fills remaining height */}
-      <div style={{ flex: 1, overflow: "hidden" }}>
-        <Editor
-          height="100%"
-          width="100%"
-          defaultLanguage="sql"
-          theme="vs-dark"
-          value={query}
-          onChange={(v) => setQuery(v || "")}
-          options={{ fontSize: 15, lineHeight: 24, minimap: { enabled: true }, wordWrap: "on", automaticLayout: true, scrollBeyondLastLine: false, padding: { top: 16, bottom: 16 } }}
-        />
-      </div>
-    </div>
-  );
-}
-
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
 export default function SQLPage() {
   const navigate = useNavigate();
 
   // SQL sandbox
-  const [query, setQuery]       = useState("SELECT * FROM customers;");
+  const [query, setQuery]       = useState("SELECT * FROM customers LIMIT 5;");
   const [results, setResults]   = useState(null);
   const [error, setError]       = useState(null);
   const [db, setDb]             = useState(null);
@@ -307,16 +265,70 @@ export default function SQLPage() {
   // Live Supabase data
   const [leaderboard, setLeaderboard] = useState(FALLBACK_LEADERBOARD);
   const [community, setCommunity]     = useState(FALLBACK_COMMUNITY);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Init SQL.js
   useEffect(() => {
     const initDb = async () => {
-      const initSqlJs = (await import("sql.js")).default;
-      const SQL = await initSqlJs({ locateFile: () => `${process.env.PUBLIC_URL}/sql-wasm.wasm` });
-      const database = new SQL.Database();
-      database.run(SAMPLE_DATA);
-      setDb(database);
-      setDbReady(true);
+      try {
+        const initSqlJs = (await import("sql.js")).default;
+        const SQL = await initSqlJs({
+          locateFile: () => `${process.env.PUBLIC_URL}/sql-wasm.wasm`,
+        });
+        const database = new SQL.Database();
+  
+        const tables = [
+          { name: "customers", columns: ["customer_id","customer_name","email","phone","city","state","country","postal_code","created_date","activated_date","last_login_date","last_order_date","status","customer_type","acquisition_channel","lifetime_value","is_verified"] },
+          { name: "orders", columns: ["order_id","customer_id","order_date","order_status","payment_status","delivery_partner_id","subtotal_amount","tax_amount","discount_amount","delivery_fee","total_amount","currency","estimated_delivery_time","delivered_date","cancelled_date","cancellation_reason"] },
+          { name: "order_items", columns: ["order_item_id","order_id","product_id","quantity","unit_price","discount_amount","tax_amount","total_price","item_status","currency"] },
+          { name: "products", columns: ["product_id","product_name","product_description","category","subcategory","brand","sku","price","cost_price","currency","is_active"] },
+          { name: "payments", columns: ["payment_id","order_id","payment_method","payment_provider","transaction_reference","payment_status","amount","currency","refund_amount","refund_date","failure_reason","payment_date","attempt_number"] },
+          { name: "delivery_partners", columns: ["delivery_partner_id","partner_name","phone","vehicle_type","vehicle_number","city","status","joining_date","last_active_date","rating","total_deliveries"] },
+          { name: "feedback", columns: ["feedback_id","customer_id","order_id","rating","review_text","feedback_channel","issue_category"] },
+        ];
+  
+        for (const table of tables) {
+          const { data, error } = await supabase
+            .from(table.name)
+            .select(table.columns.join(","))
+            .limit(500);
+  
+          if (error || !data || data.length === 0) continue;
+  
+          const colDefs = table.columns.map(c => `"${c}" TEXT`).join(", ");
+          database.run(`CREATE TABLE IF NOT EXISTS ${table.name} (${colDefs});`);
+  
+          const batchSize = 50;
+          for (let i = 0; i < data.length; i += batchSize) {
+            const batch = data.slice(i, i + batchSize);
+            const placeholders = batch.map(() =>
+              `(${table.columns.map(() => "?").join(",")})`
+            ).join(",");
+            const values = batch.flatMap(row =>
+              table.columns.map(col => {
+                const val = row[col];
+                if (val === null || val === undefined) return null;
+                return String(val);
+              })
+            );
+            database.run(
+              `INSERT INTO ${table.name} (${table.columns.map(c => `"${c}"`).join(",")}) VALUES ${placeholders}`,
+              values
+            );
+          }
+        }
+  
+        setDb(database);
+        setDbReady(true);
+      } catch (err) {
+        console.error("SQL.js failed to load:", err);
+      }
     };
     initDb();
   }, []);
@@ -332,8 +344,6 @@ export default function SQLPage() {
           .eq("is_best_attempt", true);
 
         if (topUsers && topUsers.length > 0) {
-          const uniqueIds = [...new Set(topUsers.map((r) => r.user_id))];
-
           const { data: profilesById } = await supabase
             .from("profiles")
             .select("id, full_name");
@@ -598,14 +608,51 @@ export default function SQLPage() {
   </div>
 )}
 
+{/* MOBILE WARNING */}
+{isMobile && (
+      <div style={{
+        position: "fixed",
+        inset: 0,
+        background: "#ffffff",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 99999,
+        fontFamily: "Inter, sans-serif",
+        padding: "2rem",
+      }}>
+        <div style={{ textAlign: "center", maxWidth: "320px" }}>
+          <div style={{ fontSize: "3rem", marginBottom: "1.25rem" }}>💻</div>
+          <h2 style={{ fontSize: "1.3rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.75rem", letterSpacing: "-0.5px" }}>
+            Desktop required
+          </h2>
+          <p style={{ fontSize: "0.88rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.75rem" }}>
+            The SQL editor requires a larger screen to work properly. Please open this page on a laptop or desktop computer.
+          </p>
+          <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "10px", padding: "1rem", marginBottom: "1.5rem" }}>
+            <div style={{ fontSize: "0.78rem", color: "#64748b", lineHeight: 1.6 }}>
+              📧 Bookmark this page and come back on desktop — your progress is saved automatically.
+            </div>
+          </div>
+          <button
+            onClick={() => navigate("/")}
+            style={{ width: "100%", padding: "12px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer" }}
+          >
+            ← Back to Home
+          </button>
+        </div>
+      </div>
+    )}
+
       {/* ── NAV ──────────────────────────────────────────────────────────── */}
       <nav style={{ padding: "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
         <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
         <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
-          <span onClick={() => navigate("/home")}        style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Home</span>
+          <span onClick={() => navigate("/home")}        style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Home</span>
           <span onClick={() => navigate("/sql")}         style={{ fontSize: "0.85rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Practice</span>
-          <span onClick={() => navigate("/leaderboard")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Leaderboard</span>
-          <Link to="/profile"                            style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Profile</Link>
+          <span onClick={() => navigate("/leaderboard")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Leaderboard</span>
+          <Link to="/profile"                            style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Profile</Link>
+          <Link to="/blog"                            style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Blog</Link>
         </div>
       </nav>
 
@@ -837,9 +884,9 @@ export default function SQLPage() {
                 {error && (
                   <span style={{ fontSize: "0.8rem", color: "#ef4444", fontFamily: "monospace" }}>{error}</span>
                 )}
-                {results && (
-                  <div style={{ overflowX: "auto" }}>
-                    <table style={{ borderCollapse: "collapse", fontSize: "0.78rem" }}>
+             {results && (
+  <div style={{ overflowX: "scroll", overflowY: "auto", width: "100%", WebkitOverflowScrolling: "touch" }}>
+    <table style={{ minWidth: "max-content", borderCollapse: "collapse", fontSize: "0.78rem" }}>
                       <thead>
                         <tr>
                           {results.columns.map((col) => (
