@@ -17,6 +17,9 @@ import LeaderboardPage from "./LeaderboardPage";
 import BlogPage from "./BlogPage";
 import BlogWritePage from "./BlogWritePage";
 import BlogPostPage from "./BlogPostPage";
+import PrivacyPolicyPage from "./PrivacyPolicyPage";
+import TermsUse from "./TermsUse";
+import ShareModal from "./ShareModel";
 
 export default function App() {
   return (
@@ -47,6 +50,10 @@ export default function App() {
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/write" element={<BlogWritePage />} />
         <Route path="/blog/:slug" element={<BlogPostPage />} />
+
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms" element={<TermsUse />} />
+        <Route path="/share" element={<TermsUse />} />
       </Routes>
     </BrowserRouter>
   );

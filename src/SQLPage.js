@@ -1003,16 +1003,29 @@ export default function SQLPage() {
             </div>
             <div>
               <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.75rem" }}>Product</div>
-              {[["Practice", "/sql"], ["Leaderboard", "/leaderboard"], ["Datasets", "/sql"]].map(([label, path]) => (
+              {[["Practice", "/sql"], ["Leaderboard", "/leaderboard"]].map(([label, path]) => (
                 <div key={label} onClick={() => navigate(path)} style={{ fontSize: "0.82rem", color: "#64748b", marginBottom: "0.4rem", cursor: "pointer" }}>{label}</div>
               ))}
             </div>
             <div>
-              <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.75rem" }}>Legal</div>
-              {["Privacy Policy", "Terms of Use"].map((link) => (
-                <div key={link} style={{ fontSize: "0.82rem", color: "#64748b", marginBottom: "0.4rem", cursor: "pointer" }}>{link}</div>
-              ))}
-            </div>
+            <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.75rem" }}>
+    Legal
+  </div>
+  
+  <Link 
+    to="/privacy" 
+    style={{ display: "block", fontSize: "0.82rem", color: "#64748b", marginBottom: "0.4rem", textDecoration: "none", cursor: "pointer" }}
+  >
+    Privacy Policy
+  </Link>
+
+  <Link 
+    to="/terms" 
+    style={{ display: "block", fontSize: "0.82rem", color: "#64748b", marginBottom: "0.4rem", textDecoration: "none", cursor: "pointer" }}
+  >
+    Terms of Use
+  </Link>
+</div>
           </div>
           <div style={{ borderTop: "1px solid #e2e8f0", paddingTop: "1.25rem", fontSize: "0.75rem", color: "#94a3b8", textAlign: "center" }}>
             © 2025 Data Rejected · Built for data professionals who want to actually do the work.

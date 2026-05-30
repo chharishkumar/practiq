@@ -11,8 +11,8 @@ export const SQL_SCENARIOS_PROBLEMS = [
     starterQuery: "SELECT order_date, SUM(total_amount) as revenue\nFROM orders\nGROUP BY order_date;",
     expectedColumns: ["order_date", "revenue"],
     expectedRowCount: 10,
-    solutionQuery: "WITH recent_revenue AS (\n    SELECT\n        order_date,\n        ROUND(SUM(total_amount), 2) AS revenue\n    FROM orders\n    WHERE order_date >= DATE('now', '-14 days')\n    GROUP BY order_date\n),\ncategory_breakdown AS (\n    SELECT\n        p.category,\n        ROUND(SUM(oi.total_price), 2) AS category_revenue\n    FROM orders o\n    JOIN order_items oi\n        ON o.order_id = oi.order_id\n    JOIN products p\n        ON oi.product_id = p.product_id\n    WHERE o.order_date >= DATE('now', '-14 days')\n    GROUP BY p.category\n)\nSELECT\n    r.order_date,\n    r.revenue,\n    c.category,\n    c.category_revenue\nFROM recent_revenue r\nCROSS JOIN category_breakdown c\nORDER BY r.order_date DESC, c.category_revenue DESC;",
-  },
+      solutionQuery: "WITH recent_revenue AS (\n    SELECT\n        order_date,\n        ROUND(SUM(total_amount), 2) AS revenue\n    FROM orders\n    WHERE order_date >= DATE('now', '-14 days')\n    GROUP BY order_date\n),\ncategory_breakdown AS (\n    SELECT\n        p.category,\n        ROUND(SUM(oi.total_price), 2) AS category_revenue\n    FROM orders o\n    JOIN order_items oi\n        ON o.order_id = oi.order_id\n    JOIN products p\n        ON oi.product_id = p.product_id\n    WHERE o.order_date >= DATE('now', '-14 days')\n    GROUP BY p.category\n)\nSELECT\n    r.order_date,\n    r.revenue,\n    c.category,\n    c.category_revenue\nFROM recent_revenue r\nCROSS JOIN category_breakdown c\nORDER BY r.order_date DESC, c.category_revenue DESC;",
+    },
   
   {
     id: 2,
