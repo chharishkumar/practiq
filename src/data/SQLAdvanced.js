@@ -6,16 +6,6 @@ import { matchesProblem, searchSqlProblems } from "./sqlSearch";
 import Editor from "@monaco-editor/react";
 import ShareModal from "../ShareModel";
 
-function normalizeValue(v) {
-  if (v === null || v === undefined) return "";
-  const str = String(v).trim();
-  // If it looks like a number, parse and round to 4 decimal places
-  const num = parseFloat(str);
-  if (!isNaN(num) && str !== "") {
-    return num.toFixed(4);
-  }
-  return str.toLowerCase(); // case insensitive string comparison
-}
 
 function validateResults(userResult, referenceResult) {
   if (!userResult || !referenceResult) return null;

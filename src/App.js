@@ -19,7 +19,7 @@ import BlogWritePage from "./BlogWritePage";
 import BlogPostPage from "./BlogPostPage";
 import PrivacyPolicyPage from "./PrivacyPolicyPage";
 import TermsUse from "./TermsUse";
-import ShareModal from "./ShareModel";
+
 
 export default function App() {
   return (
