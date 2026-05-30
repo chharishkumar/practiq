@@ -154,7 +154,7 @@ export default function SignupPage() {
      {/* Right Panel — Form */}
 <div style={{ flex: 1, background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem", overflowY: "auto" }}>
   <div style={{ width: "100%", maxWidth: "420px" }}>
-      /* SIGNUP FORM */
+
       <>
         <div style={{ marginBottom: "2rem", textAlign: "center" }}>
           <h2 style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-1px", margin: "0 0 8px" }}>Create your account</h2>
