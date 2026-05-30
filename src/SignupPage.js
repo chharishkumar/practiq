@@ -57,7 +57,6 @@ export default function SignupPage() {
     setIsLoading(true);
     setError(null);
   
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError("Please enter a valid email address.");
@@ -65,14 +64,13 @@ export default function SignupPage() {
       return;
     }
   
-    // Validate password length
     if (formData.password.length < 8) {
       setError("Password must be at least 8 characters.");
       setIsLoading(false);
       return;
     }
   
-    // Validate mobile number
+
     const mobileRegex = /^[0-9]{7,15}$/;
     if (!mobileRegex.test(formData.mobile)) {
       setError("Please enter a valid mobile number.");
@@ -103,7 +101,6 @@ export default function SignupPage() {
       return;
     }
   
-    // Save profile data
     const { error: profileError } = await supabase
       .from("profiles")
       .upsert({

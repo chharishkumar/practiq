@@ -219,12 +219,3 @@ const sectionHeaderStyle = {
   letterSpacing: "-0.3px",
   marginBottom: "0.75rem"
 };
-
-const codeStyle = {
-  background: "#f1f5f9",
-  padding: "2px 6px",
-  borderRadius: "4px",
-  fontSize: "0.85rem",
-  fontFamily: "monospace",
-  color: "#0f172a"
-};

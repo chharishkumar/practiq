@@ -402,7 +402,7 @@ export default function ShareModal({ isOpen, onClose, problem, user, solvedCount
   useEffect(() => {
     if (!isOpen || !problem) return;
     setCaption(generateCaption({ user, problem, solvedCount, streak, timeTaken, firstTry }));
-  }, [isOpen, problem, solvedCount]);
+  }, [isOpen, problem, solvedCount, user, streak, timeTaken, firstTry]);
 
   const handleCopyCaption = useCallback(async () => {
     try {
