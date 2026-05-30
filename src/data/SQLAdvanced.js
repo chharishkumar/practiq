@@ -6,6 +6,17 @@ import { matchesProblem, searchSqlProblems } from "./sqlSearch";
 import Editor from "@monaco-editor/react";
 import ShareModal from "../ShareModel";
 
+function normalizeValue(v) {
+  if (v === null || v === undefined) return "";
+  const str = String(v).trim();
+  // If it looks like a number, parse and round to 4 decimal places
+  const num = parseFloat(str);
+  if (!isNaN(num) && str !== "") {
+    return num.toFixed(4);
+  }
+  return str.toLowerCase(); // case insensitive string comparison
+}
+
 function validateResults(userResult, referenceResult) {
   if (!userResult || !referenceResult) return null;
 
@@ -89,10 +100,11 @@ export default function SQLAdvancedPage() {
   const [postSuccess, setPostSuccess] = useState(false);
   const [validationStatus, setValidationStatus] = useState(null);
   const [shareOpen, setShareOpen] = useState(false);
-  const [elapsed, setElapsed] = useState(null);
-  const [userFullName, setUserFullName] = useState("");
-  const [userEmail, setUserEmail] = useState("");
-  const [userStreak, setUserStreak] = useState(0);
+const [elapsed, setElapsed] = useState(null);
+const [userFullName, setUserFullName] = useState("");
+const [userEmail, setUserEmail] = useState("");
+const [userStreak, setUserStreak] = useState(0);
+
 
   const queryRef = useRef(query);
   useEffect(() => { queryRef.current = query; }, [query]);
@@ -328,11 +340,10 @@ setUserStreak(streakRow?.current_streak || 0);
     runCountRef.current = 0;
     setRunCountDisplay(0);
     setSelectedProblem(p);
-    setQuery(p.starterQuery || "-- Explore the data first, then write your solution below\nSELECT * FROM customers LIMIT 5;");
+    setQuery("-- Explore the data first, then write your solution below\nSELECT * FROM customers LIMIT 5;");
     setResults(null);
     setError(null);
     setValidationStatus(null);
-    setElapsed(null);
     navigate(`/sql/advanced/${p.id}`);
   }, [navigate]);
 
@@ -551,8 +562,9 @@ setUserStreak(streakRow?.current_streak || 0);
 
             return (
               <div
+                
                 key={p.id}
-                ref={isSelected ? selectedItemRef : null}
+  ref={isSelected ? selectedItemRef : null}
                 style={{ margin: "0 0.75rem 0.5rem", background: "#ffffff", border: "1.5px solid", borderColor: isSelected ? "#2563eb" : "#e2e8f0", borderRadius: "10px", overflow: "hidden", transition: "border-color 0.15s", boxShadow: isSelected ? "0 0 0 3px rgba(37,99,235,0.08)" : "none" }}
               >
                 <div
@@ -589,7 +601,7 @@ setUserStreak(streakRow?.current_streak || 0);
                     </div>
                     <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "8px", padding: "0.625rem 0.75rem", marginBottom: "0.875rem" }}>
                       <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "3px" }}>Real-world scenario</div>
-                      <p style={{ margin: 0, fontSize: "0.78rem", color: "#1e40af", lineHeight: 1.6 }}>{p.scenario}</p>
+                      <p style={{ margin: 0, fontSize: "0.78rem", color: "#1e40af", lineHeight: 1.6 }}>{p.basics}</p>
                     </div>
                     <div style={{ marginBottom: "0.875rem" }}>
                       <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "5px" }}>Common use cases</div>
@@ -813,7 +825,7 @@ setUserStreak(streakRow?.current_streak || 0);
           </div>
         </div>
       )}
-       <ShareModal
+<ShareModal
   isOpen={shareOpen}
   onClose={() => setShareOpen(false)}
   problem={{ ...selectedProblem, category: "Advanced" }}
