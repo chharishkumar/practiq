@@ -19,6 +19,7 @@ import BlogWritePage from "./BlogWritePage";
 import BlogPostPage from "./BlogPostPage";
 import PrivacyPolicyPage from "./PrivacyPolicyPage";
 import TermsUse from "./TermsUse";
+import PricingPage from "./PricingPage";
 
 
 export default function App() {
@@ -54,6 +55,7 @@ export default function App() {
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
         <Route path="/terms" element={<TermsUse />} />
         <Route path="/share" element={<TermsUse />} />
+        <Route path="/pricing" element={<PricingPage />} />
       </Routes>
     </BrowserRouter>
   );
