@@ -5,6 +5,7 @@ import { SQL_ADVANCED_PROBLEMS } from "./sqlAdvancedProblems";
 import { matchesProblem, searchSqlProblems } from "./sqlSearch";
 import Editor from "@monaco-editor/react";
 import ShareModal from "../ShareModel";
+import { useProStatus } from "../hooks/useProStatus";
 
 
 function validateResults(userResult, referenceResult) {
@@ -82,7 +83,6 @@ export default function SQLAdvancedPage() {
   const [db, setDb] = useState(null);
   const [dbReady, setDbReady] = useState(false);
   const [solvedIds, setSolvedIds] = useState(new Set());
-  const [isGuest, setIsGuest] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -91,9 +91,8 @@ export default function SQLAdvancedPage() {
   const [validationStatus, setValidationStatus] = useState(null);
   const [shareOpen, setShareOpen] = useState(false);
 const [elapsed, setElapsed] = useState(null);
-const [userFullName, setUserFullName] = useState("");
-const [userEmail, setUserEmail] = useState("");
 const [userStreak, setUserStreak] = useState(0);
+const { isGuest, isPro, userId, userEmail, userName: userFullName, loading: proLoading } = useProStatus();
 
 
   const queryRef = useRef(query);
@@ -167,18 +166,9 @@ const [userStreak, setUserStreak] = useState(0);
   useEffect(() => {
     const fetchSolvedProblems = async () => {
       const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData?.session) {
-        setIsGuest(true);
-        return;
-      }
-      const userId = sessionData.session.user.id;
-      setUserEmail(sessionData.session.user.email || "");
-      const { data: prof } = await supabase
-    .from("profiles")
-    .select("full_name")
-    .eq("id", userId)
-    .maybeSingle();
-  setUserFullName(prof?.full_name || sessionData.session.user.email?.split("@")[0] || "User");  
+      const session = sessionData?.session;
+      if (!session) return;
+      const userId = session.user.id;
 
   const { data: streakRow } = await supabase
   .from("user_streaks")
@@ -548,7 +538,7 @@ setUserStreak(streakRow?.current_streak || 0);
             const isSelected = selectedProblem.id === p.id;
             const isExpanded = expandedId === p.id;
             const isSolved = solvedIds.has(p.id);
-            const isLocked = isGuest && p.id > 10;
+            const isLocked = (isGuest && p.id > 10) || (!isGuest && !isPro && p.id > 30);
 
             return (
               <div
@@ -618,23 +608,47 @@ setUserStreak(streakRow?.current_streak || 0);
 
         {/* RIGHT PANEL */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "#ffffff" }}>
-          {selectedProblem.id > 10 && isGuest ? (
-            <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
-              <div style={{ textAlign: "center", maxWidth: "360px" }}>
-                <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🔒</div>
-                <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.5rem" }}>Sign in to unlock this problem</h3>
-                <p style={{ fontSize: "0.88rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>
-                  You've explored the first 10 problems. Sign up free to access all {SQL_ADVANCED_PROBLEMS.length} SQL problems and save your progress.
-                </p>
-                <button onClick={() => navigate("/signup")} style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer", marginBottom: "8px" }}>
-                  Sign Up Free →
-                </button>
-                <button onClick={() => navigate("/login")} style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.88rem", border: "1.5px solid #bfdbfe", cursor: "pointer" }}>
-                  Already have an account? Sign in
-                </button>
-              </div>
-            </div>
-          ) : (
+        {selectedProblem.id > 30 && !isGuest && !isPro ? (
+  <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
+    <div style={{ textAlign: "center", maxWidth: "380px" }}>
+      <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🔒</div>
+      <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.5rem" }}>
+        Pro problem
+      </h3>
+      <p style={{ fontSize: "0.88rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>
+        You've completed the free tier. Upgrade to Pro to unlock all {SQL_ADVANCED_PROBLEMS.length} SQL Advanced problems.
+      </p>
+      <button
+        onClick={() => navigate("/pricing")}
+        style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer", marginBottom: "8px" }}
+      >
+        View Pro Plans →
+      </button>
+      <button
+        onClick={() => navigate("/pricing")}
+        style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#ffffff", color: "#64748b", fontWeight: 600, fontSize: "0.88rem", border: "1.5px solid #e2e8f0", cursor: "pointer" }}
+      >
+        See what's included
+      </button>
+    </div>
+  </div>
+) : selectedProblem.id > 10 && isGuest ? (
+  <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
+    <div style={{ textAlign: "center", maxWidth: "360px" }}>
+      <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🔒</div>
+      <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.5rem" }}>Sign in to unlock this problem</h3>
+      <p style={{ fontSize: "0.88rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>
+        You've explored the first 10 problems. Sign up free to access all {SQL_ADVANCED_PROBLEMS.length} SQL Advanced problems and save your progress.
+      </p>
+      <button onClick={() => navigate("/signup")} style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer", marginBottom: "8px" }}>
+        Sign Up Free →
+      </button>
+      <button onClick={() => navigate("/login")} style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.88rem", border: "1.5px solid #bfdbfe", cursor: "pointer" }}>
+        Already have an account? Sign in
+      </button>
+    </div>
+  </div>
+) : (
             <>
               {/* Problem Header */}
               <div style={{ padding: "1.25rem 1.75rem 1rem", borderBottom: "1px solid #f1f5f9", flexShrink: 0 }}>
