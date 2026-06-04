@@ -92,7 +92,7 @@ export default function SQLAdvancedPage() {
   const [shareOpen, setShareOpen] = useState(false);
 const [elapsed, setElapsed] = useState(null);
 const [userStreak, setUserStreak] = useState(0);
-const { isGuest, isPro, userId, userEmail, userName: userFullName, loading: proLoading } = useProStatus();
+const { isGuest, isPro, userEmail, userName: userFullName } = useProStatus();
 
 
   const queryRef = useRef(query);
