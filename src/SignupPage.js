@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "./supabase";
-
+import { useMobile } from "./hooks/useMobile";
 
 const COUNTRIES = [
   { name: "India", code: "+91", states: ["Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand","Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Delhi","Jammu & Kashmir","Ladakh","Puducherry","Chandigarh"] },
@@ -19,6 +19,7 @@ const COUNTRIES = [
 
 export default function SignupPage() {
   const navigate = useNavigate();
+  const isMobile = useMobile();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -121,23 +122,24 @@ export default function SignupPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: isMobile ? "column" : "row", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
 
       {/* Left Panel — Branding */}
-      <div style={{ width: "42%", background: "#0f172a", padding: "3rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      <div style={{ width: isMobile ? "100%" : "42%", minHeight: isMobile ? "auto" : "100vh", background: "#0f172a", padding: isMobile ? "1.5rem" : "3rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
         <Link to="/" style={{ fontWeight: 800, color: "#ffffff", fontSize: "1.1rem", letterSpacing: "-0.3px", textDecoration: "none" }}>Data Rejected</Link>
         <div>
           <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#60a5fa", background: "rgba(96,165,250,0.1)", padding: "5px 14px", borderRadius: "20px", border: "1px solid rgba(96,165,250,0.2)", marginBottom: "1.5rem", fontWeight: 600 }}>
             <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#60a5fa", display: "inline-block" }}></span>
             Free to start — always
           </div>
-          <h2 style={{ fontSize: "2rem", fontWeight: 800, color: "#ffffff", letterSpacing: "-1px", lineHeight: 1.2, marginBottom: "1rem" }}>
+          <h2 style={{ fontSize: isMobile ? "1.5rem" : "2rem", fontWeight: 800, color: "#ffffff", letterSpacing: "-1px", lineHeight: 1.2, marginBottom: "1rem" }}>
             Practice SQL on<br /><span style={{ color: "#60a5fa" }}>Real Business Data</span>
           </h2>
           <p style={{ color: "#94a3b8", fontSize: "0.9rem", lineHeight: 1.75, marginBottom: "2rem" }}>
             Join thousands of data professionals who practice on real datasets — customer churn, revenue analysis, support tickets and more.
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          {!isMobile && (
+  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {["1000+ real SQL problems across all levels", "Free sandbox — write and run SQL instantly", "Leaderboard, certificates and community", "No setup. No downloads. Just SQL."].map((item, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <div style={{ width: "18px", height: "18px", borderRadius: "50%", background: "rgba(96,165,250,0.15)", border: "1px solid rgba(96,165,250,0.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -147,13 +149,15 @@ export default function SignupPage() {
               </div>
             ))}
           </div>
+          )}
         </div>
+        
         <div style={{ fontSize: "0.75rem", color: "#475569" }}>© 2025 Data Rejected. All rights reserved.</div>
       </div>
 
      {/* Right Panel — Form */}
-<div style={{ flex: 1, background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem", overflowY: "auto" }}>
-  <div style={{ width: "100%", maxWidth: "420px" }}>
+<div style={{ flex: 1, background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", padding: isMobile ? "1rem" : "2rem", overflowY: isMobile ? "visible" : "auto" }}>
+  <div style={{ width: "100%",  maxWidth: isMobile ? "100%" : "420px" }}>
 
       <>
         <div style={{ marginBottom: "2rem", textAlign: "center" }}>
@@ -233,7 +237,7 @@ export default function SignupPage() {
           {/* Mobile + Country Code */}
           <div style={{ marginBottom: "1rem" }}>
             <label style={labelStyle}>Mobile Number</label>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", gap: "8px" }}>
               <select
                 name="countryCode"
                 value={formData.countryCode}
