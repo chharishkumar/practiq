@@ -92,10 +92,11 @@ export default function SQLAdvancedPage() {
   const [postSuccess, setPostSuccess] = useState(false);
   const [validationStatus, setValidationStatus] = useState(null);
   const [shareOpen, setShareOpen] = useState(false);
-  const [elapsed, setElapsed] = useState(null);
-  const [userStreak, setUserStreak] = useState(0);
-  const { isGuest, isPro, userEmail, userName: userFullName } = useProStatus();
-  const isMobile = useMobile();
+const [elapsed, setElapsed] = useState(null);
+const [userStreak, setUserStreak] = useState(0);
+const { isGuest, isPro, userEmail, userName: userFullName } = useProStatus();
+const isMobile = useMobile();
+
 
   const queryRef = useRef(query);
   useEffect(() => { queryRef.current = query; }, [query]);
@@ -469,42 +470,36 @@ setUserStreak(streakRow?.current_streak || 0);
       </div>
     );
   };
-
-  const handleResetQuery = () => {
-    setQuery(selectedProblem.starterQuery);
-    setResults(null);
-    setError(null);
+  if (isMobile) {
+    return (
+      <MobileSQLLayout
+        problems={SQL_ADVANCED_PROBLEMS}
+        selectedProblem={selectedProblem}
+        onSelectProblem={handleSelectProblem}
+        query={query}
+        onQueryChange={setQuery}
+        onRun={runQuery}
+        onReset={() => { setQuery(selectedProblem.starterQuery); setResults(null); setError(null); }}
+        dbReady={dbReady}
+        results={results}
+        error={error}
+        validationStatus={validationStatus}
+        solvedIds={solvedIds}
+        isGuest={isGuest}
+        isPro={isPro}
+        paywallThreshold={30}
+        guestThreshold={10}
+        onNavigateSignup={() => navigate("/signup")}
+        onNavigateLogin={() => navigate("/login")}
+        onNavigatePricing={() => navigate("/pricing")}
+        pageTitle="SQL Advanced"
+        totalProblems={SQL_ADVANCED_PROBLEMS.length}
+        runCountDisplay={runCountDisplay}
+        onPostCommunity={handlePostCommunity}
+      />
+    );
   };
-
   return (
-    <>
-      {isMobile ? (
-        <MobileSQLLayout
-          problems={filteredProblems}
-          selectedProblem={selectedProblem}
-          onSelectProblem={handleSelectProblem}
-          query={query}
-          onQueryChange={setQuery}
-          onRun={runQuery}
-          onReset={handleResetQuery}
-          dbReady={dbReady}
-          results={results}
-          error={error}
-          validationStatus={validationStatus}
-          solvedIds={solvedIds}
-          isGuest={isGuest}
-          isPro={isPro}
-          paywallThreshold={30}
-          guestThreshold={10}
-          onNavigateSignup={() => navigate("/signup")}
-          onNavigateLogin={() => navigate("/login")}
-          onNavigatePricing={() => navigate("/pricing")}
-          pageTitle="SQL Advanced"
-          totalProblems={SQL_ADVANCED_PROBLEMS.length}
-          runCountDisplay={runCountDisplay}
-          onPostCommunity={handlePostCommunity}
-        />
-      ) : (
     <div style={{ background: "#ffffff", height: "100vh", display: "flex", flexDirection: "column", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a", overflow: "hidden" }}>
 
       {/* NAV */}
@@ -726,7 +721,7 @@ setUserStreak(streakRow?.current_streak || 0);
                     </div>
                     <div style={{ display: "flex", gap: "8px" }}>
                       <button
-                        onClick={handleResetQuery}
+                        onClick={() => { setQuery(selectedProblem.starterQuery); setResults(null); setError(null); }}
                         style={{ fontSize: "0.75rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 10px", cursor: "pointer" }}
                       >
                         Reset
@@ -813,8 +808,6 @@ setUserStreak(streakRow?.current_streak || 0);
           )}
         </div>
       </div>
-    </div>
-      )}
 
       {/* COMMUNITY POST MODAL */}
       {showModal && (
@@ -881,6 +874,6 @@ setUserStreak(streakRow?.current_streak || 0);
   firstTry={runCountDisplay === 1}
   timeTaken={elapsed}
 />
-    </>
+    </div>
   );
 }
