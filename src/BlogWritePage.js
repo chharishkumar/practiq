@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabase";
+import { useMobile } from "./hooks/useMobile";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
@@ -55,7 +56,7 @@ function MenuBar({ editor }) {
   );
 
   return (
-    <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", padding: "0.75rem 1rem", borderBottom: "1px solid #e2e8f0", background: "#f8fafc" }}>
+    <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", padding: "0.5rem", fontSize: "0.7rem", borderBottom: "1px solid #e2e8f0", background: "#f8fafc" }}>
       {btn(() => editor.chain().focus().toggleBold().run(), "Bold", editor.isActive("bold"))}
       {btn(() => editor.chain().focus().toggleItalic().run(), "Italic", editor.isActive("italic"))}
       {btn(() => editor.chain().focus().toggleHeading({ level: 2 }).run(), "H2", editor.isActive("heading", { level: 2 }))}
@@ -74,6 +75,7 @@ function MenuBar({ editor }) {
 
 export default function BlogWritePage() {
   const navigate = useNavigate();
+  const isMobile = useMobile();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [title, setTitle] = useState("");
@@ -175,7 +177,7 @@ export default function BlogWritePage() {
         <p style={{ fontSize: "0.88rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>
           Your post is now pending approval. Once reviewed, it will appear on the blog for everyone to read.
         </p>
-        <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+        <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", width: isMobile ? "100%" : "auto", gap: "10px", justifyContent: "center", width: isMobile ? "100%" : "auto" }}>
           <button onClick={() => navigate("/blog")} style={{ padding: "10px 24px", background: "#2563eb", color: "#fff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "0.88rem", cursor: "pointer" }}>
             Back to Blog
           </button>
@@ -193,7 +195,7 @@ export default function BlogWritePage() {
     <div style={{ background: "#ffffff", minHeight: "100vh", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
 
       {/* Nav */}
-      <nav style={{ padding: "0.875rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
+      <nav style={{ padding: isMobile ? "0.75rem 1rem" : "0.875rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
         <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
         <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
           <button onClick={() => navigate("/blog")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, background: "none", border: "none", cursor: "pointer" }}>← Back to Blog</button>
@@ -207,7 +209,7 @@ export default function BlogWritePage() {
         </div>
       </nav>
 
-      <div style={{ maxWidth: "860px", margin: "0 auto", padding: "2.5rem 2.5rem" }}>
+      <div style={{ maxWidth: "860px", margin: "0 auto", padding: isMobile ? "1rem" : "2.5rem 2.5rem" }}>
 
         {/* Header */}
         <div style={{ marginBottom: "2rem" }}>
@@ -258,7 +260,7 @@ export default function BlogWritePage() {
           </div>
 
           {/* Category + Tags row */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1.25rem" }}>
             {/* Category */}
             <div>
               <label style={{ fontSize: "0.78rem", fontWeight: 700, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "6px" }}>
@@ -339,7 +341,7 @@ export default function BlogWritePage() {
           </div>
 
           {/* Submit */}
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", paddingBottom: "2rem" }}>
+          <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", width: isMobile ? "100%" : "auto", justifyContent: "flex-end", gap: "10px", paddingBottom: "2rem"}}>
             <button onClick={() => navigate("/blog")} style={{ padding: "11px 22px", background: "#fff", color: "#64748b", border: "1.5px solid #e2e8f0", borderRadius: "8px", fontWeight: 600, fontSize: "0.88rem", cursor: "pointer" }}>
               Cancel
             </button>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { supabase } from "./supabase";
+import { useMobile } from "./hooks/useMobile";
 
 function timeAgo(dateStr) {
     if (!dateStr) return "";
@@ -35,6 +36,7 @@ function LoadingScreen() {
 export default function BlogPostPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const isMobile = useMobile();
 
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
@@ -186,10 +188,22 @@ export default function BlogPostPage() {
     <div style={{ background: "#ffffff", minHeight: "100vh", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
 
       {/* Nav */}
-      <nav style={{ padding: "0.875rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
+      <nav style={{ padding: isMobile ? "0.75rem 1rem" : "0.875rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
         <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
         <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
-          <Link to="/sql" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Practice</Link>
+        {!isMobile && (
+  <Link
+    to="/sql"
+    style={{
+      fontSize: "0.85rem",
+      color: "#64748b",
+      textDecoration: "none",
+      fontWeight: 500
+    }}
+  >
+    Practice
+  </Link>
+)}
           <Link to="/blog" style={{ fontSize: "0.85rem", color: "#2563eb", textDecoration: "none", fontWeight: 600, borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Blog</Link>
           {isLoggedIn ? (
             <button onClick={() => navigate("/home")} style={{ padding: "8px 18px", borderRadius: "7px", background: "#f8fafc", color: "#0f172a", fontWeight: 600, fontSize: "0.85rem", border: "1px solid #e2e8f0", cursor: "pointer" }}>Home</button>
@@ -200,7 +214,7 @@ export default function BlogPostPage() {
       </nav>
 
       {/* Breadcrumb */}
-      <div style={{ maxWidth: "780px", margin: "0 auto", padding: "1.25rem 2.5rem 0" }}>
+      <div style={{ maxWidth: "780px", margin: "0 auto", padding: isMobile ? "1rem 1rem 0"  : "1.25rem 2.5rem 0" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.78rem", color: "#94a3b8" }}>
           <span onClick={() => navigate("/blog")} style={{ cursor: "pointer", color: "#2563eb", fontWeight: 600 }}>Blog</span>
           <span>→</span>
@@ -209,7 +223,7 @@ export default function BlogPostPage() {
       </div>
 
       {/* Post Content */}
-      <article style={{ maxWidth: "780px", margin: "0 auto", padding: "2rem 2.5rem" }}>
+      <article style={{ maxWidth: "780px", margin: "0 auto", padding: isMobile ? "1rem" : "2rem 2.5rem" }}>
 
         {/* Tags */}
         <div style={{ display: "flex", gap: "8px", marginBottom: "1.25rem", flexWrap: "wrap" }}>
@@ -224,7 +238,7 @@ export default function BlogPostPage() {
         </h1>
 
         {/* Author + Meta */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1rem 0", borderTop: "1px solid #f1f5f9", borderBottom: "1px solid #f1f5f9", marginBottom: "2rem" }}>
+        <div style={{ display: "flex",  flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "flex-start" : "center", justifyContent: "space-between",  gap: isMobile ? "12px" : "0", padding: "1rem 0", borderTop: "1px solid #f1f5f9", borderBottom: "1px solid #f1f5f9", marginBottom: "2rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <div style={{ width: "38px", height: "38px", borderRadius: "50%", background: "#eff6ff", border: "1.5px solid #bfdbfe", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.78rem", fontWeight: 700, color: "#2563eb" }}>
               {getInitials(post.author_name)}
@@ -234,7 +248,16 @@ export default function BlogPostPage() {
               <div style={{ fontSize: "0.72rem", color: "#94a3b8" }}>{timeAgo(post.created_at)} · {post.views || 0} views</div>
             </div>
           </div>
-          <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <div
+  style={{
+    display: "flex",
+    gap: "12px",
+    alignItems: "center",
+    padding: "8px 18px",
+    width: isMobile ? "100%" : "auto",
+    justifyContent: "center"
+  }}
+>
             <button
               onClick={handleLike}
               style={{ display: "flex", alignItems: "center", gap: "6px", padding: "7px 14px", borderRadius: "8px", border: `1.5px solid ${liked ? "#fca5a5" : "#e2e8f0"}`, background: liked ? "#fef2f2" : "#fff", color: liked ? "#dc2626" : "#64748b", fontWeight: 600, fontSize: "0.82rem", cursor: "pointer" }}
@@ -263,7 +286,19 @@ export default function BlogPostPage() {
         )}
 
         {/* Like + share */}
-        <div style={{ marginTop: "2.5rem", padding: "1.5rem", background: "#f8fafc", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div
+  style={{
+    marginTop: "2.5rem",
+    padding: "1.5rem",
+    background: "#f8fafc",
+    borderRadius: "14px",
+    display: "flex",
+    flexDirection: isMobile ? "column" : "row",
+    alignItems: isMobile ? "stretch" : "center",
+    justifyContent: "space-between",
+    gap: isMobile ? "12px" : "0"
+  }}
+>
           <div style={{ fontSize: "0.88rem", fontWeight: 600, color: "#0f172a" }}>Found this helpful?</div>
           <button
             onClick={handleLike}
@@ -282,7 +317,14 @@ export default function BlogPostPage() {
           {/* Comment Input */}
           {isLoggedIn ? (
             <div style={{ marginBottom: "1.5rem", background: "#f8fafc", border: "1.5px solid #e2e8f0", borderRadius: "12px", padding: "1rem" }}>
-              <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+              <div
+  style={{
+    display: "flex",
+    flexDirection: isMobile ? "column" : "row",
+    gap: "10px",
+    alignItems: "flex-start"
+  }}
+>
                 <div style={{ width: "34px", height: "34px", borderRadius: "50%", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.72rem", fontWeight: 700, color: "#2563eb", flexShrink: 0 }}>
                   {getInitials(currentUser?.name)}
                 </div>
@@ -311,7 +353,14 @@ export default function BlogPostPage() {
           ) : (
             <div style={{ marginBottom: "1.5rem", background: "#f8fafc", border: "1.5px dashed #e2e8f0", borderRadius: "12px", padding: "1.25rem", textAlign: "center" }}>
               <div style={{ fontSize: "0.85rem", color: "#64748b", marginBottom: "0.75rem" }}>Sign in to leave a comment</div>
-              <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+              <div
+  style={{
+    display: "flex",
+    flexDirection: isMobile ? "column" : "row",
+    gap: "8px",
+    justifyContent: "center"
+  }}
+>
                 <button onClick={() => navigate("/login")} style={{ padding: "8px 18px", background: "#2563eb", color: "#fff", border: "none", borderRadius: "7px", fontWeight: 700, fontSize: "0.82rem", cursor: "pointer" }}>Login</button>
                 <button onClick={() => navigate("/signup")} style={{ padding: "8px 18px", background: "#fff", color: "#2563eb", border: "1.5px solid #bfdbfe", borderRadius: "7px", fontWeight: 600, fontSize: "0.82rem", cursor: "pointer" }}>Sign Up Free</button>
               </div>
@@ -331,7 +380,7 @@ export default function BlogPostPage() {
                     {getInitials(c.author_name)}
                   </div>
                   <div style={{ flex: 1, background: "#f8fafc", border: "1px solid #f1f5f9", borderRadius: "10px", padding: "0.875rem" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.375rem" }}>
+                    <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", justifyContent: "space-between", marginBottom: "0.375rem", gap: "4px"}}>
                       <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#0f172a" }}>{c.author_name}</span>
                       <span style={{ fontSize: "0.68rem", color: "#94a3b8" }}>{timeAgo(c.created_at)}</span>
                     </div>

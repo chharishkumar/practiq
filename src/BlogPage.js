@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "./supabase";
+import { useMobile } from "./hooks/useMobile";
 
 const TAGS = [
   "All", "SQL Basics", "Joins", "Window Functions", "CTEs",
@@ -40,6 +41,7 @@ function LoadingScreen() {
 
 export default function BlogPage() {
   const navigate = useNavigate();
+  const isMobile = useMobile();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTag, setActiveTag] = useState("All");
@@ -81,9 +83,16 @@ export default function BlogPage() {
     <div style={{ background: "#ffffff", minHeight: "100vh", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
 
       {/* Nav */}
-      <nav style={{ padding: "0.875rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
+      <nav style={{  padding: isMobile ? "0.75rem 1rem" : "0.875rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
         <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
-        <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
+        <div style={{ display: "flex", gap: isMobile ? "10px" : "24px", alignItems: "center" }}>
+        {!isMobile && (
+  <>
+    <Link to="/home">Home</Link>
+    <Link to="/sql">Practice</Link>
+    <Link to="/leaderboard">Leaderboard</Link>
+  </>
+)}
         <Link to="/home" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600,  paddingBottom: "2px"  }}>Home</Link>
           <Link to="/sql" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600,  paddingBottom: "2px"  }}>Practice</Link>
           <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600,  paddingBottom: "2px"  }}>Leaderboard</Link>
@@ -100,7 +109,7 @@ export default function BlogPage() {
       </nav>
 
       {/* Hero */}
-      <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: "3rem 2.5rem 2.5rem", textAlign: "center" }}>
+      <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "2rem 1rem" : "3rem 2.5rem 2.5rem", textAlign: "center" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#2563eb", background: "#ffffff", padding: "5px 14px", borderRadius: "20px", border: "1px solid #bfdbfe", marginBottom: "1.25rem", fontWeight: 600 }}>
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#2563eb", display: "inline-block" }} />
           SQL insights, tips & community posts
@@ -113,7 +122,7 @@ export default function BlogPage() {
         </p>
 
         {/* Search */}
-        <div style={{ display: "flex", gap: "8px", justifyContent: "center", maxWidth: "420px", margin: "0 auto" }}>
+        <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", gap: "8px", justifyContent: "center", maxWidth: "420px", margin: "0 auto" }}>
           <input
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -130,7 +139,7 @@ export default function BlogPage() {
         </div>
       </div>
 
-      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "2.5rem 2.5rem" }}>
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "1rem" : "2.5rem 2.5rem" }}>
 
         {/* Tag Filter */}
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "2rem" }}>
@@ -162,7 +171,7 @@ export default function BlogPage() {
             {featured && (
               <div
                 onClick={() => navigate(`/blog/${featured.slug}`)}
-                style={{ background: "#f8fafc", border: "1.5px solid #e2e8f0", borderRadius: "16px", padding: "2rem", marginBottom: "2.5rem", cursor: "pointer", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem", alignItems: "center" }}
+                style={{ background: "#f8fafc", border: "1.5px solid #e2e8f0", borderRadius: "16px", padding: isMobile ? "1.25rem" : "2rem", marginBottom: "2.5rem", cursor: "pointer", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "2rem", alignItems: "center" }}
                 onMouseEnter={e => e.currentTarget.style.borderColor = "#bfdbfe"}
                 onMouseLeave={e => e.currentTarget.style.borderColor = "#e2e8f0"}
               >
@@ -185,9 +194,21 @@ export default function BlogPage() {
                     </div>
                   </div>
                 </div>
-                <div style={{ background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)", borderRadius: "12px", height: "220px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "4rem" }}>
-                  📊
-                </div>
+                {!isMobile && (
+  <div
+    style={{
+      background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)",
+      borderRadius: "12px",
+      height: "220px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: "4rem"
+    }}
+  >
+    📊
+  </div>
+)}
               </div>
             )}
 
@@ -248,7 +269,7 @@ export default function BlogPage() {
             <p style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "1.25rem", lineHeight: 1.6 }}>
               Sign up to write blog posts, share solutions and help the community grow.
             </p>
-            <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+            <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", gap: "10px", justifyContent: "center" }}>
               <Link to="/signup" style={{ padding: "10px 24px", background: "#2563eb", color: "#fff", borderRadius: "8px", fontWeight: 700, fontSize: "0.88rem", textDecoration: "none" }}>Sign Up Free →</Link>
               <Link to="/login" style={{ padding: "10px 24px", background: "transparent", color: "#fff", borderRadius: "8px", fontWeight: 600, fontSize: "0.88rem", textDecoration: "none", border: "1px solid #334155" }}>Login</Link>
             </div>
@@ -258,9 +279,9 @@ export default function BlogPage() {
 
       {/* Footer */}
       <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: "2rem 2.5rem", marginTop: "2rem" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", flexDirection: isMobile ? "column" : "row", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
           <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>© 2025 Data Rejected. All rights reserved.</span>
-          <div style={{ display: "flex", gap: "20px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "20px" }}>
             <Link to="/privacy" style={{ fontSize: "0.75rem", color: "#64748b", textDecoration: "none" }}>Privacy Policy</Link>
             <Link to="/terms" style={{ fontSize: "0.75rem", color: "#64748b", textDecoration: "none" }}>Terms of Use</Link>
             <Link to="/contact" style={{ fontSize: "0.75rem", color: "#64748b", textDecoration: "none" }}>Contact</Link>
