@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "./supabase";
+import { useMobile } from "./hooks/useMobile";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const isMobile = useMobile();
 
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -65,23 +67,40 @@ console.log("LOGIN ERROR:", loginError);
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
-
+    <div
+  style={{
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: isMobile ? "column" : "row",
+    fontFamily: "Inter, -apple-system, sans-serif",
+    color: "#0f172a"
+  }}
+>
       {/* Left Panel — Branding */}
-      <div style={{ width: "42%", background: "#0f172a", padding: "3rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-        <Link to="/" style={{ fontWeight: 800, color: "#ffffff", fontSize: "1.1rem", letterSpacing: "-0.3px", textDecoration: "none" }}>Data Rejected</Link>
+      <div
+  style={{
+    width: isMobile ? "100%" : "42%",
+    minHeight: isMobile ? "auto" : "100vh",
+    background: "#0f172a",
+    padding: isMobile ? "1.5rem" : "3rem",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between"
+  }}
+>  <Link to="/" style={{ fontWeight: 800, color: "#ffffff", fontSize: "1.1rem", letterSpacing: "-0.3px", textDecoration: "none" }}>Data Rejected</Link>
         <div>
           <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#60a5fa", background: "rgba(96,165,250,0.1)", padding: "5px 14px", borderRadius: "20px", border: "1px solid rgba(96,165,250,0.2)", marginBottom: "1.5rem", fontWeight: 600 }}>
             <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#60a5fa", display: "inline-block" }}></span>
             Welcome back
           </div>
-          <h2 style={{ fontSize: "2rem", fontWeight: 800, color: "#ffffff", letterSpacing: "-1px", lineHeight: 1.2, marginBottom: "1rem" }}>
+          <h2 style={{ fontSize: isMobile ? "1.5rem" : "2rem", fontWeight: 800, color: "#ffffff", letterSpacing: "-1px", lineHeight: 1.2, marginBottom: "1rem" }}>
             Continue your<br /><span style={{ color: "#60a5fa" }}>SQL Practice</span>
           </h2>
           <p style={{ color: "#94a3b8", fontSize: "0.9rem", lineHeight: 1.75, marginBottom: "2rem" }}>
             Pick up where you left off. Your progress, leaderboard rank and saved solutions are waiting.
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          {!isMobile && (
+  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {["Your progress is saved automatically", "Leaderboard rank updated in real time", "Access all 1000+ SQL problems", "Free forever to practice"].map((item, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <div style={{ width: "18px", height: "18px", borderRadius: "50%", background: "rgba(96,165,250,0.15)", border: "1px solid rgba(96,165,250,0.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -91,13 +110,15 @@ console.log("LOGIN ERROR:", loginError);
               </div>
             ))}
           </div>
+          )}
         </div>
+        
         <div style={{ fontSize: "0.75rem", color: "#475569" }}>© 2025 Data Rejected. All rights reserved.</div>
       </div>
 
       {/* Right Panel — Form */}
-      <div style={{ flex: 1, background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
-        <div style={{ width: "100%", maxWidth: "400px" }}>
+      <div style={{ flex: 1, background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", padding: isMobile ? "1.25rem" : "2rem" }}>
+        <div style={{ width: "100%", maxWidth: isMobile ? "100%" : "400px" }}>
 
           <div style={{ marginBottom: "2rem", textAlign: "center" }}>
             <h2 style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-1px", margin: "0 0 8px" }}>Sign in to your account</h2>
