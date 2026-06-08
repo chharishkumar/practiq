@@ -98,7 +98,7 @@ export default function MobileSQLLayout({
 
   const isGuestLocked = isGuest && selectedProblem.id > (guestThreshold ?? 10);
   const isProLocked   = !isGuest && !isPro && selectedProblem.id > (paywallThreshold ?? 30);
-  const isLocked      = isGuestLocked || isProLocked;
+
 
   // ─── NAV BAR ────────────────────────────────────────────────────────────────
   const NavBar = () => (
