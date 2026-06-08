@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "./supabase";
+import { useMobile } from "./hooks/useMobile";
 import Editor from "@monaco-editor/react";
 import { SQL_PROBLEMS } from "./data/sqlProblems";
 import { SQL_INTERMEDIATE_PROBLEMS } from "./data/sqlIntermediateProblems";
@@ -245,6 +246,37 @@ function CatPill({ cat }) {
   );
 }
 
+function Nav({ navigate, isMobile }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  return (
+    <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
+      <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
+      {isMobile ? (
+        <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
+          {menuOpen ? "✕" : "☰"}
+        </button>
+      ) : (
+        <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
+          <span onClick={() => navigate("/home")}        style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Home</span>
+          <span onClick={() => navigate("/sql")}         style={{ fontSize: "0.85rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Practice</span>
+          <span onClick={() => navigate("/leaderboard")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Leaderboard</span>
+          <Link to="/profile"                            style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Profile</Link>
+          <Link to="/blog"                               style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Blog</Link>
+        </div>
+      )}
+      {isMobile && menuOpen && (
+        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#ffffff", borderBottom: "1px solid #e2e8f0", padding: "0.5rem 0", zIndex: 200 }}>
+          {[["Home", "/home"], ["Practice", "/sql"], ["Leaderboard", "/leaderboard"], ["Profile", "/profile"], ["Blog", "/blog"]].map(([label, path]) => (
+            <div key={label} onClick={() => { navigate(path); setMenuOpen(false); }} style={{ padding: "0.75rem 1.25rem", fontSize: "0.9rem", color: "#0f172a", fontWeight: 500, cursor: "pointer", borderBottom: "1px solid #f1f5f9" }}>
+              {label}
+            </div>
+          ))}
+        </div>
+      )}
+    </nav>
+  );
+}
+
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
 export default function SQLPage() {
@@ -265,13 +297,7 @@ export default function SQLPage() {
   // Live Supabase data
   const [leaderboard, setLeaderboard] = useState(FALLBACK_LEADERBOARD);
   const [community, setCommunity]     = useState(FALLBACK_COMMUNITY);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const isMobile = useMobile();
 
   // Init SQL.js
   useEffect(() => {
@@ -484,7 +510,7 @@ export default function SQLPage() {
     {/* Fullscreen Grid — same layout, fills remaining height */}
     <div style={{
       display: "grid",
-      gridTemplateColumns: "450px minmax(0, 1fr)",
+      gridTemplateColumns: isMobile ? "1fr" : "450px minmax(0, 1fr)",
       flex: 1,
       overflow: "hidden",
     }}>
@@ -608,56 +634,10 @@ export default function SQLPage() {
   </div>
 )}
 
-{/* MOBILE WARNING */}
-{isMobile && (
-      <div style={{
-        position: "fixed",
-        inset: 0,
-        background: "#ffffff",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 99999,
-        fontFamily: "Inter, sans-serif",
-        padding: "2rem",
-      }}>
-        <div style={{ textAlign: "center", maxWidth: "320px" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "1.25rem" }}>💻</div>
-          <h2 style={{ fontSize: "1.3rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.75rem", letterSpacing: "-0.5px" }}>
-            Desktop required
-          </h2>
-          <p style={{ fontSize: "0.88rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.75rem" }}>
-            The SQL editor requires a larger screen to work properly. Please open this page on a laptop or desktop computer.
-          </p>
-          <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "10px", padding: "1rem", marginBottom: "1.5rem" }}>
-            <div style={{ fontSize: "0.78rem", color: "#64748b", lineHeight: 1.6 }}>
-              📧 Bookmark this page and come back on desktop — your progress is saved automatically.
-            </div>
-          </div>
-          <button
-            onClick={() => navigate("/")}
-            style={{ width: "100%", padding: "12px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer" }}
-          >
-            ← Back to Home
-          </button>
-        </div>
-      </div>
-    )}
-
-      {/* ── NAV ──────────────────────────────────────────────────────────── */}
-      <nav style={{ padding: "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
-        <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
-        <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
-          <span onClick={() => navigate("/home")}        style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Home</span>
-          <span onClick={() => navigate("/sql")}         style={{ fontSize: "0.85rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Practice</span>
-          <span onClick={() => navigate("/leaderboard")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Leaderboard</span>
-          <Link to="/profile"                            style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Profile</Link>
-          <Link to="/blog"                            style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Blog</Link>
-        </div>
-      </nav>
+      <Nav navigate={navigate} isMobile={isMobile} />
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: "3rem 2.5rem 2.5rem", textAlign: "center" }}>
+      <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "2rem 1rem 1.5rem" : "3rem 2.5rem 2.5rem", textAlign: "center" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#2563eb", background: "#ffffff", padding: "5px 14px", borderRadius: "20px", border: "1px solid #bfdbfe", marginBottom: "1.25rem", fontWeight: 600 }}>
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#2563eb", display: "inline-block" }} />
           Free SQL Practice Environment
@@ -671,7 +651,7 @@ export default function SQLPage() {
       </div>
 
       {/* ── LEADERBOARD STRIP ────────────────────────────────────────────── */}
-      <div style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", padding: "0.85rem 2.5rem" }}>
+      <div style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "0.75rem 1rem" : "0.85rem 2.5rem" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", alignItems: "center", gap: "1.5rem", overflowX: "auto" }}>
           <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", whiteSpace: "nowrap" }}>🏆 Top Solvers</span>
           {leaderboard.map((u) => (
@@ -687,7 +667,7 @@ export default function SQLPage() {
         </div>
       </div>
 
-      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "2.5rem 2.5rem 0" }}>
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "1rem 1rem 0" : "2.5rem 2.5rem 0" }}>
 
         {/* ── CATEGORY BUTTONS ───────────────────────────────────────────── */}
         <div style={{ marginBottom: "0.75rem" }}>
@@ -714,7 +694,7 @@ export default function SQLPage() {
         </div>
 
         {/* Uniform 3-column grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", marginBottom: "2.5rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: "10px", marginBottom: "2.5rem" }}>
           {community.map((item, i) => (
             <div key={i} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "10px", padding: "0.875rem 1rem", display: "flex", alignItems: "flex-start", gap: "10px" }}>
               <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.72rem", fontWeight: 700, color: "#2563eb", flexShrink: 0 }}>
@@ -757,7 +737,7 @@ export default function SQLPage() {
               ))}
             </div>
             <div style={{ display: "flex", gap: "8px" }}>
-              {/* Fullscreen button */}
+              {!isMobile && (
               <button
                 onClick={() => setFullscreen(true)}
                 title="Open fullscreen editor"
@@ -765,6 +745,7 @@ export default function SQLPage() {
               >
                 ⛶ Fullscreen
               </button>
+              )}
               <button
                 onClick={runQuery}
                 disabled={!dbReady}
@@ -779,9 +760,9 @@ export default function SQLPage() {
  {/* Main grid: Updated width from 280px to 450px to fit more columns */}
 <div style={{ 
   display: "grid", 
-  gridTemplateColumns: "450px minmax(0, 1fr)", // Increased from 280px to 450px
+  gridTemplateColumns: isMobile ? "1fr" : "450px minmax(0, 1fr)",
   width: "100%", 
-  height: "550px", // Slightly increased height for better visibility
+  height: isMobile ? "auto" : "550px",
   border: "1px solid #e2e8f0", 
   borderRadius: "10px", 
   overflow: "hidden",
@@ -790,7 +771,8 @@ export default function SQLPage() {
 
   {/* LEFT: table preview - Now wider */}
   <div style={{
-    borderRight: "1px solid #e2e8f0",
+    borderRight: isMobile ? "none" : "1px solid #e2e8f0",
+    borderBottom: isMobile ? "1px solid #e2e8f0" : "none",
     background: "#f8fafc",
     padding: "1rem",
     overflowX: "auto",      // Allows horizontal scroll if columns still exceed 450px
@@ -857,16 +839,16 @@ export default function SQLPage() {
     {/* Monaco editor */}
     <div style={{ borderBottom: "1px solid #e2e8f0", background: "#0f172a" }}>
       <Editor
-        height="280px"
+        height={isMobile ? "220px" : "280px"}
         width="100%"
         defaultLanguage="sql"
         theme="vs-dark"
         value={query}
         onChange={(v) => setQuery(v || "")}
         options={{ 
-          fontSize: 14, 
+          fontSize: isMobile ? 13 : 14, 
           minimap: { enabled: false }, 
-          automaticLayout: true, // Forces editor to fill the remaining 1fr space
+          automaticLayout: true,
           padding: { top: 10 } 
         }}
       />
@@ -921,7 +903,7 @@ export default function SQLPage() {
           <h2 style={{ fontSize: "1.3rem", fontWeight: 800, letterSpacing: "-0.3px", margin: "0.25rem 0 0", color: "#0f172a" }}>Common SQL mistakes to avoid</h2>
         </div>
         {/* Uniform 2-column grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1rem", marginBottom: "2.5rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)", gap: "1rem", marginBottom: "2.5rem" }}>
           {QUICK_TIPS.map((tip, i) => (
             <div key={i} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "1.25rem" }}>
               <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "0.75rem" }}>
@@ -964,7 +946,7 @@ export default function SQLPage() {
         </div>
 
         {/* Uniform 3-column grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem", marginBottom: "2.5rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: "1rem", marginBottom: "2.5rem" }}>
           {filteredFeatured.map((p, i) => (
             <div
               key={`${p.category}-${p.id}-${i}`}
@@ -989,9 +971,9 @@ export default function SQLPage() {
       </div>{/* /maxWidth wrapper */}
 
       {/* ── FOOTER ───────────────────────────────────────────────────────── */}
-      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: "3rem 2.5rem 2rem" }}>
+      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: isMobile ? "2rem 1rem 1.5rem" : "3rem 2.5rem 2rem" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "2rem", marginBottom: "2rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr 1fr", gap: "2rem", marginBottom: "2rem" }}>
             <div>
               <div style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", marginBottom: "0.5rem" }}>Data Rejected</div>
               <div style={{ fontSize: "0.82rem", color: "#64748b", lineHeight: 1.7, maxWidth: "280px" }}>A free SQL practice platform built for data professionals who want to actually do the work.</div>

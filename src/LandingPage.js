@@ -2,8 +2,38 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { supabase } from "./supabase";
+import { useMobile } from "./hooks/useMobile";
 
 
+function Nav({ navigate, isMobile }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  return (
+    <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
+      <span style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "-0.3px", cursor: "pointer" }} onClick={() => navigate("/")}>Data Rejected</span>
+      {isMobile ? (
+        <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
+          {menuOpen ? "✕" : "☰"}
+        </button>
+      ) : (
+        <div style={{ display: "flex", gap: "28px", alignItems: "center" }}>
+          <Link to="/sql" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Practice</Link>
+          <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Leaderboard</Link>
+          <Link to="/blog" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Blog</Link>
+          <Link to="/login" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Login</Link>
+        </div>
+      )}
+      {isMobile && menuOpen && (
+        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#ffffff", borderBottom: "1px solid #e2e8f0", padding: "0.5rem 0", zIndex: 200 }}>
+          {[["Practice", "/sql"], ["Leaderboard", "/leaderboard"], ["Blog", "/blog"], ["Login", "/login"]].map(([label, path]) => (
+            <div key={label} onClick={() => { navigate(path); setMenuOpen(false); }} style={{ padding: "0.75rem 1.25rem", fontSize: "0.9rem", color: "#0f172a", fontWeight: 500, cursor: "pointer", borderBottom: "1px solid #f1f5f9" }}>
+              {label}
+            </div>
+          ))}
+        </div>
+      )}
+    </nav>
+  );
+}
 
 
 const CATEGORIES = [
@@ -16,6 +46,7 @@ const CATEGORIES = [
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const isMobile = useMobile();
   const [query, setQuery] = useState("SELECT * FROM customers;");
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
@@ -154,20 +185,10 @@ useEffect(() => {
   return (
     <div style={{ background: "#ffffff", minHeight: "100vh", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
 
-      {/* Nav */}
-      <nav style={{ padding: "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
-        <span style={{ fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.3px", cursor: "pointer" }} onClick={() => navigate("/")}>Data Rejected</span>
-        <div style={{ display: "flex", gap: "28px", alignItems: "center" }}>
-          {/* <Link to="/home" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Home</Link> */}
-          <Link to="/sql" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Practice</Link>
-          <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Leaderboard</Link>
-          <Link to="/blog" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Blog</Link>
-          <Link to="/login" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Login</Link>
-        </div>
-      </nav>
+      <Nav navigate={navigate} isMobile={isMobile} />
 
       {/* Hero */}
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "5rem 2.5rem 2rem", textAlign: "center" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: isMobile ? "2rem 1rem 1.5rem" : "5rem 2.5rem 2rem", textAlign: "center" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#2563eb", background: "#eff6ff", padding: "5px 14px", borderRadius: "20px", border: "1px solid #bfdbfe", marginBottom: "1.5rem", fontWeight: 600 }}>
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#2563eb", display: "inline-block" }}></span>
           Free SQL Practice Platform — No signup required
@@ -194,8 +215,8 @@ useEffect(() => {
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: fullView ? "1fr" : "minmax(400px, 40%) 1fr", minHeight: fullView ? "85vh" : "600px" }}>
-            {!fullView && (
+          <div style={{ display: "grid", gridTemplateColumns: fullView || isMobile ? "1fr" : "minmax(400px, 40%) 1fr", minHeight: fullView ? "85vh" : isMobile ? "auto" : "600px" }}>
+            {!fullView && !isMobile && (
               <div style={{ borderRight: "1px solid #e2e8f0", background: "#f8fafc", padding: "1rem", overflowY: "auto" }}>
                 <div style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", marginBottom: "1rem", letterSpacing: "0.05em" }}>Schema</div>
                 {[
@@ -226,7 +247,7 @@ useEffect(() => {
 
 <div style={{ display: "flex", flexDirection: "column", padding: "1rem", background: "#fff", minWidth: 0, overflow: "hidden" }}>
               <Editor
-                height="300px"
+                height={isMobile ? "220px" : "300px"}
                 language="sql"
                 theme={editorTheme === "dark" ? "vs-dark" : "light"}
                 value={query}
@@ -281,8 +302,8 @@ useEffect(() => {
       </div>
 
       {/* Stats Strip */}
-      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0", padding: "2rem" }}>
-        <div style={{ maxWidth: "800px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", textAlign: "center" }}>
+      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "1.5rem 1rem" : "2rem" }}>
+        <div style={{ maxWidth: "800px", margin: "0 auto", display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: "1rem", textAlign: "center" }}>
           {[["1000+", "SQL Problems"], ["25+", "Business Datasets"], ["12K+", "Community Members"], ["Free", "To Start"]].map(([num, label]) => (
             <div key={label}>
               <div style={{ fontSize: "2rem", fontWeight: 800, color: "#0f172a", letterSpacing: "-1px" }}>{num}</div>
@@ -293,13 +314,13 @@ useEffect(() => {
       </div>
 
       {/* How It Works */}
-      <div style={{ maxWidth: "900px", margin: "0 auto", padding: "5rem 2.5rem" }}>
+      <div style={{ maxWidth: "900px", margin: "0 auto", padding: isMobile ? "2.5rem 1rem" : "5rem 2.5rem" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <div style={{ fontSize: "0.72rem", color: "#2563eb", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.5rem" }}>How it works</div>
-          <h2 style={{ fontSize: "2rem", fontWeight: 800, letterSpacing: "-0.5px", margin: "0 0 0.75rem" }}>From learning to doing in 3 steps</h2>
+          <h2 style={{ fontSize: isMobile ? "1.5rem" : "2rem", fontWeight: 800, letterSpacing: "-0.5px", margin: "0 0 0.75rem" }}>From learning to doing in 3 steps</h2>
           <p style={{ color: "#64748b", fontSize: "0.95rem", lineHeight: 1.7, maxWidth: "480px", margin: "0 auto" }}>Most platforms teach you SQL. We make you use it on problems that actually matter at work.</p>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1.5rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: "1.5rem" }}>
           {[
             ["01", "Open the sandbox", "No setup. No downloads. Open the platform and start writing SQL on real business datasets instantly."],
             ["02", "Pick a real problem", "Choose from 1000+ business problems across SQL Basics, Advanced, Interview prep and real-world Scenarios."],
@@ -315,11 +336,11 @@ useEffect(() => {
       </div>
 
       {/* What You Can Practice */}
-      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0", padding: "5rem 2.5rem" }}>
+      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "2.5rem 1rem" : "5rem 2.5rem" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "3rem" }}>
             <div style={{ fontSize: "0.72rem", color: "#2563eb", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.5rem" }}>What you can practice</div>
-            <h2 style={{ fontSize: "2rem", fontWeight: 800, letterSpacing: "-0.5px", margin: "0 0 0.75rem" }}>Every SQL skill you need to get hired</h2>
+            <h2 style={{ fontSize: isMobile ? "1.5rem" : "2rem", fontWeight: 800, letterSpacing: "-0.5px", margin: "0 0 0.75rem" }}>Every SQL skill you need to get hired</h2>
             <p style={{ color: "#64748b", fontSize: "0.95rem", lineHeight: 1.7, maxWidth: "480px", margin: "0 auto" }}>From your first SELECT to window functions used at top companies.</p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1rem" }}>
@@ -344,10 +365,10 @@ useEffect(() => {
       </div>
 
       {/* Community Activity */}
-      <div style={{ maxWidth: "900px", margin: "0 auto", padding: "5rem 2.5rem" }}>
+      <div style={{ maxWidth: "900px", margin: "0 auto", padding: isMobile ? "2.5rem 1rem" : "5rem 2.5rem" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <div style={{ fontSize: "0.72rem", color: "#2563eb", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.5rem" }}>Community</div>
-          <h2 style={{ fontSize: "2rem", fontWeight: 800, letterSpacing: "-0.5px", margin: "0 0 0.75rem" }}>See what people are solving right now</h2>
+          <h2 style={{ fontSize: isMobile ? "1.5rem" : "2rem", fontWeight: 800, letterSpacing: "-0.5px", margin: "0 0 0.75rem" }}>See what people are solving right now</h2>
           <p style={{ color: "#64748b", fontSize: "0.95rem", lineHeight: 1.7 }}>Join thousands of data professionals practicing every day.</p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "10px" }}>
@@ -370,12 +391,12 @@ useEffect(() => {
       </div>
 
       {/* Dark CTA */}
-      <div style={{ background: "#0f172a", color: "#fff", padding: "5rem 2rem", textAlign: "center" }}>
+      <div style={{ background: "#0f172a", color: "#fff", padding: isMobile ? "3rem 1rem" : "5rem 2rem", textAlign: "center" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#60a5fa", background: "rgba(96,165,250,0.1)", padding: "5px 14px", borderRadius: "20px", border: "1px solid rgba(96,165,250,0.2)", marginBottom: "1.5rem", fontWeight: 600 }}>
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#60a5fa", display: "inline-block" }}></span>
           Join 12,000+ data professionals
         </div>
-        <h2 style={{ fontSize: "2.2rem", fontWeight: 800, marginBottom: "1rem", letterSpacing: "-1px" }}>Ready to solve real data problems?</h2>
+        <h2 style={{ fontSize: isMobile ? "1.6rem" : "2.2rem", fontWeight: 800, marginBottom: "1rem", letterSpacing: "-1px" }}>Ready to solve real data problems?</h2>
         <p style={{ color: "#94a3b8", marginBottom: "2.5rem", fontSize: "1rem", lineHeight: 1.7 }}>Stop watching tutorials. Start writing real SQL on real data. Free forever to start.</p>
         <button
   onClick={() => navigate("/signup")}
@@ -386,9 +407,9 @@ useEffect(() => {
 <p style={{ marginTop: "1rem", fontSize: "0.75rem", color: "#475569" }}>No credit card. No setup. Just SQL.</p> </div>
 
       {/* Footer */}
-      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: "3rem 2.5rem 2rem" }}>
+      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: isMobile ? "2rem 1rem 1.5rem" : "3rem 2.5rem 2rem" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "2rem", marginBottom: "2.5rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr 1fr 1fr", gap: "2rem", marginBottom: "2.5rem" }}>
             <div>
               <div style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", marginBottom: "0.5rem" }}>Data Rejected</div>
               <div style={{ fontSize: "0.82rem", color: "#64748b", lineHeight: 1.7, maxWidth: "260px", marginBottom: "1rem" }}>A free SQL practice platform built for data professionals who want to actually do the work.</div>

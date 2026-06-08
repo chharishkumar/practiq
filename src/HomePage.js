@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useMobile } from "./hooks/useMobile";
 
 import { SQL_PROBLEMS } from "./data/sqlProblems";
 import { SQL_INTERMEDIATE_PROBLEMS } from "./data/sqlIntermediateProblems";
@@ -131,40 +132,57 @@ function Section({ label, title, action, actionFn, children, style = {} }) {
 
 // ─── NAV ─────────────────────────────────────────────────────────────────────
 
-function Nav({ user, navigate, onSignOut }) {
+function Nav({ user, navigate, onSignOut, isMobile }) {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <nav style={{ padding: "0.875rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
-      <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>
+    <nav style={{ padding: isMobile ? "0.75rem 1rem" : "0.875rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
+      <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>
         Data Rejected
       </span>
-      <div style={{ display: "flex", gap: "28px", alignItems: "center" }}>
-        <span onClick={() => navigate("/home")}     style={{ fontSize: "0.85rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Home</span>
-        <span onClick={() => navigate("/sql")}      style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Practice</span>
-        <span onClick={() => navigate("/leaderboard")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Leaderboard</span>
-        <span onClick={() => navigate("/Blog")}  style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Blog</span>
-        {/* <span onClick={() => navigate("/profile")}  style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Profile</span> */}
-        <div
-          onClick={() => navigate("/profile")}
-          title={user?.fullName}
-          style={{ width: "34px", height: "34px", borderRadius: "50%", background: "#eff6ff", border: "1.5px solid #bfdbfe", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: "0.75rem", color: "#2563eb", cursor: "pointer" }}
-        >
-          
-          {getInitials(user?.fullName)}
-        </div>
-        <button
-          onClick={onSignOut}
-          style={{ fontSize: "0.78rem", color: "#64748b", background: "none", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}
-        >
-          Sign out
+      {isMobile ? (
+        <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
+          {menuOpen ? "✕" : "☰"}
         </button>
-      </div>
+      ) : (
+        <div style={{ display: "flex", gap: "28px", alignItems: "center" }}>
+          <span onClick={() => navigate("/home")}     style={{ fontSize: "0.85rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Home</span>
+          <span onClick={() => navigate("/sql")}      style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Practice</span>
+          <span onClick={() => navigate("/leaderboard")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Leaderboard</span>
+          <span onClick={() => navigate("/Blog")}  style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Blog</span>
+          <div
+            onClick={() => navigate("/profile")}
+            title={user?.fullName}
+            style={{ width: "34px", height: "34px", borderRadius: "50%", background: "#eff6ff", border: "1.5px solid #bfdbfe", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: "0.75rem", color: "#2563eb", cursor: "pointer" }}
+          >
+            {getInitials(user?.fullName)}
+          </div>
+          <button
+            onClick={onSignOut}
+            style={{ fontSize: "0.78rem", color: "#64748b", background: "none", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}
+          >
+            Sign out
+          </button>
+        </div>
+      )}
+      {isMobile && menuOpen && (
+        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#ffffff", borderBottom: "1px solid #e2e8f0", padding: "0.5rem 0", zIndex: 200 }}>
+          {[["Home", "/home"], ["Practice", "/sql"], ["Leaderboard", "/leaderboard"], ["Blog", "/Blog"], ["Profile", "/profile"]].map(([label, path]) => (
+            <div key={label} onClick={() => { navigate(path); setMenuOpen(false); }} style={{ padding: "0.75rem 1.25rem", fontSize: "0.9rem", color: "#0f172a", fontWeight: 500, cursor: "pointer", borderBottom: "1px solid #f1f5f9" }}>
+              {label}
+            </div>
+          ))}
+          <div onClick={() => { onSignOut(); setMenuOpen(false); }} style={{ padding: "0.75rem 1.25rem", fontSize: "0.9rem", color: "#dc2626", fontWeight: 600, cursor: "pointer" }}>
+            Sign out
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
 
 // ─── HERO GREETING ────────────────────────────────────────────────────────────
 
-function HeroGreeting({ user, navigate }) {
+function HeroGreeting({ user, navigate, isMobile }) {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
   const weeklyDiff = (user.weeklyCount || 0) - (user.lastWeekCount || 0);
@@ -180,9 +198,9 @@ function HeroGreeting({ user, navigate }) {
     : 0;
 
   return (
-    <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: "2rem 2.5rem" }}>
+    <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "1.25rem 1rem" : "2rem 2.5rem" }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "1.5rem", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "stretch" : "flex-start", justifyContent: "space-between", gap: "1.5rem", flexWrap: "wrap" }}>
           <div>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.72rem", color: "#16a34a", background: "#f0fdf4", padding: "4px 12px", borderRadius: "20px", border: "1px solid #bbf7d0", marginBottom: "0.75rem", fontWeight: 600 }}>
               <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#16a34a", display: "inline-block" }} />
@@ -199,20 +217,20 @@ function HeroGreeting({ user, navigate }) {
                 : "No problems solved yet this week — let's change that today."}
             </p>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px", alignItems: "flex-end" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px", alignItems: isMobile ? "stretch" : "flex-end", width: isMobile ? "100%" : "auto" }}>
             <button
               onClick={() => navigate(user.lastProblem?.path || "/sql/basics")}
-              style={{ padding: "12px 28px", borderRadius: "10px", background: "#2563eb", color: "#fff", fontWeight: 800, fontSize: "0.95rem", border: "none", cursor: "pointer" }}
+              style={{ padding: "12px 28px", borderRadius: "10px", background: "#2563eb", color: "#fff", fontWeight: 800, fontSize: "0.95rem", border: "none", cursor: "pointer", width: isMobile ? "100%" : "auto" }}
             >
               ▶ Continue Practice
             </button>
-            <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>
+            <span style={{ fontSize: "0.72rem", color: "#94a3b8", textAlign: isMobile ? "center" : "right" }}>
               Last: {user.lastProblem?.title || "Start your first problem"}
             </span>
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px", marginTop: "1.5rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: "10px", marginTop: "1.5rem" }}>
           {[
             { label: "Problems solved",  val: user.solvedCount || 0,        sub: `of ${totalSQL} total` },
             { label: "Current streak",   val: `${user.streak || 0}d`,        sub: `Longest: ${user.longestStreak || 0}d` },
@@ -337,7 +355,7 @@ function ProgressFeedback({ user }) {
 
 // ─── RECOMMENDED PROBLEMS ─────────────────────────────────────────────────────
 
-function RecommendedProblems({ navigate, solvedIds }) {
+function RecommendedProblems({ navigate, solvedIds, isMobile }) {
   const ALL_PROBLEMS = [
     ...SQL_PROBLEMS.map(p => ({ ...p, category: "sql_basics", difficulty: "Easy", path: `/sql/basics/${p.id}` })),
     ...SQL_INTERMEDIATE_PROBLEMS.map(p => ({ ...p, category: "sql_intermediate", difficulty: "Medium", path: `/sql/intermediate/${p.id}` })),
@@ -371,7 +389,7 @@ function RecommendedProblems({ navigate, solvedIds }) {
   };
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)", gap: "10px" }}>
       {list.map((p) => (
         <Card key={`${p.category}-${p.id}`} onClick={() => navigate(p.path)} style={{ padding: "1rem 1.125rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
@@ -529,7 +547,7 @@ function BadgesCard({ user }) {
 
 // ─── PRACTICE CATEGORIES ──────────────────────────────────────────────────────
 
-function PracticeCategories({ navigate, sqlCounts }) {
+function PracticeCategories({ navigate, sqlCounts, isMobile }) {
   const categories = [
     { key: "sql",       label: "SQL",         sublabel: "Basics → Advanced",    color: "#2563eb", bg: "#eff6ff", border: "#bfdbfe", total: sqlCounts,                           path: "/sql",           active: true },
     { key: "python",    label: "Python",       sublabel: "Coming soon",           color: "#94a3b8", bg: "#f8fafc", border: "#e2e8f0", total: null,                                path: null,             active: false },
@@ -538,7 +556,7 @@ function PracticeCategories({ navigate, sqlCounts }) {
   ];
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px" }}>
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: "10px" }}>
       {categories.map((cat) => (
         <div
           key={cat.key}
@@ -596,6 +614,7 @@ function LoadingScreen() {
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const isMobile = useMobile();
   const [user, setUser]           = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
   const [communityFeed, setCommunityFeed] = useState([]);
@@ -763,17 +782,17 @@ export default function HomePage() {
 
   return (
     <div style={{ background: "#ffffff", minHeight: "100vh", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
-      <Nav user={user} navigate={navigate} onSignOut={handleSignOut} />
-      <HeroGreeting user={user} navigate={navigate} />
+      <Nav user={user} navigate={navigate} onSignOut={handleSignOut} isMobile={isMobile} />
+      <HeroGreeting user={user} navigate={navigate} isMobile={isMobile} />
 
-      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "2rem 2.5rem" }}>
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "1rem" : "2rem 2.5rem" }}>
         {isNewUser ? (
           <EmptyState navigate={navigate} />
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
 
             {/* Row 1: Daily challenge + Resume */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1.25rem" }}>
               <Section label="Daily challenge" title="">
                 <DailyChallenge challenge={DAILY_CHALLENGE} navigate={navigate} solvedIds={solvedIds} />
               </Section>
@@ -787,13 +806,13 @@ export default function HomePage() {
 
             {/* Row 2: Practice categories */}
             <Section label="Practice" title="What do you want to work on?" action="All categories" actionFn={() => navigate("/sql")}>
-              <PracticeCategories navigate={navigate} sqlCounts={sqlCounts} />
+              <PracticeCategories navigate={navigate} sqlCounts={sqlCounts} isMobile={isMobile} />
             </Section>
 
             {/* Row 3: Recommended + Leaderboard */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "1.25rem", alignItems: "start" }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 340px", gap: "1.25rem", alignItems: "start" }}>
               <Section label="Recommended for you" title="Problems to try next" action="Browse all" actionFn={() => navigate("/sql/basics")}>
-                <RecommendedProblems navigate={navigate} solvedIds={solvedIds} />
+                <RecommendedProblems navigate={navigate} solvedIds={solvedIds} isMobile={isMobile} />
               </Section>
               <Section label="Leaderboard" title="">
                 <LeaderboardCard currentUser={user} leaderboard={leaderboard} />
@@ -802,7 +821,7 @@ export default function HomePage() {
 
             {/* Row 4: Community feed + Badges */}
             <Section label="Community" title="See what others are solving" action="View all" actionFn={() => navigate("/sql")}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1.25rem" }}>
                 <CommunityFeed feed={communityFeed} />
                 <BadgesCard user={user} />
               </div>
@@ -813,9 +832,9 @@ export default function HomePage() {
       </div>
 
       {/* Footer */}
-      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: "3rem 2.5rem 2rem", marginTop: "2rem" }}>
+      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: isMobile ? "2rem 1rem 1.5rem" : "3rem 2.5rem 2rem", marginTop: "2rem" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "2rem", marginBottom: "2rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr 1fr", gap: "2rem", marginBottom: "2rem" }}>
             <div>
               <div style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", marginBottom: "0.5rem" }}>Data Rejected</div>
               <div style={{ fontSize: "0.82rem", color: "#64748b", lineHeight: 1.7, maxWidth: "280px" }}>A free SQL practice platform built for data professionals who want to actually do the work.</div>
