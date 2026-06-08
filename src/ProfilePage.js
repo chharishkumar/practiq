@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabase";
 import { Link } from "react-router-dom";
+import { useMobile } from "./hooks/useMobile";
 
 import { SQL_PROBLEMS } from "./data/sqlProblems";
 import { SQL_INTERMEDIATE_PROBLEMS } from "./data/sqlIntermediateProblems";
@@ -106,18 +107,34 @@ function Card({ children, style = {} }) {
 
 // ─── NAV ─────────────────────────────────────────────────────────────────────
 
-function Nav({ navigate }) {
+function Nav({ navigate, isMobile }) {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <nav style={{ padding: "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
-      <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>
+    <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
+      <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>
         Data Rejected
       </span>
-      <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
-        <span onClick={() => navigate("/home")}        style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Home</span>
-        <span onClick={() => navigate("/sql")}         style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Practice</span>
-        <span onClick={() => navigate("/leaderboard")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Leaderboard</span>
-        <span onClick={() => navigate("/profile")}     style={{ fontSize: "0.85rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Profile</span>
-      </div>
+      {isMobile ? (
+        <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
+          {menuOpen ? "✕" : "☰"}
+        </button>
+      ) : (
+        <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
+          <span onClick={() => navigate("/home")}        style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Home</span>
+          <span onClick={() => navigate("/sql")}         style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Practice</span>
+          <span onClick={() => navigate("/leaderboard")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>Leaderboard</span>
+          <span onClick={() => navigate("/profile")}     style={{ fontSize: "0.85rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Profile</span>
+        </div>
+      )}
+      {isMobile && menuOpen && (
+        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#ffffff", borderBottom: "1px solid #e2e8f0", padding: "0.5rem 0", zIndex: 200 }}>
+          {[["Home", "/home"], ["Practice", "/sql"], ["Leaderboard", "/leaderboard"], ["Profile", "/profile"]].map(([label, path]) => (
+            <div key={label} onClick={() => { navigate(path); setMenuOpen(false); }} style={{ padding: "0.75rem 1.25rem", fontSize: "0.9rem", color: "#0f172a", fontWeight: 500, cursor: "pointer", borderBottom: "1px solid #f1f5f9" }}>
+              {label}
+            </div>
+          ))}
+        </div>
+      )}
     </nav>
   );
 }
@@ -143,14 +160,16 @@ function Heatmap({ activityMap }) {
 
   return (
     <div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(52, 1fr)", gap: "2.5px" }}>
-        {cells.map((c) => (
-          <div
-            key={c.key}
-            title={`${c.key}: ${c.count} solved`}
-            style={{ aspectRatio: "1", borderRadius: "2px", background: colors[c.intensity] }}
-          />
-        ))}
+      <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(52, 1fr)", gap: "2.5px" }}>
+          {cells.map((c) => (
+            <div
+              key={c.key}
+              title={`${c.key}: ${c.count} solved`}
+              style={{ aspectRatio: "1", borderRadius: "2px", background: colors[c.intensity] }}
+            />
+          ))}
+        </div>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "10px", justifyContent: "flex-end" }}>
         <span style={{ fontSize: "0.68rem", color: "#94a3b8" }}>Less</span>
@@ -165,7 +184,7 @@ function Heatmap({ activityMap }) {
 
 // ─── SETTINGS PANEL ──────────────────────────────────────────────────────────
 
-function SettingsPanel({ profile, authEmail, onSaveProfile, onSignOut }) {
+function SettingsPanel({ profile, authEmail, onSaveProfile, onSignOut, isMobile }) {
   const [tab, setTab] = useState("profile");
   const [form, setForm] = useState({
     full_name: profile?.full_name || "",
@@ -243,7 +262,7 @@ function SettingsPanel({ profile, authEmail, onSaveProfile, onSignOut }) {
             <label style={labelStyle}>Email</label>
             <input style={{ ...inputStyle, background: "#f8fafc", color: "#94a3b8" }} value={authEmail} disabled />
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
             <div>
               <label style={labelStyle}>Country</label>
               <input style={inputStyle} value={form.country} onChange={(e) => setForm((f) => ({ ...f, country: e.target.value }))} placeholder="e.g. India" />
@@ -353,6 +372,7 @@ function LoadingScreen() {
 
 export default function ProfilePage() {
   const navigate = useNavigate();
+  const isMobile = useMobile();
   const [activeSection, setActiveSection] = useState("overview");
   const [loading, setLoading]             = useState(true);
 
@@ -530,38 +550,26 @@ const lastProblemPath = lastSub
   // ── RENDER ────────────────────────────────────────────────────────────────
   return (
     <div style={{ background: "#ffffff", minHeight: "100vh", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
-      <Nav navigate={navigate} />
+      <Nav navigate={navigate} isMobile={isMobile} />
 
       {/* Hero strip */}
-      <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: "2rem 2.5rem" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", alignItems: "center", gap: "1.25rem" }}>
-          <div style={{ width: "60px", height: "60px", borderRadius: "50%", background: "#eff6ff", border: "2px solid #bfdbfe", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "1.1rem", color: "#2563eb", flexShrink: 0 }}>
-            {getInitials(fullName)}
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-              <h1 style={{ fontSize: "1.4rem", fontWeight: 800, letterSpacing: "-0.5px", margin: 0 }}>{fullName}</h1>
-              <span style={{ fontSize: "0.7rem", color: "#2563eb", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "20px", padding: "3px 10px", fontWeight: 600 }}>
-                Level {level}
-              </span>
-              <span style={{ fontSize: "0.7rem", color: "#16a34a", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "20px", padding: "3px 10px", fontWeight: 600 }}>
-                🔥 {currentStreak}-day streak
-              </span>
-              {profile?.country && (
-                <span style={{ fontSize: "0.7rem", color: "#64748b", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "20px", padding: "3px 10px", fontWeight: 500 }}>
-                  📍 {[profile.state, profile.country].filter(Boolean).join(", ")}
-                </span>
-              )}
+      <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "1.25rem 1rem" : "2rem 2.5rem" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "flex-start" : "center", gap: "1rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", width: "100%" }}>
+            <div style={{ width: "52px", height: "52px", borderRadius: "50%", background: "#eff6ff", border: "2px solid #bfdbfe", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "1rem", color: "#2563eb", flexShrink: 0 }}>
+              {getInitials(fullName)}
             </div>
-            <p style={{ margin: "4px 0 0", fontSize: "0.82rem", color: "#64748b" }}>
-              {authEmail} · Joined {joinedDate}
-            </p>
-          </div>
-          {/* XP bar */}
-          <div style={{ textAlign: "right", minWidth: "180px" }}>
-            <div style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 600, marginBottom: "4px" }}>
-              {xpInLevel} / 100 XP to Level {level + 1}
+            <div style={{ flex: 1 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                <h1 style={{ fontSize: isMobile ? "1.1rem" : "1.4rem", fontWeight: 800, letterSpacing: "-0.5px", margin: 0 }}>{fullName}</h1>
+                <span style={{ fontSize: "0.68rem", color: "#2563eb", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "20px", padding: "2px 8px", fontWeight: 600 }}>Level {level}</span>
+                <span style={{ fontSize: "0.68rem", color: "#16a34a", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "20px", padding: "2px 8px", fontWeight: 600 }}>🔥 {currentStreak}d streak</span>
+              </div>
+              <p style={{ margin: "3px 0 0", fontSize: "0.78rem", color: "#64748b" }}>{authEmail}</p>
             </div>
+          </div>
+          <div style={{ width: "100%", maxWidth: isMobile ? "100%" : "180px" }}>
+            <div style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: 600, marginBottom: "4px" }}>{xpInLevel} / 100 XP to Level {level + 1}</div>
             <div style={{ height: "6px", background: "#e2e8f0", borderRadius: "3px", overflow: "hidden" }}>
               <div style={{ width: `${xpInLevel}%`, height: "100%", background: "#2563eb", borderRadius: "3px" }} />
             </div>
@@ -571,41 +579,64 @@ const lastProblemPath = lastSub
       </div>
 
       {/* Body */}
-      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "2rem 2.5rem", display: "grid", gridTemplateColumns: "200px 1fr", gap: "2rem", alignItems: "start" }}>
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "1rem" : "2rem 2.5rem", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "200px 1fr", gap: isMobile ? "1rem" : "2rem", alignItems: "start" }}>
 
         {/* Sidebar */}
-        <div style={{ position: "sticky", top: "80px" }}>
-          <div style={{ background: "#f8fafc", border: "1.5px solid #e2e8f0", borderRadius: "12px", overflow: "hidden" }}>
-            {navItems.map((item) => (
+        <div style={{ position: isMobile ? "static" : "sticky", top: "80px" }}>
+          {/* Mobile: horizontal scrolling tabs */}
+          {isMobile ? (
+            <div style={{ display: "flex", overflowX: "auto", gap: "6px", paddingBottom: "4px", WebkitOverflowScrolling: "touch" }}>
+              {navItems.filter(i => i.id !== "logout").map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  style={{ padding: "8px 14px", borderRadius: "20px", border: "1.5px solid", borderColor: activeSection === item.id ? "#2563eb" : "#e2e8f0", background: activeSection === item.id ? "#eff6ff" : "#ffffff", color: activeSection === item.id ? "#2563eb" : "#64748b", fontWeight: activeSection === item.id ? 700 : 500, fontSize: "0.8rem", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
+                >
+                  {item.label}
+                </button>
+              ))}
               <button
-                key={item.id}
-                onClick={() => {
-                  if (item.id === "logout") { handleSignOut(); return; }
-                  setActiveSection(item.id);
-                }}
-                style={{ width: "100%", padding: "11px 16px", border: "none", background: activeSection === item.id ? "#eff6ff" : "transparent", color: item.id === "logout" ? "#dc2626" : activeSection === item.id ? "#2563eb" : "#64748b", fontWeight: activeSection === item.id ? 700 : 500, fontSize: "0.85rem", cursor: "pointer", textAlign: "left", borderLeft: activeSection === item.id ? "3px solid #2563eb" : "3px solid transparent", transition: "all 0.1s" }}
+                onClick={handleSignOut}
+                style={{ padding: "8px 14px", borderRadius: "20px", border: "1.5px solid #fecaca", background: "#fff", color: "#dc2626", fontWeight: 500, fontSize: "0.8rem", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
               >
-                {item.label}
+                Sign out
               </button>
-            ))}
-          </div>
+            </div>
+          ) : (
+            <div style={{ background: "#f8fafc", border: "1.5px solid #e2e8f0", borderRadius: "12px", overflow: "hidden" }}>
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    if (item.id === "logout") { handleSignOut(); return; }
+                    setActiveSection(item.id);
+                  }}
+                  style={{ width: "100%", padding: "11px 16px", border: "none", background: activeSection === item.id ? "#eff6ff" : "transparent", color: item.id === "logout" ? "#dc2626" : activeSection === item.id ? "#2563eb" : "#64748b", fontWeight: activeSection === item.id ? 700 : 500, fontSize: "0.85rem", cursor: "pointer", textAlign: "left", borderLeft: activeSection === item.id ? "3px solid #2563eb" : "3px solid transparent", transition: "all 0.1s" }}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          )}
 
-          {/* Quick stats sidebar */}
-          <div style={{ marginTop: "1rem", background: "#f8fafc", border: "1.5px solid #e2e8f0", borderRadius: "12px", padding: "1rem" }}>
-            <div style={{ fontSize: "0.68rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>Quick stats</div>
-            {[
-              ["Solved",       `${solvedCount} / ${totalProblems}`],
-              ["Accuracy",     `${accuracy}%`],
-              ["Avg time",     fmtTime(avgTime)],
-              ["This week",    `${weeklyCount} solved`],
-              ["Joined",       joinedDate],
-            ].map(([label, val]) => (
-              <div key={label} style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "0.8rem" }}>
-                <span style={{ color: "#94a3b8" }}>{label}</span>
-                <span style={{ fontWeight: 700, color: "#0f172a" }}>{val}</span>
-              </div>
-            ))}
-          </div>
+          {/* Quick stats — hide on mobile */}
+          {!isMobile && (
+            <div style={{ marginTop: "1rem", background: "#f8fafc", border: "1.5px solid #e2e8f0", borderRadius: "12px", padding: "1rem" }}>
+              <div style={{ fontSize: "0.68rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>Quick stats</div>
+              {[
+                ["Solved", `${solvedCount} / ${totalProblems}`],
+                ["Accuracy", `${accuracy}%`],
+                ["Avg time", fmtTime(avgTime)],
+                ["This week", `${weeklyCount} solved`],
+                ["Joined", joinedDate],
+              ].map(([label, val]) => (
+                <div key={label} style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "0.8rem" }}>
+                  <span style={{ color: "#94a3b8" }}>{label}</span>
+                  <span style={{ fontWeight: 700, color: "#0f172a" }}>{val}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Main content */}
@@ -617,7 +648,7 @@ const lastProblemPath = lastSub
               {/* Stats row */}
               <div>
                 <SectionLabel text="Stats" />
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: "10px" }}>
                   {[
                     { label: "Problems solved",  val: solvedCount,        sub: `of ${totalProblems} total` },
                     { label: "Current streak",   val: `${currentStreak}d`, sub: `Longest: ${longestStreak}d` },
@@ -634,7 +665,7 @@ const lastProblemPath = lastSub
               </div>
 
               {/* Category progress + Difficulty breakdown */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1.5rem" }}>
                 <Card>
                   <SectionLabel text="Category progress" />
                   {[
@@ -724,7 +755,7 @@ const lastProblemPath = lastSub
                 <Heatmap activityMap={activityMap} />
               </Card>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1.5rem" }}>
                 <Card>
                   <SectionLabel text="This week" />
                   <div style={{ fontSize: "2rem", fontWeight: 800, letterSpacing: "-1px" }}>{weeklyCount}</div>
@@ -799,8 +830,8 @@ const lastProblemPath = lastSub
               </div>
 
               {/* Table header */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 90px 80px 80px 80px", gap: "8px", padding: "6px 0", borderBottom: "1.5px solid #e2e8f0", fontSize: "0.68rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                <span>Problem</span><span>Category</span><span>Difficulty</span><span>Time</span><span>Attempts</span>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 70px 60px" : "1fr 90px 80px 80px 80px", gap: "8px", padding: "6px 0", borderBottom: "1.5px solid #e2e8f0", fontSize: "0.68rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                <span>Problem</span><span>Category</span><span>Difficulty</span>{!isMobile && <span>Time</span>}{!isMobile && <span>Attempts</span>}
               </div>
 
               {solvedProblems.length === 0 && (
@@ -815,7 +846,7 @@ const lastProblemPath = lastSub
                   <div
                     key={`${p.problem_id}-${p.category}`}
                     onClick={() => navigate(`${p.path}/${p.problem_id}`)}
-                    style={{ display: "grid", gridTemplateColumns: "1fr 90px 80px 80px 80px", gap: "8px", padding: "10px 0", borderBottom: "1px solid #f1f5f9", cursor: "pointer", alignItems: "center" }}
+                    style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 70px 60px" : "1fr 90px 80px 80px 80px", gap: "8px", padding: "10px 0", borderBottom: "1px solid #f1f5f9", cursor: "pointer", alignItems: "center" }}
                     onMouseEnter={(e) => (e.currentTarget.style.background = "#f8faff")}
                     onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                   >
@@ -831,10 +862,8 @@ const lastProblemPath = lastSub
                     <span style={{ fontSize: "0.68rem", padding: "3px 8px", borderRadius: "10px", fontWeight: 600, background: ds.bg, color: ds.color, border: `1px solid ${ds.border}`, width: "fit-content" }}>
                       {p.difficulty}
                     </span>
-                    <span style={{ fontSize: "0.8rem", color: "#475569" }}>{fmtTime(p.time_taken_seconds)}</span>
-                    <span style={{ fontSize: "0.8rem", color: p.run_count === 1 ? "#16a34a" : "#64748b" }}>
-                      {p.run_count === 1 ? "✓ 1st try" : `${p.run_count} runs`}
-                    </span>
+                    {!isMobile && <span style={{ fontSize: "0.8rem", color: "#475569" }}>{fmtTime(p.time_taken_seconds)}</span>}
+                    {!isMobile && <span style={{ fontSize: "0.8rem", color: p.run_count === 1 ? "#16a34a" : "#64748b" }}>{p.run_count === 1 ? "✓ 1st try" : `${p.run_count} runs`}</span>}
                   </div>
                 );
               })}
@@ -860,6 +889,7 @@ const lastProblemPath = lastSub
                 authEmail={authEmail}
                 onSaveProfile={handleSaveProfile}
                 onSignOut={handleSignOut}
+                isMobile={isMobile}
               />
             </Card>
           )}
@@ -869,7 +899,7 @@ const lastProblemPath = lastSub
       {/* Footer */}
       <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: "3rem 2.5rem 2rem", marginTop: "2rem" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "2rem", marginBottom: "2rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr 1fr", gap: "2rem", marginBottom: "2rem" }}>
             <div>
               <div style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", marginBottom: "0.5rem" }}>Data Rejected</div>
               <div style={{ fontSize: "0.82rem", color: "#64748b", lineHeight: 1.7, maxWidth: "280px" }}>A free SQL practice platform built for data professionals who want to actually do the work.</div>
