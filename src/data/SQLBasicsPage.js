@@ -5,6 +5,8 @@ import { SQL_PROBLEMS } from "./sqlProblems";
 import { matchesProblem, searchSqlProblems } from "./sqlSearch";
 import Editor from "@monaco-editor/react";
 import ShareModal from "../ShareModel";
+import { useMobile } from "../hooks/useMobile";
+import MobileSQLLayout from "../components/MobileSQLLayout";
 
 function validateResults(userResult, referenceResult) {
   if (!userResult || !referenceResult) return null;
@@ -93,7 +95,7 @@ const [elapsed, setElapsed] = useState(null);
 const [userFullName, setUserFullName] = useState("");
 const [userEmail, setUserEmail] = useState("");
 const [userStreak, setUserStreak] = useState(0);
-
+  const isMobile = useMobile();
 
   const queryRef = useRef(query);
   useEffect(() => { queryRef.current = query; }, [query]);
@@ -475,6 +477,36 @@ setUserStreak(streakRow?.current_streak || 0);
       </div>
     );
   };
+
+  if (isMobile) {
+    return (
+      <MobileSQLLayout
+        problems={SQL_PROBLEMS}
+        selectedProblem={selectedProblem}
+        onSelectProblem={handleSelectProblem}
+        query={query}
+        onQueryChange={setQuery}
+        onRun={runQuery}
+        onReset={() => { setQuery(selectedProblem.starterQuery); setResults(null); setError(null); }}
+        dbReady={dbReady}
+        results={results}
+        error={error}
+        validationStatus={validationStatus}
+        solvedIds={solvedIds}
+        isGuest={isGuest}
+        isPro={false}
+        paywallThreshold={9999}
+        guestThreshold={9999}
+        onNavigateSignup={() => navigate("/signup")}
+        onNavigateLogin={() => navigate("/login")}
+        onNavigatePricing={() => navigate("/pricing")}
+        pageTitle="SQL Basics"
+        totalProblems={SQL_PROBLEMS.length}
+        runCountDisplay={runCountDisplay}
+        onPostCommunity={handlePostCommunity}
+      />
+    );
+  }
 
   return (
     <div style={{ background: "#ffffff", height: "100vh", display: "flex", flexDirection: "column", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a", overflow: "hidden" }}>
