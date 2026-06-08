@@ -177,7 +177,7 @@ export default function BlogWritePage() {
         <p style={{ fontSize: "0.88rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>
           Your post is now pending approval. Once reviewed, it will appear on the blog for everyone to read.
         </p>
-        <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", width: isMobile ? "100%" : "auto", gap: "10px", justifyContent: "center", width: isMobile ? "100%" : "auto" }}>
+        <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", width: isMobile ? "100%" : "auto", gap: "10px", justifyContent: "center" }}>
           <button onClick={() => navigate("/blog")} style={{ padding: "10px 24px", background: "#2563eb", color: "#fff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "0.88rem", cursor: "pointer" }}>
             Back to Blog
           </button>
