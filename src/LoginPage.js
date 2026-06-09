@@ -68,59 +68,74 @@ console.log("LOGIN ERROR:", loginError);
 
   return (
     <div
-  style={{
-    minHeight: "100vh",
-    display: "flex",
-    flexDirection: isMobile ? "column" : "row",
-    fontFamily: "Inter, -apple-system, sans-serif",
-    color: "#0f172a"
-  }}
->
-      {/* Left Panel — Branding */}
-      <div
-  style={{
-    width: isMobile ? "100%" : "42%",
-    minHeight: isMobile ? "auto" : "100vh",
-    background: "#0f172a",
-    padding: isMobile ? "1.5rem" : "3rem",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between"
-  }}
->  <Link to="/" style={{ fontWeight: 800, color: "#ffffff", fontSize: "1.1rem", letterSpacing: "-0.3px", textDecoration: "none" }}>Data Rejected</Link>
-        <div>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#60a5fa", background: "rgba(96,165,250,0.1)", padding: "5px 14px", borderRadius: "20px", border: "1px solid rgba(96,165,250,0.2)", marginBottom: "1.5rem", fontWeight: 600 }}>
-            <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#60a5fa", display: "inline-block" }}></span>
-            Welcome back
-          </div>
-          <h2 style={{ fontSize: isMobile ? "1.5rem" : "2rem", fontWeight: 800, color: "#ffffff", letterSpacing: "-1px", lineHeight: 1.2, marginBottom: "1rem" }}>
-            Continue your<br /><span style={{ color: "#60a5fa" }}>SQL Practice</span>
-          </h2>
-          <p style={{ color: "#94a3b8", fontSize: "0.9rem", lineHeight: 1.75, marginBottom: "2rem" }}>
-            Pick up where you left off. Your progress, leaderboard rank and saved solutions are waiting.
-          </p>
-          {!isMobile && (
-  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            {["Your progress is saved automatically", "Leaderboard rank updated in real time", "Access all 1000+ SQL problems", "Free forever to practice"].map((item, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <div style={{ width: "18px", height: "18px", borderRadius: "50%", background: "rgba(96,165,250,0.15)", border: "1px solid rgba(96,165,250,0.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <span style={{ color: "#60a5fa", fontSize: "0.65rem", fontWeight: 800 }}>✓</span>
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: isMobile ? "column" : "row",
+        fontFamily: "Inter, -apple-system, sans-serif",
+        color: "#0f172a"
+      }}
+    >
+      {/* Left Panel — Branding (Hidden on mobile for better UX) */}
+      {!isMobile && (
+        <div
+          style={{
+            width: "42%",
+            minHeight: "100vh",
+            background: "#0f172a",
+            padding: "3rem",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between"
+          }}
+        >
+          <Link to="/" style={{ fontWeight: 800, color: "#ffffff", fontSize: "1.1rem", letterSpacing: "-0.3px", textDecoration: "none" }}>
+            Data Rejected
+          </Link>
+          <div>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#60a5fa", background: "rgba(96,165,250,0.1)", padding: "5px 14px", borderRadius: "20px", border: "1px solid rgba(96,165,250,0.2)", marginBottom: "1.5rem", fontWeight: 600 }}>
+              <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#60a5fa", display: "inline-block" }}></span>
+              Welcome back
+            </div>
+            <h2 style={{ fontSize: "2rem", fontWeight: 800, color: "#ffffff", letterSpacing: "-1px", lineHeight: 1.2, marginBottom: "1rem" }}>
+              Continue your<br /><span style={{ color: "#60a5fa" }}>SQL Practice</span>
+            </h2>
+            <p style={{ color: "#94a3b8", fontSize: "0.9rem", lineHeight: 1.75, marginBottom: "2rem" }}>
+              Pick up where you left off. Your progress, leaderboard rank and saved solutions are waiting.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {["Your progress is saved automatically", "Leaderboard rank updated in real time", "Access all 1000+ SQL problems", "Free forever to practice"].map((item, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <div style={{ width: "18px", height: "18px", borderRadius: "50%", background: "rgba(96,165,250,0.15)", border: "1px solid rgba(96,165,250,0.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <span style={{ color: "#60a5fa", fontSize: "0.65rem", fontWeight: 800 }}>✓</span>
+                  </div>
+                  <span style={{ fontSize: "0.85rem", color: "#cbd5e1" }}>{item}</span>
                 </div>
-                <span style={{ fontSize: "0.85rem", color: "#cbd5e1" }}>{item}</span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-          )}
+          
+          {/* Dynamic Year Update */}
+          <div style={{ fontSize: "0.75rem", color: "#475569" }}>
+            © {new Date().getFullYear()} Data Rejected. All rights reserved.
+          </div>
         </div>
-        
-        <div style={{ fontSize: "0.75rem", color: "#475569" }}>© 2025 Data Rejected. All rights reserved.</div>
-      </div>
+      )}
 
       {/* Right Panel — Form */}
-      <div style={{ flex: 1, background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", padding: isMobile ? "1.25rem" : "2rem" }}>
+      <div style={{ flex: 1, background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", padding: isMobile ? "2rem 1.25rem" : "2rem" }}>
         <div style={{ width: "100%", maxWidth: isMobile ? "100%" : "400px" }}>
 
-          <div style={{ marginBottom: "2rem", textAlign: "center" }}>
+          {/* Minimal branding backlink added for mobile users */}
+          {isMobile && (
+            <div style={{ textAlign: "left", marginBottom: "2rem" }}>
+              <Link to="/" style={{ fontWeight: 800, color: "#0f172a", fontSize: "1rem", letterSpacing: "-0.3px", textDecoration: "none" }}>
+                ← Data Rejected
+              </Link>
+            </div>
+          )}
+
+          <div style={{ marginBottom: "2rem", textAlign: isMobile ? "left" : "center" }}>
             <h2 style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-1px", margin: "0 0 8px" }}>Sign in to your account</h2>
             <p style={{ fontSize: "0.88rem", color: "#64748b" }}>Welcome back. Let's get practicing.</p>
           </div>
@@ -153,7 +168,6 @@ console.log("LOGIN ERROR:", loginError);
           )}
 
           <form onSubmit={handleLogin}>
-
             {/* Email */}
             <div style={{ marginBottom: "1rem" }}>
               <label style={labelStyle}>Email</label>
@@ -197,12 +211,11 @@ console.log("LOGIN ERROR:", loginError);
             <Link to="/terms" style={{ color: "#2563eb", textDecoration: "none" }}>Terms of Use</Link>{" "}
             and{" "}
             <Link to="/privacy" style={{ color: "#2563eb", textDecoration: "none" }}>Privacy Policy</Link>
-          
           </p>
+          
           <p style={{ marginTop: "1rem", textAlign: "center", fontSize: "0.72rem", color: "#94a3b8", lineHeight: 1.6 }}>
-          Have questions?{" "}
+            Have questions?{" "}
             <Link to="/contact" style={{ color: "#2563eb", textDecoration: "none" }}>Contact Us</Link>
-            
           </p>
         </div>
       </div>

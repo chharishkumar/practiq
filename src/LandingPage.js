@@ -8,7 +8,7 @@ import { useMobile } from "./hooks/useMobile";
 function Nav({ navigate, isMobile }) {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
+    <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "#ffffff", zIndex: 1000 }}>
       <span style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "-0.3px", cursor: "pointer" }} onClick={() => navigate("/")}>Data Rejected</span>
       {isMobile ? (
         <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
@@ -278,7 +278,6 @@ useEffect(() => {
   </div>
 
 {/* Stats Strip */}
-{/* Stats Strip */}
 <div
   style={{
     background: "#f8fafc",
@@ -375,14 +374,21 @@ useEffect(() => {
             )}
 
 <div style={{ display: "flex", flexDirection: "column", padding: "1rem", background: "#fff", minWidth: 0, overflow: "hidden" }}>
-              <Editor
-                height={isMobile ? "220px" : "300px"}
-                language="sql"
-                theme={editorTheme === "dark" ? "vs-dark" : "light"}
-                value={query}
-                onChange={(v) => setQuery(v || "")}
-                options={{ fontSize: 14, minimap: { enabled: false }, wordWrap: "on", scrollBeyondLastLine: false }}
-              />
+<Editor
+  height={isMobile ? "220px" : "300px"}
+  language="sql"
+  theme={editorTheme === "dark" ? "vs-dark" : "light"}
+  value={query}
+  onChange={(v) => setQuery(v || "")}
+  options={{ 
+    fontSize: 14, 
+    minimap: { enabled: false }, 
+    wordWrap: "on", 
+    scrollBeyondLastLine: false,
+    acceptSuggestionOnEnter: "on",
+    tabCompletion: "on"
+  }}
+/>
               <button onClick={runQuery} disabled={!dbReady} style={{ margin: "1rem 0 0.75rem", padding: "10px 20px", background: dbReady ? "#2563eb" : "#94a3b8", color: "#fff", border: "none", borderRadius: "6px", cursor: dbReady ? "pointer" : "not-allowed", fontWeight: 700, fontSize: "0.88rem", alignSelf: "flex-start" }}>
                 {dbReady ? "▶ Run Query" : "Loading..."}
               </button>
