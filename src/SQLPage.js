@@ -9,9 +9,6 @@ import { SQL_ADVANCED_PROBLEMS } from "./data/sqlAdvancedProblems";
 import { SQL_INTERVIEW_PROBLEMS } from "./data/sqlInterviewProblems";
 import { SQL_SCENARIOS_PROBLEMS } from "./data/sqlScenariosProblems";
 
-// ─── SAMPLE DATA ──────────────────────────────────────────────────────────────
-
-
 // ─── CATEGORIES ───────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
@@ -22,16 +19,12 @@ const CATEGORIES = [
   { label: "SQL Scenarios (Real-world)",    path: "/sql/scenarios" },
 ];
 
-// ─── FEATURED PROBLEMS — first 10 from each category with real paths ──────────
-// Each problem links to its practice page. Users who are guests can solve 1-10 free.
-
 function getDailySeed() {
   const today = new Date();
   return today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
 }
 
 function seededRandom(seed) {
-  // Simple deterministic pseudo-random from a seed
   const x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 }
@@ -49,7 +42,6 @@ function pickRandom(arr, count, seedOffset = 0) {
   return picked;
 }
 
-// For Interview and Scenarios: 5 from first 10, 5 from rest
 function pickMixed(arr, seedOffset = 0) {
   const first10 = arr.slice(0, 10);
   const rest = arr.slice(10);
@@ -64,40 +56,41 @@ function buildFeaturedProblems() {
     ...p, 
     category: "Basics", 
     difficulty: "Easy", 
-    path: `/sql/basics/${p.id}`  // ← add /${p.id}
+    path: `/sql/basics/${p.id}`
   }));
   
   const intermediate = pickRandom(SQL_INTERMEDIATE_PROBLEMS, 10, 100).map(p => ({ 
     ...p, 
     category: "Intermediate", 
     difficulty: "Medium", 
-    path: `/sql/intermediate/${p.id}`  // ← add /${p.id}
+    path: `/sql/intermediate/${p.id}`
   }));
   
   const advanced = pickRandom(SQL_ADVANCED_PROBLEMS, 10, 200).map(p => ({ 
     ...p, 
     category: "Advanced", 
     difficulty: "Hard", 
-    path: `/sql/advanced/${p.id}`  // ← add /${p.id}
+    path: `/sql/advanced/${p.id}`
   }));
   
   const interview = pickMixed(SQL_INTERVIEW_PROBLEMS, 300).map(p => ({ 
     ...p, 
     category: "Interview", 
     difficulty: "Medium", 
-    path: `/sql/interview/${p.id}`  // ← add /${p.id}
+    path: `/sql/interview/${p.id}`
   }));
   
   const scenarios = pickMixed(SQL_SCENARIOS_PROBLEMS, 400).map(p => ({ 
     ...p, 
     category: "Scenarios", 
     difficulty: "Hard", 
-    path: `/sql/scenarios/${p.id}`  // ← add /${p.id}
+    path: `/sql/scenarios/${p.id}`
   }));
   return [...basics, ...intermediate, ...advanced, ...interview, ...scenarios];
 }
 
 const FEATURED_PROBLEMS = buildFeaturedProblems();
+
 // ─── STATIC TABLE PREVIEWS ────────────────────────────────────────────────────
 
 const TABLE_DATA = {
@@ -206,7 +199,6 @@ const FALLBACK_COMMUNITY = [
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 
 function timeAgo(dateStr) {
-  // Force UTC parsing — Supabase sometimes returns without Z suffix
   const utcStr = dateStr.endsWith("Z") ? dateStr : dateStr + "Z";
   const diff = Math.floor((Date.now() - new Date(utcStr)) / 1000);
   if (diff < 60)    return `${diff}s ago`;
@@ -214,6 +206,7 @@ function timeAgo(dateStr) {
   if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
   return `${Math.floor(diff / 86400)}d ago`;
 }
+
 function getInitials(name = "") {
   return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 }
@@ -225,8 +218,6 @@ const CATEGORY_LABEL = {
   sql_interview:    "Interview",
   sql_scenarios:    "Scenarios",
 };
-
-// ─── DIFF PILL ────────────────────────────────────────────────────────────────
 
 function DiffPill({ d }) {
   const c = DIFF_COLORS[d] || DIFF_COLORS.Easy;
@@ -277,12 +268,10 @@ function Nav({ navigate, isMobile }) {
   );
 }
 
-// ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
-
 export default function SQLPage() {
   const navigate = useNavigate();
 
-  // SQL sandbox
+  // SQL sandbox state
   const [query, setQuery]       = useState("SELECT * FROM customers LIMIT 5;");
   const [results, setResults]   = useState(null);
   const [error, setError]       = useState(null);
@@ -291,10 +280,7 @@ export default function SQLPage() {
   const [activeTab, setActiveTab] = useState("customers");
   const [fullscreen, setFullscreen] = useState(false);
 
-  // Featured filter
   const [activeCat, setActiveCat] = useState("All");
-
-  // Live Supabase data
   const [leaderboard, setLeaderboard] = useState(FALLBACK_LEADERBOARD);
   const [community, setCommunity]     = useState(FALLBACK_COMMUNITY);
   const isMobile = useMobile();
@@ -377,7 +363,6 @@ export default function SQLPage() {
           const nameMap = {};
           (profilesById || []).forEach((p) => { nameMap[p.id] = p.full_name || "Anonymous"; });
 
-          // Leaderboard
           const countMap = {};
           topUsers.forEach((row) => { countMap[row.user_id] = (countMap[row.user_id] || 0) + 1; });
           const sorted = Object.entries(countMap)
@@ -391,7 +376,6 @@ export default function SQLPage() {
             }));
           if (sorted.length > 0) setLeaderboard(sorted);
 
-          // Community feed
           const recent = [...topUsers]
             .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
             .slice(0, 6)
@@ -423,7 +407,6 @@ export default function SQLPage() {
     }
   }, [db, query]);
 
-  // Ctrl+Enter shortcut
   useEffect(() => {
     const handler = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "Enter") runQuery();
@@ -432,320 +415,33 @@ export default function SQLPage() {
     return () => window.removeEventListener("keydown", handler);
   }, [runQuery]);
 
-  // Featured filter
-  const allCats = ["All", "Basics", "Intermediate", "Advanced", "Interview", "Scenarios"];
-  const filteredFeatured = activeCat === "All"
-    ? FEATURED_PROBLEMS
-    : FEATURED_PROBLEMS.filter((p) => p.category === activeCat);
-
   return (
     <div style={{ background: "#ffffff", minHeight: "100vh", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
 
-      {/* Fullscreen overlay */}
-  {/* FULLSCREEN MODAL */}
-{fullscreen && (
-  <div style={{
-    position: "fixed",
-    inset: 0,
-    zIndex: 9999,
-    background: "#ffffff",
-    display: "flex",
-    flexDirection: "column",
-  }}>
-    {/* Fullscreen Top Bar */}
-    <div style={{
-      padding: "0.85rem 1.25rem",
-      borderBottom: "1px solid #e2e8f0",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      background: "#f8fafc",
-      flexShrink: 0,
-    }}>
-      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-        <span style={{ fontSize: "0.75rem", color: "#0f172a", background: "#e2e8f0", padding: "4px 10px", borderRadius: "20px", fontWeight: 700 }}>SQL</span>
-        {["customers", "orders", "products"].map((t) => (
-          <button
-            key={t}
-            onClick={() => setActiveTab(t)}
-            style={{
-              fontSize: "0.72rem", padding: "3px 10px", borderRadius: "6px", border: "1px solid",
-              borderColor: activeTab === t ? "#2563eb" : "#e2e8f0",
-              background: activeTab === t ? "#eff6ff" : "#ffffff",
-              color: activeTab === t ? "#2563eb" : "#64748b",
-              cursor: "pointer", fontWeight: activeTab === t ? 600 : 400
-            }}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
-      <div style={{ display: "flex", gap: "8px" }}>
-        <button
-          onClick={runQuery}
-          disabled={!dbReady}
-          style={{
-            padding: "8px 20px", borderRadius: "6px",
-            background: dbReady ? "#2563eb" : "#94a3b8",
-            color: "#fff", fontWeight: 700, fontSize: "0.82rem",
-            border: "none", cursor: dbReady ? "pointer" : "not-allowed"
-          }}
-        >
-          {dbReady ? "▶ Run Query" : "Loading…"}
-        </button>
-        <button
-          onClick={() => setFullscreen(false)}
-          style={{
-            padding: "8px 16px", borderRadius: "6px",
-            background: "#fff", color: "#ef4444",
-            fontWeight: 700, fontSize: "0.82rem",
-            border: "1.5px solid #fca5a5", cursor: "pointer"
-          }}
-        >
-          ✕ Exit Fullscreen
-        </button>
-      </div>
-    </div>
-
-    {/* Fullscreen Grid — same layout, fills remaining height */}
-    <div style={{
-      display: "grid",
-      gridTemplateColumns: isMobile ? "1fr" : "450px minmax(0, 1fr)",
-      flex: 1,
-      overflow: "hidden",
-    }}>
-      {/* LEFT: table preview */}
-      <div style={{
-        borderRight: "1px solid #e2e8f0",
-        background: "#f8fafc",
-        padding: "1rem",
-        overflowX: "auto",
-        overflowY: "auto",
-        scrollbarWidth: "thin",
-        display: "flex",
-        flexDirection: "column",
-      }}>
-        <div style={{
-          fontSize: "0.7rem", color: "#64748b", fontWeight: 700,
-          textTransform: "uppercase", marginBottom: "1rem", letterSpacing: "0.05em"
-        }}>
-          {activeTab} Preview
-        </div>
-        <table style={{ borderCollapse: "collapse", fontSize: "0.74rem", width: "100%", minWidth: "max-content" }}>
-          <thead>
-            <tr style={{ background: "#f1f5f9" }}>
-              {TABLE_DATA[activeTab].columns.map((col) => (
-                <th key={col} style={{
-                  textAlign: "left", color: "#475569", padding: "8px 10px",
-                  borderBottom: "2px solid #e2e8f0", whiteSpace: "nowrap", fontWeight: 700
-                }}>
-                  {col}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {TABLE_DATA[activeTab].rows.map((row, i) => (
-              <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "#ffffff" }}>
-                {row.map((cell, j) => (
-                  <td key={j} style={{
-                    padding: "8px 10px", color: "#1e293b",
-                    borderBottom: "1px solid #f1f5f9", whiteSpace: "nowrap"
-                  }}>
-                    {cell}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* RIGHT: editor + results */}
-      <div style={{ display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden" }}>
-        {/* Monaco editor — takes up 60% of height */}
-        <div style={{ flex: "0 0 60%", borderBottom: "1px solid #e2e8f0", background: "#0f172a" }}>
-          <Editor
-            height="100%"
-            width="100%"
-            defaultLanguage="sql"
-            theme="vs-dark"
-            value={query}
-            onChange={(v) => setQuery(v || "")}
-            options={{
-              fontSize: 14,
-              minimap: { enabled: false },
-              automaticLayout: true,
-              padding: { top: 10 }
-            }}
-          />
-        </div>
-
-        {/* Results — takes remaining 40% */}
-        <div style={{ flex: "0 0 40%", padding: "0.75rem 1.25rem", background: "#f8fafc", overflow: "auto" }}>
-          <div style={{
-            fontSize: "0.68rem", color: "#94a3b8", fontWeight: 700,
-            textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.5rem"
-          }}>
-            Output {results ? `— ${results.values.length} row${results.values.length !== 1 ? "s" : ""}` : ""}
-          </div>
-          {!results && !error && (
-            <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>Results appear here after you run a query</span>
-          )}
-          {error && (
-            <span style={{ fontSize: "0.8rem", color: "#ef4444", fontFamily: "monospace" }}>{error}</span>
-          )}
-          {results && (
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ borderCollapse: "collapse", fontSize: "0.78rem" }}>
-                <thead>
-                  <tr>
-                    {results.columns.map((col) => (
-                      <th key={col} style={{
-                        padding: "5px 12px", textAlign: "left", color: "#64748b",
-                        borderBottom: "1px solid #e2e8f0", whiteSpace: "nowrap",
-                        fontWeight: 600, fontSize: "0.72rem", textTransform: "uppercase"
-                      }}>
-                        {col}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {results.values.map((row, i) => (
-                    <tr key={i} style={{ background: i % 2 === 0 ? "#ffffff" : "#f8fafc" }}>
-                      {row.map((cell, j) => (
-                        <td key={j} style={{
-                          padding: "5px 12px", borderBottom: "1px solid #f1f5f9",
-                          whiteSpace: "nowrap", color: "#0f172a"
-                        }}>
-                          {cell}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  </div>
-)}
-
-      <Nav navigate={navigate} isMobile={isMobile} />
-
-      {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "2rem 1rem 1.5rem" : "3rem 2.5rem 2.5rem", textAlign: "center" }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#2563eb", background: "#ffffff", padding: "5px 14px", borderRadius: "20px", border: "1px solid #bfdbfe", marginBottom: "1.25rem", fontWeight: 600 }}>
-          <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#2563eb", display: "inline-block" }} />
-          Free SQL Practice Environment
-        </div>
-        <h1 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 800, letterSpacing: "-1px", margin: "0 0 0.75rem", color: "#0f172a" }}>
-          Practice SQL on <span style={{ color: "#2563eb" }}>Real Business Data</span>
-        </h1>
-        <p style={{ fontSize: "1rem", color: "#64748b", lineHeight: 1.75, maxWidth: "520px", margin: "0 auto" }}>
-          Pick a category, write real queries, and build skills that actually matter at work.
-        </p>
-      </div>
-
-      {/* ── LEADERBOARD STRIP ────────────────────────────────────────────── */}
-      <div style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "0.75rem 1rem" : "0.85rem 2.5rem" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", alignItems: "center", gap: "1.5rem", overflowX: "auto" }}>
-          <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", whiteSpace: "nowrap" }}>🏆 Top Solvers</span>
-          {leaderboard.map((u) => (
-            <div key={u.rank} style={{ display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}>
-              <span style={{ fontSize: "0.82rem" }}>{u.badge || `#${u.rank}`}</span>
-              <span style={{ fontSize: "0.82rem", fontWeight: 600, color: "#0f172a" }}>{u.name}</span>
-              <span style={{ fontSize: "0.75rem", color: "#2563eb", background: "#eff6ff", padding: "2px 8px", borderRadius: "10px", fontWeight: 600 }}>{u.solved} solved</span>
-            </div>
-          ))}
-          <span onClick={() => navigate("/leaderboard")} style={{ fontSize: "0.75rem", color: "#2563eb", cursor: "pointer", marginLeft: "auto", whiteSpace: "nowrap", fontWeight: 600 }}>
-            View full leaderboard →
-          </span>
-        </div>
-      </div>
-
-      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "1rem 1rem 0" : "2.5rem 2.5rem 0" }}>
-
-        {/* ── CATEGORY BUTTONS ───────────────────────────────────────────── */}
-        <div style={{ marginBottom: "0.75rem" }}>
-          <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Choose a Category</span>
-        </div>
-        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "2.5rem" }}>
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.path}
-              onClick={() => navigate(cat.path)}
-              style={{ padding: "10px 20px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.88rem", border: "1.5px solid #bfdbfe", cursor: "pointer", transition: "all 0.15s" }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "#2563eb"; e.currentTarget.style.color = "#fff"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.color = "#2563eb"; }}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-
-        {/* ── COMMUNITY ACTIVITY ─────────────────────────────────────────── */}
-        <div style={{ marginBottom: "1.25rem" }}>
-          <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Community Activity</span>
-          <h2 style={{ fontSize: "1.3rem", fontWeight: 800, letterSpacing: "-0.3px", margin: "0.25rem 0 0", color: "#0f172a" }}>See what people are solving right now</h2>
-        </div>
-
-        {/* Uniform 3-column grid */}
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: "10px", marginBottom: "2.5rem" }}>
-          {community.map((item, i) => (
-            <div key={i} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "10px", padding: "0.875rem 1rem", display: "flex", alignItems: "flex-start", gap: "10px" }}>
-              <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.72rem", fontWeight: 700, color: "#2563eb", flexShrink: 0 }}>
-                {getInitials(item.user)}
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: "0.82rem", color: "#0f172a", fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                  {item.user} <span style={{ fontWeight: 400, color: "#64748b" }}>solved</span>
-                </div>
-                <div style={{ fontSize: "0.82rem", color: "#0f172a", margin: "2px 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.problem}</div>
-                <div style={{ display: "flex", gap: "6px", alignItems: "center", marginTop: "4px" }}>
-                  <CatPill cat={item.category} />
-                  <span style={{ fontSize: "0.68rem", color: "#94a3b8" }}>{item.time}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* ── SQL SANDBOX ────────────────────────────────────────────────── */}
-        <div style={{ marginBottom: "1.25rem" }}>
-          <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Free Sandbox</span>
-          <h2 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0.25rem 0 0", color: "#0f172a" }}>Write and run SQL queries instantly</h2>
-        </div>
-
-        <div style={{ background: "#ffffff", border: "1.5px solid #e2e8f0", borderRadius: "16px", overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.06)", marginBottom: "2.5rem" }}>
-
-          {/* Top bar */}
-          <div style={{ padding: "0.85rem 1.25rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#f8fafc" }}>
+      {/* FULLSCREEN MODAL */}
+      {fullscreen && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 9999, background: "#ffffff", display: "flex", flexDirection: "column" }}>
+          {/* Fullscreen Top Bar */}
+          <div style={{ padding: "0.85rem 1.25rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#f8fafc", flexShrink: 0 }}>
             <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
               <span style={{ fontSize: "0.75rem", color: "#0f172a", background: "#e2e8f0", padding: "4px 10px", borderRadius: "20px", fontWeight: 700 }}>SQL</span>
               {["customers", "orders", "products"].map((t) => (
                 <button
                   key={t}
                   onClick={() => setActiveTab(t)}
-                  style={{ fontSize: "0.72rem", padding: "3px 10px", borderRadius: "6px", border: "1px solid", borderColor: activeTab === t ? "#2563eb" : "#e2e8f0", background: activeTab === t ? "#eff6ff" : "#ffffff", color: activeTab === t ? "#2563eb" : "#64748b", cursor: "pointer", fontWeight: activeTab === t ? 600 : 400 }}
+                  style={{
+                    fontSize: "0.72rem", padding: "3px 10px", borderRadius: "6px", border: "1px solid",
+                    borderColor: activeTab === t ? "#2563eb" : "#e2e8f0",
+                    background: activeTab === t ? "#eff6ff" : "#ffffff",
+                    color: activeTab === t ? "#2563eb" : "#64748b",
+                    cursor: "pointer", fontWeight: activeTab === t ? 600 : 400
+                  }}
                 >
                   {t}
                 </button>
               ))}
             </div>
             <div style={{ display: "flex", gap: "8px" }}>
-              {!isMobile && (
-              <button
-                onClick={() => setFullscreen(true)}
-                title="Open fullscreen editor"
-                style={{ padding: "7px 14px", borderRadius: "6px", background: "#ffffff", color: "#64748b", fontWeight: 600, fontSize: "0.78rem", border: "1px solid #e2e8f0", cursor: "pointer", display: "flex", alignItems: "center", gap: "5px" }}
-              >
-                ⛶ Fullscreen
-              </button>
-              )}
               <button
                 onClick={runQuery}
                 disabled={!dbReady}
@@ -753,122 +449,81 @@ export default function SQLPage() {
               >
                 {dbReady ? "▶ Run Query" : "Loading…"}
               </button>
+              <button
+                onClick={() => setFullscreen(false)}
+                style={{ padding: "8px 16px", borderRadius: "6px", background: "#fff", color: "#ef4444", fontWeight: 700, fontSize: "0.82rem", border: "1.5px solid #fca5a5", cursor: "pointer" }}
+              >
+                ✕ Exit Fullscreen
+              </button>
             </div>
           </div>
 
-          {/* Main grid: table preview LEFT, editor + results RIGHT */}
- {/* Main grid: Updated width from 280px to 450px to fit more columns */}
-<div style={{ 
-  display: "grid", 
-  gridTemplateColumns: isMobile ? "1fr" : "450px minmax(0, 1fr)",
-  width: "100%", 
-  height: isMobile ? "auto" : "550px",
-  border: "1px solid #e2e8f0", 
-  borderRadius: "10px", 
-  overflow: "hidden",
-  background: "#ffffff"
-}}>
+          {/* Fullscreen Grid */}
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "450px minmax(0, 1fr)", flex: 1, overflow: "hidden" }}>
+            {/* LEFT: table preview (Hidden on fullscreen mobile to save screen real estate) */}
+            {!isMobile && (
+              <div style={{ borderRight: "1px solid #e2e8f0", background: "#f8fafc", padding: "1rem", overflowX: "auto", overflowY: "auto", scrollbarWidth: "thin", display: "flex", flexDirection: "column" }}>
+                <div style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", marginBottom: "1rem", letterSpacing: "0.05em" }}>
+                  {activeTab} Preview
+                </div>
+                <table style={{ borderCollapse: "collapse", fontSize: "0.74rem", width: "100%", minWidth: "max-content" }}>
+                  <thead>
+                    <tr style={{ background: "#f1f5f9" }}>
+                      {TABLE_DATA[activeTab].columns.map((col) => (
+                        <th key={col} style={{ textAlign: "left", color: "#475569", padding: "8px 10px", borderBottom: "2px solid #e2e8f0", whiteSpace: "nowrap", fontWeight: 700 }}>
+                          {col}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {TABLE_DATA[activeTab].rows.map((row, i) => (
+                      <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "#ffffff" }}>
+                        {row.map((cell, j) => (
+                          <td key={j} style={{ padding: "8px 10px", color: "#1e293b", borderBottom: "1px solid #f1f5f9", whiteSpace: "nowrap" }}>
+                            {cell}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
 
-  {/* LEFT: table preview - Now wider */}
-  <div style={{
-    borderRight: isMobile ? "none" : "1px solid #e2e8f0",
-    borderBottom: isMobile ? "1px solid #e2e8f0" : "none",
-    background: "#f8fafc",
-    padding: "1rem",
-    overflowX: "auto",      // Allows horizontal scroll if columns still exceed 450px
-    overflowY: "auto",      // Vertical scroll for rows
-    minWidth: 0,           
-    scrollbarWidth: "thin",
-    display: "flex",
-    flexDirection: "column"
-  }}>
-    <div style={{ 
-      fontSize: "0.7rem", 
-      color: "#64748b", 
-      fontWeight: 700, 
-      textTransform: "uppercase", 
-      marginBottom: "1rem",
-      letterSpacing: "0.05em" 
-    }}>
-      {activeTab} Preview
-    </div>
-    
-    <table style={{
-      borderCollapse: "collapse",
-      fontSize: "0.74rem",
-      width: "100%",         // Try to fit container first
-      minWidth: "max-content" // But expand to show full columns if needed
-    }}>
-      <thead>
-        <tr style={{ background: "#f1f5f9" }}>
-          {TABLE_DATA[activeTab].columns.map((col) => (
-            <th key={col} style={{ 
-              textAlign: "left", 
-              color: "#475569", 
-              padding: "8px 10px", 
-              borderBottom: "2px solid #e2e8f0", 
-              whiteSpace: "nowrap", 
-              fontWeight: 700 
-            }}>
-              {col}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {TABLE_DATA[activeTab].rows.map((row, i) => (
-          <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "#ffffff" }}>
-            {row.map((cell, j) => (
-              <td key={j} style={{ 
-                padding: "8px 10px", 
-                color: "#1e293b", 
-                borderBottom: "1px solid #f1f5f9", 
-                whiteSpace: "nowrap" 
-              }}>
-                {cell}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
+            {/* RIGHT: editor + results */}
+            <div style={{ display: "flex", flexDirection: "column", minWidth: 0, flex: 1, overflow: "hidden" }}>
+              <div style={{ flex: "0 0 60%", borderBottom: "1px solid #e2e8f0", background: "#0f172a" }}>
+                <Editor
+                  height="100%"
+                  width="100%"
+                  defaultLanguage="sql"
+                  theme="vs-dark"
+                  value={query}
+                  onChange={(v) => setQuery(v || "")}
+                  options={{
+                    fontSize: 14,
+                    minimap: { enabled: false },
+                    automaticLayout: true,
+                    padding: { top: 10 }
+                  }}
+                />
+              </div>
 
-  {/* RIGHT: editor + results */}
-  <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-    {/* Monaco editor */}
-    <div style={{ borderBottom: "1px solid #e2e8f0", background: "#0f172a" }}>
-      <Editor
-        height={isMobile ? "220px" : "280px"}
-        width="100%"
-        defaultLanguage="sql"
-        theme="vs-dark"
-        value={query}
-        onChange={(v) => setQuery(v || "")}
-        options={{ 
-          fontSize: isMobile ? 13 : 14, 
-          minimap: { enabled: false }, 
-          automaticLayout: true,
-          padding: { top: 10 } 
-        }}
-      />
-    </div>
-
-              {/* Results */}
-              <div style={{ flex: 1, padding: "0.75rem 1.25rem", background: "#f8fafc", overflow: "auto" }}>
+              {/* Results Output */}
+              <div style={{ flex: "0 0 40%", padding: "0.75rem 1.25rem", background: "#f8fafc", overflow: "auto" }}>
                 <div style={{ fontSize: "0.68rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.5rem" }}>
                   Output {results ? `— ${results.values.length} row${results.values.length !== 1 ? "s" : ""}` : ""}
                 </div>
-
                 {!results && !error && (
                   <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>Results appear here after you run a query</span>
                 )}
                 {error && (
                   <span style={{ fontSize: "0.8rem", color: "#ef4444", fontFamily: "monospace" }}>{error}</span>
                 )}
-             {results && (
-  <div style={{ overflowX: "scroll", overflowY: "auto", width: "100%", WebkitOverflowScrolling: "touch" }}>
-    <table style={{ minWidth: "max-content", borderCollapse: "collapse", fontSize: "0.78rem" }}>
+                {results && (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ borderCollapse: "collapse", fontSize: "0.78rem" }}>
                       <thead>
                         <tr>
                           {results.columns.map((col) => (
@@ -896,125 +551,243 @@ export default function SQLPage() {
             </div>
           </div>
         </div>
+      )}
 
-        {/* ── QUICK TIPS ─────────────────────────────────────────────────── */}
-        <div style={{ marginBottom: "1.25rem" }}>
-          <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Quick Tips</span>
-          <h2 style={{ fontSize: "1.3rem", fontWeight: 800, letterSpacing: "-0.3px", margin: "0.25rem 0 0", color: "#0f172a" }}>Common SQL mistakes to avoid</h2>
+      <Nav navigate={navigate} isMobile={isMobile} />
+
+      {/* ── HERO ─────────────────────────────────────────────────────────── */}
+      <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "2rem 1rem 1.5rem" : "3rem 2.5rem 2.5rem", textAlign: "center" }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#2563eb", background: "#ffffff", padding: "5px 14px", borderRadius: "20px", border: "1px solid #bfdbfe", marginBottom: "1.25rem", fontWeight: 600 }}>
+          <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#2563eb", display: "inline-block" }} />
+          Free SQL Practice Environment
         </div>
-        {/* Uniform 2-column grid */}
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)", gap: "1rem", marginBottom: "2.5rem" }}>
-          {QUICK_TIPS.map((tip, i) => (
-            <div key={i} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "1.25rem" }}>
-              <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "0.75rem" }}>
-                <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#2563eb" }}>{i + 1}</span>
-              </div>
-              <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "#0f172a", marginBottom: "0.5rem" }}>{tip.title}</div>
-              <div style={{ fontSize: "0.8rem", color: "#64748b", lineHeight: 1.65 }}>{tip.tip}</div>
+        <h1 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 800, letterSpacing: "-1px", margin: "0 0 0.75rem", color: "#0f172a" }}>
+          Practice SQL on <span style={{ color: "#2563eb" }}>Real Business Data</span>
+        </h1>
+        <p style={{ fontSize: "1rem", color: "#64748b", lineHeight: 1.75, maxWidth: "520px", margin: "0 auto" }}>
+          Pick a category, write real queries, and build skills that actually matter at work.
+        </p>
+      </div>
+
+      {/* ── LEADERBOARD STRIP — Fixed text clipping with smooth swipe horizontal tracking ── */}
+      <div style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "0.75rem 1rem" : "0.85rem 2.5rem" }}>
+        <div style={{ 
+          maxWidth: "1100px", 
+          margin: "0 auto", 
+          display: "flex", 
+          alignItems: "center", 
+          gap: "1.5rem", 
+          overflowX: "auto",
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "none"
+        }}>
+          <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", whiteSpace: "nowrap" }}>🏆 Top Solvers</span>
+          {leaderboard.map((u) => (
+            <div key={u.rank} style={{ display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}>
+              <span style={{ fontSize: "0.82rem" }}>{u.badge || `#${u.rank}`}</span>
+              <span style={{ fontSize: "0.82rem", fontWeight: 600, color: "#0f172a" }}>{u.name}</span>
+              <span style={{ fontSize: "0.75rem", color: "#2563eb", background: "#eff6ff", padding: "2px 8px", borderRadius: "10px", fontWeight: 600 }}>{u.solved} solved</span>
             </div>
           ))}
-        </div>
-
-        {/* ── FEATURED PROBLEMS ──────────────────────────────────────────── */}
-        <div style={{ marginBottom: "1.25rem" }}>
-          <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Featured Problems</span>
-          <h2 style={{ fontSize: "1.3rem", fontWeight: 800, letterSpacing: "-0.3px", margin: "0.25rem 0 0.75rem", color: "#0f172a" }}>Start with these popular challenges</h2>
-
-          {/* Category filter tabs */}
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-            {allCats.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCat(cat)}
-                style={{
-                  padding: "5px 14px",
-                  borderRadius: "20px",
-                  fontSize: "0.78rem",
-                  fontWeight: activeCat === cat ? 700 : 500,
-                  border: "1.5px solid",
-                  borderColor: activeCat === cat ? (CAT_COLORS[cat] || "#2563eb") : "#e2e8f0",
-                  background: activeCat === cat ? (CAT_COLORS[cat] || "#2563eb") : "#ffffff",
-                  color: activeCat === cat ? "#ffffff" : "#64748b",
-                  cursor: "pointer",
-                  transition: "all 0.15s",
-                }}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Uniform 3-column grid */}
-        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: "1rem", marginBottom: "2.5rem" }}>
-          {filteredFeatured.map((p, i) => (
-            <div
-              key={`${p.category}-${p.id}-${i}`}
-              onClick={() => navigate(p.path)}
-              style={{ background: "#ffffff", border: "1.5px solid #e2e8f0", borderRadius: "12px", padding: "1.25rem", cursor: "pointer", display: "flex", flexDirection: "column", gap: "6px", transition: "border-color 0.15s" }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#bfdbfe")}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <CatPill cat={p.category} />
-                <DiffPill d={p.difficulty} />
-              </div>
-              <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "#0f172a", lineHeight: 1.35 }}>{p.title}</div>
-              <div style={{ fontSize: "0.78rem", color: "#64748b", lineHeight: 1.6, flex: 1 }}>{p.description}</div>
-              <div style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, marginTop: "4px" }}>
-                Solve this →
-              </div>
-            </div>
-          ))}
-        </div>
-
-      </div>{/* /maxWidth wrapper */}
-
-      {/* ── FOOTER ───────────────────────────────────────────────────────── */}
-      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: isMobile ? "2rem 1rem 1.5rem" : "3rem 2.5rem 2rem" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr 1fr", gap: "2rem", marginBottom: "2rem" }}>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", marginBottom: "0.5rem" }}>Data Rejected</div>
-              <div style={{ fontSize: "0.82rem", color: "#64748b", lineHeight: 1.7, maxWidth: "280px" }}>A free SQL practice platform built for data professionals who want to actually do the work.</div>
-              <div style={{ display: "flex", gap: "10px", marginTop: "1rem" }}>
-                <a href="https://linkedin.com" target="_blank" rel="noreferrer" style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>LinkedIn</a>
-                <a href="https://youtube.com"  target="_blank" rel="noreferrer" style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>YouTube</a>
-                <a href="/contact"                                               style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>Contact Us</a>
-              </div>
-            </div>
-            <div>
-              <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.75rem" }}>Product</div>
-              {[["Practice", "/sql"], ["Leaderboard", "/leaderboard"]].map(([label, path]) => (
-                <div key={label} onClick={() => navigate(path)} style={{ fontSize: "0.82rem", color: "#64748b", marginBottom: "0.4rem", cursor: "pointer" }}>{label}</div>
-              ))}
-            </div>
-            <div>
-            <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.75rem" }}>
-    Legal
-  </div>
-  
-  <Link 
-    to="/privacy" 
-    style={{ display: "block", fontSize: "0.82rem", color: "#64748b", marginBottom: "0.4rem", textDecoration: "none", cursor: "pointer" }}
-  >
-    Privacy Policy
-  </Link>
-
-  <Link 
-    to="/terms" 
-    style={{ display: "block", fontSize: "0.82rem", color: "#64748b", marginBottom: "0.4rem", textDecoration: "none", cursor: "pointer" }}
-  >
-    Terms of Use
-  </Link>
-</div>
-          </div>
-          <div style={{ borderTop: "1px solid #e2e8f0", paddingTop: "1.25rem", fontSize: "0.75rem", color: "#94a3b8", textAlign: "center" }}>
-            © 2025 Data Rejected · Built for data professionals who want to actually do the work.
-          </div>
+          <span onClick={() => navigate("/leaderboard")} style={{ fontSize: "0.75rem", color: "#2563eb", cursor: "pointer", marginLeft: isMobile ? "1rem" : "auto", whiteSpace: "nowrap", fontWeight: 600 }}>
+            View full leaderboard →
+          </span>
         </div>
       </div>
 
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "1rem 1rem" : "2.5rem 2.5rem" }}>
+
+        {/* ── CATEGORY BUTTONS ───────────────────────────────────────────── */}
+        <div style={{ marginBottom: "0.75rem" }}>
+          <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Choose a Category</span>
+        </div>
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "2.5rem" }}>
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.path}
+              onClick={() => navigate(cat.path)}
+              style={{ padding: isMobile ? "8px 14px" : "10px 20px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.85rem", border: "1.5px solid #bfdbfe", cursor: "pointer" }}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {/* ── COMMUNITY ACTIVITY ─────────────────────────────────────────── */}
+        <div style={{ marginBottom: "1.25rem" }}>
+          <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Community Activity</span>
+          <h2 style={{ fontSize: "1.3rem", fontWeight: 800, letterSpacing: "-0.3px", margin: "0.25rem 0 0", color: "#0f172a" }}>See what people are solving right now</h2>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: "10px", marginBottom: "2.5rem" }}>
+          {community.map((item, i) => (
+            <div key={i} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "10px", padding: "0.875rem 1rem", display: "flex", alignItems: "flex-start", gap: "10px" }}>
+              <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.72rem", fontWeight: 700, color: "#2563eb", flexShrink: 0 }}>
+                {getInitials(item.user)}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: "0.82rem", color: "#0f172a", fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {item.user} <span style={{ fontWeight: 400, color: "#64748b" }}>solved</span>
+                </div>
+                <div style={{ fontSize: "0.82rem", color: "#0f172a", margin: "2px 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.problem}</div>
+                <div style={{ display: "flex", gap: "6px", alignItems: "center", marginTop: "4px" }}>
+                  <CatPill cat={item.category} />
+                  <span style={{ fontSize: "0.68rem", color: "#94a3b8" }}>{item.time}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── SQL SANDBOX SECTION ────────────────────────────────────────── */}
+        <div style={{ marginBottom: "1.25rem" }}>
+          <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Free Sandbox</span>
+          <h2 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0.25rem 0 0", color: "#0f172a" }}>Write and run SQL queries instantly</h2>
+        </div>
+
+        {/* Responsive Sandbox Container */}
+        <div style={{ 
+          border: "1px solid #e2e8f0", 
+          borderRadius: "12px", 
+          overflow: "hidden", 
+          display: "flex", 
+          flexDirection: "column", 
+          background: "#ffffff" 
+        }}>
+          {/* Controls Bar */}
+          <div style={{ 
+            padding: "0.75rem 1rem", 
+            borderBottom: "1px solid #e2e8f0", 
+            display: "flex", 
+            flexDirection: isMobile ? "column" : "row",
+            gap: "12px",
+            justifyContent: "space-between", 
+            alignItems: isMobile ? "stretch" : "center", 
+            background: "#f8fafc" 
+          }}>
+            <div style={{ display: "flex", gap: "6px", alignItems: "center", overflowX: "auto" }}>
+              <span style={{ fontSize: "0.72rem", color: "#475569", background: "#e2e8f0", padding: "3px 8px", borderRadius: "4px", fontWeight: 700 }}>SCHEMA</span>
+              {/* Table schema toggle pills are completely bypassed on mobile screens to save layout width */}
+              {!isMobile && ["customers", "orders", "order_items", "products", "payments", "delivery_partners", "feedback"].map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setActiveTab(t)}
+                  style={{
+                    fontSize: "0.72rem", padding: "3px 8px", borderRadius: "6px", border: "1px solid",
+                    borderColor: activeTab === t ? "#2563eb" : "#e2e8f0",
+                    background: activeTab === t ? "#eff6ff" : "#ffffff",
+                    color: activeTab === t ? "#2563eb" : "#64748b",
+                    cursor: "pointer", fontWeight: activeTab === t ? 600 : 400
+                  }}
+                >
+                  {t}
+                </button>
+              ))}
+              {isMobile && <span style={{ fontSize: "0.78rem", color: "#64748b", fontWeight: 500 }}>Active Workspace Dataset</span>}
+            </div>
+            
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+              <button
+                onClick={runQuery}
+                disabled={!dbReady}
+                style={{ flex: isMobile ? 1 : "none", padding: "8px 16px", borderRadius: "6px", background: dbReady ? "#2563eb" : "#94a3b8", color: "#fff", fontWeight: 700, fontSize: "0.82rem", border: "none", cursor: dbReady ? "pointer" : "not-allowed" }}
+              >
+                {dbReady ? "▶ Run Query" : "Loading…"}
+              </button>
+              <button
+                onClick={() => setFullscreen(true)}
+                style={{ padding: "8px 12px", borderRadius: "6px", background: "#fff", color: "#334155", fontWeight: 600, fontSize: "0.82rem", border: "1.5px solid #cbd5e1", cursor: "pointer" }}
+              >
+                {isMobile ? "⛶ Fullscreen" : "Maximize ⛶"}
+              </button>
+            </div>
+          </div>
+
+          {/* Core Interactive Sandbox Sandbox Content Area */}
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "340px minmax(0, 1fr)", minHeight: isMobile ? "auto" : "400px" }}>
+            
+            {/* Table Preview Panel — Dropped entirely on mobile screens */}
+            {!isMobile && (
+              <div style={{ borderRight: "1px solid #e2e8f0", background: "#f8fafc", padding: "1rem", overflowX: "auto", overflowY: "auto", maxH: "400px" }}>
+                <div style={{ fontSize: "0.68rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", marginBottom: "0.75rem", letterSpacing: "0.04em" }}>
+                  {activeTab} Preview (Top 3 rows)
+                </div>
+                <table style={{ borderCollapse: "collapse", fontSize: "0.72rem", width: "100%" }}>
+                  <thead>
+                    <tr style={{ background: "#e2e8f0" }}>
+                      {TABLE_DATA[activeTab].columns.map((col) => (
+                        <th key={col} style={{ textAlign: "left", color: "#334155", padding: "6px 8px", borderBottom: "1.5px solid #cbd5e1" }}>{col}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {TABLE_DATA[activeTab].rows.map((row, i) => (
+                      <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "#ffffff" }}>
+                        {row.map((cell, j) => (
+                          <td key={j} style={{ padding: "6px 8px", color: "#334155", borderBottom: "1px solid #e2e8f0" }}>{cell}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* Monaco Editor Stack & Query Execution Console Output Window */}
+            <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+              <div style={{ height: "240px", borderBottom: "1px solid #e2e8f0", background: "#0f172a" }}>
+                <Editor
+                  height="100%"
+                  defaultLanguage="sql"
+                  theme="vs-dark"
+                  value={query}
+                  onChange={(v) => setQuery(v || "")}
+                  options={{
+                    fontSize: 13,
+                    minimap: { enabled: false },
+                    automaticLayout: true,
+                    padding: { top: 8 },
+                    wordWrap: "on"
+                  }}
+                />
+              </div>
+
+              {/* Execution Console Results */}
+              <div style={{ flex: 1, padding: "1rem", background: "#f8fafc", minHeight: "120px" }}>
+                <div style={{ fontSize: "0.68rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.5rem" }}>
+                  Output {results ? `— ${results.values.length} rows` : ""}
+                </div>
+                {!results && !error && <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>Results will append here. Press Ctrl+Enter to execute.</span>}
+                {error && <span style={{ fontSize: "0.8rem", color: "#ef4444", fontFamily: "monospace" }}>{error}</span>}
+                {results && (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ borderCollapse: "collapse", fontSize: "0.76rem", width: "100%" }}>
+                      <thead>
+                        <tr>
+                          {results.columns.map((col) => (
+                            <th key={col} style={{ padding: "6px 10px", textAlign: "left", color: "#64748b", borderBottom: "1px solid #e2e8f0" }}>{col}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {results.values.slice(0, 15).map((row, i) => (
+                          <tr key={i} style={{ background: i % 2 === 0 ? "#ffffff" : "#f8fafc" }}>
+                            {row.map((cell, j) => (
+                              <td key={j} style={{ padding: "6px 10px", borderBottom: "1px solid #f1f5f9", color: "#0f172a" }}>{cell}</td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }
