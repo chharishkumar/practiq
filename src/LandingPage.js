@@ -194,12 +194,47 @@ useEffect(() => {
           Free SQL Practice Platform — No signup required
         </div>
         <h1 style={{ fontSize: "clamp(2.2rem, 5vw, 3.5rem)", fontWeight: 800, lineHeight: 1.1, margin: "0 0 1.25rem", letterSpacing: "-1.5px" }}>
-          The SQL Practice Platform<br />
-          <span style={{ color: "#2563eb" }}>Built for Real Work</span>
+        Practice SQL Like a Data Analyst<br />
+          <span style={{ color: "#2563eb" }}>Solve Real Business Problems</span>
         </h1>
         <p style={{ fontSize: "1.05rem", color: "#64748b", lineHeight: 1.75, maxWidth: "540px", margin: "0 auto 2.5rem" }}>
-          Practice SQL on real business datasets. Customer churn, revenue analysis, support tickets and more. No setup. Just write and run.
+        Solve customer churn, revenue analysis, retention, support and interview questions using real datasets. Write SQL directly in your browser and get instant feedback.
         </p>
+        <div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: "2rem"
+  }}
+>
+  <button
+    onClick={() => navigate("/signup")}
+    style={{
+      padding: "14px 32px",
+      background: "#2563eb",
+      color: "#fff",
+      border: "none",
+      borderRadius: "8px",
+      fontWeight: 700,
+      fontSize: "0.95rem",
+      cursor: "pointer"
+    }}
+  >
+    Start Practicing Free →
+  </button>
+</div>
+
+              {/* Stats Strip */}
+      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "1.5rem 1rem" : "2rem" }}>
+        <div style={{ maxWidth: "800px", margin: "0 auto", display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: "1rem", textAlign: "center" }}>
+          {[["1000+", "SQL Problems"], ["25+", "Business Datasets"], ["12K+", "Community Members"], ["Free", "To Start"]].map(([num, label]) => (
+            <div key={label}>
+              <div style={{ fontSize: "2rem", fontWeight: 800, color: "#0f172a", letterSpacing: "-1px" }}>{num}</div>
+              <div style={{ fontSize: "0.78rem", color: "#94a3b8", marginTop: "3px" }}>{label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
 
         {/* Live SQL Sandbox */}
         <div style={{
@@ -298,23 +333,12 @@ useEffect(() => {
             </div>
           </div>
         </div>
-        <p style={{ fontSize: "0.78rem", color: "#94a3b8", marginBottom: "3rem" }}>Live sandbox — no signup needed. Write SQL and run it instantly.</p>
       </div>
 
-      {/* Stats Strip */}
-      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "1.5rem 1rem" : "2rem" }}>
-        <div style={{ maxWidth: "800px", margin: "0 auto", display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: "1rem", textAlign: "center" }}>
-          {[["1000+", "SQL Problems"], ["25+", "Business Datasets"], ["12K+", "Community Members"], ["Free", "To Start"]].map(([num, label]) => (
-            <div key={label}>
-              <div style={{ fontSize: "2rem", fontWeight: 800, color: "#0f172a", letterSpacing: "-1px" }}>{num}</div>
-              <div style={{ fontSize: "0.78rem", color: "#94a3b8", marginTop: "3px" }}>{label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+
 
       {/* How It Works */}
-      <div style={{ maxWidth: "900px", margin: "0 auto", padding: isMobile ? "2.5rem 1rem" : "5rem 2.5rem" }}>
+      <div style={{ maxWidth: "900px", margin: "0 auto", padding: isMobile ? "2rem 1rem" : "2.5rem 2.5rem" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <div style={{ fontSize: "0.72rem", color: "#2563eb", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.5rem" }}>How it works</div>
           <h2 style={{ fontSize: isMobile ? "1.5rem" : "2rem", fontWeight: 800, letterSpacing: "-0.5px", margin: "0 0 0.75rem" }}>From learning to doing in 3 steps</h2>
@@ -333,11 +357,34 @@ useEffect(() => {
             </div>
           ))}
         </div>
+             <div
+  style={{
+    textAlign: "center",
+    marginTop: "1rem",
+    marginBottom: "1.5rem"
+  }}
+>
+  <button
+    onClick={() => navigate("/signup")}
+    style={{
+      padding: "12px 28px",
+      background: "#2563eb",
+      color: "#fff",
+      border: "none",
+      borderRadius: "8px",
+      fontWeight: 700,
+      cursor: "pointer"
+    }}
+  >
+    Start Practicing Free →
+  </button>
+</div>
       </div>
+ 
 
       {/* What You Can Practice */}
-      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "2.5rem 1rem" : "5rem 2.5rem" }}>
-        <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "2rem 1rem" : "3.5rem 2.5rem" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "3rem" }}>
             <div style={{ fontSize: "0.72rem", color: "#2563eb", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.5rem" }}>What you can practice</div>
             <h2 style={{ fontSize: isMobile ? "1.5rem" : "2rem", fontWeight: 800, letterSpacing: "-0.5px", margin: "0 0 0.75rem" }}>Every SQL skill you need to get hired</h2>
@@ -365,7 +412,7 @@ useEffect(() => {
       </div>
 
       {/* Community Activity */}
-      <div style={{ maxWidth: "900px", margin: "0 auto", padding: isMobile ? "2.5rem 1rem" : "5rem 2.5rem" }}>
+      <div style={{ maxWidth: "900px", margin: "0 auto", padding: isMobile ? "2rem 1rem" : "3rem 2.5rem" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <div style={{ fontSize: "0.72rem", color: "#2563eb", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.5rem" }}>Community</div>
           <h2 style={{ fontSize: isMobile ? "1.5rem" : "2rem", fontWeight: 800, letterSpacing: "-0.5px", margin: "0 0 0.75rem" }}>See what people are solving right now</h2>
@@ -396,7 +443,7 @@ useEffect(() => {
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#60a5fa", display: "inline-block" }}></span>
           Join 12,000+ data professionals
         </div>
-        <h2 style={{ fontSize: isMobile ? "1.6rem" : "2.2rem", fontWeight: 800, marginBottom: "1rem", letterSpacing: "-1px" }}>Ready to solve real data problems?</h2>
+        <h2 style={{ fontSize: isMobile ? "1.6rem" : "2.2rem", fontWeight: 800, marginBottom: "1rem", letterSpacing: "-1px" }}>Ready for your next SQL interview?</h2>
         <p style={{ color: "#94a3b8", marginBottom: "2.5rem", fontSize: "1rem", lineHeight: 1.7 }}>Stop watching tutorials. Start writing real SQL on real data. Free forever to start.</p>
         <button
   onClick={() => navigate("/signup")}
