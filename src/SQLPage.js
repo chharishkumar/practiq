@@ -521,7 +521,7 @@ textTransform: "uppercase", marginBottom: "1rem", letterSpacing: "0.05em"
 }}>
 {activeTab} Preview
 </div>
-<table style={{ borderCollapse: "collapse", fontSize: "0.74rem", width: "100%", minWidth: "max-content" }}>
+<table style={{ borderCollapse: "collapse", fontSize: "0.74rem", width: "100%", minWidth: 0}}>
 <thead>
 <tr style={{ background: "#f1f5f9" }}>
 {TABLE_DATA[activeTab].columns.map((col) => (
@@ -710,17 +710,17 @@ onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTa
 <h2 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0.25rem 0 0", color: "#0f172a" }}>Write and run SQL queries instantly</h2>
 </div>
 
-<div style={{ background: "#ffffff", border: "1.5px solid #e2e8f0", borderRadius: "16px", overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.06)", marginBottom: "2.5rem" }}>
+<div style={{ background: "#ffffff", border: "1.5px solid #e2e8f0", borderRadius: "16px", overflow: "hidden", overflowX: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.06)", marginBottom: "2.5rem" }}>
 
 {/* Top bar */}
-<div style={{ padding: "0.85rem 1.25rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#f8fafc" }}>
+<div style={{ padding: "0.85rem 1.25rem", borderBottom: "1px solid #e2e8f0", display: "flex", flexDirection: isMobile ? "column" : "row", justifyContent: "space-between", alignItems: isMobile ? "flex-start" : "center", gap: isMobile ? "8px" : "0", background: "#f8fafc" }}>
 <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
 <span style={{ fontSize: "0.75rem", color: "#0f172a", background: "#e2e8f0", padding: "4px 10px", borderRadius: "20px", fontWeight: 700 }}>SQL</span>
 {["customers", "orders", "products"].map((t) => (
 <button
 key={t}
 onClick={() => setActiveTab(t)}
-style={{ fontSize: "0.72rem", padding: "3px 10px", borderRadius: "6px", border: "1px solid", borderColor: activeTab === t ? "#2563eb" : "#e2e8f0", background: activeTab === t ? "#eff6ff" : "#ffffff", color: activeTab === t ? "#2563eb" : "#64748b", cursor: "pointer", fontWeight: activeTab === t ? 600 : 400 }}
+style={{ fontSize: "0.72rem", padding: "3px 10px", width: isMobile ? "100%" : "auto", borderRadius: "6px", border: "1px solid", borderColor: activeTab === t ? "#2563eb" : "#e2e8f0", background: activeTab === t ? "#eff6ff" : "#ffffff", color: activeTab === t ? "#2563eb" : "#64748b", cursor: "pointer", fontWeight: activeTab === t ? 600 : 400 }}
 >
 {t}
 </button>
@@ -760,6 +760,7 @@ background: "#ffffff"
 }}>
 
 {/* LEFT: table preview - Now wider */}
+{!isMobile && (
 <div style={{
 borderRight: isMobile ? "none" : "1px solid #e2e8f0",
 borderBottom: isMobile ? "1px solid #e2e8f0" : "none",
@@ -786,7 +787,7 @@ letterSpacing: "0.05em"
 borderCollapse: "collapse",
 fontSize: "0.74rem",
 width: "100%", // Try to fit container first
-minWidth: "max-content" // But expand to show full columns if needed
+minWidth: 0 // But expand to show full columns if needed
 }}>
 <thead>
 <tr style={{ background: "#f1f5f9" }}>
@@ -822,7 +823,7 @@ whiteSpace: "nowrap"
 </tbody>
 </table>
 </div>
-
+)}
 {/* RIGHT: editor + results */}
 <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
 {/* Monaco editor */}
