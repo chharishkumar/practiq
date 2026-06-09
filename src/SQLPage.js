@@ -3,11 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "./supabase";
 import { useMobile } from "./hooks/useMobile";
 import Editor from "@monaco-editor/react";
-import { SQL_PROBLEMS } from "./data/sqlProblems";
-import { SQL_INTERMEDIATE_PROBLEMS } from "./data/sqlIntermediateProblems";
-import { SQL_ADVANCED_PROBLEMS } from "./data/sqlAdvancedProblems";
-import { SQL_INTERVIEW_PROBLEMS } from "./data/sqlInterviewProblems";
-import { SQL_SCENARIOS_PROBLEMS } from "./data/sqlScenariosProblems";
 
 // ─── CATEGORIES ───────────────────────────────────────────────────────────────
 
@@ -18,78 +13,6 @@ const CATEGORIES = [
   { label: "SQL Interview Questions ⭐",    path: "/sql/interview" },
   { label: "SQL Scenarios (Real-world)",    path: "/sql/scenarios" },
 ];
-
-function getDailySeed() {
-  const today = new Date();
-  return today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
-}
-
-function seededRandom(seed) {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
-
-function pickRandom(arr, count, seedOffset = 0) {
-  const seed = getDailySeed() + seedOffset;
-  const pool = [...arr];
-  const picked = [];
-
-  for (let i = 0; i < count && pool.length > 0; i++) {
-    const rand = seededRandom(seed + i * 37);
-    const index = Math.floor(rand * pool.length);
-    picked.push(pool.splice(index, 1)[0]);
-  }
-  return picked;
-}
-
-function pickMixed(arr, seedOffset = 0) {
-  const first10 = arr.slice(0, 10);
-  const rest = arr.slice(10);
-  return [
-    ...pickRandom(first10, 5, seedOffset),
-    ...pickRandom(rest, 5, seedOffset + 999),
-  ];
-}
-
-function buildFeaturedProblems() {
-  const basics = pickRandom(SQL_PROBLEMS, 10, 0).map(p => ({ 
-    ...p, 
-    category: "Basics", 
-    difficulty: "Easy", 
-    path: `/sql/basics/${p.id}`
-  }));
-  
-  const intermediate = pickRandom(SQL_INTERMEDIATE_PROBLEMS, 10, 100).map(p => ({ 
-    ...p, 
-    category: "Intermediate", 
-    difficulty: "Medium", 
-    path: `/sql/intermediate/${p.id}`
-  }));
-  
-  const advanced = pickRandom(SQL_ADVANCED_PROBLEMS, 10, 200).map(p => ({ 
-    ...p, 
-    category: "Advanced", 
-    difficulty: "Hard", 
-    path: `/sql/advanced/${p.id}`
-  }));
-  
-  const interview = pickMixed(SQL_INTERVIEW_PROBLEMS, 300).map(p => ({ 
-    ...p, 
-    category: "Interview", 
-    difficulty: "Medium", 
-    path: `/sql/interview/${p.id}`
-  }));
-  
-  const scenarios = pickMixed(SQL_SCENARIOS_PROBLEMS, 400).map(p => ({ 
-    ...p, 
-    category: "Scenarios", 
-    difficulty: "Hard", 
-    path: `/sql/scenarios/${p.id}`
-  }));
-  return [...basics, ...intermediate, ...advanced, ...interview, ...scenarios];
-}
-
-const FEATURED_PROBLEMS = buildFeaturedProblems();
 
 // ─── STATIC TABLE PREVIEWS ────────────────────────────────────────────────────
 
@@ -152,22 +75,7 @@ const TABLE_DATA = {
   },
 };
 
-// ─── QUICK TIPS ───────────────────────────────────────────────────────────────
-
-const QUICK_TIPS = [
-  { title: "Always alias your columns",      tip: "Use AS to name computed columns clearly. SELECT SUM(amount) AS total_revenue is far more readable than SELECT SUM(amount)." },
-  { title: "Use CTEs over nested subqueries",tip: "WITH cte AS (...) SELECT * FROM cte makes complex queries readable and debuggable. Nested subqueries become impossible to read fast." },
-  { title: "NULL is not zero",               tip: "WHERE amount != 0 will NOT exclude NULLs. You need WHERE amount != 0 AND amount IS NOT NULL. NULL comparisons always return NULL." },
-  { title: "LEFT JOIN vs INNER JOIN",        tip: "INNER JOIN only returns matching rows. LEFT JOIN returns all rows from the left table even if there's no match. Know which one you actually need." },
-];
-
 // ─── COLOURS ──────────────────────────────────────────────────────────────────
-
-const DIFF_COLORS = {
-  Easy:   { bg: "#f0fdf4", text: "#16a34a", border: "#bbf7d0" },
-  Medium: { bg: "#fffbeb", text: "#d97706", border: "#fde68a" },
-  Hard:   { bg: "#fef2f2", text: "#dc2626", border: "#fecaca" },
-};
 
 const CAT_COLORS = {
   Basics:       "#2563eb",
@@ -218,15 +126,6 @@ const CATEGORY_LABEL = {
   sql_interview:    "Interview",
   sql_scenarios:    "Scenarios",
 };
-
-function DiffPill({ d }) {
-  const c = DIFF_COLORS[d] || DIFF_COLORS.Easy;
-  return (
-    <span style={{ fontSize: "0.68rem", padding: "2px 8px", borderRadius: "10px", fontWeight: 600, background: c.bg, color: c.text, border: `1px solid ${c.border}` }}>
-      {d}
-    </span>
-  );
-}
 
 function CatPill({ cat }) {
   const color = CAT_COLORS[cat] || "#2563eb";
@@ -280,7 +179,6 @@ export default function SQLPage() {
   const [activeTab, setActiveTab] = useState("customers");
   const [fullscreen, setFullscreen] = useState(false);
 
-  const [activeCat, setActiveCat] = useState("All");
   const [leaderboard, setLeaderboard] = useState(FALLBACK_LEADERBOARD);
   const [community, setCommunity]     = useState(FALLBACK_COMMUNITY);
   const isMobile = useMobile();
@@ -569,7 +467,7 @@ export default function SQLPage() {
         </p>
       </div>
 
-      {/* ── LEADERBOARD STRIP — Fixed text clipping with smooth swipe horizontal tracking ── */}
+      {/* ── LEADERBOARD STRIP ── */}
       <div style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "0.75rem 1rem" : "0.85rem 2.5rem" }}>
         <div style={{ 
           maxWidth: "1100px", 
@@ -667,7 +565,6 @@ export default function SQLPage() {
           }}>
             <div style={{ display: "flex", gap: "6px", alignItems: "center", overflowX: "auto" }}>
               <span style={{ fontSize: "0.72rem", color: "#475569", background: "#e2e8f0", padding: "3px 8px", borderRadius: "4px", fontWeight: 700 }}>SCHEMA</span>
-              {/* Table schema toggle pills are completely bypassed on mobile screens to save layout width */}
               {!isMobile && ["customers", "orders", "order_items", "products", "payments", "delivery_partners", "feedback"].map((t) => (
                 <button
                   key={t}
@@ -703,12 +600,12 @@ export default function SQLPage() {
             </div>
           </div>
 
-          {/* Core Interactive Sandbox Sandbox Content Area */}
+          {/* Sandbox Core Content Area */}
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "340px minmax(0, 1fr)", minHeight: isMobile ? "auto" : "400px" }}>
             
-            {/* Table Preview Panel — Dropped entirely on mobile screens */}
+            {/* Table Preview Panel */}
             {!isMobile && (
-              <div style={{ borderRight: "1px solid #e2e8f0", background: "#f8fafc", padding: "1rem", overflowX: "auto", overflowY: "auto", maxH: "400px" }}>
+              <div style={{ borderRight: "1px solid #e2e8f0", background: "#f8fafc", padding: "1rem", overflowX: "auto", overflowY: "auto", maxHeight: "400px" }}>
                 <div style={{ fontSize: "0.68rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", marginBottom: "0.75rem", letterSpacing: "0.04em" }}>
                   {activeTab} Preview (Top 3 rows)
                 </div>
@@ -733,7 +630,7 @@ export default function SQLPage() {
               </div>
             )}
 
-            {/* Monaco Editor Stack & Query Execution Console Output Window */}
+            {/* Monaco Editor Stack */}
             <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
               <div style={{ height: "240px", borderBottom: "1px solid #e2e8f0", background: "#0f172a" }}>
                 <Editor
