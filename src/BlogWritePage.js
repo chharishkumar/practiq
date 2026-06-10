@@ -85,6 +85,7 @@ export default function BlogWritePage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const editor = useEditor({
     extensions: [

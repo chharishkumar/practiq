@@ -432,9 +432,7 @@ const filteredFeatured = activeCat === "All"
 
 return (
 <div style={{ background: "#ffffff", minHeight: "100vh", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
-
 {/* Fullscreen overlay */}
-{/* FULLSCREEN MODAL */}
 {fullscreen && (
 <div style={{
 position: "fixed",
@@ -449,8 +447,10 @@ flexDirection: "column",
 padding: "0.85rem 1.25rem",
 borderBottom: "1px solid #e2e8f0",
 display: "flex",
+flexDirection: isMobile ? "column" : "row",
 justifyContent: "space-between",
-alignItems: "center",
+alignItems: isMobile ? "flex-start" : "center",
+gap: isMobile ? "8px" : "0",
 background: "#f8fafc",
 flexShrink: 0,
 }}>
@@ -472,12 +472,13 @@ cursor: "pointer", fontWeight: activeTab === t ? 600 : 400
 </button>
 ))}
 </div>
-<div style={{ display: "flex", gap: "8px" }}>
+<div style={{ display: "flex", gap: "8px", width: isMobile ? "100%" : "auto" }}>
 <button
 onClick={runQuery}
 disabled={!dbReady}
 style={{
 padding: "8px 20px", borderRadius: "6px",
+flex: isMobile ? 1 : "none",
 background: dbReady ? "#2563eb" : "#94a3b8",
 color: "#fff", fontWeight: 700, fontSize: "0.82rem",
 border: "none", cursor: dbReady ? "pointer" : "not-allowed"
@@ -489,6 +490,7 @@ border: "none", cursor: dbReady ? "pointer" : "not-allowed"
 onClick={() => setFullscreen(false)}
 style={{
 padding: "8px 16px", borderRadius: "6px",
+flex: isMobile ? 1 : "none",
 background: "#fff", color: "#ef4444",
 fontWeight: 700, fontSize: "0.82rem",
 border: "1.5px solid #fca5a5", cursor: "pointer"
