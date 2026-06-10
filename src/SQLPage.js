@@ -819,12 +819,12 @@ onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTa
 </div>
 
 {/* ── QUICK TIPS ─────────────────────────────────────────────────── */}
-<div style={{ marginBottom: "1.25rem" }}>
+<div style={{ marginBottom: "1.25rem", paddingLeft: isMobile ? "0.5rem" : "0" }}>
 <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Quick Tips</span>
 <h2 style={{ fontSize: "1.3rem", fontWeight: 800, letterSpacing: "-0.3px", margin: "0.25rem 0 0", color: "#0f172a" }}>Common SQL mistakes to avoid</h2>
 </div>
 {/* Uniform 2-column grid */}
-<div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)", gap: "1rem", marginBottom: "2.5rem" }}>
+<div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)", gap: "1rem", marginBottom: "2.5rem", paddingLeft: isMobile ? "0.5rem" : "0", paddingRight: isMobile ? "0.5rem" : "0" }}>
 {QUICK_TIPS.map((tip, i) => (
 <div key={i} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "1.25rem" }}>
 <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "0.75rem" }}>
@@ -837,7 +837,7 @@ onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTa
 </div>
 
 {/* ── FEATURED PROBLEMS ──────────────────────────────────────────── */}
-<div style={{ marginBottom: "1.25rem" }}>
+<div style={{ marginBottom: "1.25rem", paddingLeft: isMobile ? "0.5rem" : "0" }}>
 <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Featured Problems</span>
 <h2 style={{ fontSize: "1.3rem", fontWeight: 800, letterSpacing: "-0.3px", margin: "0.25rem 0 0.75rem", color: "#0f172a" }}>Start with these popular challenges</h2>
 
@@ -867,7 +867,7 @@ transition: "all 0.15s",
 </div>
 
 {/* Uniform 3-column grid */}
-<div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: "1rem", marginBottom: "2.5rem" }}>
+<div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: "1rem", marginBottom: "2.5rem", paddingLeft: isMobile ? "0.5rem" : "0", paddingRight: isMobile ? "0.5rem" : "0" }}>
 {filteredFeatured.map((p, i) => (
 <div
 key={`${p.category}-${p.id}-${i}`}
