@@ -707,9 +707,9 @@ onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTa
 </div>
 
 {/* ── SQL SANDBOX ────────────────────────────────────────────────── */}
-<div style={{ marginBottom: "1.25rem" }}>
+{/* <div style={{ marginBottom: "1.25rem" }}>
 <h2 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0.25rem 0 0", color: "#0f172a" }}>Write and run SQL queries instantly</h2>
-</div>
+</div> */}
         <div style={{
   background: "#ffffff", border: isMobile ? "none" : "1.5px solid #e2e8f0", borderRadius: isMobile ? "0" : "16px", overflow: isMobile ? "hidden" : "visible",
   textAlign: "left", boxShadow: isMobile ? "none" : "0 8px 40px rgba(0,0,0,0.08)", margin: isMobile ? "0 0 1rem" : "0 auto 1rem",
