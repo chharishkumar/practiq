@@ -294,6 +294,8 @@ const [activeCat, setActiveCat] = useState("All");
 const [leaderboard, setLeaderboard] = useState(FALLBACK_LEADERBOARD);
 const [community, setCommunity] = useState(FALLBACK_COMMUNITY);
 const isMobile = useMobile();
+const [fullView, setFullView] = useState(false);
+const [editorTheme, setEditorTheme] = useState("dark");
 
 // Init SQL.js
 useEffect(() => {
@@ -706,185 +708,106 @@ onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTa
 
 {/* ── SQL SANDBOX ────────────────────────────────────────────────── */}
 <div style={{ marginBottom: "1.25rem" }}>
-<span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Free Sandbox</span>
 <h2 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0.25rem 0 0", color: "#0f172a" }}>Write and run SQL queries instantly</h2>
 </div>
+        <div style={{
+  background: "#ffffff", border: isMobile ? "none" : "1.5px solid #e2e8f0", borderRadius: isMobile ? "0" : "16px", overflow: "visible",
+  textAlign: "left", boxShadow: isMobile ? "none" : "0 8px 40px rgba(0,0,0,0.08)", margin: isMobile ? "0 0 1rem" : "0 auto 1rem",
+  width: "100%", position: fullView ? "fixed" : "relative", inset: fullView ? "60px 16px 16px 16px" : "auto", zIndex: fullView ? 999 : "auto"
+}}>
+          <div style={{ padding: "0.85rem 1.25rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#f8fafc" }}>
+            <span style={{ fontSize: "0.78rem", color: "#0f172a", background: "#e2e8f0", padding: "4px 10px", borderRadius: "20px", fontWeight: 700 }}>SQL Sandbox</span>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <button onClick={() => setEditorTheme(editorTheme === "dark" ? "light" : "dark")} style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", cursor: "pointer", fontSize: "0.75rem", background: "#fff" }}>Theme</button>
+              <button onClick={() => setFullView(!fullView)} style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", cursor: "pointer", fontSize: "0.75rem", background: "#fff" }}>{fullView ? "Exit" : "Full View"}</button>
+            </div>
+          </div>
 
-<div style={{ background: "#ffffff", border: "1.5px solid #e2e8f0", borderRadius: "16px", overflow: "hidden", overflowX: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.06)", marginBottom: "2.5rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: fullView || isMobile ? "1fr" : "minmax(400px, 40%) 1fr", minHeight: fullView ? "85vh" : isMobile ? "auto" : "600px" }}>
+            {!fullView && !isMobile && (
+              <div style={{ borderRight: "1px solid #e2e8f0", background: "#f8fafc", padding: "1rem", overflowY: "auto" }}>
+                <div style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", marginBottom: "1rem", letterSpacing: "0.05em" }}>Schema</div>
+                {[
+  { name: "customers", cols: [["customer_id","INT"],["customer_name","TEXT"],["email","TEXT"],["phone","TEXT"],["city","TEXT"],["state","TEXT"],["country","TEXT"],["status","TEXT"],["customer_type","TEXT"],["lifetime_value","REAL"]] },
+  { name: "orders", cols: [["order_id","INT"],["customer_id","INT"],["order_date","TEXT"],["order_status","TEXT"],["payment_status","TEXT"],["total_amount","REAL"],["currency","TEXT"],["delivered_date","TEXT"]] },
+].map(table => (
+  <div key={table.name} style={{ border: "1px solid #e2e8f0", borderRadius: "8px", background: "#fff", marginBottom: "1rem", overflow: "hidden" }}>
+    <div style={{ fontSize: "0.75rem", fontWeight: 700, padding: "8px 10px", background: "#f1f5f9", color: "#0f172a" }}>{table.name}</div>
+    <table style={{ width: "100%", fontSize: "0.72rem", borderCollapse: "collapse" }}>
+      <tbody>
+        {table.cols.map(([col, type]) => (
+          <tr key={col}>
+            <td style={{ padding: "4px 10px", borderBottom: "1px solid #f1f5f9", color: "#0f172a" }}>{col}</td>
+            <td style={{ padding: "4px 10px", borderBottom: "1px solid #f1f5f9", color: "#94a3b8" }}>{type}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+))}
+              </div>
+            )}
 
-{/* Top bar */}
-<div style={{ padding: "0.85rem 1.25rem", borderBottom: "1px solid #e2e8f0", display: "flex", flexDirection: isMobile ? "column" : "row", justifyContent: "space-between", alignItems: isMobile ? "flex-start" : "center", gap: isMobile ? "8px" : "0", background: "#f8fafc" }}>
-<div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-<span style={{ fontSize: "0.75rem", color: "#0f172a", background: "#e2e8f0", padding: "4px 10px", borderRadius: "20px", fontWeight: 700 }}>SQL</span>
-{["customers", "orders", "products"].map((t) => (
-<button
-key={t}
-onClick={() => setActiveTab(t)}
-style={{ fontSize: "0.72rem", padding: "3px 10px", width: isMobile ? "100%" : "auto", borderRadius: "6px", border: "1px solid", borderColor: activeTab === t ? "#2563eb" : "#e2e8f0", background: activeTab === t ? "#eff6ff" : "#ffffff", color: activeTab === t ? "#2563eb" : "#64748b", cursor: "pointer", fontWeight: activeTab === t ? 600 : 400 }}
->
-{t}
-</button>
-))}
-</div>
-<div style={{ display: "flex", gap: "8px" }}>
-{!isMobile && (
-<button
-onClick={() => setFullscreen(true)}
-title="Open fullscreen editor"
-style={{ padding: "7px 14px", borderRadius: "6px", background: "#ffffff", color: "#64748b", fontWeight: 600, fontSize: "0.78rem", border: "1px solid #e2e8f0", cursor: "pointer", display: "flex", alignItems: "center", gap: "5px" }}
->
-⛶ Fullscreen
-</button>
-)}
-<button
-onClick={runQuery}
-disabled={!dbReady}
-style={{ padding: "8px 20px", borderRadius: "6px", background: dbReady ? "#2563eb" : "#94a3b8", color: "#fff", fontWeight: 700, fontSize: "0.82rem", border: "none", cursor: dbReady ? "pointer" : "not-allowed" }}
->
-{dbReady ? "▶ Run Query" : "Loading…"}
-</button>
-</div>
-</div>
-
-{/* Main grid: table preview LEFT, editor + results RIGHT */}
-{/* Main grid: Updated width from 280px to 450px to fit more columns */}
-<div style={{
-display: "grid",
-gridTemplateColumns: isMobile ? "1fr" : "450px minmax(0, 1fr)",
-width: "100%",
-height: isMobile ? "auto" : "550px",
-border: "1px solid #e2e8f0",
-borderRadius: "10px",
-overflow: "hidden",
-background: "#ffffff"
-}}>
-
-{/* LEFT: table preview - Now wider */}
-{!isMobile && (
-<div style={{
-borderRight: isMobile ? "none" : "1px solid #e2e8f0",
-borderBottom: isMobile ? "1px solid #e2e8f0" : "none",
-background: "#f8fafc",
-padding: "1rem",
-overflowX: "auto", // Allows horizontal scroll if columns still exceed 450px
-overflowY: "auto", // Vertical scroll for rows
-minWidth: 0,
-scrollbarWidth: "thin",
-display: "flex",
-flexDirection: "column"
-}}>
-<div style={{
-fontSize: "0.7rem",
-color: "#64748b",
-fontWeight: 700,
-textTransform: "uppercase",
-marginBottom: "1rem",
-letterSpacing: "0.05em"
-}}>
-{activeTab} Preview
-</div>
-<table style={{
-borderCollapse: "collapse",
-fontSize: "0.74rem",
-width: "100%", // Try to fit container first
-minWidth: 0 // But expand to show full columns if needed
-}}>
-<thead>
-<tr style={{ background: "#f1f5f9" }}>
-{TABLE_DATA[activeTab].columns.map((col) => (
-<th key={col} style={{
-textAlign: "left",
-color: "#475569",
-padding: "8px 10px",
-borderBottom: "2px solid #e2e8f0",
-whiteSpace: "nowrap",
-fontWeight: 700
-}}>
-{col}
-</th>
-))}
-</tr>
-</thead>
-<tbody>
-{TABLE_DATA[activeTab].rows.map((row, i) => (
-<tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "#ffffff" }}>
-{row.map((cell, j) => (
-<td key={j} style={{
-padding: "8px 10px",
-color: "#1e293b",
-borderBottom: "1px solid #f1f5f9",
-whiteSpace: "nowrap"
-}}>
-{cell}
-</td>
-))}
-</tr>
-))}
-</tbody>
-</table>
-</div>
-)}
-{/* RIGHT: editor + results */}
-<div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-{/* Monaco editor */}
-<div style={{ borderBottom: "1px solid #e2e8f0", background: "#0f172a" }}>
+<div style={{ display: "flex", flexDirection: "column", padding: isMobile ? "0.05rem 0.25rem" : "1rem", background: "#fff", minWidth: 0, overflow: "hidden" }}>
 <Editor
-height={isMobile ? "220px" : "280px"}
-width="100%"
-defaultLanguage="sql"
-theme="vs-dark"
-value={query}
-onChange={(v) => setQuery(v || "")}
-options={{
-fontSize: isMobile ? 13 : 14,
-minimap: { enabled: false },
-automaticLayout: true,
-padding: { top: 10 }
-}}
+  height={isMobile ? "220px" : "300px"}
+  language="sql"
+  theme={editorTheme === "dark" ? "vs-dark" : "light"}
+  value={query}
+  onChange={(v) => setQuery(v || "")}
+  options={{ 
+    fontSize: 14, 
+    minimap: { enabled: false }, 
+    wordWrap: "on", 
+    scrollBeyondLastLine: false,
+    acceptSuggestionOnEnter: "on",
+    tabCompletion: "on"
+  }}
 />
-</div>
-
-{/* Results */}
-<div style={{ flex: 1, padding: "0.75rem 1.25rem", background: "#f8fafc", overflow: "auto" }}>
-<div style={{ fontSize: "0.68rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.5rem" }}>
-Output {results ? `— ${results.values.length} row${results.values.length !== 1 ? "s" : ""}` : ""}
-</div>
-
-{!results && !error && (
-<span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>Results appear here after you run a query</span>
-)}
-{error && (
-<span style={{ fontSize: "0.8rem", color: "#ef4444", fontFamily: "monospace" }}>{error}</span>
-)}
+              <button onClick={runQuery} disabled={!dbReady} style={{ margin: "1rem 0 0.75rem", padding: "10px 20px", background: dbReady ? "#2563eb" : "#94a3b8", color: "#fff", border: "none", borderRadius: "6px", cursor: dbReady ? "pointer" : "not-allowed", fontWeight: 700, fontSize: "0.88rem", alignSelf: "flex-start" }}>
+                {dbReady ? "▶ Run Query" : "Loading..."}
+              </button>
+              <div style={{ flex: 1, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", minHeight: "120px", maxHeight: "250px", overflow: "auto", display: "flex", flexDirection: "column" }}>
+  {!results && !error && (
+    <span style={{ padding: "1rem", fontSize: "0.8rem", color: "#94a3b8" }}>
+      Results appear here after you run a query
+    </span>
+  )}
+  {error && (
+    <div style={{ padding: "1rem", color: "#ef4444", fontFamily: "monospace", fontSize: "0.8rem" }}>
+      {error}
+    </div>
+  )}
 {results && (
-<div style={{ overflowX: "scroll", overflowY: "auto", width: "100%", WebkitOverflowScrolling: "touch" }}>
-<table style={{ minWidth: "max-content", borderCollapse: "collapse", fontSize: "0.78rem" }}>
-<thead>
-<tr>
-{results.columns.map((col) => (
-<th key={col} style={{ padding: "5px 12px", textAlign: "left", color: "#64748b", borderBottom: "1px solid #e2e8f0", whiteSpace: "nowrap", fontWeight: 600, fontSize: "0.72rem", textTransform: "uppercase" }}>
-{col}
-</th>
-))}
-</tr>
-</thead>
-<tbody>
-{results.values.map((row, i) => (
-<tr key={i} style={{ background: i % 2 === 0 ? "#ffffff" : "#f8fafc" }}>
-{row.map((cell, j) => (
-<td key={j} style={{ padding: "5px 12px", borderBottom: "1px solid #f1f5f9", whiteSpace: "nowrap", color: "#0f172a" }}>
-{cell}
-</td>
-))}
-</tr>
-))}
-</tbody>
-</table>
-</div>
+  <div style={{ overflowX: "scroll", overflowY: "auto", width: "100%", WebkitOverflowScrolling: "touch" }}>
+    <table style={{ minWidth: 0, borderCollapse: "collapse", fontSize: "0.8rem" }}>
+      <thead>
+        <tr>
+          {results.columns.map(col => (
+            <th key={col} style={{ textAlign: "left", padding: "8px 12px", borderBottom: "2px solid #e2e8f0", color: "#64748b", fontWeight: 500, whiteSpace: "nowrap", position: "sticky", top: 0, background: "#f8fafc", zIndex: 1 }}>
+              {col}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {results.values.map((row, i) => (
+          <tr key={i} style={{ background: i % 2 === 0 ? "#ffffff" : "#f8fafc" }}>
+            {row.map((cell, j) => (
+              <td key={j} style={{ padding: "7px 12px", borderBottom: "1px solid #f1f5f9", color: "#0f172a", whiteSpace: "nowrap" }}>
+                {cell === null ? <span style={{ color: "#94a3b8", fontStyle: "italic" }}>null</span> : String(cell)}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
 )}
 </div>
-</div>
-</div>
+            </div>
+          </div>
+        </div>
 </div>
 
 {/* ── QUICK TIPS ─────────────────────────────────────────────────── */}
