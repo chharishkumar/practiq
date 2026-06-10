@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "./supabase";
+import { useMobile } from "./hooks/useMobile";
 
 const TABS = [
   "Overall",
@@ -63,6 +64,41 @@ function LoadingScreen() {
   );
 }
 
+function Nav({ navigate, isMobile, isLoggedIn }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  return (
+    <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
+      <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>
+        Data Rejected
+      </span>
+      {isMobile ? (
+        <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
+          {menuOpen ? "✕" : "☰"}
+        </button>
+      ) : (
+        <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
+          <Link to="/sql"         style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Practice</Link>
+          <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#2563eb", textDecoration: "none", fontWeight: 600, borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Leaderboard</Link>
+          <Link to="/blog"        style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Blog</Link>
+          {isLoggedIn ? (
+            <Link to="/home" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Home</Link>
+          ) : (
+            <Link to="/login" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Login</Link>
+          )}
+        </div>
+      )}
+      {isMobile && menuOpen && (
+        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#ffffff", borderBottom: "1px solid #e2e8f0", padding: "0.5rem 0", zIndex: 200 }}>
+          {[["Practice", "/sql"], ["Leaderboard", "/leaderboard"], ["Blog", "/blog"], [isLoggedIn ? "Home" : "Login", isLoggedIn ? "/home" : "/login"]].map(([label, path]) => (
+            <div key={label} onClick={() => { navigate(path); setMenuOpen(false); }} style={{ padding: "0.75rem 1.25rem", fontSize: "0.9rem", color: "#0f172a", fontWeight: 500, cursor: "pointer", borderBottom: "1px solid #f1f5f9" }}>
+              {label}
+            </div>
+          ))}
+        </div>
+      )}
+    </nav>
+  );
+}
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export default function LeaderboardPage() {
@@ -73,6 +109,7 @@ export default function LeaderboardPage() {
   const [allUsers, setAllUsers]       = useState([]);
   const [loading, setLoading]         = useState(true);
   const [stats, setStats]             = useState({ total: 0, today: 0, countries: 0 });
+  const isMobile = useMobile();
 
   // ── Fetch everything on mount ─────────────────────────────────────────────
   useEffect(() => {
@@ -241,22 +278,10 @@ const PODIUM_RANKS  = [2, 1, 3];
     <div style={{ background: "#ffffff", minHeight: "100vh", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
 
       {/* Nav */}
-      <nav style={{ padding: "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
-        <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
-        <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
-          <Link to="/sql"          style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Practice</Link>
-          <Link to="/leaderboard"  style={{ fontSize: "0.85rem", color: "#2563eb", textDecoration: "none", fontWeight: 600, borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Leaderboard</Link>
-          <Link to="/blog"         style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Blog</Link>
-          {isLoggedIn ? (
-            <Link to="/home" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Home</Link>
-          ) : (
-            <Link to="/login" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Login</Link>
-          )}
-        </div>
-      </nav>
+      <Nav navigate={navigate} isMobile={isMobile} isLoggedIn={isLoggedIn} />
 
       {/* Hero */}
-      <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: "3.5rem 2.5rem 3rem", textAlign: "center" }}>
+      <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0",padding: isMobile ? "2rem 1rem 1.5rem" : "3.5rem 2.5rem 3rem", textAlign: "center" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#2563eb", background: "#ffffff", padding: "5px 14px", borderRadius: "20px", border: "1px solid #bfdbfe", marginBottom: "1.25rem", fontWeight: 600 }}>
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#2563eb", display: "inline-block" }}></span>
           Updated in real time
@@ -271,7 +296,7 @@ const PODIUM_RANKS  = [2, 1, 3];
 
       {/* Stats Strip */}
       <div style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", padding: "1.5rem 2.5rem" }}>
-        <div style={{ maxWidth: "900px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", textAlign: "center" }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto", display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", padding: isMobile ? "1rem" : "1.5rem 2.5rem", gap: "1rem", textAlign: "center" }}>
           {[
             { num: stats.total.toLocaleString(),    label: "Total Practitioners" },
             { num: stats.today.toLocaleString(),    label: "Problems Solved Today" },
@@ -286,10 +311,15 @@ const PODIUM_RANKS  = [2, 1, 3];
         </div>
       </div>
 
-      <div style={{ maxWidth: "960px", margin: "0 auto", padding: "3rem 2.5rem" }}>
+      <div style={{ maxWidth: "960px", margin: "0 auto", padding: isMobile ? "1.5rem 1rem" : "3rem 2.5rem" }}>
 
         {/* Tab Switcher */}
-        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "2.5rem", borderBottom: "1px solid #e2e8f0", paddingBottom: "1rem" }}>
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "2.5rem", borderBottom: "1px solid #e2e8f0", paddingBottom: "1rem",
+          overflowX: isMobile ? "auto" : "visible",
+          flexWrap: isMobile ? "nowrap" : "wrap",
+          WebkitOverflowScrolling: "touch",
+          paddingBottom: "0.5rem"
+        }}>
           {TABS.map(tab => (
             <button
               key={tab}
@@ -356,10 +386,14 @@ const PODIUM_RANKS  = [2, 1, 3];
           <div style={{ background: "#ffffff", border: "1.5px solid #e2e8f0", borderRadius: "16px", overflow: "hidden" }}>
 
             {/* Header */}
-            <div style={{ display: "grid", gridTemplateColumns: "60px 1fr 120px 100px 80px 140px 130px", padding: "0.75rem 1.25rem", background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
-              {["Rank", "Practitioner", "Country", "Solved", "Streak", "Top Strength", "Badge"].map(h => (
-                <div key={h} style={{ fontSize: "0.7rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em" }}>{h}</div>
-              ))}
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "40px 1fr 80px" : "60px 1fr 120px 100px 80px 140px 130px", padding: "0.75rem 1.25rem", background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+            {["Rank", "Practitioner", "Country", "Solved", "Streak", "Top Strength", "Badge"].map(h => (
+  <div key={h} style={{ 
+    fontSize: "0.7rem", fontWeight: 700, color: "#94a3b8", 
+    textTransform: "uppercase", letterSpacing: "0.05em",
+    display: isMobile && !["Rank", "Practitioner", "Solved"].includes(h) ? "none" : "block"
+  }}>{h}</div>
+))}
             </div>
 
             {/* Visible Rows */}
@@ -368,7 +402,7 @@ const PODIUM_RANKS  = [2, 1, 3];
               return (
                 <div
                   key={user.userId}
-                  style={{ display: "grid", gridTemplateColumns: "60px 1fr 120px 100px 80px 140px 130px", padding: "0.875rem 1.25rem", borderBottom: "1px solid #f1f5f9", background: isMe ? "#eff6ff" : "#ffffff", borderLeft: isMe ? "3px solid #2563eb" : "3px solid transparent", alignItems: "center" }}
+                  style={{ display: "grid", gridTemplateColumns: isMobile ? "40px 1fr 80px" : "60px 1fr 120px 100px 80px 140px 130px", padding: "0.875rem 1.25rem", borderBottom: "1px solid #f1f5f9", background: isMe ? "#eff6ff" : "#ffffff", borderLeft: isMe ? "3px solid #2563eb" : "3px solid transparent", alignItems: "center" }}
                 >
                   <div style={{ fontSize: "0.88rem", fontWeight: 800, color: "#64748b" }}>#{user.rank}</div>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -380,11 +414,11 @@ const PODIUM_RANKS  = [2, 1, 3];
                       {isMe && <span style={{ fontSize: "0.7rem", color: "#2563eb", background: "#eff6ff", padding: "1px 6px", borderRadius: "6px", marginLeft: "6px", fontWeight: 700 }}>You</span>}
                     </div>
                   </div>
-                  <div style={{ fontSize: "0.82rem", color: "#64748b" }}>{user.country}</div>
+                  <div style={{ fontSize: "0.82rem", color: "#64748b", display: isMobile ? "none" : "block" }}>{user.country}</div>
                   <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "#0f172a" }}>{user.displaySolved}</div>
-                  <div style={{ fontSize: "0.82rem", color: "#f59e0b", fontWeight: 600 }}>🔥 {user.streak}</div>
-                  <div style={{ fontSize: "0.75rem", color: "#2563eb", background: "#eff6ff", padding: "3px 8px", borderRadius: "6px", fontWeight: 500, width: "fit-content" }}>{user.strength}</div>
-                  <div style={{ fontSize: "0.7rem", padding: "3px 8px", borderRadius: "10px", fontWeight: 600, background: BADGES[user.badge]?.bg, color: BADGES[user.badge]?.color, border: `1px solid ${BADGES[user.badge]?.border}`, width: "fit-content" }}>{user.badge}</div>
+                  <div style={{ fontSize: "0.82rem", color: "#f59e0b", fontWeight: 600, display: isMobile ? "none" : "block" }}>🔥 {user.streak}</div>
+                  <div style={{ fontSize: "0.75rem", color: "#2563eb", background: "#eff6ff", padding: "3px 8px", borderRadius: "6px", fontWeight: 500, width: "fit-content", display: isMobile ? "none" : "block"  }}>{user.strength}</div>
+                  <div style={{ fontSize: "0.7rem", padding: "3px 8px", borderRadius: "10px", fontWeight: 600, background: BADGES[user.badge]?.bg, color: BADGES[user.badge]?.color, border: `1px solid ${BADGES[user.badge]?.border}`, width: "fit-content", display: isMobile ? "none" : "block" }}>{user.badge}</div>
                 </div>
               );
             })}
@@ -393,18 +427,18 @@ const PODIUM_RANKS  = [2, 1, 3];
             {blurredRows.map((user, i) => (
               <div
                 key={i}
-                style={{ display: "grid", gridTemplateColumns: "60px 1fr 120px 100px 80px 140px 130px", padding: "0.875rem 1.25rem", borderBottom: "1px solid #f1f5f9", filter: "blur(4px)", userSelect: "none", pointerEvents: "none", opacity: 0.6, alignItems: "center" }}
+                style={{ display: "grid", gridTemplateColumns: isMobile ? "40px 1fr 80px" : "60px 1fr 120px 100px 80px 140px 130px", padding: "0.875rem 1.25rem", borderBottom: "1px solid #f1f5f9", filter: "blur(4px)", userSelect: "none", pointerEvents: "none", opacity: 0.6, alignItems: "center" }}
               >
                 <div style={{ fontSize: "0.88rem", fontWeight: 800, color: "#64748b" }}>#{user.rank}</div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "#f1f5f9" }} />
                   <div style={{ fontSize: "0.88rem", fontWeight: 600 }}>{user.name}</div>
                 </div>
-                <div style={{ fontSize: "0.82rem", color: "#64748b" }}>{user.country}</div>
+                <div style={{ fontSize: "0.82rem", color: "#64748b", display: isMobile ? "none" : "block" }}>{user.country}</div>
                 <div style={{ fontSize: "0.88rem", fontWeight: 700 }}>{user.displaySolved}</div>
-                <div style={{ fontSize: "0.82rem" }}>🔥 {user.streak}</div>
-                <div style={{ fontSize: "0.75rem" }}>{user.strength}</div>
-                <div style={{ fontSize: "0.7rem" }}>{user.badge}</div>
+                <div style={{ fontSize: "0.82rem", display: isMobile ? "none" : "block" }}>🔥 {user.streak}</div>
+                <div style={{ fontSize: "0.75rem", display: isMobile ? "none" : "block" }}>{user.strength}</div>
+                <div style={{ fontSize: "0.7rem", display: isMobile ? "none" : "block" }}>{user.badge}</div>
               </div>
             ))}
 

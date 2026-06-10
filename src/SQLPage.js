@@ -818,6 +818,7 @@ onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTa
         </div>
 </div>
 
+
 {/* ── QUICK TIPS ─────────────────────────────────────────────────── */}
 <div style={{ marginBottom: "1.25rem", paddingLeft: isMobile ? "0.5rem" : "0" }}>
 <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Quick Tips</span>
@@ -888,7 +889,6 @@ Solve this →
 </div>
 
 ))}
-
 
 </div>{/* /maxWidth wrapper */}
 
