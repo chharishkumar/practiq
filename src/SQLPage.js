@@ -712,7 +712,7 @@ onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTa
 </div>
         <div style={{
   background: "#ffffff", border: isMobile ? "none" : "1.5px solid #e2e8f0", borderRadius: isMobile ? "0" : "16px", overflow: isMobile ? "hidden" : "visible",
-  textAlign: "left", boxShadow: isMobile ? "none" : "0 8px 40px rgba(0,0,0,0.08)", margin: isMobile ? "0 0 1rem" : "0 auto 1rem",
+  textAlign: "left", boxShadow: isMobile ? "none" : "0 8px 40px rgba(0,0,0,0.08)", margin: isMobile ? "0 -1rem 1rem" : "0 auto 1rem",
   width: "100%", position: fullView ? "fixed" : "relative", inset: fullView ? "60px 16px 16px 16px" : "auto", zIndex: fullView ? 999 : "auto"
 }}>
          <div style={{ padding: isMobile ? "0.75rem 0.5rem" : "0.85rem 1.25rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#f8fafc" }}>
