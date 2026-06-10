@@ -109,15 +109,15 @@ export default function MobileSQLLayout({
       display: "flex", alignItems: "center", justifyContent: "space-between",
     }}>
 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-  <button
-    onClick={() => window.history.back()}
-    style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1rem", color: "#64748b", padding: "0 4px", lineHeight: 1 }}
-  >
-    ←
-  </button>
-  <span style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "-0.3px", color: "#0f172a" }}>
-    {pageTitle}
-  </span>
+<button
+  onClick={() => navigate("/sql")}
+  style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.5rem", color: "#64748b", padding: "0 4px", lineHeight: 1 }}
+>
+  ←
+</button>
+<span style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "-0.3px", color: "#0f172a" }}>
+  {pageTitle}
+</span>
 </div>
       <div style={{
         fontSize: "0.72rem", color: "#16a34a", background: "#f0fdf4",
