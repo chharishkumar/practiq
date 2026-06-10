@@ -373,7 +373,7 @@ useEffect(() => {
               </div>
             )}
 
-<div style={{ display: "flex", flexDirection: "column", padding: isMobile ? "0" : "1rem", background: "#fff", minWidth: 0, overflow: "hidden" }}>
+<div style={{ display: "flex", flexDirection: "column", padding: isMobile ? "0.05rem 0.25rem" : "1rem", background: "#fff", minWidth: 0, overflow: "hidden" }}>
 <Editor
   height={isMobile ? "220px" : "300px"}
   language="sql"
