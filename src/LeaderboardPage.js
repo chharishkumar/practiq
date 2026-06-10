@@ -314,7 +314,7 @@ const PODIUM_RANKS  = [2, 1, 3];
       <div style={{ maxWidth: "960px", margin: "0 auto", padding: isMobile ? "1.5rem 1rem" : "3rem 2.5rem" }}>
 
         {/* Tab Switcher */}
-        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "2.5rem", borderBottom: "1px solid #e2e8f0", paddingBottom: "1rem",
+        <div style={{ display: "flex", gap: "8px", marginBottom: "2.5rem", borderBottom: "1px solid #e2e8f0", 
           overflowX: isMobile ? "auto" : "visible",
           flexWrap: isMobile ? "nowrap" : "wrap",
           WebkitOverflowScrolling: "touch",
