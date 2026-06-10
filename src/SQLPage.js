@@ -711,7 +711,7 @@ onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTa
 <h2 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0.25rem 0 0", color: "#0f172a" }}>Write and run SQL queries instantly</h2>
 </div>
         <div style={{
-  background: "#ffffff", border: isMobile ? "none" : "1.5px solid #e2e8f0", borderRadius: isMobile ? "0" : "16px", overflow: "visible",
+  background: "#ffffff", border: isMobile ? "none" : "1.5px solid #e2e8f0", borderRadius: isMobile ? "0" : "16px", overflow: isMobile ? "hidden" : "visible",
   textAlign: "left", boxShadow: isMobile ? "none" : "0 8px 40px rgba(0,0,0,0.08)", margin: isMobile ? "0 0 1rem" : "0 auto 1rem",
   width: "100%", position: fullView ? "fixed" : "relative", inset: fullView ? "60px 16px 16px 16px" : "auto", zIndex: fullView ? 999 : "auto"
 }}>
@@ -748,7 +748,7 @@ onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTa
               </div>
             )}
 
-<div style={{ display: "flex", flexDirection: "column", padding: isMobile ? "0.05rem 0.25rem" : "1rem", background: "#fff", minWidth: 0, overflow: "hidden" }}>
+<div style={{ display: "flex", flexDirection: "column", padding: isMobile ? "0 0 0 0.35rem" : "1rem", background: "#fff", minWidth: 0, overflow: "hidden" }}>
 <Editor
   height={isMobile ? "220px" : "300px"}
   language="sql"
