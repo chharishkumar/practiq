@@ -878,8 +878,9 @@ onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
 Solve this →
 </div>
 </div>
+
 ))}
-</div>
+
 
 </div>{/* /maxWidth wrapper */}
 
