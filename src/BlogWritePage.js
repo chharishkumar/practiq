@@ -197,18 +197,64 @@ export default function BlogWritePage() {
 
       {/* Nav */}
       <nav style={{ padding: isMobile ? "0.75rem 1rem" : "0.875rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
-        <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
-        <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-          <button onClick={() => navigate("/blog")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500, background: "none", border: "none", cursor: "pointer" }}>← Back to Blog</button>
-          <button
-            onClick={handleSubmit}
-            disabled={submitting}
-            style={{ padding: "8px 22px", borderRadius: "7px", background: submitting ? "#94a3b8" : "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", border: "none", cursor: submitting ? "not-allowed" : "pointer" }}
-          >
-            {submitting ? "Submitting..." : "Submit for Review →"}
-          </button>
+  {/* Logo / Brand */}
+  <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
+  
+  {isMobile ? (
+    /* Mobile Layout */
+    <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+      <button 
+        onClick={handleSubmit} 
+        disabled={submitting} 
+        style={{ padding: "6px 14px", borderRadius: "7px", background: submitting ? "#94a3b8" : "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.78rem", border: "none", cursor: submitting ? "not-allowed" : "pointer" }}
+      >
+        {submitting ? "Submitting..." : "Submit"}
+      </button>
+      <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a", display: "flex", alignItems: "center" }}>
+        {menuOpen ? "✕" : "☰"}
+      </button>
+    </div>
+  ) : (
+    /* Desktop Layout */
+    <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
+      <Link to="/home" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Home</Link>
+      <Link to="/sql" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Practice</Link>
+      <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Leaderboard</Link>
+      <Link to="/blog" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Blog</Link>
+      
+      {/* Editorial Action Separator */}
+      <div style={{ height: "16px", width: "1px", background: "#e2e8f0", margin: "0 4px" }} />
+      
+      <button onClick={() => navigate("/blog")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>← Back to Blog</button>
+      <button
+        onClick={handleSubmit}
+        disabled={submitting}
+        style={{ padding: "8px 18px", borderRadius: "7px", background: submitting ? "#94a3b8" : "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", border: "none", cursor: submitting ? "not-allowed" : "pointer" }}
+      >
+        {submitting ? "Submitting..." : "Submit for Review →"}
+      </button>
+    </div>
+  )}
+
+  {/* Mobile Dropdown Menu Container */}
+  {isMobile && menuOpen && (
+    <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#ffffff", borderBottom: "1px solid #e2e8f0", padding: "0.5rem 0", zIndex: 200 }}>
+      {[
+        ["Home", "/home"], 
+        ["Practice", "/sql"], 
+        ["Leaderboard", "/leaderboard"], 
+        ["Blog", "/blog"]
+      ].map(([label, path]) => (
+        <div key={label} onClick={() => { navigate(path); setMenuOpen(false); }} style={{ padding: "0.75rem 1.25rem", fontSize: "0.9rem", color: "#0f172a", fontWeight: 500, cursor: "pointer", borderBottom: "1px solid #f1f5f9" }}>
+          {label}
         </div>
-      </nav>
+      ))}
+      <div onClick={() => { navigate("/blog"); setMenuOpen(false); }} style={{ padding: "0.75rem 1.25rem", fontSize: "0.9rem", color: "#64748b", fontWeight: 500, cursor: "pointer" }}>
+        ← Back to Blog
+      </div>
+    </div>
+  )}
+</nav>
 
       <div style={{ maxWidth: "860px", margin: "0 auto", padding: isMobile ? "1rem" : "2.5rem 2.5rem" }}>
 
