@@ -659,7 +659,7 @@ View full leaderboard →
 </div>
 </div>
 
-<div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "1rem 1rem 0" : "2.5rem 2.5rem 0" }}>
+<div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "1rem 0 0" : "2.5rem 2.5rem 0" }}>
 
 {/* ── CATEGORY BUTTONS ───────────────────────────────────────────── */}
 <div style={{ marginBottom: "0.75rem" }}>
@@ -707,15 +707,15 @@ onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTa
 </div>
 
 {/* ── SQL SANDBOX ────────────────────────────────────────────────── */}
-{/* <div style={{ marginBottom: "1.25rem" }}>
+<div style={{ marginBottom: "1.25rem" }}>
 <h2 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0.25rem 0 0", color: "#0f172a" }}>Write and run SQL queries instantly</h2>
-</div> */}
+</div>
         <div style={{
   background: "#ffffff", border: isMobile ? "none" : "1.5px solid #e2e8f0", borderRadius: isMobile ? "0" : "16px", overflow: isMobile ? "hidden" : "visible",
   textAlign: "left", boxShadow: isMobile ? "none" : "0 8px 40px rgba(0,0,0,0.08)", margin: isMobile ? "0 0 1rem" : "0 auto 1rem",
   width: "100%", position: fullView ? "fixed" : "relative", inset: fullView ? "60px 16px 16px 16px" : "auto", zIndex: fullView ? 999 : "auto"
 }}>
-          <div style={{ padding: "0.85rem 1.25rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#f8fafc" }}>
+         <div style={{ padding: isMobile ? "0.75rem 0.5rem" : "0.85rem 1.25rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#f8fafc" }}>
             <span style={{ fontSize: "0.78rem", color: "#0f172a", background: "#e2e8f0", padding: "4px 10px", borderRadius: "20px", fontWeight: 700 }}>SQL Sandbox</span>
             <div style={{ display: "flex", gap: "8px" }}>
               <button onClick={() => setEditorTheme(editorTheme === "dark" ? "light" : "dark")} style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", cursor: "pointer", fontSize: "0.75rem", background: "#fff" }}>Theme</button>
@@ -748,7 +748,7 @@ onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTa
               </div>
             )}
 
-<div style={{ display: "flex", flexDirection: "column", padding: isMobile ? "0 0 0 0.35rem" : "1rem", background: "#fff", minWidth: 0, overflow: "hidden" }}>
+<div style={{ display: "flex", flexDirection: "column", padding: isMobile ? "0.05rem 0.25rem" : "1rem",  background: "#fff", minWidth: 0, overflow: "hidden" }}>
 <Editor
   height={isMobile ? "220px" : "300px"}
   language="sql"
