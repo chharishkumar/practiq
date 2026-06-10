@@ -659,7 +659,7 @@ View full leaderboard →
 </div>
 </div>
 
-<div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "1rem 0 0" : "2.5rem 2.5rem 0" }}>
+<div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "1rem 1rem 0" : "2.5rem 2.5rem 0" }}>
 
 {/* ── CATEGORY BUTTONS ───────────────────────────────────────────── */}
 <div style={{ marginBottom: "0.75rem" }}>
