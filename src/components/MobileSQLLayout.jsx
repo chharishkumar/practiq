@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Editor from "@monaco-editor/react";
+import { useNavigate } from "react-router-dom";
 
 /**
  * MobileSQLLayout
@@ -79,6 +80,7 @@ export default function MobileSQLLayout({
   const [activeTab, setActiveTab] = useState(0); // 0=Problems, 1=Editor, 2=Output
   const [expandedId, setExpandedId] = useState(null);
   const editorRef = useRef(null);
+  const navigate = useNavigate();
 
   // Auto-switch to Output tab when results arrive
   useEffect(() => {
