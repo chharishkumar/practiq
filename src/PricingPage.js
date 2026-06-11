@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "./supabase";
+import { useMobile } from "./hooks/useMobile";
 
 const PLANS = {
   monthly: { label: "Monthly", price: 99,  paise: 9900,  period: "per month",  save: null },
@@ -39,6 +40,8 @@ export default function PricingPage() {
   const [userName, setUserName]         = useState("");
   const [loading, setLoading]           = useState(false);
   const [successMsg, setSuccessMsg]     = useState("");
+  const isMobile = useMobile();
+const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -167,22 +170,37 @@ export default function PricingPage() {
     <div style={{ background: "#ffffff", minHeight: "100vh", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a" }}>
 
       {/* Nav */}
-      <nav style={{ padding: "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
-        <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
-        <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
-          <Link to="/sql"         style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Practice</Link>
-          <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Leaderboard</Link>
-          <Link to="/blog"        style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Blog</Link>
-          {isLoggedIn ? (
-            <button onClick={() => navigate("/home")} style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", border: "none", cursor: "pointer" }}>Dashboard</button>
-          ) : (
-            <Link to="/login" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Login</Link>
-          )}
+      <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
+  <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
+  {isMobile ? (
+    <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
+      {menuOpen ? "✕" : "☰"}
+    </button>
+  ) : (
+    <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
+      <Link to="/sql" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Practice</Link>
+      <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Leaderboard</Link>
+      <Link to="/blog" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Blog</Link>
+      {isLoggedIn ? (
+        <button onClick={() => navigate("/home")} style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", border: "none", cursor: "pointer" }}>Dashboard</button>
+      ) : (
+        <Link to="/login" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Login</Link>
+      )}
+    </div>
+  )}
+  {isMobile && menuOpen && (
+    <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#ffffff", borderBottom: "1px solid #e2e8f0", padding: "0.5rem 0", zIndex: 200 }}>
+      {[["Practice", "/sql"], ["Leaderboard", "/leaderboard"], ["Blog", "/blog"], [isLoggedIn ? "Dashboard" : "Login", isLoggedIn ? "/home" : "/login"]].map(([label, path]) => (
+        <div key={label} onClick={() => { navigate(path); setMenuOpen(false); }} style={{ padding: "0.75rem 1.25rem", fontSize: "0.9rem", color: "#0f172a", fontWeight: 500, cursor: "pointer", borderBottom: "1px solid #f1f5f9" }}>
+          {label}
         </div>
-      </nav>
+      ))}
+    </div>
+  )}
+</nav>
 
       {/* Hero */}
-      <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: "4rem 2.5rem 3rem", textAlign: "center" }}>
+      <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: isMobile ? "2rem 1rem 1.5rem" : "4rem 2.5rem 3rem", textAlign: "center" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#2563eb", background: "#ffffff", padding: "5px 14px", borderRadius: "20px", border: "1px solid #bfdbfe", marginBottom: "1.25rem", fontWeight: 600 }}>
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#2563eb", display: "inline-block" }} />
           Simple, transparent pricing
@@ -209,7 +227,7 @@ export default function PricingPage() {
         </div>
       )}
 
-      <div style={{ maxWidth: "960px", margin: "3rem auto", padding: "0 2.5rem" }}>
+<div style={{ maxWidth: "960px", margin: isMobile ? "1.5rem auto" : "3rem auto", padding: isMobile ? "0 1rem" : "0 2.5rem" }}>
 
         {/* Plan toggle */}
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "2.5rem" }}>
@@ -232,7 +250,7 @@ export default function PricingPage() {
         </div>
 
         {/* Pricing cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", marginBottom: "4rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1.5rem", marginBottom: isMobile ? "2rem" : "4rem" }}>
 
           {/* Free card */}
           <div style={{ background: "#f8fafc", border: "1.5px solid #e2e8f0", borderRadius: "16px", padding: "2rem" }}>
@@ -314,7 +332,7 @@ export default function PricingPage() {
           </h2>
           <div style={{ border: "1.5px solid #e2e8f0", borderRadius: "14px", overflow: "hidden" }}>
             {/* Header */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 120px 120px", background: "#f8fafc", padding: "1rem 1.5rem", borderBottom: "1px solid #e2e8f0" }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 70px 70px" : "1fr 120px 120px", background: "#f8fafc", padding: isMobile ? "0.75rem 0.75rem" : "1rem 1.5rem", borderBottom: "1px solid #e2e8f0" }}>
               <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em" }}>Feature</span>
               <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", textAlign: "center" }}>Free</span>
               <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#2563eb", textTransform: "uppercase", letterSpacing: "0.05em", textAlign: "center" }}>Pro</span>
@@ -335,7 +353,7 @@ export default function PricingPage() {
             ].map(([feature, free, pro], i) => (
               <div
                 key={feature}
-                style={{ display: "grid", gridTemplateColumns: "1fr 120px 120px", padding: "0.875rem 1.5rem", borderBottom: i < 11 ? "1px solid #f1f5f9" : "none", background: i % 2 === 0 ? "#ffffff" : "#fafafa" }}
+                style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 70px 70px" : "1fr 120px 120px", padding: isMobile ? "0.625rem 0.75rem" : "0.875rem 1.5rem", borderBottom: i < 11 ? "1px solid #f1f5f9" : "none", background: i % 2 === 0 ? "#ffffff" : "#fafafa" }}
               >
                 <span style={{ fontSize: "0.88rem", color: "#0f172a", fontWeight: 500 }}>{feature}</span>
                 <span style={{ fontSize: "0.85rem", color: free === "✓" ? "#16a34a" : free === "—" ? "#cbd5e1" : "#64748b", textAlign: "center", fontWeight: free === "✓" ? 700 : 400 }}>{free}</span>
@@ -350,7 +368,7 @@ export default function PricingPage() {
           <h2 style={{ fontSize: "1.4rem", fontWeight: 800, letterSpacing: "-0.5px", marginBottom: "1.5rem", textAlign: "center" }}>
             Frequently asked questions
           </h2>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1.25rem" }}>
             {[
               ["Can I cancel anytime?", "Yes. You can cancel your Pro plan anytime. You'll keep access until the end of your billing period."],
               ["What payment methods are accepted?", "UPI, credit card, debit card, netbanking and wallets are all supported via Razorpay."],
@@ -368,7 +386,7 @@ export default function PricingPage() {
         </div>
 
         {/* Bottom CTA */}
-        <div style={{ background: "#0f172a", borderRadius: "16px", padding: "3rem", textAlign: "center", marginBottom: "4rem" }}>
+        <div style={{ background: "#0f172a", borderRadius: "16px", padding: isMobile ? "1.75rem 1.25rem" : "3rem", textAlign: "center", marginBottom: "4rem" }}>
           <h2 style={{ fontSize: "1.6rem", fontWeight: 800, color: "#ffffff", letterSpacing: "-0.5px", marginBottom: "0.75rem" }}>
             Ready to unlock everything?
           </h2>
@@ -388,7 +406,7 @@ export default function PricingPage() {
       </div>
 
       {/* Footer */}
-      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: "2rem 2.5rem" }}>
+      <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: isMobile ? "1.5rem 1rem" : "2rem 2.5rem" }}>
         <div style={{ maxWidth: "960px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
           <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>© 2025 Data Rejected. All rights reserved.</span>
           <div style={{ display: "flex", gap: "20px" }}>
