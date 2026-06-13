@@ -182,7 +182,7 @@ const [menuOpen, setMenuOpen] = useState(false);
       <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Leaderboard</Link>
       <Link to="/blog" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Blog</Link>
       {isLoggedIn ? (
-        <button onClick={() => navigate("/home")} style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", border: "none", cursor: "pointer" }}>Dashboard</button>
+        <button onClick={() => navigate("/home")} style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", border: "none", cursor: "pointer" }}>Home</button>
       ) : (
         <Link to="/login" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Login</Link>
       )}
@@ -190,7 +190,7 @@ const [menuOpen, setMenuOpen] = useState(false);
   )}
   {isMobile && menuOpen && (
     <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#ffffff", borderBottom: "1px solid #e2e8f0", padding: "0.5rem 0", zIndex: 200 }}>
-      {[["Practice", "/sql"], ["Leaderboard", "/leaderboard"], ["Blog", "/blog"], [isLoggedIn ? "Dashboard" : "Login", isLoggedIn ? "/home" : "/login"]].map(([label, path]) => (
+      {[["Practice", "/sql"], ["Leaderboard", "/leaderboard"], ["Blog", "/blog"], [isLoggedIn ? "Home" : "Login", isLoggedIn ? "/home" : "/login"]].map(([label, path]) => (
         <div key={label} onClick={() => { navigate(path); setMenuOpen(false); }} style={{ padding: "0.75rem 1.25rem", fontSize: "0.9rem", color: "#0f172a", fontWeight: 500, cursor: "pointer", borderBottom: "1px solid #f1f5f9" }}>
           {label}
         </div>

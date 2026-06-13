@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import Editor from "@monaco-editor/react";
 import { useNavigate } from "react-router-dom";
 
 /**
@@ -79,7 +78,6 @@ export default function MobileSQLLayout({
 }) {
   const [activeTab, setActiveTab] = useState(0); // 0=Problems, 1=Editor, 2=Output
   const [expandedId, setExpandedId] = useState(null);
-  const editorRef = useRef(null);
   const navigate = useNavigate();
 
   // Auto-switch to Output tab when results arrive
@@ -94,10 +92,9 @@ export default function MobileSQLLayout({
   };
 
   const handleRun = () => {
+    if (document.activeElement) document.activeElement.blur();
     onRun();
-    // output tab switch happens via useEffect above
   };
-
   const isGuestLocked = isGuest && selectedProblem.id > (guestThreshold ?? 10);
   const isProLocked   = !isGuest && !isPro && selectedProblem.id > (paywallThreshold ?? 30);
 
@@ -412,26 +409,27 @@ export default function MobileSQLLayout({
               </button>
             </div>
           </div>
-          <Editor
-            height="320px"
-            language="sql"
+          <textarea
             value={query}
-            onChange={(val) => onQueryChange(val || "")}
-            theme="vs-dark"
-            options={{
-              fontSize: 13,
-              minimap: { enabled: false },
-              wordWrap: "on",
-              scrollBeyondLastLine: false,
-              padding: { top: 8, bottom: 8 },
-              lineNumbers: "on",
-            }}
-            onMount={(editor) => {
-              editorRef.current = editor;
-              editor.addCommand(
-                window.monaco.KeyMod.CtrlCmd | window.monaco.KeyCode.Enter,
-                handleRun
-              );
+            onChange={(e) => onQueryChange(e.target.value)}
+            spellCheck={false}
+            autoCorrect="off"
+            autoCapitalize="off"
+            autoComplete="off"
+            style={{
+              height: "320px",
+              width: "100%",
+              background: "#1e1e1e",
+              color: "#d4d4d4",
+              fontFamily: "monospace",
+              fontSize: "14px",
+              padding: "12px",
+              border: "none",
+              outline: "none",
+              resize: "none",
+              boxSizing: "border-box",
+              lineHeight: 1.6,
+              display: "block",
             }}
           />
         </div>
