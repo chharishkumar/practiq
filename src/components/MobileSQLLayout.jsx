@@ -308,146 +308,7 @@ export default function MobileSQLLayout({
         </div>
       </div>
     );
-  };
-
-  // ─── EDITOR TAB ─────────────────────────────────────────────────────────────
-  const EditorTab = () => {
-    if (isGuestLocked) {
-      return (
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, padding: "2rem" }}>
-          <div style={{ textAlign: "center", maxWidth: "320px" }}>
-            <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🔒</div>
-            <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.5rem" }}>
-              Sign in to unlock
-            </h3>
-            <p style={{ fontSize: "0.85rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>
-              You've explored the first {guestThreshold ?? 10} problems. Sign up free to continue.
-            </p>
-            <button
-              onClick={onNavigateSignup}
-              style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer", marginBottom: "8px" }}
-            >
-              Sign Up Free →
-            </button>
-            <button
-              onClick={onNavigateLogin}
-              style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.88rem", border: "1.5px solid #bfdbfe", cursor: "pointer" }}
-            >
-              Already have an account? Sign in
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    if (isProLocked) {
-      return (
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, padding: "2rem" }}>
-          <div style={{ textAlign: "center", maxWidth: "320px" }}>
-            <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🔒</div>
-            <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.5rem" }}>
-              Pro problem
-            </h3>
-            <p style={{ fontSize: "0.85rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>
-              Upgrade to Pro to unlock all {totalProblems} problems.
-            </p>
-            <button
-              onClick={onNavigatePricing}
-              style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer" }}
-            >
-              View Pro Plans →
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div style={{ padding: "0.75rem" }}>
-        {/* Problem title */}
-        <div style={{
-          background: "#f8fafc", border: "1px solid #e2e8f0",
-          borderLeft: "3px solid #2563eb", borderRadius: "0 8px 8px 0",
-          padding: "0.625rem 0.875rem", marginBottom: "0.75rem",
-        }}>
-          <div style={{ fontSize: "0.65rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "2px" }}>
-            #{selectedProblem.id} — Task
-          </div>
-          <p style={{ margin: 0, fontSize: "0.83rem", color: "#0f172a", lineHeight: 1.55 }}>
-            {selectedProblem.description}
-          </p>
-        </div>
-
-        <ValidationBanner />
-
-        {/* Editor */}
-        <div style={{ border: "1.5px solid #e2e8f0", borderRadius: "10px", overflow: "hidden", marginBottom: "0.75rem" }}>
-          <div style={{
-            background: "#f8fafc", padding: "0.5rem 0.875rem",
-            borderBottom: "1px solid #e2e8f0",
-            display: "flex", justifyContent: "space-between", alignItems: "center",
-          }}>
-            <span style={{ fontSize: "0.68rem", background: "#e2e8f0", color: "#0f172a", padding: "2px 8px", borderRadius: "20px", fontWeight: 700 }}>SQL</span>
-            <div style={{ display: "flex", gap: "6px" }}>
-              <button
-                onClick={onReset}
-                style={{ fontSize: "0.72rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 8px", cursor: "pointer" }}
-              >
-                Reset
-              </button>
-              <button
-                onClick={handleRun}
-                disabled={!dbReady}
-                style={{
-                  padding: "5px 14px", borderRadius: "6px",
-                  background: dbReady ? "#2563eb" : "#94a3b8",
-                  color: "#fff", fontWeight: 700, fontSize: "0.78rem",
-                  border: "none", cursor: dbReady ? "pointer" : "not-allowed",
-                }}
-              >
-                {dbReady ? "▶ Run" : "Loading…"}
-              </button>
-            </div>
-          </div>
-          <textarea
-            value={query}
-            onChange={(e) => onQueryChange(e.target.value)}
-            spellCheck={false}
-            autoCorrect="off"
-            autoCapitalize="off"
-            autoComplete="off"
-            style={{
-              height: "320px",
-              width: "100%",
-              background: "#1e1e1e",
-              color: "#d4d4d4",
-              fontFamily: "monospace",
-              fontSize: "14px",
-              padding: "12px",
-              border: "none",
-              outline: "none",
-              resize: "none",
-              boxSizing: "border-box",
-              lineHeight: 1.6,
-              display: "block",
-            }}
-          />
-        </div>
-
-        {runCountDisplay > 2 && validationStatus !== "correct" && (
-          <div style={{
-            background: "#fffbeb", border: "1px solid #fde68a",
-            borderRadius: "8px", padding: "0.625rem 0.875rem",
-            fontSize: "0.78rem", color: "#92400e",
-          }}>
-            <strong>Stuck?</strong> Go back to Problems tab and expand the hint.
-          </div>
-        )}
-        <div style={{ height: "1rem" }} />
-      </div>
-    );
-  };
-
+  }
   // ─── OUTPUT TAB ─────────────────────────────────────────────────────────────
   const OutputTab = () => (
     <div style={{ padding: "0.75rem" }}>
@@ -553,7 +414,76 @@ export default function MobileSQLLayout({
       <NavBar />
 
       {activeTab === 0 && <ProblemsTab />}
-      {activeTab === 1 && <EditorTab />}
+      {activeTab === 1 && (
+        isGuestLocked ? (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
+            <div style={{ textAlign: "center", maxWidth: "320px" }}>
+              <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🔒</div>
+              <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.5rem" }}>Sign in to unlock</h3>
+              <p style={{ fontSize: "0.85rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>You've explored the first {guestThreshold ?? 10} problems. Sign up free to continue.</p>
+              <button onClick={onNavigateSignup} style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer", marginBottom: "8px" }}>Sign Up Free →</button>
+              <button onClick={onNavigateLogin} style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.88rem", border: "1.5px solid #bfdbfe", cursor: "pointer" }}>Already have an account? Sign in</button>
+            </div>
+          </div>
+        ) : isProLocked ? (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
+            <div style={{ textAlign: "center", maxWidth: "320px" }}>
+              <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🔒</div>
+              <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.5rem" }}>Pro problem</h3>
+              <p style={{ fontSize: "0.85rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>Upgrade to Pro to unlock all {totalProblems} problems.</p>
+              <button onClick={onNavigatePricing} style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer" }}>View Pro Plans →</button>
+            </div>
+          </div>
+        ) : (
+          <div style={{ padding: "0.75rem" }}>
+            <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderLeft: "3px solid #2563eb", borderRadius: "0 8px 8px 0", padding: "0.625rem 0.875rem", marginBottom: "0.75rem" }}>
+              <div style={{ fontSize: "0.65rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "2px" }}>#{selectedProblem.id} — Task</div>
+              <p style={{ margin: 0, fontSize: "0.83rem", color: "#0f172a", lineHeight: 1.55 }}>{selectedProblem.description}</p>
+            </div>
+            {validationStatus && (() => {
+              const c = validationConfig[validationStatus];
+              return (
+                <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: "10px", padding: "0.75rem", marginBottom: "0.75rem", display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                  <div style={{ width: "22px", height: "22px", borderRadius: "50%", background: c.iconBg, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.7rem", fontWeight: 700, flexShrink: 0 }}>{c.icon}</div>
+                  <div>
+                    <div style={{ fontSize: "0.82rem", fontWeight: 700, color: c.titleColor }}>{c.title}</div>
+                    <div style={{ fontSize: "0.76rem", color: "#475569", marginTop: "2px" }}>{c.msg}</div>
+                    {validationStatus === "correct" && onPostCommunity && (
+                      <button onClick={onPostCommunity} style={{ marginTop: "0.5rem", fontSize: "0.76rem", color: "#2563eb", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "6px", padding: "4px 10px", cursor: "pointer", fontWeight: 600 }}>🎉 Share to Community</button>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
+            <div style={{ border: "1.5px solid #e2e8f0", borderRadius: "10px", overflow: "hidden", marginBottom: "0.75rem" }}>
+              <div style={{ background: "#f8fafc", padding: "0.5rem 0.875rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: "0.68rem", background: "#e2e8f0", color: "#0f172a", padding: "2px 8px", borderRadius: "20px", fontWeight: 700 }}>SQL</span>
+                <div style={{ display: "flex", gap: "6px" }}>
+                  <button onClick={onReset} style={{ fontSize: "0.72rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 8px", cursor: "pointer" }}>Reset</button>
+                  <button onClick={handleRun} disabled={!dbReady} style={{ padding: "5px 14px", borderRadius: "6px", background: dbReady ? "#2563eb" : "#94a3b8", color: "#fff", fontWeight: 700, fontSize: "0.78rem", border: "none", cursor: dbReady ? "pointer" : "not-allowed" }}>
+                    {dbReady ? "▶ Run" : "Loading…"}
+                  </button>
+                </div>
+              </div>
+              <textarea
+                value={query}
+                onChange={(e) => onQueryChange(e.target.value)}
+                spellCheck={false}
+                autoCorrect="off"
+                autoCapitalize="off"
+                autoComplete="off"
+                style={{ height: "320px", width: "100%", background: "#1e1e1e", color: "#d4d4d4", fontFamily: "monospace", fontSize: "14px", padding: "12px", border: "none", outline: "none", resize: "none", boxSizing: "border-box", lineHeight: 1.6, display: "block" }}
+              />
+            </div>
+            {runCountDisplay > 2 && validationStatus !== "correct" && (
+              <div style={{ background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "8px", padding: "0.625rem 0.875rem", fontSize: "0.78rem", color: "#92400e" }}>
+                <strong>Stuck?</strong> Go back to Problems tab and expand the hint.
+              </div>
+            )}
+            <div style={{ height: "1rem" }} />
+          </div>
+        )
+      )}
       {activeTab === 2 && <OutputTab />}
 
       <TabBar />
