@@ -223,35 +223,14 @@ useEffect(() => {
     Free SQL Practice Platform • No Signup Required
   </div>
 
-  <h1
-    style={{
-      fontSize: "clamp(2.2rem, 5vw, 3.5rem)",
-      fontWeight: 800,
-      lineHeight: 1.1,
-      margin: "0 0 1.25rem",
-      letterSpacing: "-1.5px"
-    }}
-  >
-    Practice SQL Like a Data Analyst
-    <br />
-    <span style={{ color: "#2563eb" }}>
-      Solve Real Business Problems
-    </span>
-  </h1>
-
-  <p
-    style={{
-      fontSize: "1.05rem",
-      color: "#64748b",
-      lineHeight: 1.75,
-      maxWidth: "620px",
-      margin: "0 auto 2rem"
-    }}
-  >
-    Practice SQL on real business datasets. Solve customer churn,
+  <h1 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 800, letterSpacing: "-1px", margin: "0 0 0.75rem", color: "#0f172a" }}>
+  Practice SQL Like a Data Analyst <span style={{ color: "#2563eb" }}>Solve Real Business Problems</span>
+</h1>
+<p style={{ fontSize: "1rem", color: "#64748b", lineHeight: 1.75, maxWidth: "520px", margin: "0 auto" }}>
+Practice SQL on real business datasets. Solve customer churn,
     revenue analysis, retention and interview challenges with
     instant feedback.
-  </p>
+</p>
 
   <div
     style={{
