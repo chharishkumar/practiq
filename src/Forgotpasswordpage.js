@@ -128,7 +128,7 @@ export default function ForgotPasswordPage() {
       {/* Left branding panel */}
       <div style={{ width: "42%", background: "#0f172a", padding: "3rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
         <Link to="/" style={{ fontWeight: 800, color: "#ffffff", fontSize: "1.1rem", letterSpacing: "-0.3px", textDecoration: "none" }}>
-          Data Rejected
+        Repractiq
         </Link>
         <div>
           <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#60a5fa", background: "rgba(96,165,250,0.1)", padding: "5px 14px", borderRadius: "20px", border: "1px solid rgba(96,165,250,0.2)", marginBottom: "1.5rem", fontWeight: 600 }}>
@@ -161,7 +161,7 @@ export default function ForgotPasswordPage() {
             ))}
           </div>
         </div>
-        <div style={{ fontSize: "0.75rem", color: "#475569" }}>© 2025 Data Rejected. All rights reserved.</div>
+        <div style={{ fontSize: "0.75rem", color: "#475569" }}>© 2026 Repractiq. All rights reserved.</div>
       </div>
 
       {/* Right form panel */}

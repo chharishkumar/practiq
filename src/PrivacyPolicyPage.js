@@ -28,7 +28,7 @@ export default function PrivacyPolicyPage() {
           onClick={() => navigate("/")} 
           style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}
         >
-          Data Rejected
+          Repractiq
         </span>
         <span 
           onClick={() => navigate("/home")} 
@@ -65,7 +65,7 @@ export default function PrivacyPolicyPage() {
   <section style={{ marginBottom: "2.5rem" }}>
     <h2 style={sectionHeaderStyle}>1. Introduction</h2>
     <p>
-      Welcome to Data Rejected. Your privacy matters to us. This Privacy Policy explains what information we collect, how we use it, and how we protect your data when you use our SQL learning and practice platform.
+      Welcome to Repractiq. Your privacy matters to us. This Privacy Policy explains what information we collect, how we use it, and how we protect your data when you use our SQL learning and practice platform.
     </p>
   </section>
 
@@ -206,7 +206,7 @@ export default function PrivacyPolicyPage() {
         color: "#94a3b8", 
         fontSize: "0.78rem" 
       }}>
-        © 2026 Data Rejected · Built for data professionals.
+        © 2026 Repractiq · Built for data professionals.
       </footer>
     </div>
   );

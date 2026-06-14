@@ -9,7 +9,7 @@ function Nav({ navigate, isMobile }) {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
     <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "#ffffff", zIndex: 1000 }}>
-      <span style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "-0.3px", cursor: "pointer" }} onClick={() => navigate("/")}>Data Rejected</span>
+      <span style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "-0.3px", cursor: "pointer" }} onClick={() => navigate("/")}>Repractiq</span>
       {isMobile ? (
         <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
           {menuOpen ? "✕" : "☰"}
@@ -330,7 +330,7 @@ useEffect(() => {
 </div>
 
         {/* Live SQL Sandbox */}
-        <div style={{
+<div style={{
   background: "#ffffff", border: isMobile ? "none" : "1.5px solid #e2e8f0", borderRadius: isMobile ? "0" : "16px", overflow: "visible",
   textAlign: "left", boxShadow: isMobile ? "none" : "0 8px 40px rgba(0,0,0,0.08)", margin: isMobile ? "0 0 1rem" : "0 auto 1rem",
   width: "100%", position: fullView ? "fixed" : "relative", inset: fullView ? "60px 16px 16px 16px" : "auto", zIndex: fullView ? 999 : "auto"
@@ -350,11 +350,6 @@ useEffect(() => {
                 {[
   { name: "customers", cols: [["customer_id","INT"],["customer_name","TEXT"],["email","TEXT"],["phone","TEXT"],["city","TEXT"],["state","TEXT"],["country","TEXT"],["status","TEXT"],["customer_type","TEXT"],["lifetime_value","REAL"]] },
   { name: "orders", cols: [["order_id","INT"],["customer_id","INT"],["order_date","TEXT"],["order_status","TEXT"],["payment_status","TEXT"],["total_amount","REAL"],["currency","TEXT"],["delivered_date","TEXT"]] },
-  // { name: "order_items", cols: [["order_item_id","INT"],["order_id","INT"],["product_id","INT"],["quantity","INT"],["unit_price","REAL"],["total_price","REAL"]] },
-  // { name: "products", cols: [["product_id","INT"],["product_name","TEXT"],["category","TEXT"],["brand","TEXT"],["price","REAL"],["cost_price","REAL"]] },
-  // { name: "payments", cols: [["payment_id","INT"],["order_id","INT"],["payment_method","TEXT"],["payment_status","TEXT"],["amount","REAL"],["currency","TEXT"]] },
-  // { name: "delivery_partners", cols: [["delivery_partner_id","INT"],["partner_name","TEXT"],["vehicle_type","TEXT"],["city","TEXT"],["status","TEXT"],["rating","REAL"]] },
-  // { name: "feedback", cols: [["feedback_id","INT"],["customer_id","INT"],["order_id","INT"],["rating","INT"],["review_text","TEXT"],["issue_category","TEXT"]] },
 ].map(table => (
   <div key={table.name} style={{ border: "1px solid #e2e8f0", borderRadius: "8px", background: "#fff", marginBottom: "1rem", overflow: "hidden" }}>
     <div style={{ fontSize: "0.75rem", fontWeight: 700, padding: "8px 10px", background: "#f1f5f9", color: "#0f172a" }}>{table.name}</div>
@@ -433,7 +428,7 @@ useEffect(() => {
             </div>
           </div>
         </div>
-      </div>
+</div>
 
 
 
@@ -536,7 +531,7 @@ useEffect(() => {
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr 1fr 1fr", gap: "2rem", marginBottom: "2.5rem" }}>
             <div>
-              <div style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", marginBottom: "0.5rem" }}>Data Rejected</div>
+              <div style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", marginBottom: "0.5rem" }}>Repractiq</div>
               <div style={{ fontSize: "0.82rem", color: "#64748b", lineHeight: 1.7, maxWidth: "260px", marginBottom: "1rem" }}>A free SQL practice platform built for data professionals who want to actually do the work.</div>
               <div style={{ display: "flex", gap: "12px" }}>
                 <a href="https://linkedin.com" target="_blank" rel="noreferrer" style={{ fontSize: "0.8rem", color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>LinkedIn</a>
@@ -577,7 +572,7 @@ useEffect(() => {
 </div>
           </div>
           <div style={{ borderTop: "1px solid #e2e8f0", paddingTop: "1.5rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
-            <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>© 2025 Data Rejected. All rights reserved.</span>
+            <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>© 2026 Repractiq. All rights reserved.</span>
             <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>Built for data professionals who want to actually do the work.</span>
           </div>
         </div>

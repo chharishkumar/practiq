@@ -246,7 +246,7 @@ function Nav({ navigate, isMobile }) {
 const [menuOpen, setMenuOpen] = useState(false);
 return (
 <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
-<span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
+<span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Repractiq</span>
 {isMobile ? (
 <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
 {menuOpen ? "✕" : "☰"}
@@ -273,6 +273,95 @@ return (
 );
 }
 
+function PracticeHubSection({ navigate, isMobile, isGuest, startHereCount, topics, interview }) {
+  return (
+    <div style={{ maxWidth: "1100px", margin: "0 auto", padding: isMobile ? "1.5rem 1rem 0" : "2.5rem 2.5rem 0" }}>
+
+      <div style={{ marginBottom: "1.25rem" }}>
+        <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Where to begin</span>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.3fr 1fr", gap: "1rem", marginBottom: "1.25rem" }}>
+        <div
+          onClick={() => navigate("/sql/start")}
+          style={{ background: "#0f172a", borderRadius: "16px", padding: "1.5rem", cursor: "pointer", color: "#fff", position: "relative", overflow: "hidden" }}
+        >
+          <div style={{ position: "absolute", right: "-30px", top: "-30px", width: "140px", height: "140px", borderRadius: "50%", background: "rgba(37,99,235,0.18)" }} />
+          <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "#60a5fa", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.5rem" }}>🚀 Start Here</div>
+          <div style={{ fontSize: "1.1rem", fontWeight: 800, marginBottom: "0.5rem" }}>New to SQL? Start your guided 20-problem path</div>
+          {isGuest ? (
+            <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "1rem" }}>First 10 problems free — no signup needed.</div>
+          ) : (
+            <>
+              <div style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "0.5rem" }}>{startHereCount} / 20 completed</div>
+              <div style={{ height: "6px", background: "rgba(255,255,255,0.15)", borderRadius: "3px", overflow: "hidden", marginBottom: "1rem" }}>
+                <div style={{ width: `${(startHereCount / 20) * 100}%`, height: "100%", background: "#2563eb", borderRadius: "3px" }} />
+              </div>
+            </>
+          )}
+          <div style={{ fontSize: "0.82rem", color: "#60a5fa", fontWeight: 700 }}>{startHereCount > 0 ? "Continue →" : "Start now →"}</div>
+        </div>
+
+        <div
+          onClick={() => navigate("/sql/interview")}
+          style={{ background: "#f8fafc", border: "1.5px solid #e2e8f0", borderRadius: "16px", padding: "1.5rem", cursor: "pointer" }}
+          onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#bfdbfe")}
+          onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
+        >
+          <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "#d97706", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.5rem" }}>🎯 Interview Prep</div>
+          <div style={{ fontSize: "1.1rem", fontWeight: 800, color: "#0f172a", marginBottom: "0.5rem" }}>100 real interview questions</div>
+          <div style={{ fontSize: "0.85rem", color: "#64748b", marginBottom: "1rem" }}>
+            {isGuest ? "First 10 free — sign up to track progress" : `${interview.solved} / ${interview.total} solved`}
+          </div>
+          <div style={{ fontSize: "0.82rem", color: "#2563eb", fontWeight: 700 }}>Practice now →</div>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: "0.75rem" }}>
+        <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Topic Practice</span>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(5, 1fr)", gap: "10px", marginBottom: "1.25rem" }}>
+        {topics.map((t) => {
+          const pct = t.total > 0 ? Math.round((t.solved / t.total) * 100) : 0;
+          return (
+            <div
+              key={t.key}
+              onClick={() => navigate(t.path)}
+              style={{ background: "#ffffff", border: "1.5px solid #e2e8f0", borderRadius: "12px", padding: "1rem", cursor: "pointer" }}
+              onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#bfdbfe")}
+              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
+            >
+              <div style={{ fontSize: "1.25rem", marginBottom: "0.5rem" }}>{t.icon}</div>
+              <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#0f172a", marginBottom: "4px" }}>{t.label}</div>
+              {isGuest ? (
+                <div style={{ fontSize: "0.7rem", color: "#94a3b8" }}>{t.total} problems</div>
+              ) : (
+                <>
+                  <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginBottom: "5px" }}>{t.solved} / {t.total} solved</div>
+                  <div style={{ height: "4px", background: "#e2e8f0", borderRadius: "2px", overflow: "hidden" }}>
+                    <div style={{ width: `${pct}%`, height: "100%", background: "#2563eb", borderRadius: "2px" }} />
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <div
+        onClick={() => document.getElementById("sql-sandbox")?.scrollIntoView({ behavior: "smooth" })}
+        style={{ background: "#eff6ff", border: "1.5px solid #bfdbfe", borderRadius: "12px", padding: "1rem 1.25rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap", marginBottom: "2rem" }}
+      >
+        <div>
+          <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#0f172a", marginBottom: "2px" }}>🔓 Free Practice</div>
+          <div style={{ fontSize: "0.78rem", color: "#64748b" }}>Jump into the live SQL sandbox below — no problem, just explore.</div>
+        </div>
+        <div style={{ fontSize: "0.82rem", color: "#2563eb", fontWeight: 700, whiteSpace: "nowrap" }}>Open sandbox ↓</div>
+      </div>
+    </div>
+  );
+}
+
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
 export default function SQLPage() {
@@ -296,6 +385,42 @@ const [community, setCommunity] = useState(FALLBACK_COMMUNITY);
 const isMobile = useMobile();
 const [fullView, setFullView] = useState(false);
 const [editorTheme, setEditorTheme] = useState("dark");
+const [isGuest, setIsGuest] = useState(true);
+const [solvedByCategory, setSolvedByCategory] = useState({});
+
+useEffect(() => {
+  const fetchProgress = async () => {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const session = sessionData?.session;
+    if (!session) { setIsGuest(true); return; }
+    setIsGuest(false);
+    const { data } = await supabase
+      .from("submissions")
+      .select("problem_id, category")
+      .eq("user_id", session.user.id)
+      .eq("status", "correct");
+    const map = {};
+    (data || []).forEach(({ problem_id, category }) => {
+      if (!map[category]) map[category] = new Set();
+      map[category].add(problem_id);
+    });
+    setSolvedByCategory(map);
+  };
+  fetchProgress();
+}, []);
+
+const START_HERE_IDS = Array.from({ length: 20 }, (_, i) => i + 1);
+const startHereCount = START_HERE_IDS.filter((id) => (solvedByCategory["sql_basics"] || new Set()).has(id)).length;
+
+const topics = [
+  { key: "sql_basics", label: "SQL Basics", icon: "📘", total: SQL_PROBLEMS.length, solved: solvedByCategory["sql_basics"]?.size || 0, path: "/sql/basics" },
+  { key: "sql_intermediate", label: "Intermediate", icon: "📗", total: SQL_INTERMEDIATE_PROBLEMS.length, solved: solvedByCategory["sql_intermediate"]?.size || 0, path: "/sql/intermediate" },
+  { key: "sql_advanced", label: "Advanced", icon: "📙", total: SQL_ADVANCED_PROBLEMS.length, solved: solvedByCategory["sql_advanced"]?.size || 0, path: "/sql/advanced" },
+  { key: "sql_interview", label: "Interview", icon: "🎯", total: SQL_INTERVIEW_PROBLEMS.length, solved: solvedByCategory["sql_interview"]?.size || 0, path: "/sql/interview" },
+  { key: "sql_scenario", label: "Scenarios", icon: "🏢", total: SQL_SCENARIOS_PROBLEMS.length, solved: solvedByCategory["sql_scenario"]?.size || 0, path: "/sql/scenarios" },
+];
+
+const interview = topics.find((t) => t.key === "sql_interview");
 
 // Init SQL.js
 useEffect(() => {
@@ -642,6 +767,7 @@ Practice SQL on <span style={{ color: "#2563eb" }}>Real Business Data</span>
 <p style={{ fontSize: "1rem", color: "#64748b", lineHeight: 1.75, maxWidth: "520px", margin: "0 auto" }}>
 Pick a category, write real queries, and build skills that actually matter at work.
 </p>
+<PracticeHubSection navigate={navigate} isMobile={isMobile} isGuest={isGuest} startHereCount={startHereCount} topics={topics} interview={interview} />
 </div>
 
 {/* ── LEADERBOARD STRIP ────────────────────────────────────────────── */}
@@ -712,9 +838,9 @@ onMouseLeave={(e) => { e.currentTarget.style.background = "#ffffff"; e.currentTa
 <div style={{ marginBottom: "1.25rem" }}>
 <h2 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0.25rem 0 0", color: "#0f172a" }}>Write and run SQL queries instantly</h2>
 </div>
-<div style={{
+<div id="sql-sandbox" style={{
   background: "#ffffff", 
-  border: isMobile ? "none" : "1.5px solid #e2e8f0", 
+  border: isMobile ? "none" : "1.5px solid #e2e8f0",
   borderRadius: isMobile ? "0" : "16px", 
   overflow: isMobile ? "hidden" : "visible",
   textAlign: "left", 
@@ -899,7 +1025,7 @@ Solve this →
 <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
 <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr 1fr", gap: "2rem", marginBottom: "2rem" }}>
 <div>
-<div style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", marginBottom: "0.5rem" }}>Data Rejected</div>
+<div style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", marginBottom: "0.5rem" }}>Repractiq</div>
 <div style={{ fontSize: "0.82rem", color: "#64748b", lineHeight: 1.7, maxWidth: "280px" }}>A free SQL practice platform built for data professionals who want to actually do the work.</div>
 <div style={{ display: "flex", gap: "10px", marginTop: "1rem" }}>
 <a href="https://linkedin.com" target="_blank" rel="noreferrer" style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>LinkedIn</a>
@@ -933,7 +1059,7 @@ Terms of Use
 </div>
 </div>
 <div style={{ borderTop: "1px solid #e2e8f0", paddingTop: "1.25rem", fontSize: "0.75rem", color: "#94a3b8", textAlign: "center" }}>
-© 2025 Data Rejected · Built for data professionals who want to actually do the work.
+© 2025 Repractiq· Built for data professionals who want to actually do the work.
 </div>
 </div>
 </div>

@@ -126,7 +126,7 @@ export default function SignupPage() {
       {/* Left Panel — Branding (Hidden on Mobile) */}
       {!isMobile && (
         <div style={{ width: "42%", minHeight: "100vh", background: "#0f172a", padding: "3rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-          <Link to="/" style={{ fontWeight: 800, color: "#ffffff", fontSize: "1.1rem", letterSpacing: "-0.3px", textDecoration: "none" }}>Data Rejected</Link>
+          <Link to="/" style={{ fontWeight: 800, color: "#ffffff", fontSize: "1.1rem", letterSpacing: "-0.3px", textDecoration: "none" }}>Repractiq</Link>
           <div>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.75rem", color: "#60a5fa", background: "rgba(96,165,250,0.1)", padding: "5px 14px", borderRadius: "20px", border: "1px solid rgba(96,165,250,0.2)", marginBottom: "1.5rem", fontWeight: 600 }}>
               <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#60a5fa", display: "inline-block" }}></span>
@@ -149,7 +149,7 @@ export default function SignupPage() {
               ))}
             </div>
           </div>
-          <div style={{ fontSize: "0.75rem", color: "#475569" }}>© {new Date().getFullYear()} Data Rejected. All rights reserved.</div>
+          <div style={{ fontSize: "0.75rem", color: "#475569" }}>© {new Date().getFullYear()} Repractiq. All rights reserved.</div>
         </div>
       )}
 
@@ -161,7 +161,7 @@ export default function SignupPage() {
           {isMobile && (
             <div style={{ textAlign: "left", marginBottom: "2rem" }}>
               <Link to="/" style={{ fontWeight: 800, color: "#0f172a", fontSize: "1rem", letterSpacing: "-0.3px", textDecoration: "none" }}>
-                ← Data Rejected
+                ← Repractiq
               </Link>
             </div>
           )}

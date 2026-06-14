@@ -69,7 +69,7 @@ function Nav({ navigate, isMobile, isLoggedIn }) {
   return (
     <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
       <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>
-        Data Rejected
+      Repractiq
       </span>
       {isMobile ? (
         <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
@@ -462,7 +462,7 @@ const PODIUM_RANKS  = [2, 1, 3];
       {/* Footer */}
       <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: "2rem 2.5rem", textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: "960px", margin: "0 auto", flexWrap: "wrap", gap: "1rem" }}>
-          <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>© 2025 Data Rejected. All rights reserved.</span>
+          <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>© 2026 Repractiq. All rights reserved.</span>
           <div style={{ display: "flex", gap: "20px" }}>
             <Link to="/privacy" style={{ fontSize: "0.75rem", color: "#64748b", textDecoration: "none" }}>Privacy Policy</Link>
             <Link to="/terms"   style={{ fontSize: "0.75rem", color: "#64748b", textDecoration: "none" }}>Terms of Use</Link>

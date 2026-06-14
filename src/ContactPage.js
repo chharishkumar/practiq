@@ -65,7 +65,7 @@ export default function ContactPage() {
 
       {/* Nav */}
       <nav style={{ padding: "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
-        <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
+        <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.3px", cursor: "pointer" }}>Repractiq</span>
         <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
           <Link to="/sql" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Practice</Link>
           <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 500 }}>Leaderboard</Link>
@@ -104,9 +104,9 @@ export default function ContactPage() {
             {/* Contact Cards */}
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2.5rem" }}>
               {[
-                { icon: "✉", label: "Email us", value: "hello@datarejected.com", sub: "We reply within 48 hours" },
-                { icon: "💼", label: "LinkedIn", value: "Data Rejected", sub: "Follow for SQL tips and updates" },
-                { icon: "▶", label: "YouTube", value: "Data Rejected", sub: "Watch our SQL tutorials" },
+                { icon: "✉", label: "Email us", value: "support@repractiq.com", sub: "We reply within 48 hours" },
+                { icon: "💼", label: "LinkedIn", value: "Repractiq", sub: "Follow for SQL tips and updates" },
+                { icon: "▶", label: "YouTube", value: "Repractiq", sub: "Watch our SQL tutorials" },
               ].map((item, i) => (
                 <div key={i} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "1rem 1.25rem", display: "flex", alignItems: "flex-start", gap: "12px" }}>
                   <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#eff6ff", border: "1px solid #bfdbfe", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem", flexShrink: 0 }}>{item.icon}</div>
@@ -241,7 +241,7 @@ export default function ContactPage() {
       {/* Footer */}
       <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: "2rem 2.5rem", textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", maxWidth: "1000px", margin: "0 auto", flexWrap: "wrap", gap: "1rem" }}>
-          <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>© 2025 Data Rejected. All rights reserved.</span>
+          <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>© 2026 Repractiq. All rights reserved.</span>
           <div style={{ display: "flex", gap: "20px" }}>
             <Link to="/privacy" style={{ fontSize: "0.75rem", color: "#64748b", textDecoration: "none" }}>Privacy Policy</Link>
             <Link to="/terms" style={{ fontSize: "0.75rem", color: "#64748b", textDecoration: "none" }}>Terms of Use</Link>

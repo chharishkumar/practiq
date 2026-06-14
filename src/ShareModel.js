@@ -33,9 +33,9 @@ function generateCaption({ user, problem, solvedCount, streak, timeTaken, firstT
 
   const name = user.fullName || "I";
   const openers = [
-    `${name} just solved "${problem.title}"${timeStr}${firstTryStr} on Data Rejected. 🎯`,
+    `${name} just solved "${problem.title}"${timeStr}${firstTryStr} on Repractiq. 🎯`,
     `SQL practice update: ${name} cracked "${problem.title}"${timeStr}.`,
-    `Problem #${solvedCount} done${firstTryStr} — "${problem.title}" on Data Rejected.`,
+    `Problem #${solvedCount} done${firstTryStr} — "${problem.title}" on Repractiq.`,
     `Keeping the streak alive 🔥 — ${name} solved "${problem.title}" today.`,
   ];
 
@@ -46,9 +46,9 @@ function generateCaption({ user, problem, solvedCount, streak, timeTaken, firstT
   ];
 
   const closers = [
-    `\n\nIf you're learning SQL or prepping for data interviews, check out Data Rejected — it's free and has real business problems to solve.\n👉 https://www.datarejected.com`,
-    `\n\nBuilding SQL skills one problem at a time on Data Rejected. Free to start, no setup needed.\n👉 https://www.datarejected.com`,
-    `\n\nPracticing daily on Data Rejected — free SQL practice on real business data.\n👉 https://www.datarejected.com`,
+    `\n\nIf you're learning SQL or prepping for data interviews, check out Repractiq — it's free and has real business problems to solve.\n👉 https://www.repractiq.com`,
+    `\n\nBuilding SQL skills one problem at a time on Repractiq. Free to start, no setup needed.\n👉 https://www.repractiq.com`,
+    `\n\nPracticing daily on Repractiq — free SQL practice on real business data.\n👉 https://www.repractiq.com`,
   ];
 
   // Deterministic-ish variation based on solvedCount so it changes per solve
@@ -58,7 +58,7 @@ function generateCaption({ user, problem, solvedCount, streak, timeTaken, firstT
   if (milestone) caption = `${milestone.emoji} ${milestone.label} — ${caption}`;
   caption += ` ${streakStr}`;
   caption += pick(closers);
-  caption += `\n\n🌐 https://www.datarejected.com\n#SQL #DataAnalytics #LearningInPublic #DataInterview #DataRejected`;
+  caption += `\n\n🌐 https://www.repractiq.com\n#SQL #DataAnalytics #LearningInPublic #DataInterview #Repractiq`;
 
   return caption;
 }
@@ -100,11 +100,11 @@ function drawCard(canvas, { style, user, problem, solvedCount, streak, firstTry,
     // Brand
     ctx.fillStyle = "#ffffff";
     ctx.font = "bold 22px -apple-system, BlinkMacSystemFont, sans-serif";
-    ctx.fillText("Data Rejected", 52, 58);
+    ctx.fillText("Repractiq", 52, 58);
 
     ctx.fillStyle = "#475569";
     ctx.font = "15px -apple-system, BlinkMacSystemFont, sans-serif";
-    ctx.fillText("datarejected.com", 52, 82);
+    ctx.fillText("repractiq.com", 52, 82);
 
     // Divider
     ctx.fillStyle = "#1e293b";
@@ -198,7 +198,7 @@ function drawCard(canvas, { style, user, problem, solvedCount, streak, firstTry,
     // Brand on top band
     ctx.fillStyle = "#94a3b8";
     ctx.font = "bold 18px -apple-system, BlinkMacSystemFont, sans-serif";
-    ctx.fillText("Data Rejected", 40, 50);
+    ctx.fillText("Repractiq", 40, 50);
 
     ctx.fillStyle = "#ffffff";
     ctx.font = "bold 28px -apple-system, BlinkMacSystemFont, sans-serif";
@@ -255,7 +255,7 @@ function drawCard(canvas, { style, user, problem, solvedCount, streak, firstTry,
     ctx.fillStyle = "#f59e0b";
     ctx.font = "bold 16px -apple-system, BlinkMacSystemFont, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("datarejected.com — Free SQL Practice Platform", W / 2, 580);
+    ctx.fillText("repractiq.com — Free SQL Practice Platform", W / 2, 580);
     ctx.textAlign = "left";
   }
 
@@ -285,7 +285,7 @@ function drawCard(canvas, { style, user, problem, solvedCount, streak, firstTry,
     // Brand
     ctx.fillStyle = "rgba(255,255,255,0.9)";
     ctx.font = "bold 20px -apple-system, BlinkMacSystemFont, sans-serif";
-    ctx.fillText("Data Rejected", 52, 55);
+    ctx.fillText("Repractiq", 52, 55);
 
     // Solved badge
     ctx.fillStyle = "rgba(255,255,255,0.1)";
@@ -427,7 +427,7 @@ export default function ShareModal({ isOpen, onClose, problem, user, solvedCount
     setDownloading(true);
     const a = document.createElement("a");
     a.href = imgDataUrl;
-    a.download = `datarejected-${problem?.title?.replace(/\s+/g, "-").toLowerCase() || "solved"}.png`;
+    a.download = `repractiq-${problem?.title?.replace(/\s+/g, "-").toLowerCase() || "solved"}.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

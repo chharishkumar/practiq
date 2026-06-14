@@ -28,7 +28,7 @@ export default function PrivacyPolicyPage() {
           onClick={() => navigate("/")} 
           style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}
         >
-          Data Rejected
+          Repractiq
         </span>
         <span 
           onClick={() => navigate("/home")} 
@@ -66,7 +66,7 @@ export default function PrivacyPolicyPage() {
     <h2 style={sectionHeaderStyle}>1. Acceptance of Terms</h2>
 
     <p>
-      By accessing or using Data Rejected, you agree to comply with and be bound by these Terms of Use. If you do not agree with these terms, please do not use the platform.
+      By accessing or using Repractiq, you agree to comply with and be bound by these Terms of Use. If you do not agree with these terms, please do not use the platform.
     </p>
   </section>
 
@@ -74,7 +74,7 @@ export default function PrivacyPolicyPage() {
     <h2 style={sectionHeaderStyle}>2. Platform Purpose</h2>
 
     <p>
-      Data Rejected is an educational platform designed to help users learn, practice, and improve technical skills through SQL challenges, sandbox environments, coding exercises, community content, and related learning features.
+    Repractiq is an educational platform designed to help users learn, practice, and improve technical skills through SQL challenges, sandbox environments, coding exercises, community content, and related learning features.
     </p>
   </section>
 
@@ -138,7 +138,7 @@ export default function PrivacyPolicyPage() {
     <h2 style={sectionHeaderStyle}>5. Community Content</h2>
 
     <p>
-      Users may create posts, comments, and other community content on the platform. You retain ownership of your content, but by publishing it on Data Rejected, you grant us permission to display, distribute, and use that content within the platform for operational and community purposes.
+      Users may create posts, comments, and other community content on the platform. You retain ownership of your content, but by publishing it on Repractiq, you grant us permission to display, distribute, and use that content within the platform for operational and community purposes.
     </p>
   </section>
 
@@ -154,7 +154,7 @@ export default function PrivacyPolicyPage() {
     <h2 style={sectionHeaderStyle}>7. Intellectual Property</h2>
 
     <p>
-      The platform design, branding, datasets, SQL problems, educational content, and platform features are the intellectual property of Data Rejected unless otherwise stated. You may not reproduce, distribute, or commercially exploit platform materials without permission.
+      The platform design, branding, datasets, SQL problems, educational content, and platform features are the intellectual property of Repractiq unless otherwise stated. You may not reproduce, distribute, or commercially exploit platform materials without permission.
     </p>
   </section>
 
@@ -170,7 +170,7 @@ export default function PrivacyPolicyPage() {
     <h2 style={sectionHeaderStyle}>9. Limitation of Liability</h2>
 
     <p>
-      Data Rejected is provided on an “as is” and “as available” basis. We do not guarantee uninterrupted service, complete accuracy, or error-free operation. To the maximum extent permitted by law, we are not liable for any indirect, incidental, or consequential damages arising from platform usage.
+    Repractiq is provided on an “as is” and “as available” basis. We do not guarantee uninterrupted service, complete accuracy, or error-free operation. To the maximum extent permitted by law, we are not liable for any indirect, incidental, or consequential damages arising from platform usage.
     </p>
   </section>
 
@@ -205,7 +205,7 @@ export default function PrivacyPolicyPage() {
         color: "#94a3b8", 
         fontSize: "0.78rem" 
       }}>
-        © 2026 Data Rejected · Built for data professionals.
+        © 2026 Repractiq · Built for data professionals.
       </footer>
     </div>
   );

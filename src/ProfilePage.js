@@ -112,7 +112,7 @@ function Nav({ navigate, isMobile }) {
   return (
     <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
       <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>
-        Data Rejected
+      Repractiq
       </span>
       {isMobile ? (
         <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
@@ -226,7 +226,7 @@ function SettingsPanel({ profile, authEmail, onSaveProfile, onSignOut, isMobile 
 
   const handleDeleteAccount = async () => {
     // Supabase doesn't allow client-side user deletion — show guidance
-    alert("To delete your account, please contact us at support@datarejected.com");
+    alert("To delete your account, please contact us at support@repractiq.com");
   };
 
   const tabs = ["profile", "password", "account"];
@@ -901,7 +901,7 @@ const lastProblemPath = lastSub
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr 1fr", gap: "2rem", marginBottom: "2rem" }}>
             <div>
-              <div style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", marginBottom: "0.5rem" }}>Data Rejected</div>
+              <div style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", marginBottom: "0.5rem" }}>Repractiq</div>
               <div style={{ fontSize: "0.82rem", color: "#64748b", lineHeight: 1.7, maxWidth: "280px" }}>A free SQL practice platform built for data professionals who want to actually do the work.</div>
               <div style={{ display: "flex", gap: "10px", marginTop: "1rem" }}>
                 <a href="https://linkedin.com" target="_blank" rel="noreferrer" style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>LinkedIn</a>
@@ -936,7 +936,7 @@ const lastProblemPath = lastSub
 </div>
           </div>
           <div style={{ borderTop: "1px solid #e2e8f0", paddingTop: "1.25rem", fontSize: "0.75rem", color: "#94a3b8", textAlign: "center" }}>
-            © 2025 Data Rejected · Built for data professionals who want to actually do the work.
+            © 2025 Repractiq · Built for data professionals who want to actually do the work.
           </div>
         </div>
       </div>

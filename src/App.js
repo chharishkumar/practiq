@@ -20,6 +20,7 @@ import BlogPostPage from "./BlogPostPage";
 import PrivacyPolicyPage from "./PrivacyPolicyPage";
 import TermsUse from "./TermsUse";
 import PricingPage from "./PricingPage";
+import StartHerePage from "./data/StartHerePage"; 
 
 
 export default function App() {
@@ -56,6 +57,7 @@ export default function App() {
         <Route path="/terms" element={<TermsUse />} />
         <Route path="/share" element={<TermsUse />} />
         <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/sql/start" element={<StartHerePage />} />
       </Routes>
     </BrowserRouter>
   );

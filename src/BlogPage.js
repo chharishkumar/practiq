@@ -85,7 +85,7 @@ export default function BlogPage() {
 
       {/* Nav */}
       <nav style={{ padding: isMobile ? "0.75rem 1rem" : "0.875rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
-  <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
+  <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Repractiq</span>
   {isMobile ? (
     <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
       {isLoggedIn && (
@@ -126,7 +126,7 @@ export default function BlogPage() {
           SQL insights, tips & community posts
         </div>
         <h1 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 800, letterSpacing: "-1px", margin: "0 0 1rem", color: "#0f172a" }}>
-          The Data Rejected Blog
+          The Repractiq Blog
         </h1>
         <p style={{ fontSize: "0.95rem", color: "#64748b", lineHeight: 1.75, maxWidth: "480px", margin: "0 auto 1.5rem" }}>
           SQL tutorials, interview breakdowns, real-world scenarios and community solutions — written by practitioners for practitioners.
@@ -291,7 +291,7 @@ export default function BlogPage() {
       {/* Footer */}
       <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: "2rem 2.5rem", marginTop: "2rem" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", flexDirection: isMobile ? "column" : "row", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
-          <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>© 2025 Data Rejected. All rights reserved.</span>
+          <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>© 2026 Repractiq. All rights reserved.</span>
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "20px" }}>
             <Link to="/privacy" style={{ fontSize: "0.75rem", color: "#64748b", textDecoration: "none" }}>Privacy Policy</Link>
             <Link to="/terms" style={{ fontSize: "0.75rem", color: "#64748b", textDecoration: "none" }}>Terms of Use</Link>

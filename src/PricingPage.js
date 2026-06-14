@@ -117,7 +117,7 @@ const [menuOpen, setMenuOpen] = useState(false);
         key:          process.env.REACT_APP_RAZORPAY_KEY_ID,
         amount:       plan.paise,
         currency:     "INR",
-        name:         "Data Rejected",
+        name:         "Repractiq",
         description:  `Pro Plan — ${plan.label}`,
         order_id:     order.id,
         prefill: {
@@ -171,7 +171,7 @@ const [menuOpen, setMenuOpen] = useState(false);
 
       {/* Nav */}
       <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
-  <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.3px", cursor: "pointer" }}>Data Rejected</span>
+  <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.3px", cursor: "pointer" }}>Repractiq</span>
   {isMobile ? (
     <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
       {menuOpen ? "✕" : "☰"}
@@ -374,7 +374,7 @@ const [menuOpen, setMenuOpen] = useState(false);
               ["What payment methods are accepted?", "UPI, credit card, debit card, netbanking and wallets are all supported via Razorpay."],
               ["Is my payment secure?", "Yes. All payments are processed by Razorpay — a PCI DSS compliant payment gateway used by millions of Indian businesses."],
               ["What happens when my plan expires?", "Your account goes back to the free tier. All your progress and solved problems are saved permanently."],
-              ["Do you offer student discounts?", "We're working on it! Email us at support@datarejected.com with your student ID."],
+              ["Do you offer student discounts?", "We're working on it! Email us at support@repractiq.com with your student ID."],
               ["Can I switch from monthly to yearly?", "Yes — upgrade anytime and we'll prorate the difference."],
             ].map(([q, a]) => (
               <div key={q} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "1.25rem" }}>
@@ -408,7 +408,7 @@ const [menuOpen, setMenuOpen] = useState(false);
       {/* Footer */}
       <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: isMobile ? "1.5rem 1rem" : "2rem 2.5rem" }}>
         <div style={{ maxWidth: "960px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
-          <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>© 2025 Data Rejected. All rights reserved.</span>
+          <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>© 2026 Repractiq. All rights reserved.</span>
           <div style={{ display: "flex", gap: "20px" }}>
             <Link to="/privacy" style={{ fontSize: "0.75rem", color: "#64748b", textDecoration: "none" }}>Privacy Policy</Link>
             <Link to="/terms"   style={{ fontSize: "0.75rem", color: "#64748b", textDecoration: "none" }}>Terms of Use</Link>
