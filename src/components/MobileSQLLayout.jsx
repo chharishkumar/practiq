@@ -497,7 +497,7 @@ ShareModalComponent,
         <ShareModalComponent
           isOpen={shareOpen}
           onClose={() => setShareOpen(false)}
-          problem={{ ...selectedProblem, category: "Basics" }}
+          problem={{ ...selectedProblem, category: selectedProblem.category || "SQL" }}
           user={user}
           solvedCount={solvedCount}
           streak={streak}

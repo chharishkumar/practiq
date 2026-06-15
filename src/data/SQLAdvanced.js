@@ -496,6 +496,13 @@ setUserStreak(streakRow?.current_streak || 0);
         totalProblems={SQL_ADVANCED_PROBLEMS.length}
         runCountDisplay={runCountDisplay}
         onPostCommunity={handlePostCommunity}
+        setShareOpen={setShareOpen}
+user={{ fullName: userFullName, username: userFullName || userEmail?.split("@")[0] || "user" }}
+solvedCount={solvedIds.size}
+streak={userStreak}
+firstTry={runCountDisplay === 1}
+elapsed={elapsed}
+ShareModalComponent={ShareModal}
       />
     );
   };

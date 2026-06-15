@@ -91,7 +91,7 @@ export default function SQLScenariosPage() {
   const [postSuccess, setPostSuccess] = useState(false);
   const [validationStatus, setValidationStatus] = useState(null);
   const [shareOpen, setShareOpen] = useState(false);
-  const [elapsed] = useState(null);
+  const [elapsed, setElapsed] = useState(null);
   const [userStreak, setUserStreak] = useState(0);
   const { isGuest, isPro, userEmail, userName: userFullName } = useProStatus();
   const isMobile = useMobile();
@@ -263,6 +263,7 @@ setUserStreak(streakRow?.current_streak || 0);
             setValidationStatus(status);
             if (status === "correct") {
               setSolvedIds(prev => new Set([...prev, currentProblem.id]));
+              setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
             }
           }
         } catch (_) {
@@ -497,6 +498,13 @@ setUserStreak(streakRow?.current_streak || 0);
         totalProblems={SQL_SCENARIOS_PROBLEMS.length}
         runCountDisplay={runCountDisplay}
         onPostCommunity={handlePostCommunity}
+        setShareOpen={setShareOpen}
+user={{ fullName: userFullName, username: userFullName || userEmail?.split("@")[0] || "user" }}
+solvedCount={solvedIds.size}
+streak={userStreak}
+firstTry={runCountDisplay === 1}
+elapsed={elapsed}
+ShareModalComponent={ShareModal}
       />
     );
   }
