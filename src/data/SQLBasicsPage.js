@@ -386,7 +386,7 @@ setUserStreak(streakRow?.current_streak || 0);
     const { data: sessionData } = await supabase.auth.getSession();
     if (sessionData?.session) {
       const userId = sessionData.session.user.id;
-      await supabase.from("submissions").upsert({
+      await supabase.from("submissions").insert({
         user_id: userId,
         problem_id: selectedProblem.id,
         category: "sql_basics",
@@ -504,6 +504,14 @@ setUserStreak(streakRow?.current_streak || 0);
         totalProblems={SQL_PROBLEMS.length}
         runCountDisplay={runCountDisplay}
         onPostCommunity={handlePostCommunity}
+        shareOpen={shareOpen}
+setShareOpen={setShareOpen}
+user={{ fullName: userFullName, username: userFullName || userEmail?.split("@")[0] || "user" }}
+solvedCount={solvedIds.size}
+streak={userStreak}
+firstTry={runCountDisplay === 1}
+elapsed={elapsed}
+ShareModalComponent={ShareModal}
       />
     );
   }

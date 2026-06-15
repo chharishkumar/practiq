@@ -5,6 +5,8 @@ const CARD_STYLES = [
   { id: "dark",      label: "Dark",      desc: "Bold & minimal" },
   { id: "milestone", label: "Milestone", desc: "Achievement look" },
   { id: "gradient",  label: "Gradient",  desc: "Vibrant & modern" },
+  { id: "neon",      label: "Neon",      desc: "Cyber glow" },       // ADD
+  { id: "clean",     label: "Clean",     desc: "Light & professional" }, // ADD
 ];
 
 // ─── Difficulty colors ────────────────────────────────────────────────────────
@@ -337,6 +339,162 @@ function drawCard(canvas, { style, user, problem, solvedCount, streak, firstTry,
     ctx.fillText(user.username, W - 52, H - 28);
     ctx.textAlign = "left";
   }
+
+  // ── NEON style ──────────────────────────────────────────────────────────
+else if (style === "neon") {
+  ctx.fillStyle = "#0d0d0d";
+  ctx.fillRect(0, 0, W, H);
+
+  // Neon green top bar
+  ctx.fillStyle = "#39ff14";
+  ctx.fillRect(0, 0, W, 5);
+
+  // Scanline overlay effect
+  ctx.fillStyle = "rgba(57,255,20,0.03)";
+  for (let y = 0; y < H; y += 4) {
+    ctx.fillRect(0, y, W, 2);
+  }
+
+  // Glow behind title
+  const glow = ctx.createRadialGradient(W/2, 220, 20, W/2, 220, 400);
+  glow.addColorStop(0, "rgba(57,255,20,0.12)");
+  glow.addColorStop(1, "rgba(57,255,20,0)");
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, W, H);
+
+  // Brand
+  ctx.fillStyle = "#39ff14";
+  ctx.font = "bold 20px monospace";
+  ctx.fillText("> repractiq", 52, 58);
+
+  // Solved badge
+  ctx.fillStyle = "rgba(57,255,20,0.12)";
+  roundRect(ctx, 52, 75, 200, 30, 6);
+  ctx.fillStyle = "#39ff14";
+  ctx.font = "13px monospace";
+  ctx.fillText(`[ SOLVED #${solvedCount} ]`, 64, 95);
+
+  // Title
+  ctx.fillStyle = "#ffffff";
+  ctx.font = `bold ${problem.title.length > 30 ? "40" : "50"}px monospace`;
+  wrapText(ctx, problem.title, 52, 190, W - 200, 60);
+
+  // Description
+  ctx.fillStyle = "rgba(57,255,20,0.75)";
+  ctx.font = "16px monospace";
+  wrapText(ctx, "> " + problem.description, 52, 310, W - 200, 26);
+
+  // Stats
+  const nstats = [
+    { label: "STREAK", val: `${streak}d` },
+    { label: "CATEGORY", val: problem.category },
+    { label: "DIFFICULTY", val: problem.difficulty },
+  ];
+  let nx = 52;
+  nstats.forEach(s => {
+    ctx.fillStyle = "rgba(57,255,20,0.1)";
+    ctx.strokeStyle = "#39ff14";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    roundRect(ctx, nx, H - 115, 160, 68, 8);
+    ctx.stroke();
+    ctx.fillStyle = "#39ff14";
+    ctx.font = "bold 20px monospace";
+    ctx.textAlign = "center";
+    ctx.fillText(String(s.val), nx + 80, H - 75);
+    ctx.fillStyle = "rgba(57,255,20,0.5)";
+    ctx.font = "11px monospace";
+    ctx.fillText(s.label, nx + 80, H - 56);
+    ctx.textAlign = "left";
+    nx += 174;
+  });
+
+  ctx.fillStyle = "rgba(57,255,20,0.4)";
+  ctx.font = "13px monospace";
+  ctx.textAlign = "right";
+  ctx.fillText(user.username, W - 52, H - 28);
+  ctx.textAlign = "left";
+}
+
+// ── CLEAN style ──────────────────────────────────────────────────────────
+else if (style === "clean") {
+  // White bg
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, W, H);
+
+  // Left blue accent strip
+  ctx.fillStyle = "#2563eb";
+  ctx.fillRect(0, 0, 8, H);
+
+  // Top section bg
+  ctx.fillStyle = "#f8fafc";
+  ctx.fillRect(8, 0, W - 8, 180);
+
+  // Border between sections
+  ctx.fillStyle = "#e2e8f0";
+  ctx.fillRect(8, 180, W - 8, 1);
+
+  // Brand
+  ctx.fillStyle = "#2563eb";
+  ctx.font = "bold 24px -apple-system, BlinkMacSystemFont, sans-serif";
+  ctx.fillText("Repractiq", 52, 65);
+  ctx.fillStyle = "#94a3b8";
+  ctx.font = "14px -apple-system, BlinkMacSystemFont, sans-serif";
+  ctx.fillText("repractiq.com · SQL Practice Platform", 52, 90);
+
+  // Solved count chip
+  ctx.fillStyle = "#eff6ff";
+  roundRect(ctx, 52, 110, 200, 36, 18);
+  ctx.fillStyle = "#2563eb";
+  ctx.font = "bold 14px -apple-system, BlinkMacSystemFont, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(`✓ ${solvedCount} Problems Solved`, 152, 133);
+  ctx.textAlign = "left";
+
+  // Title
+  ctx.fillStyle = "#0f172a";
+  ctx.font = `bold ${problem.title.length > 32 ? "38" : "48"}px -apple-system, BlinkMacSystemFont, sans-serif`;
+  wrapText(ctx, problem.title, 52, 250, W - 100, 58);
+
+  // Thin divider
+  ctx.fillStyle = "#e2e8f0";
+  ctx.fillRect(52, 340, 120, 2);
+
+  // Description
+  ctx.fillStyle = "#64748b";
+  ctx.font = "18px -apple-system, BlinkMacSystemFont, sans-serif";
+  wrapText(ctx, problem.description, 52, 380, W - 100, 28);
+
+  // Bottom stats row — pill style
+  const cstats = [
+    { label: "Day Streak", val: `${streak} 🔥` },
+    { label: "Category", val: problem.category },
+    { label: "Difficulty", val: problem.difficulty },
+    { label: "First Try", val: firstTry ? "Yes ✓" : "No" },
+  ];
+  let cx2 = 52;
+  cstats.forEach(s => {
+    const w2 = 155;
+    ctx.fillStyle = "#f1f5f9";
+    roundRect(ctx, cx2, H - 100, w2, 56, 10);
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "bold 18px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(String(s.val), cx2 + w2/2, H - 63);
+    ctx.fillStyle = "#94a3b8";
+    ctx.font = "12px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillText(s.label, cx2 + w2/2, H - 46);
+    ctx.textAlign = "left";
+    cx2 += w2 + 12;
+  });
+
+  // Username bottom right
+  ctx.fillStyle = "#cbd5e1";
+  ctx.font = "13px -apple-system, BlinkMacSystemFont, sans-serif";
+  ctx.textAlign = "right";
+  ctx.fillText(user.username, W - 40, H - 24);
+  ctx.textAlign = "left";
+}
 }
 
 // ─── Canvas helpers ───────────────────────────────────────────────────────────

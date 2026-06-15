@@ -75,6 +75,15 @@ export default function MobileSQLLayout({
   totalProblems,
   runCountDisplay,
   onPostCommunity,
+  onShareLinkedIn,
+shareOpen,
+setShareOpen,
+user,
+solvedCount,
+streak,
+firstTry,
+elapsed,
+ShareModalComponent,
 }) {
   const [activeTab, setActiveTab] = useState(0); // 0=Problems, 1=Editor, 2=Output
   const [expandedId, setExpandedId] = useState(null);
@@ -293,18 +302,13 @@ export default function MobileSQLLayout({
         <div>
           <div style={{ fontSize: "0.82rem", fontWeight: 700, color: c.titleColor }}>{c.title}</div>
           <div style={{ fontSize: "0.76rem", color: "#475569", marginTop: "2px" }}>{c.msg}</div>
+
           {validationStatus === "correct" && onPostCommunity && (
-            <button
-              onClick={onPostCommunity}
-              style={{
-                marginTop: "0.5rem", fontSize: "0.76rem", color: "#2563eb",
-                background: "#eff6ff", border: "1px solid #bfdbfe",
-                borderRadius: "6px", padding: "4px 10px", cursor: "pointer", fontWeight: 600,
-              }}
-            >
-              🎉 Share to Community
-            </button>
-          )}
+  <div style={{ display: "flex", gap: "6px", marginTop: "0.5rem", flexWrap: "wrap" }}>
+    <button onClick={onPostCommunity} style={{ fontSize: "0.76rem", color: "#2563eb", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "6px", padding: "4px 10px", cursor: "pointer", fontWeight: 600 }}>🎉 Share to Community</button>
+    <button onClick={() => setShareOpen(true)} style={{ fontSize: "0.76rem", color: "#0a66c2", background: "#e8f0fe", border: "1px solid #b0c4f7", borderRadius: "6px", padding: "4px 10px", cursor: "pointer", fontWeight: 600 }}>🔗 Share on LinkedIn</button>
+  </div>
+)}
         </div>
       </div>
     );
@@ -449,8 +453,11 @@ export default function MobileSQLLayout({
                     <div style={{ fontSize: "0.82rem", fontWeight: 700, color: c.titleColor }}>{c.title}</div>
                     <div style={{ fontSize: "0.76rem", color: "#475569", marginTop: "2px" }}>{c.msg}</div>
                     {validationStatus === "correct" && onPostCommunity && (
-                      <button onClick={onPostCommunity} style={{ marginTop: "0.5rem", fontSize: "0.76rem", color: "#2563eb", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "6px", padding: "4px 10px", cursor: "pointer", fontWeight: 600 }}>🎉 Share to Community</button>
-                    )}
+  <div style={{ display: "flex", gap: "6px", marginTop: "0.5rem", flexWrap: "wrap" }}>
+    <button onClick={onPostCommunity} style={{ fontSize: "0.76rem", color: "#2563eb", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "6px", padding: "4px 10px", cursor: "pointer", fontWeight: 600 }}>🎉 Share to Community</button>
+    <button onClick={() => setShareOpen(true)} style={{ fontSize: "0.76rem", color: "#0a66c2", background: "#e8f0fe", border: "1px solid #b0c4f7", borderRadius: "6px", padding: "4px 10px", cursor: "pointer", fontWeight: 600 }}>🔗 Share on LinkedIn</button>
+  </div>
+)}
                   </div>
                 </div>
               );
@@ -486,6 +493,18 @@ export default function MobileSQLLayout({
       )}
       {activeTab === 2 && <OutputTab />}
 
+      {ShareModalComponent && shareOpen && (
+        <ShareModalComponent
+          isOpen={shareOpen}
+          onClose={() => setShareOpen(false)}
+          problem={{ ...selectedProblem, category: "Basics" }}
+          user={user}
+          solvedCount={solvedCount}
+          streak={streak}
+          firstTry={firstTry}
+          timeTaken={elapsed}
+        />
+      )}
       <TabBar />
     </div>
   );
