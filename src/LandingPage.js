@@ -61,11 +61,21 @@ export default function LandingPage() {
 useEffect(() => {
   const fetchCommunity = async () => {
     const { data: recentCorrect } = await supabase
-      .from("submissions")
-      .select("id, user_id, problem_title, category, created_at")
-      .eq("status", "correct")
-      .order("created_at", { ascending: false })
-      .limit(5);
+    .from("submissions")
+    .select("user_id, problem_title, category, created_at")
+    .eq("status", "correct")
+    .order("created_at", { ascending: false })
+    .limit(50); // fetch enough raw rows
+  
+  if (!recentCorrect) return;
+  
+  // Deduplicate — keep only first (most recent) row per user
+  const seen = new Set();
+  const uniqueRows = recentCorrect.filter(row => {
+    if (seen.has(row.user_id)) return false;
+    seen.add(row.user_id);
+    return true;
+  }).slice(0, 5); // now take top 5 unique users
 
     if (!recentCorrect) return;
 
@@ -79,7 +89,8 @@ useEffect(() => {
     const profileMap = {};
     (profiles || []).forEach(p => { profileMap[p.id] = p.full_name || "Anonymous"; });
 
-    const feed = recentCorrect.map(row => ({
+    
+    const feed = uniqueRows.map(row => ({
       user: profileMap[row.user_id] || "Anonymous",
       problem: row.problem_title,
       category: row.category.replace("sql_", "").replace(/^\w/, c => c.toUpperCase()),

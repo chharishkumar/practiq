@@ -509,15 +509,26 @@ badge: ["🥇", "🥈", "🥉"][i] || "",
 if (sorted.length > 0) setLeaderboard(sorted);
 
 // Community feed
-const recent = [...topUsers]
-.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-.slice(0, 6)
-.map((row) => ({
-user: nameMap[row.user_id] || "Anonymous",
-problem: row.problem_title || "Unknown problem",
-category: CATEGORY_LABEL[row.category] || row.category,
-time: timeAgo(row.created_at),
-}));
+const uniqueUsers = [];
+const seen = new Set();
+
+[...topUsers]
+  .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+  .forEach((row) => {
+    if (!seen.has(row.user_id)) {
+      seen.add(row.user_id);
+      uniqueUsers.push(row);
+    }
+  });
+
+const recent = uniqueUsers
+  .slice(0, 6)
+  .map((row) => ({
+    user: nameMap[row.user_id] || "Anonymous",
+    problem: row.problem_title || "Unknown problem",
+    category: CATEGORY_LABEL[row.category] || row.category,
+    time: timeAgo(row.created_at),
+  }));
 if (recent.length > 0) setCommunity(recent);
 }
 } catch (err) {

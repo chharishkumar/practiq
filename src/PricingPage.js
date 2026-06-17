@@ -283,36 +283,88 @@ const [menuOpen, setMenuOpen] = useState(false);
             <div style={{ position: "absolute", top: "-30px", right: "-30px", width: "150px", height: "150px", borderRadius: "50%", background: "rgba(37,99,235,0.15)", pointerEvents: "none" }} />
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "0.75rem" }}>
               <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#60a5fa", textTransform: "uppercase", letterSpacing: "0.06em" }}>Pro</span>
-              <span style={{ fontSize: "0.65rem", background: "rgba(251,191,36,0.15)", color: "#fbbf24", border: "1px solid rgba(251,191,36,0.3)", borderRadius: "10px", padding: "2px 8px", fontWeight: 700 }}>Most Popular</span>
+              <span style={{ fontSize: "0.65rem", background: "rgba(251,191,36,0.15)", color: "#fbbf24", border: "1px solid rgba(251,191,36,0.3)", borderRadius: "10px", padding: "2px 8px", fontWeight: 700 }}>Most Popular • Worldwide</span>
             </div>
             <div style={{ display: "flex", alignItems: "baseline", gap: "4px", marginBottom: "0.5rem" }}>
               <span style={{ fontSize: "2.5rem", fontWeight: 800, letterSpacing: "-2px", color: "#ffffff" }}>
                 ₹{PLANS[activePlan].price}
               </span>
               <span style={{ fontSize: "0.88rem", color: "#94a3b8" }}>{PLANS[activePlan].period}</span>
+              <div
+  style={{
+    fontSize: "0.82rem",
+    color: "#94a3b8",
+    marginTop: "4px",
+    fontWeight: 500
+  }}
+>
+  {activePlan === "yearly"
+    ? "≈ $6/year"
+    : "≈ $1.20/month"}
+</div>
             </div>
             {activePlan === "yearly" && (
               <div style={{ fontSize: "0.78rem", color: "#4ade80", marginBottom: "0.25rem", fontWeight: 600 }}>
-                That's just ₹41.58/month — save ₹689 vs monthly
+                That's just ₹41.58/month (~$0.50/month)
               </div>
             )}
-            <p style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "1.75rem", lineHeight: 1.6 }}>
-              Full access to every problem on the platform.
-            </p>
+           <p style={{
+  fontSize: "0.85rem",
+  color: "#94a3b8",
+  marginBottom: "0.5rem",
+  lineHeight: 1.6
+}}>
+  Full access to every problem on the platform.
+</p>
+
+<div
+  style={{
+    fontSize: "0.78rem",
+    color: "#60a5fa",
+    marginBottom: "1.5rem",
+    fontWeight: 500
+  }}
+>
+  🌍 International cards accepted • Approx. $6/year
+</div>
 
             {isPro ? (
               <div style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#16a34a", color: "#fff", fontWeight: 700, fontSize: "0.88rem", textAlign: "center", marginBottom: "1.75rem" }}>
                 ✓ Active — You're on Pro
               </div>
             ) : (
-              <button
-                onClick={handlePayment}
-                disabled={loading}
-                style={{ width: "100%", padding: "11px", borderRadius: "8px", background: loading ? "#3b82f6" : "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: loading ? "not-allowed" : "pointer", marginBottom: "1.75rem" }}
-              >
-                {loading ? "Opening payment..." : `Get Pro — ₹${PLANS[activePlan].price} →`}
-              </button>
-            )}
+                <>
+                  <button
+                    onClick={handlePayment}
+                    disabled={loading}
+                    style={{
+                      width: "100%",
+                      padding: "11px",
+                      borderRadius: "8px",
+                      background: loading ? "#3b82f6" : "#2563eb",
+                      color: "#fff",
+                      fontWeight: 700,
+                      fontSize: "0.88rem",
+                      border: "none",
+                      cursor: loading ? "not-allowed" : "pointer"
+                    }}
+                  >
+                    {loading ? "Opening payment..." : `Get Pro — ₹${PLANS[activePlan].price} →`}
+                  </button>
+              
+                  <div
+                    style={{
+                      textAlign: "center",
+                      marginTop: "10px",
+                      marginBottom: "1.75rem",
+                      fontSize: "0.72rem",
+                      color: "#94a3b8"
+                    }}
+                  >
+                    🔒 Secure payments • Visa • Mastercard • International Cards
+                  </div>
+                </>
+              )}
 
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               {PRO_FEATURES.map((f, i) => (
@@ -371,7 +423,8 @@ const [menuOpen, setMenuOpen] = useState(false);
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1.25rem" }}>
             {[
               ["Can I cancel anytime?", "Yes. You can cancel your Pro plan anytime. You'll keep access until the end of your billing period."],
-              ["What payment methods are accepted?", "UPI, credit card, debit card, netbanking and wallets are all supported via Razorpay."],
+              ["What payment methods are accepted?",
+                "UPI, credit cards, debit cards, netbanking, wallets and most international Visa/Mastercard cards are supported."],
               ["Is my payment secure?", "Yes. All payments are processed by Razorpay — a PCI DSS compliant payment gateway used by millions of Indian businesses."],
               ["What happens when my plan expires?", "Your account goes back to the free tier. All your progress and solved problems are saved permanently."],
               ["Do you offer student discounts?", "We're working on it! Email us at support@repractiq.com with your student ID."],
@@ -394,14 +447,37 @@ const [menuOpen, setMenuOpen] = useState(false);
             Get full access to 500+ advanced SQL problems for less than a cup of coffee per month.
           </p>
           {!isPro && (
-            <button
-              onClick={handlePayment}
-              disabled={loading}
-              style={{ padding: "13px 32px", background: "#2563eb", color: "#fff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "0.95rem", cursor: "pointer" }}
-            >
-              {loading ? "Opening payment..." : `Get Pro — ₹${PLANS[activePlan].price}/${activePlan === "yearly" ? "yr" : "mo"} →`}
-            </button>
-          )}
+  <>
+    <button
+      onClick={handlePayment}
+      disabled={loading}
+      style={{
+        padding: "13px 32px",
+        background: "#2563eb",
+        color: "#fff",
+        border: "none",
+        borderRadius: "8px",
+        fontWeight: 700,
+        fontSize: "0.95rem",
+        cursor: "pointer"
+      }}
+    >
+      {loading
+        ? "Opening payment..."
+        : `Get Pro — ₹${PLANS[activePlan].price}/${activePlan === "yearly" ? "yr" : "mo"} →`}
+    </button>
+
+    <div
+      style={{
+        marginTop: "12px",
+        fontSize: "0.75rem",
+        color: "#94a3b8"
+      }}
+    >
+      🌍 International cards accepted
+    </div>
+  </>
+)}
         </div>
       </div>
 

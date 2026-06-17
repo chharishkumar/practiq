@@ -8,36 +8,160 @@ import ShareModal from "../ShareModel";
 import { useMobile } from "../hooks/useMobile";
 import MobileSQLLayout from "../components/MobileSQLLayout";
 
-function validateResults(userResult, referenceResult) {
+import { checkAndSaveBadges } from "../badges/useBadges";
+import BadgeUnlockModal from "../badges/BadgeUnlockModal";
+
+const MILESTONES = [
+  {
+    id: "bronze",
+    label: "SQL Beginner",
+    icon: "🥉",
+    tier: "bronze",
+    color: "#CD7F32",
+    bg: "#fdf3e7",
+    border: "#e8c49a",
+    range: [1, 25],
+    badge: "basics_bronze",
+  },
+  {
+    id: "silver",
+    label: "SQL Explorer",
+    icon: "🥈",
+    tier: "silver",
+    color: "#9BA8B0",
+    bg: "#f4f6f7",
+    border: "#c8d0d4",
+    range: [26, 50],
+    badge: "basics_silver",
+  },
+  {
+    id: "gold",
+    label: "SQL Fundamentals Master",
+    icon: "🥇",
+    tier: "gold",
+    color: "#D4A017",
+    bg: "#fffbeb",
+    border: "#fde68a",
+    range: [51, 100],
+    badge: "basics_gold",
+  },
+];
+
+function validateResults(userResult, referenceResult, validateBy = "values") {
   if (!userResult || !referenceResult) return null;
 
-  // Row count check
+  // ─────────────────────────────────────────────
+  // row_ids validation
+  // User selected the correct rows but maybe wrong columns
+  // ─────────────────────────────────────────────
+  if (validateBy === "row_ids") {
+    const KEY_COLS = [
+      "customer_id",
+      "order_id",
+      "product_id",
+      "payment_id",
+      "feedback_id",
+      "order_item_id",
+      "delivery_partner_id"
+    ];
+
+    const userColsLower = userResult.columns.map(c =>
+      String(c).trim().toLowerCase()
+    );
+
+    const refColsLower = referenceResult.columns.map(c =>
+      String(c).trim().toLowerCase()
+    );
+
+    const keyCol =
+      KEY_COLS.find(k => userColsLower.includes(k)) ||
+      KEY_COLS.find(k => refColsLower.includes(k));
+
+    if (!keyCol) {
+      return "correct";
+    }
+
+    const userIdx = userColsLower.findIndex(c => c === keyCol);
+    const refIdx = refColsLower.findIndex(c => c === keyCol);
+
+    if (userIdx === -1 || refIdx === -1) {
+      return "almost";
+    }
+
+    const userIds = userResult.values
+      .map(r => String(r[userIdx]))
+      .sort()
+      .join(",");
+
+    const refIds = referenceResult.values
+      .map(r => String(r[refIdx]))
+      .sort()
+      .join(",");
+
+    // Wrong rows
+    if (userIds !== refIds) {
+      return "almost";
+    }
+
+    // Same rows but different columns
+    const sameColumns =
+      userColsLower.length === refColsLower.length &&
+      JSON.stringify([...userColsLower].sort()) ===
+      JSON.stringify([...refColsLower].sort());
+
+    if (!sameColumns) {
+      return "correct_rows";
+    }
+
+    return "correct";
+  }
+
+  // ─────────────────────────────────────────────
+  // row_count validation
+  // Only row count matters
+  // ─────────────────────────────────────────────
+  if (validateBy === "row_count") {
+    return userResult.values.length === referenceResult.values.length
+      ? "correct"
+      : "almost";
+  }
+
+  // ─────────────────────────────────────────────
+  // exact validation
+  // Must match row count + columns + values
+  // ─────────────────────────────────────────────
+  if (validateBy === "exact") {
+    if (userResult.values.length !== referenceResult.values.length) {
+      return "almost";
+    }
+
+    if (userResult.columns.length !== referenceResult.columns.length) {
+      return "wrong";
+    }
+
+    const userCols = userResult.columns
+      .map(c => String(c).trim().toLowerCase())
+      .sort();
+
+    const refCols = referenceResult.columns
+      .map(c => String(c).trim().toLowerCase())
+      .sort();
+
+    if (JSON.stringify(userCols) !== JSON.stringify(refCols)) {
+      return "wrong";
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // values validation
+  // ─────────────────────────────────────────────
   if (userResult.values.length !== referenceResult.values.length) {
     return "almost";
   }
 
-  // Column count check
-  if (userResult.columns.length !== referenceResult.columns.length) {
-    return "wrong";
-  }
-
-  // Normalize column names
-  const normalizeColumn = (col) =>
-    String(col).trim().toLowerCase();
-
-  const userCols = userResult.columns.map(normalizeColumn).sort();
-  const refCols = referenceResult.columns.map(normalizeColumn).sort();
-
-  // Column names mismatch
-  if (JSON.stringify(userCols) !== JSON.stringify(refCols)) {
-    return "wrong";
-  }
-
-  // Normalize values
   const normalizeValue = (v) => {
     if (v === null || v === undefined) return "null";
 
-    // Handle numbers
     if (!isNaN(v) && v !== "") {
       return Number(v).toFixed(2);
     }
@@ -45,24 +169,83 @@ function validateResults(userResult, referenceResult) {
     return String(v).trim().toLowerCase();
   };
 
-  // Normalize rows independent of column order
-  const normalizeRows = (result) => {
-    return result.values
-      .map((row) =>
-        row.map(normalizeValue).sort().join("|")
+  const normalizeRows = (result) =>
+    result.values
+      .map(row =>
+        row.map(normalizeValue).join("|")
       )
       .sort()
       .join("\n");
-  };
 
-  const userNormalized = normalizeRows(userResult);
-  const refNormalized = normalizeRows(referenceResult);
+  return normalizeRows(userResult) === normalizeRows(referenceResult)
+    ? "correct"
+    : "almost";
+}
 
-  if (userNormalized === refNormalized) {
-    return "correct";
-  }
+function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedItemRef, diffStyle, onSelect, nested = false }) {
+  return (
+    <div
+      ref={isSelected ? selectedItemRef : null}
+      style={{
+        background: "#ffffff",
+        border: nested ? "none" : "1.5px solid",
+        borderColor: isSelected ? "#2563eb" : "#e2e8f0",
+        borderBottom: nested ? "1px solid #f1f5f9" : undefined,
+        borderRadius: nested ? "0" : "10px",
+        overflow: "hidden",
+        transition: "border-color 0.15s",
+        boxShadow: isSelected && !nested ? "0 0 0 3px rgba(37,99,235,0.08)" : "none",
+      }}
+    >
+      <div
+        onClick={onSelect}
+        style={{ padding: "0.75rem 0.875rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", background: isSelected ? "#f8faff" : "transparent" }}
+      >
+        <div style={{ width: "22px", height: "22px", borderRadius: "50%", background: isSolved ? "#16a34a" : isSelected ? "#eff6ff" : "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.62rem", fontWeight: 700, color: isSolved ? "#fff" : isSelected ? "#2563eb" : "#94a3b8", flexShrink: 0 }}>
+          {isSolved ? "✓" : p.id}
+        </div>
+        <span style={{ fontSize: "0.83rem", fontWeight: isSelected ? 700 : 500, color: isSelected ? "#0f172a" : "#334155", flex: 1, lineHeight: 1.35 }}>
+          {p.title}
+        </span>
+        <span style={{ fontSize: "0.62rem", padding: "2px 7px", borderRadius: "10px", background: diffStyle.Easy.bg, color: diffStyle.Easy.color, border: `1px solid ${diffStyle.Easy.border}`, fontWeight: 600, whiteSpace: "nowrap" }}>
+          Easy
+        </span>
+        <span style={{ fontSize: "0.7rem", color: isExpanded ? "#2563eb" : "#94a3b8", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", lineHeight: 1 }}>▾</span>
+      </div>
 
-  return "almost";
+      {isExpanded && (
+        <div style={{ borderTop: "1px solid #f1f5f9", padding: "0.875rem", background: "#fafbfc" }}>
+          <div style={{ marginBottom: "0.875rem" }}>
+            <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Task</div>
+            <p style={{ margin: 0, fontSize: "0.8rem", color: "#0f172a", lineHeight: 1.6, fontWeight: 500 }}>{p.description}</p>
+          </div>
+          <div style={{ marginBottom: "0.875rem" }}>
+            <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Explanation</div>
+            <p style={{ margin: 0, fontSize: "0.78rem", color: "#475569", lineHeight: 1.65 }}>{p.explanation}</p>
+          </div>
+          <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "8px", padding: "0.625rem 0.75rem", marginBottom: "0.875rem" }}>
+            <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "3px" }}>Real-world scenario</div>
+            <p style={{ margin: 0, fontSize: "0.78rem", color: "#1e40af", lineHeight: 1.6 }}>{p.basics}</p>
+          </div>
+          <div style={{ marginBottom: "0.875rem" }}>
+            <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "5px" }}>Common use cases</div>
+            {p.useCases.map((uc, i) => (
+              <div key={i} style={{ display: "flex", gap: "6px", alignItems: "flex-start", marginBottom: "3px" }}>
+                <span style={{ color: "#2563eb", fontSize: "0.7rem", marginTop: "2px" }}>→</span>
+                <span style={{ fontSize: "0.77rem", color: "#475569", lineHeight: 1.5 }}>{uc}</span>
+              </div>
+            ))}
+          </div>
+          <details>
+            <summary style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", listStyle: "none" }}>💡 Show hint</summary>
+            <div style={{ marginTop: "6px", padding: "0.5rem 0.625rem", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "6px", fontSize: "0.78rem", color: "#92400e", lineHeight: 1.6, fontFamily: "monospace" }}>
+              {p.hint}
+            </div>
+          </details>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function SQLBasicsPage() {
@@ -76,6 +259,7 @@ export default function SQLBasicsPage() {
   const [runCountDisplay, setRunCountDisplay] = useState(0);
   const [, setCommunityFeed] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
+  const [expandedMilestone, setExpandedMilestone] = useState(null);
   const [selectedProblem, setSelectedProblem] = useState(SQL_PROBLEMS[0]);
   const [query, setQuery] = useState(SQL_PROBLEMS[0].starterQuery);
   const [results, setResults] = useState(null);
@@ -95,7 +279,10 @@ const [elapsed, setElapsed] = useState(null);
 const [userFullName, setUserFullName] = useState("");
 const [userEmail, setUserEmail] = useState("");
 const [userStreak, setUserStreak] = useState(0);
+const [unlockedBadges, setUnlockedBadges] = useState([]);
   const isMobile = useMobile();
+
+
 
   const queryRef = useRef(query);
   useEffect(() => { queryRef.current = query; }, [query]);
@@ -197,6 +384,11 @@ setUserStreak(streakRow?.current_streak || 0);
       if (error || !data) return;
       const ids = new Set(data.map((row) => row.problem_id));
       setSolvedIds(ids);
+
+      const solvedCount = ids.size;
+      if (solvedCount < 25) setExpandedMilestone("bronze");
+      else if (solvedCount < 50) setExpandedMilestone("silver");
+      else setExpandedMilestone("gold");
     };
     fetchSolvedProblems();
   }, []);
@@ -246,7 +438,8 @@ setUserStreak(streakRow?.current_streak || 0);
     setResults(null);
 
     try {
-      const res = currentDb.exec(currentQuery);
+      const normalizeQuotes = (sql) => sql.replace(/"([^"]+)"/g, "'$1'");
+const res = currentDb.exec(normalizeQuotes(currentQuery));
       if (res.length === 0) {
         setError("Query executed but returned no rows. Check your logic.");
         return;
@@ -265,11 +458,21 @@ setUserStreak(streakRow?.current_streak || 0);
         try {
           const ref = currentDb.exec(currentProblem.solutionQuery);
           if (ref.length > 0) {
-            status = validateResults(resultData, ref[0]);
+            status = validateResults(
+              resultData,
+              ref[0],
+              currentProblem.validateBy
+            );
             setValidationStatus(status);
             if (status === "correct") {
               setSolvedIds(prev => new Set([...prev, currentProblem.id]));
               setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
+              // Check for newly unlocked badges
+              const { data: sessionData } = await supabase.auth.getSession();
+              if (sessionData?.session?.user?.id) {
+                const newBadges = await checkAndSaveBadges(sessionData.session.user.id);
+                if (newBadges.length > 0) setUnlockedBadges(newBadges);
+              }
             }
           }
         } catch (_) {
@@ -434,6 +637,15 @@ setUserStreak(streakRow?.current_streak || 0);
         title: "Correct!", msg: "Your output matches the expected result perfectly.",
         titleColor: "#15803d",
       },
+      correct_rows: {
+        bg: "#eff6ff",
+        border: "#93c5fd",
+        icon: "i",
+        iconColor: "#2563eb",
+        title: "Correct rows!",
+        msg: "Great job! Your filtering logic is correct. Now return only the column(s) requested in the question.",
+        titleColor: "#1d4ed8",
+      },
       almost: {
         bg: "#fffbeb", border: "#fcd34d", icon: "~", iconColor: "#d97706",
         title: "Almost there", msg: "Your result structure looks right but the values don't match. Check your filters or logic.",
@@ -583,76 +795,103 @@ ShareModalComponent={ShareModal}
             </div>
           )}
 
-          {filteredProblems.map((p) => {
-            const isSelected = selectedProblem.id === p.id;
-            const isExpanded = expandedId === p.id;
-            const isSolved = solvedIds.has(p.id);
-            const isLocked = isGuest && p.id > 10;
+          {/* When searching, show flat list */}
+{searchTerm ? (
+  <>
+    {filteredProblems.map((p) => (
+      <ProblemRow
+        key={p.id}
+        p={p}
+        isSelected={selectedProblem.id === p.id}
+        isExpanded={expandedId === p.id}
+        isSolved={solvedIds.has(p.id)}
+        isLocked={isGuest && p.id > 10}
+        selectedItemRef={selectedItemRef}
+        diffStyle={diffStyle}
+        onSelect={() => {
+          handleSelectProblem(p);
+          handleToggleExpand(p.id);
+          if (editorRef.current) editorRef.current.focus();
+        }}
+      />
+    ))}
+  </>
+) : (
+  <>
+    {MILESTONES.map((milestone) => {
+      const milestoneProblems = SQL_PROBLEMS.filter(
+        (p) => p.id >= milestone.range[0] && p.id <= milestone.range[1]
+      );
+      const solvedInMilestone = milestoneProblems.filter((p) => solvedIds.has(p.id)).length;
+      const totalInMilestone = milestoneProblems.length;
+      const progressPct = Math.round((solvedInMilestone / totalInMilestone) * 100);
+      const isEarned = solvedInMilestone >= totalInMilestone;
+      const isOpen = expandedMilestone === milestone.id;
 
-            return (
-              <div
-                
-                key={p.id}
-  ref={isSelected ? selectedItemRef : null}
-                style={{ margin: "0 0.75rem 0.5rem", background: "#ffffff", border: "1.5px solid", borderColor: isSelected ? "#2563eb" : "#e2e8f0", borderRadius: "10px", overflow: "hidden", transition: "border-color 0.15s", boxShadow: isSelected ? "0 0 0 3px rgba(37,99,235,0.08)" : "none" }}
-              >
-                <div
-                  onClick={() => {
+      return (
+        <div key={milestone.id} style={{ margin: "0 0.75rem 0.75rem" }}>
+          {/* Milestone Header */}
+          <div
+            onClick={() => setExpandedMilestone(isOpen ? null : milestone.id)}
+            style={{
+              background: isEarned ? milestone.bg : "#f8fafc",
+              border: `1.5px solid ${isEarned ? milestone.border : "#e2e8f0"}`,
+              borderRadius: isOpen ? "10px 10px 0 0" : "10px",
+              padding: "0.75rem 0.875rem",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <span style={{ fontSize: "1.25rem", lineHeight: 1 }}>{milestone.icon}</span>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: "0.82rem", fontWeight: 700, color: isEarned ? milestone.color : "#0f172a" }}>
+                {milestone.label}
+              </div>
+              <div style={{ fontSize: "0.65rem", color: "#94a3b8", marginTop: "2px" }}>
+                Problems {milestone.range[0]}–{milestone.range[1]}
+              </div>
+              {/* Progress bar */}
+              <div style={{ marginTop: "6px", height: "3px", background: "#e2e8f0", borderRadius: "2px", overflow: "hidden" }}>
+                <div style={{ width: `${progressPct}%`, height: "100%", background: isEarned ? milestone.color : "#2563eb", borderRadius: "2px", transition: "width 0.4s ease" }} />
+              </div>
+              <div style={{ fontSize: "0.62rem", color: "#94a3b8", marginTop: "3px" }}>
+                {solvedInMilestone}/{totalInMilestone} solved
+              </div>
+            </div>
+            <span style={{ fontSize: "0.7rem", color: isOpen ? "#2563eb" : "#94a3b8", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▾</span>
+          </div>
+
+          {/* Problems inside milestone */}
+          {isOpen && (
+            <div style={{ border: "1.5px solid #e2e8f0", borderTop: "none", borderRadius: "0 0 10px 10px", overflow: "hidden" }}>
+              {milestoneProblems.map((p) => (
+                <ProblemRow
+                  key={p.id}
+                  p={p}
+                  isSelected={selectedProblem.id === p.id}
+                  isExpanded={expandedId === p.id}
+                  isSolved={solvedIds.has(p.id)}
+                  isLocked={isGuest && p.id > 10}
+                  selectedItemRef={selectedItemRef}
+                  diffStyle={diffStyle}
+                  onSelect={() => {
                     handleSelectProblem(p);
                     handleToggleExpand(p.id);
-                    if (!isLocked && editorRef.current) editorRef.current.focus();
+                    if (editorRef.current) editorRef.current.focus();
                   }}
-                  style={{ padding: "0.75rem 0.875rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <div style={{ width: "22px", height: "22px", borderRadius: "50%", background: isSolved ? "#16a34a" : isSelected ? "#eff6ff" : "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.62rem", fontWeight: 700, color: isSolved ? "#fff" : isSelected ? "#2563eb" : "#94a3b8", flexShrink: 0 }}>
-                    {isSolved ? "✓" : p.id}
-                  </div>
-                  <span style={{ fontSize: "0.83rem", fontWeight: isSelected ? 700 : 500, color: isSelected ? "#0f172a" : "#334155", flex: 1, lineHeight: 1.35 }}>
-                    {p.title}
-                  </span>
-                  <span style={{ fontSize: "0.62rem", padding: "2px 7px", borderRadius: "10px", background: diffStyle.Easy.bg, color: diffStyle.Easy.color, border: `1px solid ${diffStyle.Easy.border}`, fontWeight: 600, whiteSpace: "nowrap" }}>
-                    Easy
-                  </span>
-                  <span style={{ fontSize: "0.7rem", color: isExpanded ? "#2563eb" : "#94a3b8", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", lineHeight: 1 }}>
-                    ▾
-                  </span>
-                </div>
-
-                {isExpanded && (
-                  <div style={{ borderTop: "1px solid #f1f5f9", padding: "0.875rem", background: "#fafbfc" }}>
-                    <div style={{ marginBottom: "0.875rem" }}>
-                      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Task</div>
-                      <p style={{ margin: 0, fontSize: "0.8rem", color: "#0f172a", lineHeight: 1.6, fontWeight: 500 }}>{p.description}</p>
-                    </div>
-                    <div style={{ marginBottom: "0.875rem" }}>
-                      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Explanation</div>
-                      <p style={{ margin: 0, fontSize: "0.78rem", color: "#475569", lineHeight: 1.65 }}>{p.explanation}</p>
-                    </div>
-                    <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "8px", padding: "0.625rem 0.75rem", marginBottom: "0.875rem" }}>
-                      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "3px" }}>Real-world scenario</div>
-                      <p style={{ margin: 0, fontSize: "0.78rem", color: "#1e40af", lineHeight: 1.6 }}>{p.basics}</p>
-                    </div>
-                    <div style={{ marginBottom: "0.875rem" }}>
-                      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "5px" }}>Common use cases</div>
-                      {p.useCases.map((uc, i) => (
-                        <div key={i} style={{ display: "flex", gap: "6px", alignItems: "flex-start", marginBottom: "3px" }}>
-                          <span style={{ color: "#2563eb", fontSize: "0.7rem", marginTop: "2px" }}>→</span>
-                          <span style={{ fontSize: "0.77rem", color: "#475569", lineHeight: 1.5 }}>{uc}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <details>
-                      <summary style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", listStyle: "none" }}>💡 Show hint</summary>
-                      <div style={{ marginTop: "6px", padding: "0.5rem 0.625rem", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "6px", fontSize: "0.78rem", color: "#92400e", lineHeight: 1.6, fontFamily: "monospace" }}>
-                        {p.hint}
-                      </div>
-                    </details>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-          <div style={{ height: "1.5rem" }} />
+                  nested
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    })}
+  </>
+)}
+<div style={{ height: "1.5rem" }} />
         </div>
 
         {/* RIGHT PANEL */}
@@ -866,6 +1105,13 @@ ShareModalComponent={ShareModal}
   streak={userStreak}
   firstTry={runCountDisplay === 1}
   timeTaken={elapsed}
+/>
+<BadgeUnlockModal
+  badges={unlockedBadges}
+  isOpen={unlockedBadges.length > 0}
+  onClose={() => setUnlockedBadges([])}
+  onViewBadges={() => navigate("/profile?tab=badges")}
+  isMobile={isMobile}
 />
     </div>
   );

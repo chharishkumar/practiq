@@ -10,6 +10,9 @@ import { SQL_ADVANCED_PROBLEMS } from "./data/sqlAdvancedProblems";
 import { SQL_INTERVIEW_PROBLEMS } from "./data/sqlInterviewProblems";
 import { SQL_SCENARIOS_PROBLEMS } from "./data/sqlScenariosProblems";
 
+import { useBadges } from "./badges/useBadges";
+import BadgeUnlockModal from "./badges/BadgeUnlockModal";
+import { getClosestBadges} from "./badges/badgeUtils";
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
 function getDailyChallenge() {
@@ -500,9 +503,22 @@ function CommunityFeed({ feed }) {
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: "0.8rem", color: "#0f172a" }}>
-              <span style={{ fontWeight: 700 }}>{item.fullName}</span>{" "}
-              <span style={{ color: "#64748b" }}>solved</span>{" "}
-              <span style={{ fontWeight: 600 }}>{item.problem_title}</span>
+            <div style={{
+  fontSize: "0.82rem",
+  color: "#0f172a"
+}}>
+🔥 <strong>{item.fullName}</strong>{" "}
+solved{" "}
+<strong>{item.problem_title}</strong>
+</div>
+
+<div style={{
+  fontSize: "0.7rem",
+  color: "#64748b",
+  marginTop: "3px"
+}}>
+  {item.streak} day streak
+</div>
             </div>
             <div style={{ display: "flex", gap: "6px", alignItems: "center", marginTop: "4px" }}>
               <CatPill cat={item.category.replace("sql_", "").replace(/^\w/, (c) => c.toUpperCase())} />
@@ -517,31 +533,52 @@ function CommunityFeed({ feed }) {
 
 // ─── BADGES ──────────────────────────────────────────────────────────────────
 
-function BadgesCard({ user }) {
-  const badges = [
-    { icon: "🔥", title: "30-day streak",  sub: "Solve 1 problem every day for 30 days", progress: Math.min(100, Math.round(((user.streak || 0) / 30) * 100)) },
-    { icon: "💯", title: "Century club",   sub: "Solve 100 problems total",              progress: Math.min(100, Math.round(((user.solvedCount || 0) / 100) * 100)) },
-    { icon: "⚡", title: "Speed demon",    sub: "Solve 10 problems under 2 minutes",     progress: Math.min(100, Math.round(((user.fastSolves || 0) / 10) * 100)) },
-  ];
+function BadgesCard({ user, badges }) {
+  const closest = getClosestBadges(badges.stats, badges.earnedIds);
 
   return (
     <Card style={{ background: "#f8fafc", display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <div style={{ fontSize: "0.68rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>Badges you can earn</div>
-      {badges.map((b) => (
-        <div key={b.title}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontSize: "0.68rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+          Badges progress
+        </div>
+        <div style={{ fontSize: "0.68rem", color: "#2563eb", fontWeight: 600 }}>
+          {badges.earnedIds.length} earned
+        </div>
+      </div>
+
+      {/* Earned badges row */}
+      {badges.earnedBadges.length > 0 && (
+        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+          {badges.earnedBadges.slice(0, 6).map((b) => (
+            <span key={b.id} title={b.title} style={{ fontSize: "1.25rem" }}>{b.icon}</span>
+          ))}
+          {badges.earnedBadges.length > 6 && (
+            <span style={{ fontSize: "0.72rem", color: "#94a3b8", alignSelf: "center" }}>+{badges.earnedBadges.length - 6} more</span>
+          )}
+        </div>
+      )}
+
+      {/* Closest badges to unlock */}
+      {closest.map(({ badge, current, remaining, progress }) => (
+        <div key={badge.id}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "5px" }}>
-            <span style={{ fontSize: "1rem" }}>{b.icon}</span>
+            <span style={{ fontSize: "1rem" }}>{badge.icon}</span>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#0f172a" }}>{b.title}</div>
-              <div style={{ fontSize: "0.68rem", color: "#94a3b8" }}>{b.sub}</div>
+              <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#0f172a" }}>{badge.title}</div>
+              <div style={{ fontSize: "0.68rem", color: "#94a3b8" }}>{remaining} more to unlock</div>
             </div>
-            <span style={{ fontSize: "0.7rem", fontWeight: 700, color: b.progress === 100 ? "#16a34a" : "#2563eb" }}>{b.progress}%</span>
+            <span style={{ fontSize: "0.7rem", fontWeight: 700, color: progress === 100 ? "#16a34a" : "#2563eb" }}>{progress}%</span>
           </div>
           <div style={{ height: "4px", background: "#e2e8f0", borderRadius: "2px", overflow: "hidden" }}>
-            <div style={{ width: `${b.progress}%`, height: "100%", background: b.progress === 100 ? "#16a34a" : "#2563eb", borderRadius: "2px" }} />
+            <div style={{ width: `${progress}%`, height: "100%", background: progress === 100 ? "#16a34a" : "#2563eb", borderRadius: "2px" }} />
           </div>
         </div>
       ))}
+
+      {closest.length === 0 && badges.earnedIds.length === 0 && (
+        <div style={{ fontSize: "0.8rem", color: "#94a3b8" }}>Solve problems to earn badges!</div>
+      )}
     </Card>
   );
 }
@@ -754,6 +791,7 @@ export default function HomePage() {
   const [communityFeed, setCommunityFeed] = useState([]);
   const [solvedIds, setSolvedIds] = useState(new Set());
   const [loading, setLoading]     = useState(true);
+  const badges = useBadges();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(0);
   const [onboardingAnswers, setOnboardingAnswers] = useState({ experience: null, goal: null, time: null });
@@ -875,6 +913,12 @@ export default function HomePage() {
         .from("user_streaks")
         .select("user_id, current_streak, longest_streak");
 
+        const streakLookup = {};
+
+(allStreaks || []).forEach((s) => {
+  streakLookup[s.user_id] = s.current_streak || 0;
+});
+
       const { data: allProfiles } = await supabase
         .from("profiles")
         .select("id, full_name");
@@ -901,16 +945,28 @@ export default function HomePage() {
 
       // 6. Community feed: 6 most recent correct submissions across all users
       const { data: recentCorrect } = await supabase
-        .from("submissions")
-        .select("id, user_id, problem_title, category, created_at")
-        .eq("status", "correct")
-        .order("created_at", { ascending: false })
-        .limit(6);
-
-      const feedWithNames = (recentCorrect || []).map((row) => ({
+      .from("submissions")
+      .select(`id, user_id, problem_title, category, created_at, time_taken_seconds`)
+      .eq("status", "correct")
+      .order("created_at", { ascending: false })
+      .limit(50); // ← was 10
+    
+    const uniqueFeed = [];
+    const seen = new Set();
+    
+    (recentCorrect || []).forEach((row) => {
+      if (!seen.has(row.user_id)) { // ← was the combined key
+        seen.add(row.user_id);
+        uniqueFeed.push(row);
+      }
+    });
+      
+      const feedWithNames = uniqueFeed.map((row) => ({
         ...row,
         fullName: profileMap[row.user_id] || "Anonymous",
+        streak: streakLookup[row.user_id] || 0,
       }));
+      
       setCommunityFeed(feedWithNames);
 
       // 7. Build user object
@@ -995,10 +1051,10 @@ export default function HomePage() {
             </div>
 
             {/* Row 4: Community feed + Badges */}
-            <Section label="Community" title="See what others are solving" action="View all" actionFn={() => navigate("/sql")}>
+            <Section label="Community" title="People are solving problems right now" action="View all" actionFn={() => navigate("/sql")}>
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1.25rem" }}>
                 <CommunityFeed feed={communityFeed} />
-                <BadgesCard user={user} />
+                <BadgesCard user={user} badges={badges} />
               </div>
             </Section>
 
@@ -1050,6 +1106,13 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+      <BadgeUnlockModal
+  badges={badges.newlyUnlocked}
+  isOpen={badges.newlyUnlocked.length > 0}
+  onClose={badges.clearNewlyUnlocked}
+  onViewBadges={() => navigate("/profile")}
+  isMobile={isMobile}
+/>
     </div>
   );
 }

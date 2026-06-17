@@ -10,6 +10,11 @@ import { SQL_ADVANCED_PROBLEMS } from "./data/sqlAdvancedProblems";
 import { SQL_INTERVIEW_PROBLEMS } from "./data/sqlInterviewProblems";
 import { SQL_SCENARIOS_PROBLEMS } from "./data/sqlScenariosProblems";
 
+import { useBadges } from "./badges/useBadges";
+import BadgeGrid from "./badges/BadgeGrid";
+import BadgeUnlockModal from "./badges/BadgeUnlockModal";
+// import CertificateCard from "./badges/CertificateCard";
+
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
 const ALL_SQL_PROBLEMS = [
@@ -53,12 +58,12 @@ const DIFF_STYLE = {
   Hard:   { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
 };
 
-const BADGE_COLORS = {
-  green:  { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
-  gold:   { bg: "#fffbeb", color: "#b45309", border: "#fde68a" },
-  blue:   { bg: "#eff6ff", color: "#1d4ed8", border: "#bfdbfe" },
-  purple: { bg: "#f5f3ff", color: "#6d28d9", border: "#ddd6fe" },
-};
+// const BADGE_COLORS = {
+//   green:  { bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" },
+//   gold:   { bg: "#fffbeb", color: "#b45309", border: "#fde68a" },
+//   blue:   { bg: "#eff6ff", color: "#1d4ed8", border: "#bfdbfe" },
+//   purple: { bg: "#f5f3ff", color: "#6d28d9", border: "#ddd6fe" },
+// };
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
@@ -381,7 +386,10 @@ export default function ProfilePage() {
   const [profile, setProfile]             = useState(null);
   const [submissions, setSubmissions]     = useState([]);   // all submissions for this user
   const [streakData, setStreakData]        = useState(null);
-
+  
+  const badges = useBadges();
+// const [unlockedBadges, setUnlockedBadges] = useState([]);
+// const [certBadge, setCertBadge] = useState(null);
   // ── Fetch all data ────────────────────────────────────────────────────────
   useEffect(() => {
     const load = async () => {
@@ -523,14 +531,14 @@ const lastProblemPath = lastSub
   });
 
   // ── Badges (computed live) ────────────────────────────────────────────────
-  const BADGES = [
-    { id: "basics_done", icon: "✓",  title: "Basics master",   sub: `All ${CATEGORY_TOTALS.Basics} basics solved`,    color: "green",  earned: solvedByCategory.Basics >= CATEGORY_TOTALS.Basics },
-    { id: "streak_7",    icon: "🔥", title: "7-day streak",    sub: "7 days in a row",                                 color: "gold",   earned: currentStreak >= 7 },
-    { id: "streak_30",   icon: "🔥", title: "30-day streak",   sub: "30 days in a row",                                color: "gold",   earned: currentStreak >= 30 },
-    { id: "speed",       icon: "⚡", title: "Speed solver",    sub: "Solve 10 problems under 2 min",                   color: "blue",   earned: fastSolves >= 10 },
-    { id: "century",     icon: "💯", title: "Century club",    sub: "Solve 100 problems total",                        color: "gold",   earned: solvedCount >= 100 },
-    { id: "accurate",    icon: "🎯", title: "First try ace",   sub: "80%+ accuracy",                                   color: "purple", earned: accuracy >= 80 },
-  ];
+  // const BADGES = [
+  //   { id: "basics_done", icon: "✓",  title: "Basics master",   sub: `All ${CATEGORY_TOTALS.Basics} basics solved`,    color: "green",  earned: solvedByCategory.Basics >= CATEGORY_TOTALS.Basics },
+  //   { id: "streak_7",    icon: "🔥", title: "7-day streak",    sub: "7 days in a row",                                 color: "gold",   earned: currentStreak >= 7 },
+  //   { id: "streak_30",   icon: "🔥", title: "30-day streak",   sub: "30 days in a row",                                color: "gold",   earned: currentStreak >= 30 },
+  //   { id: "speed",       icon: "⚡", title: "Speed solver",    sub: "Solve 10 problems under 2 min",                   color: "blue",   earned: fastSolves >= 10 },
+  //   { id: "century",     icon: "💯", title: "Century club",    sub: "Solve 100 problems total",                        color: "gold",   earned: solvedCount >= 100 },
+  //   { id: "accurate",    icon: "🎯", title: "First try ace",   sub: "80%+ accuracy",                                   color: "purple", earned: accuracy >= 80 },
+  // ];
 
   // ── Joined date ───────────────────────────────────────────────────────────
   const joinedDate = profile?.created_at
@@ -542,6 +550,7 @@ const lastProblemPath = lastSub
   const navItems = [
     { id: "overview",  label: "Overview" },
     { id: "activity",  label: "Activity" },
+    { id: "badges",    label: "Badges" }, 
     { id: "problems",  label: "Solved problems" },
     { id: "settings",  label: "Settings" },
     { id: "logout",    label: "Sign out" },
@@ -718,21 +727,21 @@ const lastProblemPath = lastSub
 
               {/* Badges */}
               <Card>
-                <SectionLabel text="Achievements" />
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: "10px" }}>
-                  {BADGES.map((b) => {
-                    const cs = BADGE_COLORS[b.color] || BADGE_COLORS.blue;
-                    return (
-                      <div key={b.id} style={{ padding: "0.875rem", borderRadius: "10px", border: `1.5px solid ${b.earned ? cs.border : "#e2e8f0"}`, background: b.earned ? cs.bg : "#f8fafc", opacity: b.earned ? 1 : 0.55 }}>
-                        <div style={{ fontSize: "1.25rem", marginBottom: "6px" }}>{b.icon}</div>
-                        <div style={{ fontSize: "0.8rem", fontWeight: 700, color: b.earned ? cs.color : "#94a3b8" }}>{b.title}</div>
-                        <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginTop: "2px" }}>{b.sub}</div>
-                        {!b.earned && <div style={{ fontSize: "0.65rem", color: "#cbd5e1", marginTop: "4px" }}>🔒 Locked</div>}
-                      </div>
-                    );
-                  })}
-                </div>
-              </Card>
+  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+    <SectionLabel text="Achievements" />
+    <button onClick={() => setActiveSection("badges")} style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>
+      View all →
+    </button>
+  </div>
+  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+    {badges.earnedBadges.slice(0, 6).map((b) => (
+      <div key={b.id} style={{ fontSize: "1.5rem" }} title={b.title}>{b.icon}</div>
+    ))}
+    {badges.earnedBadges.length === 0 && (
+      <div style={{ fontSize: "0.82rem", color: "#94a3b8" }}>Solve problems to earn badges!</div>
+    )}
+  </div>
+</Card>
 
               {/* Heatmap preview */}
               <Card>
@@ -880,6 +889,18 @@ const lastProblemPath = lastSub
               )}
             </Card>
           )}
+          {/* ── BADGES ────────────────────────────────────────────────── */}
+{activeSection === "badges" && (
+  <Card>
+    <SectionLabel text="All Badges" />
+    <BadgeGrid
+  profileBadges={badges.profileBadges}
+  earnedIds={badges.earnedIds}
+  stats={{ ...badges.stats, fullName: fullName, totalCount: solvedCount }}
+  isMobile={isMobile}
+/>
+  </Card>
+)}
 
           {/* ── SETTINGS ──────────────────────────────────────────────── */}
           {activeSection === "settings" && (
@@ -940,6 +961,13 @@ const lastProblemPath = lastSub
           </div>
         </div>
       </div>
+      <BadgeUnlockModal
+  badges={badges.newlyUnlocked}
+  isOpen={badges.newlyUnlocked.length > 0}
+  onClose={badges.clearNewlyUnlocked}
+  onViewBadges={() => setActiveSection("badges")}
+  isMobile={isMobile}
+/>
     </div>
   );
 }

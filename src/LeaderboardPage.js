@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "./supabase";
 import { useMobile } from "./hooks/useMobile";
+import { useStoredBadges } from "./badges/useBadges";
 
 const TABS = [
   "Overall",
@@ -60,6 +61,17 @@ function LoadingScreen() {
         <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>⏳</div>
         <div style={{ fontSize: "0.88rem", color: "#64748b" }}>Loading leaderboard...</div>
       </div>
+    </div>
+  );
+}
+
+function UserBadgeRow({ userId }) {
+  const { topTwoBadges } = useStoredBadges(userId);
+  return (
+    <div style={{ display: "flex", gap: "4px", marginTop: "2px" }}>
+      {topTwoBadges.map((b) => (
+        <span key={b.id} title={b.title} style={{ fontSize: "0.75rem" }}>{b.icon}</span>
+      ))}
     </div>
   );
 }
@@ -345,6 +357,7 @@ const PODIUM_RANKS  = [2, 1, 3];
             {getInitials(user?.name)}
           </div>
           <div style={{ fontSize: PODIUM_SIZES[i], fontWeight: 800, color: "#0f172a", marginBottom: "2px", textAlign: "center" }}>{user?.name}</div>
+<UserBadgeRow userId={user?.userId} />
           <div style={{ fontSize: "0.72rem", color: "#64748b", marginBottom: "4px" }}>{user?.country}</div>
           <div style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: 600, marginBottom: "8px" }}>{user?.displaySolved} solved</div>
           <div style={{ background: BADGES[user?.badge]?.bg, color: BADGES[user?.badge]?.color, border: `1px solid ${BADGES[user?.badge]?.border}`, fontSize: "0.65rem", fontWeight: 700, padding: "2px 8px", borderRadius: "10px" }}>{user?.badge}</div>
@@ -409,10 +422,13 @@ const PODIUM_RANKS  = [2, 1, 3];
                     <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: isMe ? "#dbeafe" : "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.72rem", fontWeight: 700, color: isMe ? "#2563eb" : "#64748b", flexShrink: 0 }}>
                       {getInitials(user.name)}
                     </div>
-                    <div style={{ fontSize: "0.88rem", fontWeight: 600, color: "#0f172a" }}>
-                      {user.name}
-                      {isMe && <span style={{ fontSize: "0.7rem", color: "#2563eb", background: "#eff6ff", padding: "1px 6px", borderRadius: "6px", marginLeft: "6px", fontWeight: 700 }}>You</span>}
-                    </div>
+                    <div>
+  <div style={{ fontSize: "0.88rem", fontWeight: 600, color: "#0f172a" }}>
+    {user.name}
+    {isMe && <span style={{ fontSize: "0.7rem", color: "#2563eb", background: "#eff6ff", padding: "1px 6px", borderRadius: "6px", marginLeft: "6px", fontWeight: 700 }}>You</span>}
+  </div>
+  <UserBadgeRow userId={user.userId} />
+</div>
                   </div>
                   <div style={{ fontSize: "0.82rem", color: "#64748b", display: isMobile ? "none" : "block" }}>{user.country}</div>
                   <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "#0f172a" }}>{user.displaySolved}</div>
