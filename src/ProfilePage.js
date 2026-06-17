@@ -453,9 +453,11 @@ export default function ProfilePage() {
   // Total unique problems attempted
   //const attemptedSet = new Set(submissions.map((s) => s.problem_id));
 
-  // Accuracy: solved on first run (run_count === 1)
-  const firstTrySolves = correctSubs.filter((s) => s.run_count === 1).length;
-  const accuracy = solvedCount > 0 ? Math.round((firstTrySolves / solvedCount) * 100) : 0;
+  
+  // CORRECT — unique problems attempted vs unique problems solved correctly
+const attemptedSet = new Set(submissions.map((s) => s.problem_id));
+const totalAttempted = attemptedSet.size;
+const accuracy = totalAttempted > 0 ? Math.round((solvedCount / totalAttempted) * 100) : 0;
 
   // Average time (correct submissions only)
   const timeSubs = correctSubs.filter((s) => s.time_taken_seconds);
@@ -657,16 +659,17 @@ const lastProblemPath = lastSub
               {/* Stats row */}
               <div>
                 <SectionLabel text="Stats" />
-                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: "10px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)",
+gap: isMobile ? "8px" : "10px", }}>
                   {[
                     { label: "Problems solved",  val: solvedCount,        sub: `of ${totalProblems} total` },
                     { label: "Current streak",   val: `${currentStreak}d`, sub: `Longest: ${longestStreak}d` },
                     { label: "Accuracy",         val: `${accuracy}%`,      sub: "correct first try" },
                     { label: "XP earned",        val: xp,                  sub: `Level ${level}` },
                   ].map((s) => (
-                    <div key={s.label} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "1rem" }}>
+                    <div key={s.label} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "12px", padding: isMobile ? "0.75rem" : "1rem", minWidth: 0, overflow: "hidden" }}>
                       <div style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 600, marginBottom: "6px" }}>{s.label}</div>
-                      <div style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-1px", color: "#0f172a", lineHeight: 1 }}>{s.val}</div>
+                      <div style={{ fontSize: isMobile ? "1.4rem" : "1.75rem", fontWeight: 800, letterSpacing: "-1px", color: "#0f172a", lineHeight: 1}}>{s.val}</div>
                       <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginTop: "4px" }}>{s.sub}</div>
                     </div>
                   ))}
