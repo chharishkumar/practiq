@@ -84,6 +84,9 @@ streak,
 firstTry,
 elapsed,
 ShareModalComponent,
+milestones,
+expandedMilestone,
+setExpandedMilestone,
 }) {
   const [activeTab, setActiveTab] = useState(0); // 0=Problems, 1=Editor, 2=Output
   const [expandedId, setExpandedId] = useState(null);
@@ -179,104 +182,148 @@ ShareModalComponent,
   // ─── PROBLEMS TAB ───────────────────────────────────────────────────────────
   const ProblemsTab = () => (
     <div style={{ paddingBottom: "1rem" }}>
-      {problems.map((p) => {
-        const isSelected = selectedProblem.id === p.id;
-        const isExpanded = expandedId === p.id;
-        const isSolved   = solvedIds.has(p.id);
-        const locked     = (isGuest && p.id > (guestThreshold ?? 10)) ||
-                           (!isGuest && !isPro && p.id > (paywallThreshold ?? 30));
-
-        return (
-          <div
-            key={p.id}
-            style={{
-              margin: "0.5rem 0.75rem",
-              background: "#ffffff",
-              border: `1.5px solid ${isSelected ? "#2563eb" : "#e2e8f0"}`,
-              borderRadius: "10px",
-              overflow: "hidden",
-              boxShadow: isSelected ? "0 0 0 3px rgba(37,99,235,0.08)" : "none",
-            }}
-          >
-            <div
-              onClick={() => {
-                if (locked) {
-                  handleSelectProblem(p); // will show lock screen in editor tab
-                } else {
-                  handleSelectProblem(p);
-                }
-                setExpandedId(isExpanded ? null : p.id);
-              }}
-              style={{
-                padding: "0.75rem 0.875rem",
-                cursor: "pointer",
-                display: "flex", alignItems: "center", gap: "8px",
-              }}
-            >
-              <div style={{
-                width: "22px", height: "22px", borderRadius: "50%",
-                background: isSolved ? "#16a34a" : isSelected ? "#eff6ff" : "#f1f5f9",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "0.62rem", fontWeight: 700,
-                color: isSolved ? "#fff" : isSelected ? "#2563eb" : "#94a3b8",
-                flexShrink: 0,
-              }}>
-                {isSolved ? "✓" : locked ? "🔒" : p.id}
+      {milestones ? (
+        milestones.map((milestone) => {
+          const milestoneProblems = problems.filter(
+            (p) => p.id >= milestone.range[0] && p.id <= milestone.range[1]
+          );
+          const solvedInMilestone = milestoneProblems.filter((p) => solvedIds.has(p.id)).length;
+          const totalInMilestone = milestoneProblems.length;
+          const progressPct = Math.round((solvedInMilestone / totalInMilestone) * 100);
+          const isEarned = solvedInMilestone >= totalInMilestone;
+          const isOpen = expandedMilestone === milestone.id;
+  
+          return (
+            <div key={milestone.id} style={{ margin: "0.5rem 0.75rem 0.75rem" }}>
+              {/* Milestone Header */}
+              <div
+                onClick={() => setExpandedMilestone(isOpen ? null : milestone.id)}
+                style={{
+                  background: isEarned ? milestone.bg : "#f8fafc",
+                  border: `1.5px solid ${isEarned ? milestone.border : "#e2e8f0"}`,
+                  borderRadius: isOpen ? "10px 10px 0 0" : "10px",
+                  padding: "0.75rem 0.875rem",
+                  cursor: "pointer",
+                  display: "flex", alignItems: "center", gap: "10px",
+                }}
+              >
+                <span style={{ fontSize: "1.25rem", lineHeight: 1 }}>{milestone.icon}</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: "0.82rem", fontWeight: 700, color: isEarned ? milestone.color : "#0f172a" }}>
+                    {milestone.label}
+                  </div>
+                  <div style={{ fontSize: "0.65rem", color: "#94a3b8", marginTop: "2px" }}>
+                    Problems {milestone.range[0]}–{milestone.range[1]}
+                  </div>
+                  <div style={{ marginTop: "6px", height: "3px", background: "#e2e8f0", borderRadius: "2px", overflow: "hidden" }}>
+                    <div style={{ width: `${progressPct}%`, height: "100%", background: isEarned ? milestone.color : "#2563eb", borderRadius: "2px" }} />
+                  </div>
+                  <div style={{ fontSize: "0.62rem", color: "#94a3b8", marginTop: "3px" }}>
+                    {solvedInMilestone}/{totalInMilestone} solved
+                  </div>
+                </div>
+                <span style={{ fontSize: "0.7rem", color: isOpen ? "#2563eb" : "#94a3b8", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▾</span>
               </div>
-              <span style={{
-                fontSize: "0.83rem", fontWeight: isSelected ? 700 : 500,
-                color: isSelected ? "#0f172a" : "#334155", flex: 1, lineHeight: 1.35,
-              }}>
-                {p.title}
-              </span>
-              <span style={{
-                fontSize: "0.7rem", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
-                transition: "transform 0.2s", color: "#94a3b8",
-              }}>▾</span>
+  
+              {/* Problems inside milestone */}
+              {isOpen && (
+                <div style={{ border: "1.5px solid #e2e8f0", borderTop: "none", borderRadius: "0 0 10px 10px", overflow: "hidden" }}>
+                  {milestoneProblems.map((p) => {
+                    const isSelected = selectedProblem.id === p.id;
+                    const isExpanded = expandedId === p.id;
+                    const isSolved = solvedIds.has(p.id);
+                    const locked = (isGuest && p.id > (guestThreshold ?? 10)) ||
+                                   (!isGuest && !isPro && p.id > (paywallThreshold ?? 30));
+                    return (
+                      <div key={p.id} style={{ background: "#ffffff", borderBottom: "1px solid #f1f5f9", overflow: "hidden" }}>
+                        <div
+                          onClick={() => {
+                            handleSelectProblem(p);
+                            setExpandedId(isExpanded ? null : p.id);
+                          }}
+                          style={{ padding: "0.75rem 0.875rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", background: isSelected ? "#f8faff" : "transparent" }}
+                        >
+                          <div style={{ width: "22px", height: "22px", borderRadius: "50%", background: isSolved ? "#16a34a" : isSelected ? "#eff6ff" : "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.62rem", fontWeight: 700, color: isSolved ? "#fff" : isSelected ? "#2563eb" : "#94a3b8", flexShrink: 0 }}>
+                            {isSolved ? "✓" : locked ? "🔒" : p.id}
+                          </div>
+                          <span style={{ fontSize: "0.83rem", fontWeight: isSelected ? 700 : 500, color: isSelected ? "#0f172a" : "#334155", flex: 1, lineHeight: 1.35 }}>
+                            {p.title}
+                          </span>
+                          <span style={{ fontSize: "0.7rem", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", color: "#94a3b8" }}>▾</span>
+                        </div>
+                        {isExpanded && (
+                          <div style={{ borderTop: "1px solid #f1f5f9", padding: "0.875rem", background: "#fafbfc" }}>
+                            <p style={{ margin: "0 0 0.75rem", fontSize: "0.82rem", color: "#0f172a", lineHeight: 1.6 }}>{p.description}</p>
+                            {p.hint && (
+                              <details>
+                                <summary style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", listStyle: "none" }}>💡 Show hint</summary>
+                                <div style={{ marginTop: "6px", padding: "0.5rem 0.625rem", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "6px", fontSize: "0.78rem", color: "#92400e", lineHeight: 1.6, fontFamily: "monospace" }}>
+                                  {p.hint}
+                                </div>
+                              </details>
+                            )}
+                            {!locked && (
+                              <button
+                                onClick={() => handleSelectProblem(p)}
+                                style={{ marginTop: "0.75rem", width: "100%", padding: "8px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.82rem", border: "none", cursor: "pointer" }}
+                              >
+                                Solve this →
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-
-            {isExpanded && (
-              <div style={{ borderTop: "1px solid #f1f5f9", padding: "0.875rem", background: "#fafbfc" }}>
-                <p style={{ margin: "0 0 0.75rem", fontSize: "0.82rem", color: "#0f172a", lineHeight: 1.6 }}>
-                  {p.description}
-                </p>
-                {p.explanation && (
-                  <p style={{ margin: "0 0 0.75rem", fontSize: "0.78rem", color: "#475569", lineHeight: 1.65 }}>
-                    {p.explanation}
-                  </p>
-                )}
-                {p.hint && (
-                  <details>
-                    <summary style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", listStyle: "none" }}>
-                      💡 Show hint
-                    </summary>
-                    <div style={{
-                      marginTop: "6px", padding: "0.5rem 0.625rem",
-                      background: "#fffbeb", border: "1px solid #fde68a",
-                      borderRadius: "6px", fontSize: "0.78rem", color: "#92400e",
-                      lineHeight: 1.6, fontFamily: "monospace",
-                    }}>
-                      {p.hint}
-                    </div>
-                  </details>
-                )}
-                {!locked && (
-                  <button
-                    onClick={() => handleSelectProblem(p)}
-                    style={{
-                      marginTop: "0.75rem", width: "100%", padding: "8px",
-                      borderRadius: "7px", background: "#2563eb", color: "#fff",
-                      fontWeight: 700, fontSize: "0.82rem", border: "none", cursor: "pointer",
-                    }}
-                  >
-                    Solve this →
-                  </button>
-                )}
+          );
+        })
+      ) : (
+        // Fallback flat list for other category pages
+        problems.map((p) => {
+          const isSelected = selectedProblem.id === p.id;
+          const isExpanded = expandedId === p.id;
+          const isSolved = solvedIds.has(p.id);
+          const locked = (isGuest && p.id > (guestThreshold ?? 10)) ||
+                         (!isGuest && !isPro && p.id > (paywallThreshold ?? 30));
+          return (
+            <div
+              key={p.id}
+              style={{ margin: "0.5rem 0.75rem", background: "#ffffff", border: `1.5px solid ${isSelected ? "#2563eb" : "#e2e8f0"}`, borderRadius: "10px", overflow: "hidden", boxShadow: isSelected ? "0 0 0 3px rgba(37,99,235,0.08)" : "none" }}
+            >
+              <div
+                onClick={() => { handleSelectProblem(p); setExpandedId(isExpanded ? null : p.id); }}
+                style={{ padding: "0.75rem 0.875rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                <div style={{ width: "22px", height: "22px", borderRadius: "50%", background: isSolved ? "#16a34a" : isSelected ? "#eff6ff" : "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.62rem", fontWeight: 700, color: isSolved ? "#fff" : isSelected ? "#2563eb" : "#94a3b8", flexShrink: 0 }}>
+                  {isSolved ? "✓" : locked ? "🔒" : p.id}
+                </div>
+                <span style={{ fontSize: "0.83rem", fontWeight: isSelected ? 700 : 500, color: isSelected ? "#0f172a" : "#334155", flex: 1, lineHeight: 1.35 }}>{p.title}</span>
+                <span style={{ fontSize: "0.7rem", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", color: "#94a3b8" }}>▾</span>
               </div>
-            )}
-          </div>
-        );
-      })}
+              {isExpanded && (
+                <div style={{ borderTop: "1px solid #f1f5f9", padding: "0.875rem", background: "#fafbfc" }}>
+                  <p style={{ margin: "0 0 0.75rem", fontSize: "0.82rem", color: "#0f172a", lineHeight: 1.6 }}>{p.description}</p>
+                  {p.explanation && <p style={{ margin: "0 0 0.75rem", fontSize: "0.78rem", color: "#475569", lineHeight: 1.65 }}>{p.explanation}</p>}
+                  {p.hint && (
+                    <details>
+                      <summary style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", listStyle: "none" }}>💡 Show hint</summary>
+                      <div style={{ marginTop: "6px", padding: "0.5rem 0.625rem", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "6px", fontSize: "0.78rem", color: "#92400e", lineHeight: 1.6, fontFamily: "monospace" }}>{p.hint}</div>
+                    </details>
+                  )}
+                  {!locked && (
+                    <button onClick={() => handleSelectProblem(p)} style={{ marginTop: "0.75rem", width: "100%", padding: "8px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.82rem", border: "none", cursor: "pointer" }}>
+                      Solve this →
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })
+      )}
       <div style={{ height: "1rem" }} />
     </div>
   );
