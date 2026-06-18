@@ -25,6 +25,11 @@ serve(async (req) => {
     const keySecret = Deno.env.get("RAZORPAY_KEY_SECRET") ?? "";
     const body      = `${razorpay_order_id}|${razorpay_payment_id}`;
 
+    console.log("keySecret exists:", !!keySecret);
+console.log("keySecret length:", keySecret.length);
+console.log("body:", body);
+console.log("received signature:", razorpay_signature);
+
     const encoder   = new TextEncoder();
     const keyData   = encoder.encode(keySecret);
     const msgData   = encoder.encode(body);
@@ -39,6 +44,9 @@ serve(async (req) => {
     const hashHex   = Array.from(new Uint8Array(signature))
       .map(b => b.toString(16).padStart(2, "0"))
       .join("");
+
+      console.log("generated hash:", hashHex);
+console.log("match:", hashHex === razorpay_signature);
 
     if (hashHex !== razorpay_signature) {
       return new Response(JSON.stringify({ error: "Payment verification failed" }), {
