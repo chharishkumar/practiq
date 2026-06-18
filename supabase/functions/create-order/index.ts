@@ -16,6 +16,17 @@ serve(async (req) => {
     const keyId     = Deno.env.get("RAZORPAY_KEY_ID");
     const keySecret = Deno.env.get("RAZORPAY_KEY_SECRET");
 
+    // ── TEMPORARY DEBUG — remove after fixing ─────────────────────────
+    console.log("KEY_ID value:", keyId);
+    console.log("KEY_SECRET exists:", !!keySecret);
+
+    if (!keyId || !keySecret) {
+      return new Response(JSON.stringify({ error: "Missing Razorpay credentials in Supabase secrets" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const credentials = btoa(`${keyId}:${keySecret}`);
 
     const response = await fetch("https://api.razorpay.com/v1/orders", {
