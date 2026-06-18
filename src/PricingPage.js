@@ -109,8 +109,19 @@ const [menuOpen, setMenuOpen] = useState(false);
         }),
       });
 
-      const order = await orderRes.json();
-      if (order.error) throw new Error(order.error);
+      // const order = await orderRes.json();
+      // if (order.error) throw new Error(order.error);
+      console.log("Order response status:", orderRes.status);
+const order = await orderRes.json();
+console.log("Order response body:", order);  // ← shows exact error
+
+if (!order.id) {
+  alert("Order failed: " + JSON.stringify(order));
+  setLoading(false);
+  return;
+}
+
+if (order.error) throw new Error(order.error);
 
       // Step 2: Open Razorpay checkout
       const options = {

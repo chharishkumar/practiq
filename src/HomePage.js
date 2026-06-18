@@ -533,51 +533,131 @@ solved{" "}
 
 // ─── BADGES ──────────────────────────────────────────────────────────────────
 
-function BadgesCard({ user, badges }) {
+function BadgesCard({ user, badges, navigate }) {
   const closest = getClosestBadges(badges.stats, badges.earnedIds);
 
   return (
-    <Card style={{ background: "#f8fafc", display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <Card style={{ background: "#f8fafc", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ fontSize: "0.68rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>
-          Badges progress
+          Badges & Certificates
         </div>
-        <div style={{ fontSize: "0.68rem", color: "#2563eb", fontWeight: 600 }}>
-          {badges.earnedIds.length} earned
-        </div>
+        <button
+          onClick={() => navigate("/profile")}
+          style={{ fontSize: "0.68rem", color: "#2563eb", fontWeight: 600, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+        >
+          View all →
+        </button>
       </div>
 
-      {/* Earned badges row */}
-      {badges.earnedBadges.length > 0 && (
-        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-          {badges.earnedBadges.slice(0, 6).map((b) => (
-            <span key={b.id} title={b.title} style={{ fontSize: "1.25rem" }}>{b.icon}</span>
-          ))}
-          {badges.earnedBadges.length > 6 && (
-            <span style={{ fontSize: "0.72rem", color: "#94a3b8", alignSelf: "center" }}>+{badges.earnedBadges.length - 6} more</span>
-          )}
+      {/* Earned badges row — clickable, goes to profile badges tab */}
+      {badges.earnedBadges.length > 0 ? (
+        <div>
+          <div style={{ fontSize: "0.68rem", color: "#94a3b8", marginBottom: "6px" }}>
+            {badges.earnedIds.length} earned — click to view & share
+          </div>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            {badges.earnedBadges.slice(0, 6).map((b) => (
+              <div
+                key={b.id}
+                title={b.title}
+                onClick={() => navigate("/profile")}
+                style={{
+                  fontSize: "1.6rem", cursor: "pointer",
+                  background: "#ffffff", border: "1.5px solid #e2e8f0",
+                  borderRadius: "10px", padding: "8px 10px",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  width: "48px", height: "48px",
+                  transition: "border-color 0.15s",
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = "#bfdbfe"}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
+              >
+                {b.icon}
+              </div>
+            ))}
+            {badges.earnedBadges.length > 6 && (
+              <div
+                onClick={() => navigate("/profile")}
+                style={{ fontSize: "0.72rem", color: "#2563eb", alignSelf: "center", cursor: "pointer", fontWeight: 600 }}
+              >
+                +{badges.earnedBadges.length - 6} more →
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div style={{ fontSize: "0.8rem", color: "#94a3b8" }}>
+          Solve problems to earn your first badge!
         </div>
       )}
 
-      {/* Closest badges to unlock */}
-      {closest.map(({ badge, current, remaining, progress }) => (
-        <div key={badge.id}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "5px" }}>
-            <span style={{ fontSize: "1rem" }}>{badge.icon}</span>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#0f172a" }}>{badge.title}</div>
-              <div style={{ fontSize: "0.68rem", color: "#94a3b8" }}>{remaining} more to unlock</div>
-            </div>
-            <span style={{ fontSize: "0.7rem", fontWeight: 700, color: progress === 100 ? "#16a34a" : "#2563eb" }}>{progress}%</span>
+      {/* Divider */}
+      {closest.length > 0 && (
+        <div style={{ borderTop: "1px solid #e2e8f0", paddingTop: "0.5rem" }}>
+          <div style={{ fontSize: "0.68rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.5rem" }}>
+            Next to unlock
           </div>
-          <div style={{ height: "4px", background: "#e2e8f0", borderRadius: "2px", overflow: "hidden" }}>
-            <div style={{ width: `${progress}%`, height: "100%", background: progress === 100 ? "#16a34a" : "#2563eb", borderRadius: "2px" }} />
+          {closest.map(({ badge, remaining, progress }) => {
+            // Map badge category to the right practice path
+            const badgePath = badge.category
+              ? {
+                  sql_basics:       "/sql/basics",
+                  sql_intermediate: "/sql/intermediate",
+                  sql_advanced:     "/sql/advanced",
+                  sql_interview:    "/sql/interview",
+                  sql_scenario:     "/sql/scenarios",
+                }[badge.category] || "/sql"
+              : "/sql";
+
+            return (
+              <div
+                key={badge.id}
+                onClick={() => navigate(badgePath)}
+                style={{ marginBottom:"0.5rem", cursor: "pointer", padding: "0.5rem 0.625rem", borderRadius: "8px", background: "#ffffff", border: "1px solid #e2e8f0", transition: "border-color 0.15s" }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = "#bfdbfe"}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                  <span style={{ fontSize: "1rem" }}>{badge.icon}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#0f172a" }}>{badge.title}</div>
+                    <div style={{ fontSize: "0.68rem", color: "#94a3b8" }}>
+                      {remaining} more problems → unlock this badge
+                    </div>
+                  </div>
+                  <span style={{ fontSize: "0.65rem", color: "#2563eb", fontWeight: 600 }}>
+                    Practice →
+                  </span>
+                </div>
+                <div style={{ height: "5px", background: "#e2e8f0", borderRadius: "2px", overflow: "hidden" }}>
+                  <div style={{ width: `${progress}%`, height: "100%", background: progress === 100 ? "#16a34a" : "#2563eb", borderRadius: "2px", transition: "width 0.4s ease" }} />
+                </div>
+                <div style={{ fontSize: "0.62rem", color: "#94a3b8", marginTop: "2px" }}>
+                  {progress}% complete
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Certificate teaser if any earned */}
+      {badges.certificateBadges?.length > 0 && (
+        <div
+          onClick={() => navigate("/profile")}
+          style={{ background: "linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)", border: "1px solid #fde68a", borderRadius: "8px", padding: "0.5rem 0.75rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px" }}
+        >
+          <span style={{ fontSize: "1.25rem" }}>🎓</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#92400e" }}>
+              {badges.certificateBadges.length} certificate{badges.certificateBadges.length > 1 ? "s" : ""} available
+            </div>
+            <div style={{ fontSize: "0.68rem", color: "#b45309" }}>
+              Download & share on LinkedIn →
+            </div>
           </div>
         </div>
-      ))}
-
-      {closest.length === 0 && badges.earnedIds.length === 0 && (
-        <div style={{ fontSize: "0.8rem", color: "#94a3b8" }}>Solve problems to earn badges!</div>
       )}
     </Card>
   );
@@ -1022,18 +1102,28 @@ export default function HomePage() {
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
 
-            {/* Row 1: Daily challenge + Resume */}
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1.25rem" }}>
-              <Section label="Daily challenge" title="">
-                <DailyChallenge challenge={DAILY_CHALLENGE} navigate={navigate} solvedIds={solvedIds} />
-              </Section>
-              <Section label="Resume" title="">
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                  <ContinueCard problem={user.lastProblem} navigate={navigate} />
-                  <ProgressFeedback user={user} />
-                </div>
-              </Section>
-            </div>
+         {/* Row 1: Left content + Right badges */}
+<div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 340px", gap: "1.25rem", alignItems: "start" }}>
+  
+  {/* LEFT: Daily + Resume + Progress stacked */}
+  <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+    <Section label="Daily challenge" title="">
+      <DailyChallenge challenge={DAILY_CHALLENGE} navigate={navigate} solvedIds={solvedIds} />
+    </Section>
+    <Section label="Resume" title="">
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        <ContinueCard problem={user.lastProblem} navigate={navigate} />
+        <ProgressFeedback user={user} />
+      </div>
+    </Section>
+  </div>
+
+  {/* RIGHT: Badges tall sidebar */}
+  <Section label="Your badges" title="">
+    <BadgesCard user={user} badges={badges} navigate={navigate} />
+  </Section>
+
+</div>
 
             {/* Row 2: Practice categories */}
             <Section label="Practice" title="What do you want to work on?" action="All categories" actionFn={() => navigate("/sql")}>
@@ -1052,11 +1142,8 @@ export default function HomePage() {
 
             {/* Row 4: Community feed + Badges */}
             <Section label="Community" title="People are solving problems right now" action="View all" actionFn={() => navigate("/sql")}>
-              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1.25rem" }}>
-                <CommunityFeed feed={communityFeed} />
-                <BadgesCard user={user} badges={badges} />
-              </div>
-            </Section>
+  <CommunityFeed feed={communityFeed} />
+</Section>
 
           </div>
         )}
