@@ -104,7 +104,7 @@ const [menuOpen, setMenuOpen] = useState(false);
         },
         body: JSON.stringify({
           amount:  plan.paise,
-          receipt: `pro_${activePlan}_${userId}_${Date.now()}`,
+          receipt: `pro_${Date.now()}`,
           notes:   { user_id: userId, plan: activePlan },
         }),
       });
