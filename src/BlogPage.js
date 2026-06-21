@@ -51,6 +51,10 @@ export default function BlogPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
+  usePageMeta({
+    title: "SQL Tips & Tutorials | Repractiq Blog",
+    description: "Learn SQL concepts, interview tips, and data analysis techniques. Practical articles for data analysts and aspiring SQL professionals.",
+  });
 
   useEffect(() => {
     const load = async () => {
