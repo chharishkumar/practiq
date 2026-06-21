@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "./supabase";
 import { useMobile } from "./hooks/useMobile";
+import { usePageMeta } from "./hooks/usePageMeta";
 
 const COUNTRIES = [
   { name: "India", code: "+91", states: ["Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand","Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Delhi","Jammu & Kashmir","Ladakh","Puducherry","Chandigarh"] },
@@ -20,6 +21,12 @@ const COUNTRIES = [
 export default function SignupPage() {
   const navigate = useNavigate();
   const isMobile = useMobile();
+
+  usePageMeta({
+    title: "Sign Up Free | Repractiq",
+    description: "Create your free Repractiq account to practice 500+ SQL problems, track your progress, and join the leaderboard. No credit card required.",
+  });
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",

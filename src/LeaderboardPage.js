@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "./supabase";
 import { useMobile } from "./hooks/useMobile";
 import { useStoredBadges } from "./badges/useBadges";
+import { usePageMeta } from "./hooks/usePageMeta";
 
 const TABS = [
   "Overall",
@@ -123,6 +124,10 @@ export default function LeaderboardPage() {
   const [stats, setStats]             = useState({ total: 0, today: 0, countries: 0 });
   const isMobile = useMobile();
 
+  usePageMeta({
+    title: "SQL Leaderboard | Repractiq",
+    description: "See top SQL learners ranked by problems solved and streak.",
+  });
   // ── Fetch everything on mount ─────────────────────────────────────────────
   useEffect(() => {
     const load = async () => {

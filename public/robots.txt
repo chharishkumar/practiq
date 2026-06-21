@@ -1,3 +1,8 @@
-# https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /home
+Disallow: /profile
+Disallow: /admin
+Disallow: /blog/write
+
+Sitemap: https://repractiq.com/sitemap.xml

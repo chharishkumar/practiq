@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "./supabase";
 import { useMobile } from "./hooks/useMobile";
+import { usePageMeta } from "./hooks/usePageMeta";
 
 const TAGS = [
   "All", "SQL Basics", "Joins", "Window Functions", "CTEs",
@@ -49,6 +50,7 @@ export default function BlogPage() {
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+
 
   useEffect(() => {
     const load = async () => {

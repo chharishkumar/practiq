@@ -10,6 +10,7 @@ import MobileSQLLayout from "../components/MobileSQLLayout";
 
 import { checkAndSaveBadges } from "../badges/useBadges";
 import BadgeUnlockModal from "../badges/BadgeUnlockModal";
+import { usePageMeta } from "../hooks/usePageMeta"; 
 
 const MILESTONES = [
   {
@@ -205,6 +206,11 @@ export default function SQLIntermediatePage() {
   const [userStreak, setUserStreak] = useState(0);
   const [unlockedBadges, setUnlockedBadges] = useState([]);
   const isMobile = useMobile();
+
+  usePageMeta({
+    title: "SQL Intermediate Practice — 100 Free Problems | Repractiq",
+    description: "Practice SQL Intermediate with SELECT, WHERE, ORDER BY, JOINs and aggregations on real customer data. 100 problems with instant feedback, no signup required to start.",
+  });
 
   const queryRef = useRef(query);
   useEffect(() => { queryRef.current = query; }, [query]);

@@ -13,6 +13,7 @@ import { SQL_SCENARIOS_PROBLEMS } from "./data/sqlScenariosProblems";
 import { useBadges } from "./badges/useBadges";
 import BadgeGrid from "./badges/BadgeGrid";
 import BadgeUnlockModal from "./badges/BadgeUnlockModal";
+import { usePageMeta } from "./hooks/usePageMeta";
 // import CertificateCard from "./badges/CertificateCard";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
@@ -231,7 +232,7 @@ function SettingsPanel({ profile, authEmail, onSaveProfile, onSignOut, isMobile 
 
   const handleDeleteAccount = async () => {
     // Supabase doesn't allow client-side user deletion — show guidance
-    alert("To delete your account, please contact us at support@repractiq.com");
+    alert("To delete your account, please contact us at repractiq@gmail.com");
   };
 
   const tabs = ["profile", "password", "account"];
@@ -388,6 +389,10 @@ export default function ProfilePage() {
   const [streakData, setStreakData]        = useState(null);
   
   const badges = useBadges();
+  usePageMeta({
+    title: "My Profile | Repractiq",
+    description: "View your SQL practice stats, badges, streak, and solved problems on Repractiq.",
+  });
 // const [unlockedBadges, setUnlockedBadges] = useState([]);
 // const [certBadge, setCertBadge] = useState(null);
   // ── Fetch all data ────────────────────────────────────────────────────────

@@ -7,6 +7,8 @@ import StarterKit from "@tiptap/starter-kit";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { createLowlight } from "lowlight";
 import sql from "highlight.js/lib/languages/sql";
+import { usePageMeta } from "./hooks/usePageMeta";
+import { marked } from "marked";
 
 const lowlight = createLowlight();
 lowlight.register({ sql });
@@ -32,7 +34,7 @@ function slugify(str) {
     + "-" + Date.now().toString(36);
 }
 
-function MenuBar({ editor }) {
+function MenuBar({ editor, onImportMarkdown }) {
   if (!editor) return null;
 
   const btn = (action, label, isActive = false) => (
@@ -69,6 +71,13 @@ function MenuBar({ editor }) {
       {btn(() => editor.chain().focus().setHorizontalRule().run(), "--- Rule")}
       {btn(() => editor.chain().focus().undo().run(), "↩ Undo")}
       {btn(() => editor.chain().focus().redo().run(), "↪ Redo")}
+      <div style={{ width: "1px", background: "#e2e8f0", margin: "0 4px" }} />
+      <button
+        onClick={onImportMarkdown}
+        style={{ padding: "5px 10px", borderRadius: "5px", border: "1px solid #bfdbfe", background: "#eff6ff", color: "#2563eb", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer", fontFamily: "Inter, sans-serif" }}
+      >
+        📋 Import Markdown
+      </button>
     </div>
   );
 }
@@ -86,11 +95,26 @@ export default function BlogWritePage() {
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showMarkdownImport, setShowMarkdownImport] = useState(false);
+const [markdownInput, setMarkdownInput] = useState("");
+
+const handleMarkdownImport = () => {
+  if (!markdownInput.trim()) return;
+  const html = marked.parse(markdownInput);
+  editor?.commands.setContent(html);
+  setShowMarkdownImport(false);
+  setMarkdownInput("");
+};
+
+  usePageMeta({
+    title: "SQL Tips & Tutorials | Repractiq Blog",
+    description: "Learn SQL concepts, interview tips, and data analysis techniques. Practical articles for data analysts and aspiring SQL professionals.",
+  });
 
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ codeBlock: false }),
-      CodeBlockLowlight.configure({ lowlight }),
+      CodeBlockLowlight.configure({ lowlight, defaultLanguage: "sql" }),
     ],
     content: "<p>Start writing your post here...</p>",
     editorProps: {
@@ -360,7 +384,7 @@ export default function BlogWritePage() {
               Content *
             </label>
             <div style={{ border: `1.5px solid ${errors.content ? "#fca5a5" : "#e2e8f0"}`, borderRadius: "12px", overflow: "hidden" }}>
-              <MenuBar editor={editor} />
+            <MenuBar editor={editor} onImportMarkdown={() => setShowMarkdownImport(true)} />
               <EditorContent editor={editor} />
             </div>
             {errors.content && <div style={{ fontSize: "0.75rem", color: "#dc2626", marginTop: "4px" }}>{errors.content}</div>}
@@ -402,6 +426,36 @@ export default function BlogWritePage() {
           </div>
         </div>
       </div>
+      {showMarkdownImport && (
+  <div
+    style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}
+    onClick={(e) => { if (e.target === e.currentTarget) setShowMarkdownImport(false); }}
+  >
+    <div style={{ background: "#ffffff", borderRadius: "16px", padding: "1.75rem", width: "640px", maxWidth: "90vw", boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}>
+      <h3 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: 800, color: "#0f172a" }}>Import Markdown</h3>
+      <p style={{ margin: "0 0 1rem", fontSize: "0.82rem", color: "#64748b" }}>
+        Paste your Markdown content below. Headings, code blocks, bold, lists and links will convert automatically.
+      </p>
+      <textarea
+        value={markdownInput}
+        onChange={(e) => setMarkdownInput(e.target.value)}
+        placeholder="## Heading&#10;&#10;Your content here...&#10;&#10;```sql&#10;SELECT * FROM customers;&#10;```"
+        rows={12}
+        style={{ width: "100%", padding: "0.75rem", border: "1.5px solid #e2e8f0", borderRadius: "8px", fontSize: "0.82rem", fontFamily: "monospace", outline: "none", resize: "vertical", color: "#0f172a", boxSizing: "border-box", marginBottom: "1.25rem" }}
+        onFocus={(e) => e.target.style.borderColor = "#2563eb"}
+        onBlur={(e) => e.target.style.borderColor = "#e2e8f0"}
+      />
+      <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+        <button onClick={() => setShowMarkdownImport(false)} style={{ padding: "8px 18px", borderRadius: "8px", border: "1.5px solid #e2e8f0", background: "#ffffff", color: "#64748b", fontWeight: 600, fontSize: "0.85rem", cursor: "pointer" }}>
+          Cancel
+        </button>
+        <button onClick={handleMarkdownImport} style={{ padding: "8px 22px", borderRadius: "8px", border: "none", background: "#2563eb", color: "#ffffff", fontWeight: 700, fontSize: "0.85rem", cursor: "pointer" }}>
+          Convert & Insert →
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { supabase } from "./supabase";
 import { useMobile } from "./hooks/useMobile";
+import { usePageMeta } from "./hooks/usePageMeta";
 
 
 function Nav({ navigate, isMobile }) {
@@ -54,6 +55,11 @@ export default function LandingPage() {
   const [dbReady, setDbReady] = useState(false);
   const [editorTheme, setEditorTheme] = useState("dark");
   const [fullView, setFullView] = useState(false);
+
+  usePageMeta({
+    title: "Repractiq — Free SQL Practice Platform for Data Analysts",
+    description: "Practice SQL on real business datasets. Solve 500+ problems covering customer churn, revenue analysis, cohort retention, and interview prep. Free to start, no signup required.",
+  });
   
 
   const [community, setCommunity] = useState([]);

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "./supabase";
 import { useMobile } from "./hooks/useMobile";
+import { usePageMeta } from "./hooks/usePageMeta";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -10,6 +11,10 @@ export default function LoginPage() {
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const isMobile = useMobile();
+  usePageMeta({
+    title: "Log In | Repractiq",
+    description: "Log in to Repractiq to continue practicing SQL, track your streak, and access your saved progress.",
+  });
 
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));

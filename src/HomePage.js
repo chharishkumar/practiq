@@ -13,6 +13,8 @@ import { SQL_SCENARIOS_PROBLEMS } from "./data/sqlScenariosProblems";
 import { useBadges } from "./badges/useBadges";
 import BadgeUnlockModal from "./badges/BadgeUnlockModal";
 import { getClosestBadges} from "./badges/badgeUtils";
+
+import { usePageMeta } from "./hooks/usePageMeta";
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
 function getDailyChallenge() {
@@ -872,6 +874,11 @@ export default function HomePage() {
   const [solvedIds, setSolvedIds] = useState(new Set());
   const [loading, setLoading]     = useState(true);
   const badges = useBadges();
+  usePageMeta({
+    title: "Dashboard | Repractiq",
+    description: "Track your SQL practice progress, streaks, badges and daily challenges on Repractiq.",
+  });
+  
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(0);
   const [onboardingAnswers, setOnboardingAnswers] = useState({ experience: null, goal: null, time: null });

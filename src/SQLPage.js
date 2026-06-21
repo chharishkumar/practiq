@@ -8,6 +8,7 @@ import { SQL_INTERMEDIATE_PROBLEMS } from "./data/sqlIntermediateProblems";
 import { SQL_ADVANCED_PROBLEMS } from "./data/sqlAdvancedProblems";
 import { SQL_INTERVIEW_PROBLEMS } from "./data/sqlInterviewProblems";
 import { SQL_SCENARIOS_PROBLEMS } from "./data/sqlScenariosProblems";
+import { usePageMeta } from "./hooks/usePageMeta";
 
 // ─── SAMPLE DATA ──────────────────────────────────────────────────────────────
 
@@ -387,6 +388,11 @@ const [fullView, setFullView] = useState(false);
 const [editorTheme, setEditorTheme] = useState("dark");
 const [isGuest, setIsGuest] = useState(true);
 const [solvedByCategory, setSolvedByCategory] = useState({});
+
+usePageMeta({
+  title: "SQL Practice — Basics, Advanced, Interview & Scenarios | Repractiq",
+  description: "Choose your SQL practice path: Basics, Intermediate, Advanced, Interview Prep, or Real-world Scenarios. 500+ problems, instant feedback, completely free to start.",
+});
 
 useEffect(() => {
   const fetchProgress = async () => {

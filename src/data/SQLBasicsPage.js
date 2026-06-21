@@ -11,6 +11,8 @@ import MobileSQLLayout from "../components/MobileSQLLayout";
 import { checkAndSaveBadges } from "../badges/useBadges";
 import BadgeUnlockModal from "../badges/BadgeUnlockModal";
 
+import { usePageMeta } from "../hooks/usePageMeta";
+
 const MILESTONES = [
   {
     id: "bronze",
@@ -281,6 +283,11 @@ const [userEmail, setUserEmail] = useState("");
 const [userStreak, setUserStreak] = useState(0);
 const [unlockedBadges, setUnlockedBadges] = useState([]);
   const isMobile = useMobile();
+
+  usePageMeta({
+    title: "SQL Basics Practice — 100 Free Problems | Repractiq",
+    description: "Practice SQL Basics with SELECT, WHERE, ORDER BY, JOINs and aggregations on real customer data. 100 problems with instant feedback, no signup required to start.",
+  });
 
 
 

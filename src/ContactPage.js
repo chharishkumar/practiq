@@ -104,7 +104,7 @@ export default function ContactPage() {
             {/* Contact Cards */}
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2.5rem" }}>
               {[
-                { icon: "✉", label: "Email us", value: "support@repractiq.com", sub: "We reply within 48 hours" },
+                { icon: "✉", label: "Email us", value: "repractiq@gmail.com", sub: "We reply within 48 hours" },
                 { icon: "💼", label: "LinkedIn", value: "Repractiq", sub: "Follow for SQL tips and updates" },
                 { icon: "▶", label: "YouTube", value: "Repractiq", sub: "Watch our SQL tutorials" },
               ].map((item, i) => (

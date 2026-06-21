@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "./supabase";
 import { useMobile } from "./hooks/useMobile";
+import { usePageMeta } from "./hooks/usePageMeta";
 
 const PLANS = {
   monthly: { label: "Monthly", price: 99,  paise: 9900,  period: "per month",  save: null },
@@ -42,6 +43,11 @@ export default function PricingPage() {
   const [successMsg, setSuccessMsg]     = useState("");
   const isMobile = useMobile();
 const [menuOpen, setMenuOpen] = useState(false);
+
+usePageMeta({
+  title: "Pricing — Repractiq Pro",
+  description: "Get full access to 500+ SQL problems for ₹99/month. Free tier available with no signup required.",
+});
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -438,7 +444,7 @@ if (order.error) throw new Error(order.error);
                 "UPI, credit cards, debit cards, netbanking, wallets and most international Visa/Mastercard cards are supported."],
               ["Is my payment secure?", "Yes. All payments are processed by Razorpay — a PCI DSS compliant payment gateway used by millions of Indian businesses."],
               ["What happens when my plan expires?", "Your account goes back to the free tier. All your progress and solved problems are saved permanently."],
-              ["Do you offer student discounts?", "We're working on it! Email us at support@repractiq.com with your student ID."],
+              ["Do you offer student discounts?", "We're working on it! Email us at repractiq@gmail.com with your student ID."],
               ["Can I switch from monthly to yearly?", "Yes — upgrade anytime and we'll prorate the difference."],
             ].map(([q, a]) => (
               <div key={q} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "1.25rem" }}>
