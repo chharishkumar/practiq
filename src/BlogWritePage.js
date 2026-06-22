@@ -21,8 +21,13 @@ const TAGS = [
 
 const CATEGORIES = [
   "SQL Basics", "SQL Intermediate", "SQL Advanced",
-  "Interview Prep", "Career", "Real-world Scenarios", "Tips & Tricks"
+  "Interview Prep", "Career", "Real-world Scenarios", "Tips & Tricks", "Community"
 ];
+
+function generateExcerpt(html) {
+  const text = html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  return text.length > 160 ? text.slice(0, 157) + "..." : text;
+}
 
 function slugify(str) {
   return str
@@ -88,8 +93,6 @@ export default function BlogWritePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [title, setTitle] = useState("");
-  const [excerpt, setExcerpt] = useState("");
-  const [category, setCategory] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -154,8 +157,6 @@ const handleMarkdownImport = () => {
   const validate = () => {
     const e = {};
     if (!title.trim()) e.title = "Title is required";
-    if (!excerpt.trim()) e.excerpt = "Excerpt is required";
-    if (!category) e.category = "Category is required";
     if (selectedTags.length === 0) e.tags = "Select at least one tag";
     const content = editor?.getHTML();
     if (!content || content === "<p>Start writing your post here...</p>" || content === "<p></p>") {
@@ -169,24 +170,25 @@ const handleMarkdownImport = () => {
     if (Object.keys(e).length > 0) { setErrors(e); return; }
     setErrors({});
     setSubmitting(true);
-
+  
     const slug = slugify(title);
     const content = editor.getHTML();
-
+    const excerpt = generateExcerpt(content);
+  
     const { error } = await supabase.from("blogs").insert({
       title: title.trim(),
       slug,
       content,
-      excerpt: excerpt.trim(),
+      excerpt,
       author_id: currentUser.id,
       author_name: currentUser.name,
-      category,
+      category: "Community",
       tags: selectedTags,
       status: "pending",
     });
-
+  
     setSubmitting(false);
-
+  
     if (error) {
       setErrors({ submit: "Failed to submit. Please try again." });
     } else {
@@ -206,7 +208,7 @@ const handleMarkdownImport = () => {
           <button onClick={() => navigate("/blog")} style={{ padding: "10px 24px", background: "#2563eb", color: "#fff", border: "none", borderRadius: "8px", fontWeight: 700, fontSize: "0.88rem", cursor: "pointer" }}>
             Back to Blog
           </button>
-          <button onClick={() => { setSubmitted(false); setTitle(""); setExcerpt(""); setCategory(""); setSelectedTags([]); editor?.commands.setContent("<p>Start writing your post here...</p>"); }} style={{ padding: "10px 24px", background: "#fff", color: "#2563eb", border: "1.5px solid #bfdbfe", borderRadius: "8px", fontWeight: 600, fontSize: "0.88rem", cursor: "pointer" }}>
+          <button onClick={() => { setSubmitted(false); setTitle(""); setSelectedTags([]); editor?.commands.setContent("<p>Start writing your post here...</p>"); }} style={{ padding: "10px 24px", background: "#fff", color: "#2563eb", border: "1.5px solid #bfdbfe", borderRadius: "8px", fontWeight: 600, fontSize: "0.88rem", cursor: "pointer" }}>
             Write Another
           </button>
         </div>
@@ -313,51 +315,13 @@ const handleMarkdownImport = () => {
             {errors.title && <div style={{ fontSize: "0.75rem", color: "#dc2626", marginTop: "4px" }}>{errors.title}</div>}
           </div>
 
-          {/* Excerpt */}
-          <div>
-            <label style={{ fontSize: "0.78rem", fontWeight: 700, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "6px" }}>
-              Excerpt * <span style={{ fontSize: "0.68rem", color: "#94a3b8", fontWeight: 500, textTransform: "none" }}>(shown on blog listing — 1-2 sentences)</span>
-            </label>
-            <textarea
-              value={excerpt}
-              onChange={(e) => setExcerpt(e.target.value)}
-              placeholder="A short summary of what this post covers..."
-              rows={2}
-              style={{ width: "100%", padding: "10px 14px", border: `1.5px solid ${errors.excerpt ? "#fca5a5" : "#e2e8f0"}`, borderRadius: "8px", fontSize: "0.88rem", outline: "none", resize: "none", color: "#0f172a", boxSizing: "border-box", fontFamily: "Inter, sans-serif" }}
-              onFocus={(e) => e.target.style.borderColor = "#2563eb"}
-              onBlur={(e) => e.target.style.borderColor = errors.excerpt ? "#fca5a5" : "#e2e8f0"}
-            />
-            {errors.excerpt && <div style={{ fontSize: "0.75rem", color: "#dc2626", marginTop: "4px" }}>{errors.excerpt}</div>}
-          </div>
-
-          {/* Category + Tags row */}
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1.25rem" }}>
-            {/* Category */}
-            <div>
-              <label style={{ fontSize: "0.78rem", fontWeight: 700, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "6px" }}>
-                Category *
-              </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                style={{ width: "100%", padding: "10px 14px", border: `1.5px solid ${errors.category ? "#fca5a5" : "#e2e8f0"}`, borderRadius: "8px", fontSize: "0.88rem", outline: "none", color: category ? "#0f172a" : "#94a3b8", boxSizing: "border-box", fontFamily: "Inter, sans-serif", background: "#fff" }}
-              >
-                <option value="">Select a category</option>
-                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
-              {errors.category && <div style={{ fontSize: "0.75rem", color: "#dc2626", marginTop: "4px" }}>{errors.category}</div>}
-            </div>
-
-            {/* Word count indicator */}
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
-              <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "10px 14px" }}>
-                <div style={{ fontSize: "0.72rem", color: "#94a3b8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "3px" }}>Content length</div>
-                <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "#0f172a" }}>
-                  {editor?.getText().trim().split(/\s+/).filter(Boolean).length || 0} words
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Word count indicator */}
+<div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "10px 14px", width: "fit-content" }}>
+  <div style={{ fontSize: "0.72rem", color: "#94a3b8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "3px" }}>Content length</div>
+  <div style={{ fontSize: "0.88rem", fontWeight: 700, color: "#0f172a" }}>
+    {editor?.getText().trim().split(/\s+/).filter(Boolean).length || 0} words
+  </div>
+</div>
 
           {/* Tags */}
           <div>
