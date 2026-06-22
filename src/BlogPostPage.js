@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { supabase } from "./supabase";
 import { useMobile } from "./hooks/useMobile";
+import { usePageMeta } from "./hooks/usePageMeta";
 
 function timeAgo(dateStr) {
     if (!dateStr) return "";
@@ -49,6 +50,11 @@ export default function BlogPostPage() {
   const [commentText, setCommentText] = useState("");
   const [submittingComment, setSubmittingComment] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  usePageMeta({
+    title: "SQL Tips & Tutorials | Repractiq Blog",
+    description: "Learn SQL concepts, interview tips, and data analysis techniques. Practical articles for data analysts and aspiring SQL professionals.",
+  });
 
   useEffect(() => {
     const load = async () => {

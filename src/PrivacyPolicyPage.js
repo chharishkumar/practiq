@@ -191,7 +191,7 @@ export default function PrivacyPolicyPage() {
     </p>
 
     <p style={{ marginTop: "0.75rem", fontWeight: 600 }}>
-      support@repractiq.com
+    repractiq@gmail.com
     </p>
   </section>
 
