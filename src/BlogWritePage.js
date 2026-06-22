@@ -19,10 +19,10 @@ const TAGS = [
   "Real-world Scenarios", "Performance", "Tips & Tricks", "Community Solution"
 ];
 
-const CATEGORIES = [
-  "SQL Basics", "SQL Intermediate", "SQL Advanced",
-  "Interview Prep", "Career", "Real-world Scenarios", "Tips & Tricks", "Community"
-];
+// const CATEGORIES = [
+//   "SQL Basics", "SQL Intermediate", "SQL Advanced",
+//   "Interview Prep", "Career", "Real-world Scenarios", "Tips & Tricks", "Community"
+// ];
 
 function generateExcerpt(html) {
   const text = html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
