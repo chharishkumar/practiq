@@ -72,15 +72,12 @@ export default function ForgotPasswordPage() {
   const [pwError, setPwError] = useState("");
   const [done, setDone] = useState(false);
 
-  // Detect Supabase auth callback in URL hash
   useEffect(() => {
     const hash = window.location.hash;
     if (hash.includes("type=recovery") || hash.includes("access_token")) {
       setIsResetCallback(true);
-      // Let Supabase process the token from the URL
       supabase.auth.getSession().then(({ data }) => {
         if (!data.session) {
-          // Token not yet processed — try exchanging it
           supabase.auth.exchangeCodeForSession(window.location.href).catch(() => {});
         }
       });
