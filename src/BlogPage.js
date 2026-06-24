@@ -200,7 +200,7 @@ function PostCard({ post, navigate, featured = false }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes || 0);
   const avatarColor = getAvatarColor(post.author_name);
-  const emoji = getCategoryEmoji(post.category);
+  // const emoji = getCategoryEmoji(post.category);
   const rt = readTime(post.excerpt || "");
 
   const handleLike = (e) => {
