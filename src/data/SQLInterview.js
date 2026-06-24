@@ -74,7 +74,7 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
           {p.title}
         </span>
         <span style={{ fontSize: "0.62rem", padding: "2px 7px", borderRadius: "10px", background: diffStyle.Easy.bg, color: diffStyle.Easy.color, border: `1px solid ${diffStyle.Easy.border}`, fontWeight: 600, whiteSpace: "nowrap" }}>
-          Easy
+          Interview
         </span>
         <span style={{ fontSize: "0.7rem", color: isExpanded ? "#2563eb" : "#94a3b8", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", lineHeight: 1 }}>▾</span>
       </div>

@@ -74,7 +74,7 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
           {p.title}
         </span>
         <span style={{ fontSize: "0.62rem", padding: "2px 7px", borderRadius: "10px", background: diffStyle.Easy.bg, color: diffStyle.Easy.color, border: `1px solid ${diffStyle.Easy.border}`, fontWeight: 600, whiteSpace: "nowrap" }}>
-          Easy
+          Scenario
         </span>
         <span style={{ fontSize: "0.7rem", color: isExpanded ? "#2563eb" : "#94a3b8", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", lineHeight: 1 }}>▾</span>
       </div>
@@ -847,7 +847,7 @@ ShareModalComponent={ShareModal}
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
                   <div>
                     <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "6px" }}>
-                      <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", fontWeight: 600 }}>Easy</span>
+                      <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", fontWeight: 600 }}>Scenario</span>
                       <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>#{selectedProblem.id}</span>
                       {solvedIds.has(selectedProblem.id) && (
                         <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", fontWeight: 600 }}>✓ Attempted</span>
