@@ -13,6 +13,8 @@ import BadgeUnlockModal from "../badges/BadgeUnlockModal";
 
 import { usePageMeta } from "../hooks/usePageMeta";
 
+import { useParams } from "react-router-dom";
+
 const MILESTONES = [
   {
     id: "bronze",
@@ -283,6 +285,7 @@ const [userEmail, setUserEmail] = useState("");
 const [userStreak, setUserStreak] = useState(0);
 const [unlockedBadges, setUnlockedBadges] = useState([]);
   const isMobile = useMobile();
+  const { problemId, slug } = useParams();
 
   usePageMeta({
     title: "SQL Basics Practice — 100 Free Problems | Repractiq",
@@ -545,7 +548,7 @@ const res = currentDb.exec(normalizeQuotes(currentQuery));
     setResults(null);
     setError(null);
     setValidationStatus(null);
-    navigate(`/sql/basics/${p.id}`);
+    navigate(`/sql/basics/${p.id}-${p.slug}`);
   }, [navigate]);
 
   const handleToggleExpand = (id) => {
@@ -565,8 +568,7 @@ const res = currentDb.exec(normalizeQuotes(currentQuery));
         setExpandedId(targetProblem.id);
       }
     } else {
-      const pathParts = location.pathname.split("/");
-      const idFromUrl = parseInt(pathParts[pathParts.length - 1]);
+      const idFromUrl = Number(problemId);
       if (!isNaN(idFromUrl)) {
         const target = SQL_PROBLEMS.find((p) => p.id === idFromUrl);
         if (target) {
