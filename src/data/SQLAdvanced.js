@@ -58,9 +58,20 @@ function validateResults(userResult, referenceResult) {
   }
 
   // Column count check
-  if (userResult.columns.length !== referenceResult.columns.length) {
-    return "wrong";
+  if (
+    userResult.columns.length >
+    referenceResult.columns.length
+  ) {
+    return "extra_columns";
   }
+  
+  if (
+    userResult.columns.length <
+    referenceResult.columns.length
+  ) {
+    return "missing_columns";
+  }
+
 
   // Normalize column names
   const normalizeColumn = (col) =>
@@ -71,7 +82,7 @@ function validateResults(userResult, referenceResult) {
 
   // Column names mismatch
   if (JSON.stringify(userCols) !== JSON.stringify(refCols)) {
-    return "wrong";
+    return "wrong_columns";
   }
 
   // Normalize values
@@ -142,6 +153,83 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
           <div style={{ marginBottom: "0.875rem" }}>
             <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Task</div>
             <p style={{ margin: 0, fontSize: "0.8rem", color: "#0f172a", lineHeight: 1.6, fontWeight: 500 }}>{p.description}</p>
+            {p.expectedColumns && (
+  <div
+    style={{
+      marginTop: "10px",
+      padding: "14px 16px",
+      background: "#eff6ff",
+      border: "1px solid #bfdbfe",
+      borderRadius: "10px"
+    }}
+  >
+    <div
+      style={{
+        fontSize: "12px",
+        fontWeight: 700,
+        color: "#2563eb",
+        marginBottom: "10px",
+        letterSpacing: "0.03em"
+      }}
+    >
+      REQUIRED OUTPUT COLUMNS
+    </div>
+
+    {p.expectedColumns.map(col => (
+      <div
+        key={col}
+        style={{
+          fontSize: "13px",
+          color: "#0f172a",
+          marginBottom: "6px",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px"
+        }}
+      >
+        <span style={{ color: "#2563eb", fontSize: "14px" }}>•</span> {col}
+      </div>
+    ))}
+
+    <div
+      style={{
+        marginTop: "10px",
+        paddingTop: "10px",
+        borderTop: "1px dashed #bfdbfe"
+      }}
+    />
+
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        fontSize: "13px",
+        color: "#2563eb",
+        fontWeight: 700,
+        marginBottom: "8px"
+      }}
+    >
+      <span style={{ fontSize: "14px" }}>📊</span> Expected Rows: {p.expectedRowCount}
+    </div>
+
+    <div
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "8px",
+        fontSize: "13px",
+        color: "#1d4ed8",
+        lineHeight: 1.5
+      }}
+    >
+      <span style={{ fontSize: "14px", flexShrink: 0 }}>ⓘ</span>
+      <span>
+        Return ONLY these columns. Additional columns will be marked incorrect.
+      </span>
+    </div>
+  </div>
+)}
           </div>
           <div style={{ marginBottom: "0.875rem" }}>
             <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Explanation</div>
@@ -557,7 +645,34 @@ else setExpandedMilestone("gold");
       },
       wrong: {
         bg: "#fef2f2", border: "#fca5a5", icon: "✗", iconColor: "#dc2626",
-        title: "Not quite", msg: "Your result doesn't match. Check the number of columns and re-read the task.",
+        title: "Not quite", msg: "The returned rows do not match the expected output. Check your filters, joins, grouping, or calculations.",
+        titleColor: "#b91c1c",
+      },
+      extra_columns: {
+        bg: "#fef2f2",
+        border: "#fca5a5",
+        icon: "!",
+        iconColor: "#dc2626",
+        title: "Extra Columns Returned",
+        msg: "Return only the columns requested in the problem statement.",
+        titleColor: "#b91c1c",
+      },
+      missing_columns: {
+        bg: "#fef2f2",
+        border: "#fca5a5",
+        icon: "!",
+        iconColor: "#dc2626",
+        title: "Missing Columns",
+        msg: "One or more required columns are missing.",
+        titleColor: "#b91c1c",
+      },
+      wrong_columns: {
+        bg: "#fef2f2",
+        border: "#fca5a5",
+        icon: "!",
+        iconColor: "#dc2626",
+        title: "Incorrect Column Names",
+        msg: "Column names do not match the required output.",
         titleColor: "#b91c1c",
       },
     };

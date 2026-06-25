@@ -2,14 +2,9 @@
 export const SQL_INTERMEDIATE_PROBLEMS = [
     {
       id: 1,
-      title: "Find the names of customers who have placed more than one order. Use a JOIN and HAVING.",
+      title: "Customers with Multiple Orders",
       difficulty: "Intermediate",
-      description: `Find customers who have placed more than one order.
-Return ONLY these columns:
-1. customer_name
-2. order_count
-Do not return customer_id or any additional columns.
-Output should contain one row per customer.`,
+      description: "Find customers who have placed more than one order.",
       explanation: "To filter based on an aggregate (like COUNT), you must use GROUP BY followed by HAVING. WHERE filters individual rows, but HAVING filters the groups you've created.",
       scenario: "Marketing wants to send a 'Loyalty' discount code, but only to people who have proven they are repeat buyers.",
       useCases: ["CRM segmentation", "Loyalty programs", "Identifying power users"],
