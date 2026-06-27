@@ -2,8 +2,12 @@
 export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 1,
-    title: "Active Customers with Recent Orders",
+    title: "State Modifier Relative Temporal Intersections",
     difficulty: "Basic",
+    slug: "sql-state-modifier-relative-temporal-intersection",
+    seoTitle: "SQL INNER JOIN with Dynamic Temporal Window Assertions",
+    metaDescription: "Learn how to isolate intersections between discrete state indicators and records bounded by dynamic relative date criteria.",
+    tags: ["SQL", "INNER JOIN", "DATE", "Filtering", "Temporal Intervals"],
     description: "Find all active customers who have placed at least one order in the last 30 days.",
     explanation: "Filter active customers and join with orders. Use a date condition to restrict orders to the last 30 days.",
     scenario: "Marketing wants to target recently active users for a campaign.",
@@ -14,11 +18,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 5,
     solutionQuery: "SELECT DISTINCT\n    c.customer_id,\n    c.customer_name\nFROM customers c\nJOIN orders o\n    ON c.customer_id = o.customer_id\nWHERE c.status = 'Active'\nAND o.order_date >= DATE('now','-30 days');",
   },
-  
   {
     id: 2,
-    title: "Total Revenue by Country",
+    title: "Categorical Grouping Cumulative Aggregation Matrices",
     difficulty: "Basic",
+    slug: "sql-categorical-grouping-cumulative-aggregation-matrix",
+    seoTitle: "SQL GROUP BY SUM Multi-Table Partition Sweeps",
+    metaDescription: "Learn how to calculate cumulative numeric fields partitioned across distinct geographical categorical attributes using inner joins.",
+    tags: ["SQL", "GROUP BY", "SUM", "ROUND", "ORDER BY"],
     description: "Calculate total revenue grouped by customer country.",
     explanation: "Join customers with orders and aggregate total_amount grouped by country.",
     scenario: "Business wants to analyze which countries generate the most revenue.",
@@ -29,11 +36,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 5,
     solutionQuery: "SELECT\n    c.country,\n    ROUND(SUM(o.total_amount), 2) AS revenue\nFROM customers c\nJOIN orders o\n    ON c.customer_id = o.customer_id\nGROUP BY c.country\nORDER BY revenue DESC;",
   },
-  
   {
     id: 3,
-    title: "Top 5 Most Expensive Products",
+    title: "Descending Ordered Value Boundary Limits",
     difficulty: "Basic",
+    slug: "sql-descending-ordered-value-boundary-limit",
+    seoTitle: "SQL ORDER BY DESC with Cardinality Range Caps",
+    metaDescription: "Learn how to retrieve precise ordinal partitions by sorting numeric scale indices and applying hard limits on output row generation.",
+    tags: ["SQL", "ORDER BY", "DESC", "LIMIT", "Sorting"],
     description: "Find the top 5 products with the highest price.",
     explanation: "Sort products by price in descending order and limit results.",
     scenario: "Product team wants to highlight premium products.",
@@ -44,11 +54,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 5,
     solutionQuery: "SELECT\n    product_id,\n    product_name,\n    price\nFROM products\nORDER BY price DESC\nLIMIT 5;",
   },
-  
   {
     id: 4,
-    title: "Orders with Failed Payments",
+    title: "Explicit Categorical State Vector Identifiers",
     difficulty: "Basic",
+    slug: "sql-explicit-categorical-state-vector-identifier",
+    seoTitle: "SQL DISTINCT Selection Over Targeted Sub-Table Attributes",
+    metaDescription: "Learn how to deduce primary record intersections containing secondary entities fixed to explicit error status parameters.",
+    tags: ["SQL", "DISTINCT", "JOIN", "WHERE Clause", "State Filtering"],
     description: "Find all orders that have at least one failed payment.",
     explanation: "Join orders with payments and filter where payment_status is Failed.",
     scenario: "Finance team wants to investigate failed transactions.",
@@ -59,11 +72,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 4,
     solutionQuery: "SELECT DISTINCT\n    o.order_id\nFROM orders o\nJOIN payments p\n    ON o.order_id = p.order_id\nWHERE p.payment_status = 'Failed';",
   },
-  
   {
     id: 5,
-    title: "Customers Without Orders",
+    title: "Asymmetric Left Join Null Complement Inversions",
     difficulty: "Basic",
+    slug: "sql-asymmetric-left-join-null-complement-inversion",
+    seoTitle: "SQL LEFT JOIN Is Null Foreign Key Exclusion Audits",
+    metaDescription: "Learn how to capture primary rows that lack relational maps by implementing left outer matches and tracking null target attributes.",
+    tags: ["SQL", "LEFT JOIN", "IS NULL", "Data Gaps", "Relational Algebra"],
     description: "Find customers who have never placed an order.",
     explanation: "Use LEFT JOIN and filter customers where no matching order exists.",
     scenario: "Sales team wants to convert inactive users.",
@@ -74,11 +90,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 3,
     solutionQuery: "SELECT\n    c.customer_id,\n    c.customer_name\nFROM customers c\nLEFT JOIN orders o\n    ON c.customer_id = o.customer_id\nWHERE o.order_id IS NULL;",
   },
-  
   {
     id: 6,
-    title: "Average Order Value per Customer",
+    title: "Grouped Mean Distribution Index Formulations",
     difficulty: "Intermediate",
+    slug: "sql-grouped-mean-distribution-index-formulation",
+    seoTitle: "SQL GROUP BY AVG Scalar Metrics Processing",
+    metaDescription: "Learn how to parse central tendency patterns across unique identifiers using internal scalar aggregation and floating-point trimming.",
+    tags: ["SQL", "GROUP BY", "AVG", "ROUND", "Statistical Queries"],
     description: "Calculate the average order value for each customer.",
     explanation: "Group orders by customer_id and calculate AVG(total_amount).",
     scenario: "Finance team analyzes customer spending patterns.",
@@ -89,11 +108,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 5,
     solutionQuery: "SELECT\n    customer_id,\n    ROUND(AVG(total_amount), 2) AS avg_order_value\nFROM orders\nGROUP BY customer_id\nORDER BY avg_order_value DESC;",
   },
-  
   {
     id: 7,
-    title: "Most Sold Product per Category",
+    title: "Partitioned Window-Rank Maxima Evaluations",
     difficulty: "Intermediate",
+    slug: "sql-partitioned-window-rank-maxima-evaluation",
+    seoTitle: "SQL ROW_NUMBER PARTITION BY Subquery Maxima Extraction",
+    metaDescription: "Learn how to execute localized peak element isolation by grouping keys into common tables and evaluating ranking window functions.",
+    tags: ["SQL", "CTE", "ROW_NUMBER", "PARTITION BY", "Window Functions"],
     description: "Find the most sold product (by quantity) in each category.",
     explanation: "Join order_items with products, aggregate quantity, and rank within category.",
     scenario: "Product team wants best sellers per category.",
@@ -104,11 +126,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 4,
     solutionQuery: "WITH sales AS (\n    SELECT\n        p.product_id,\n        p.product_name,\n        p.category,\n        SUM(oi.quantity) AS qty\n    FROM order_items oi\n    JOIN products p\n        ON oi.product_id = p.product_id\n    GROUP BY p.product_id, p.product_name, p.category\n)\nSELECT *\nFROM (\n    SELECT\n        *,\n        ROW_NUMBER() OVER (\n            PARTITION BY category\n            ORDER BY qty DESC\n        ) AS rn\n    FROM sales\n) t\nWHERE rn = 1;",
   },
-  
   {
     id: 8,
-    title: "Customers with High Refund Ratio",
+    title: "Cross-Column Fractional Ratio Inequality Conditions",
     difficulty: "Intermediate",
+    slug: "sql-cross-column-fractional-ratio-inequality-condition",
+    seoTitle: "SQL HAVING Aggregate Quotient Constraints Processing",
+    metaDescription: "Learn how to identify extreme vector anomalies by tracking multi-source field ratios within post-aggregation HAVING constraints.",
+    tags: ["SQL", "SUM", "HAVING", "Arithmetic Expressions", "Data Auditing"],
     description: "Find customers whose refund amount exceeds 20% of their total payments.",
     explanation: "Aggregate refund and payment amounts per customer and compare ratios.",
     scenario: "Finance flags high-risk customers.",
@@ -119,11 +144,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 3,
     solutionQuery: "SELECT\n    o.customer_id,\n    ROUND(SUM(p.refund_amount), 2) AS total_refund,\n    ROUND(SUM(p.amount), 2) AS total_payment,\n    ROUND(\n        SUM(p.refund_amount) * 100.0 /\n        SUM(p.amount),\n        2\n    ) AS refund_ratio_pct\nFROM orders o\nJOIN payments p\n    ON o.order_id = p.order_id\nGROUP BY o.customer_id\nHAVING SUM(p.refund_amount) * 1.0 / SUM(p.amount) > 0.2;",
   },
-  
   {
     id: 9,
-    title: "Delivery Partner SLA Breach",
+    title: "Global vs Localized Scalar Average Benchmarks",
     difficulty: "Intermediate",
+    slug: "sql-global-vs-localized-scalar-average-benchmark",
+    seoTitle: "SQL Subquery Baseline Evaluations in HAVING Assertions",
+    metaDescription: "Learn how to run relative performance variance checks by weighing grouped aggregate values directly against isolated global averages.",
+    tags: ["SQL", "Subqueries", "HAVING", "JULIANDAY", "Date Arithmetic"],
     description: "Find delivery partners whose average delivery time exceeds overall average.",
     explanation: "Calculate delivery duration and compare partner averages with global average.",
     scenario: "Operations wants to identify underperforming partners.",
@@ -134,11 +162,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 2,
     solutionQuery: "SELECT\n    delivery_partner_id,\n    ROUND(\n        AVG(julianday(delivered_date) - julianday(order_date)),\n        2\n    ) AS avg_delivery_days\nFROM orders\nWHERE delivered_date IS NOT NULL\nGROUP BY delivery_partner_id\nHAVING AVG(julianday(delivered_date) - julianday(order_date)) > (\n    SELECT AVG(julianday(delivered_date) - julianday(order_date))\n    FROM orders\n    WHERE delivered_date IS NOT NULL\n);",
   },
-  
   {
     id: 10,
-    title: "Repeat Customers",
+    title: "Frequency Cardinality Lower Bound Exclusions",
     difficulty: "Intermediate",
+    slug: "sql-frequency-cardinality-lower-bound-exclusion",
+    seoTitle: "SQL HAVING COUNT Threshold Constraint Evaluation",
+    metaDescription: "Learn how to filter high-frequency entities from relational streams using aggregate counting mechanisms coupled with floor value predicates.",
+    tags: ["SQL", "COUNT", "GROUP BY", "HAVING", "Data Densities"],
     description: "Find customers who have placed more than 3 orders.",
     explanation: "Group orders by customer_id and filter using HAVING clause.",
     scenario: "Marketing targets loyal users.",
@@ -151,8 +182,12 @@ export const SQL_INTERVIEW_PROBLEMS = [
   },
   {
     id: 11,
-    title: "Customer Last Activity Check",
+    title: "Multi-Timestamp Sequential Path Deviations",
     difficulty: "Intermediate",
+    slug: "sql-multi-timestamp-sequential-path-deviation",
+    seoTitle: "SQL Temporal Field Evaluation and Chronological Assertions",
+    metaDescription: "Learn how to isolate non-linear historical sequences by structuring logical comparison criteria over multiple row-level timestamps.",
+    tags: ["SQL", "WHERE Clause", "Temporal Comparison", "Chronology Checking"],
     description: "Find customers whose last_login_date is after their last_order_date.",
     explanation: "Compare two customer activity timestamps to detect browsing without purchasing.",
     scenario: "Marketing wants to target users who are active but not converting.",
@@ -163,11 +198,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 3,
     solutionQuery: "SELECT\n    customer_id,\n    customer_name,\n    last_login_date,\n    last_order_date\nFROM customers\nWHERE last_login_date > last_order_date;",
   },
-  
   {
     id: 12,
-    title: "Order Revenue Breakdown",
+    title: "Multi-Component Matrix Additive Validations",
     difficulty: "Intermediate",
+    slug: "sql-multi-component-matrix-additive-validation",
+    seoTitle: "SQL Column Arithmetic Synthesis and Equation Auditing",
+    metaDescription: "Learn how to run mathematical row sanity checks by checking if a compiled expression matches a base aggregate field value.",
+    tags: ["SQL", "Arithmetic Operators", "Data Integrity", "Expression Verification"],
     description: "Calculate total revenue components (subtotal, tax, discount, delivery_fee) per order.",
     explanation: "Breakdown helps validate how total_amount is derived.",
     scenario: "Finance team audits order pricing structure.",
@@ -178,11 +216,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 6,
     solutionQuery: "SELECT\n    order_id,\n    subtotal_amount,\n    tax_amount,\n    discount_amount,\n    delivery_fee,\n    total_amount,\n    ROUND(\n        subtotal_amount + tax_amount + delivery_fee - discount_amount,\n        2\n    ) AS calculated_total\nFROM orders;",
   },
-  
   {
     id: 13,
-    title: "Order Items vs Product Price Mismatch",
+    title: "Cross-Registry Value Discrepancy Audits",
     difficulty: "Intermediate",
+    slug: "sql-cross-registry-value-discrepancy-audit",
+    seoTitle: "SQL INNER JOIN Inequality Field Value Assertions",
+    metaDescription: "Learn how to find inconsistencies between records by executing table intersections combined with column inequality filtering predicates.",
+    tags: ["SQL", "INNER JOIN", "Inequality Operators", "Data Auditing"],
     description: "Find order items where unit_price differs from product price.",
     explanation: "Join order_items with products and compare prices.",
     scenario: "Data team validates pricing consistency.",
@@ -193,11 +234,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 3,
     solutionQuery: "SELECT\n    oi.order_item_id,\n    p.product_name,\n    oi.unit_price,\n    p.price,\n    ROUND(oi.unit_price - p.price, 2) AS price_difference\nFROM order_items oi\nJOIN products p\n    ON oi.product_id = p.product_id\nWHERE oi.unit_price != p.price;",
   },
-  
   {
     id: 14,
-    title: "Payment Failure Reasons Analysis",
+    title: "State Dimension Distribution Categorization Profiles",
     difficulty: "Intermediate",
+    slug: "sql-state-dimension-distribution-categorization-profile",
+    seoTitle: "SQL WHERE GROUP BY Key Value Profiling Reports",
+    metaDescription: "Learn how to analyze failure vectors by isolating specific error categories and running localized rows counts over unique logs.",
+    tags: ["SQL", "GROUP BY", "COUNT", "ORDER BY", "Error Tracking"],
     description: "Count number of failed payments grouped by failure_reason.",
     explanation: "Helps identify most common payment issues.",
     scenario: "Payments team analyzes failures.",
@@ -208,11 +252,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 4,
     solutionQuery: "SELECT\n    failure_reason,\n    COUNT(*) AS failures\nFROM payments\nWHERE payment_status = 'Failed'\nGROUP BY failure_reason\nORDER BY failures DESC;",
   },
-  
   {
     id: 15,
-    title: "Delivery Partner Activity Recency",
+    title: "Static Temporal Threshold Boundary Scans",
     difficulty: "Intermediate",
+    slug: "sql-static-temporal-threshold-boundary-scan",
+    seoTitle: "SQL Date Parameter Inequality Field Scans",
+    metaDescription: "Learn how to extract historical system drop-offs by testing field date metrics against a computed rolling temporal milestone.",
+    tags: ["SQL", "DATE", "Filtering", "Temporal Limits", "System Hygiene"],
     description: "Find delivery partners who have not been active in the last 30 days.",
     explanation: "Compare last_active_date with current date.",
     scenario: "Operations wants to re-engage inactive partners.",
@@ -223,11 +270,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 3,
     solutionQuery: "SELECT\n    delivery_partner_id,\n    partner_name,\n    last_active_date\nFROM delivery_partners\nWHERE last_active_date < DATE('now','-30 days');",
   },
-  
   {
     id: 16,
-    title: "Customer Lifetime Value vs Actual Spend",
+    title: "Stored Scalar vs Dynamically Computed Aggregate Audits",
     difficulty: "Intermediate",
+    slug: "sql-stored-scalar-vs-computed-aggregate-audit",
+    seoTitle: "SQL Multi-Table Aggregate Field Equivalence Verifications",
+    metaDescription: "Learn how to audit denormalized tables by comparing hardcoded values directly with runtime sum computations from transaction layers.",
+    tags: ["SQL", "INNER JOIN", "SUM", "GROUP BY", "Mathematical Audits"],
     description: "Compare stored lifetime_value with actual sum of orders.",
     explanation: "Detect inconsistencies between stored and computed values.",
     scenario: "Finance audits customer metrics.",
@@ -238,11 +288,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 5,
     solutionQuery: "SELECT\n    c.customer_id,\n    c.customer_name,\n    c.lifetime_value,\n    ROUND(SUM(o.total_amount), 2) AS actual_value,\n    ROUND(SUM(o.total_amount) - c.lifetime_value, 2) AS value_difference\nFROM customers c\nJOIN orders o\n    ON c.customer_id = o.customer_id\nGROUP BY c.customer_id, c.customer_name, c.lifetime_value;",
   },
-  
   {
     id: 17,
-    title: "Product Activity Status Check",
+    title: "Relational Intersections Across Masked Flag States",
     difficulty: "Intermediate",
+    slug: "sql-relational-intersection-across-masked-flag-state",
+    seoTitle: "SQL JOIN Validation Over Inactive Boolean Prohibitions",
+    metaDescription: "Learn how to parse operational logic anomalies by mapping standard entities to reference tables locked to an inactive toggle condition.",
+    tags: ["SQL", "INNER JOIN", "COUNT DISTINCT", "GROUP BY", "Flag Processing"],
     description: "Find inactive products that still appear in orders.",
     explanation: "Join products and order_items.",
     scenario: "Catalog team cleans inactive inventory.",
@@ -253,11 +306,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 2,
     solutionQuery: "SELECT\n    p.product_id,\n    p.product_name,\n    COUNT(DISTINCT oi.order_id) AS total_orders\nFROM products p\nJOIN order_items oi\n    ON p.product_id = oi.product_id\nWHERE p.is_active = 0\nGROUP BY p.product_id, p.product_name;",
   },
-  
   {
     id: 18,
-    title: "Multi-Currency Orders Analysis",
+    title: "Currency Token Multi-Registry Stratification Matrices",
     difficulty: "Intermediate",
+    slug: "sql-currency-token-multi-registry-stratification-matrix",
+    seoTitle: "SQL GROUP BY ISO-Currency Aggregate Volume Sweeps",
+    metaDescription: "Learn how to isolate international metric variations by applying dynamic counting and sum aggregates segmented around currency ISO fields.",
+    tags: ["SQL", "GROUP BY", "SUM", "COUNT", "Multi-Currency Partitioning"],
     description: "Find total revenue grouped by currency.",
     explanation: "Grouping by currency shows international distribution.",
     scenario: "Finance tracks global revenue.",
@@ -268,11 +324,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 3,
     solutionQuery: "SELECT\n    currency,\n    ROUND(SUM(total_amount), 2) AS revenue,\n    COUNT(*) AS total_orders\nFROM orders\nGROUP BY currency\nORDER BY revenue DESC;",
   },
-  
   {
     id: 19,
-    title: "Payment Attempt Analysis",
+    title: "Global Floating-Point Sequence Frequency Means",
     difficulty: "Intermediate",
+    slug: "sql-global-floating-point-sequence-frequency-mean",
+    seoTitle: "SQL Global Table-Wide AVG Step Aggregations",
+    metaDescription: "Learn how to evaluate sequence volume efficiency by executing broad-scope numeric average extractions stripped of localized keys.",
+    tags: ["SQL", "AVG", "ROUND", "Table-Wide Aggregates"],
     description: "Find average number of payment attempts per order.",
     explanation: "Aggregate attempt_number per order.",
     scenario: "Payments team optimizes retry strategy.",
@@ -283,11 +342,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 1,
     solutionQuery: "SELECT\n    ROUND(AVG(attempt_number), 2) AS avg_attempts\nFROM payments;",
   },
-  
   {
     id: 20,
-    title: "Feedback Channel Distribution",
+    title: "Distribution Volume Ranking Segment Profiles",
     difficulty: "Intermediate",
+    slug: "sql-distribution-volume-ranking-segment-profile",
+    seoTitle: "SQL GROUP BY Core Frequency Volumetric Sorts",
+    metaDescription: "Learn how to benchmark internal data intake origins by running row tallies partitioned on communication vector metadata text.",
+    tags: ["SQL", "GROUP BY", "COUNT", "ORDER BY DESC"],
     description: "Count feedback entries grouped by feedback_channel.",
     explanation: "Helps understand feedback sources.",
     scenario: "Product team analyzes feedback channels.",
@@ -300,8 +362,12 @@ export const SQL_INTERVIEW_PROBLEMS = [
   },
   {
     id: 21,
-    title: "Order Status Timeline Check",
+    title: "Chronological Sequence Inversion Anomaly Sweeps",
     difficulty: "Intermediate",
+    slug: "sql-chronological-sequence-inversion-anomaly-sweep",
+    seoTitle: "SQL Date Progression Failure Filter Assertions",
+    metaDescription: "Learn how to build data quality checks that isolate record points where terminal action timestamps run backward against initialization markers.",
+    tags: ["SQL", "WHERE Clause", "Date Processing", "Logical Anomalies"],
     description: "Find orders where out_for_delivery_time is after delivered_date.",
     explanation: "Logical inconsistency in delivery timeline.",
     scenario: "Operations audit.",
@@ -312,11 +378,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 1,
     solutionQuery: "SELECT\n    order_id,\n    out_for_delivery_time,\n    delivered_date\nFROM orders\nWHERE out_for_delivery_time > delivered_date;",
   },
-  
   {
     id: 22,
-    title: "Customer Acquisition Channel Performance",
+    title: "Origin Attribute Key Intersect Volumetric Matrices",
     difficulty: "Intermediate",
+    slug: "sql-origin-attribute-key-intersect-volumetric-matrix",
+    seoTitle: "SQL Multi-Table Distinct Entity Aggregate Sweeps",
+    metaDescription: "Learn how to measure processing node efficacy by joining profile logs to transaction streams and measuring both unique nodes and sum scores.",
+    tags: ["SQL", "INNER JOIN", "SUM", "COUNT DISTINCT", "GROUP BY"],
     description: "Calculate total revenue per acquisition_channel.",
     explanation: "Join customers and orders.",
     scenario: "Marketing evaluates channels.",
@@ -327,11 +396,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 4,
     solutionQuery: "SELECT\n    c.acquisition_channel,\n    ROUND(SUM(o.total_amount), 2) AS revenue,\n    COUNT(DISTINCT c.customer_id) AS customers\nFROM customers c\nJOIN orders o\n    ON c.customer_id = o.customer_id\nGROUP BY c.acquisition_channel\nORDER BY revenue DESC;",
   },
-  
   {
     id: 23,
-    title: "Product SKU Uniqueness Check",
+    title: "String Key Uniqueness Volumetric Audits",
     difficulty: "Intermediate",
+    slug: "sql-string-key-uniqueness-volumetric-audit",
+    seoTitle: "SQL HAVING COUNT Colliding Key String Extractions",
+    metaDescription: "Learn how to catch indexing violations by grouping unique string hashes and setting HAVING aggregates to track entity counts greater than one.",
+    tags: ["SQL", "GROUP BY", "HAVING", "COUNT", "Unique Constraints"],
     description: "Find duplicate SKUs in products table.",
     explanation: "Group by SKU and count duplicates.",
     scenario: "Catalog team ensures uniqueness.",
@@ -342,11 +414,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 2,
     solutionQuery: "SELECT\n    sku,\n    COUNT(*) AS cnt\nFROM products\nWHERE sku IS NOT NULL\nGROUP BY sku\nHAVING COUNT(*) > 1;",
   },
-  
   {
     id: 24,
-    title: "Customer Verification Impact",
+    title: "Boolean State Stratified Aggregate Comparators",
     difficulty: "Intermediate",
+    slug: "sql-boolean-state-stratified-aggregate-comparator",
+    seoTitle: "SQL Two-State Boolean Value Aggregate Mean Sweeps",
+    metaDescription: "Learn how to assess binary state modifiers by executing parallel averages and tracking discrete baseline entities across split flags.",
+    tags: ["SQL", "INNER JOIN", "AVG", "COUNT DISTINCT", "GROUP BY", "Boolean Logic"],
     description: "Compare average order value between verified and non-verified customers.",
     explanation: "Join customers and orders and group by is_verified.",
     scenario: "Business evaluates trust impact.",
@@ -357,11 +432,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 2,
     solutionQuery: "SELECT\n    c.is_verified,\n    ROUND(AVG(o.total_amount), 2) AS avg_order,\n    COUNT(DISTINCT c.customer_id) AS total_customers\nFROM customers c\nJOIN orders o\n    ON c.customer_id = o.customer_id\nGROUP BY c.is_verified;",
   },
-  
   {
     id: 25,
-    title: "Feedback vs Order Value",
+    title: "Ordinal Scale Key Value Average Matrices",
     difficulty: "Intermediate",
+    slug: "sql-ordinal-scale-key-value-average-matrix",
+    seoTitle: "SQL Multi-Table Ordinal Index Mean Volume Reports",
+    metaDescription: "Learn how to evaluate multi-table satisfaction layers by structuring continuous key fields and executing target mean aggregations.",
+    tags: ["SQL", "INNER JOIN", "AVG", "COUNT", "ORDER BY DESC"],
     description: "Analyze average order value for each rating level.",
     explanation: "Join feedback with orders and group by rating.",
     scenario: "Product team studies satisfaction vs spend.",
@@ -372,11 +450,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 5,
     solutionQuery: "SELECT\n    f.rating,\n    ROUND(AVG(o.total_amount), 2) AS avg_order_value,\n    COUNT(*) AS feedback_count\nFROM feedback f\nJOIN orders o\n    ON f.order_id = o.order_id\nGROUP BY f.rating\nORDER BY f.rating DESC;",
   },
-  
   {
     id: 26,
-    title: "Customer First vs Last Order Gap",
+    title: "Extremum Temporal Span Delta Discrepancies",
     difficulty: "Intermediate",
+    slug: "sql-extremum-temporal-span-delta-discrepancy",
+    seoTitle: "SQL MIN MAX Julian Date Lifespan Processing",
+    metaDescription: "Learn how to compute historical row duration gaps by querying parallel MIN and MAX timestamps grouped under uniform master keys.",
+    tags: ["SQL", "MIN", "MAX", "JULIANDAY", "GROUP BY", "Temporal Gaps"],
     description: "Calculate the number of days between a customer's first and last order.",
     explanation: "Use MIN and MAX on order_date grouped by customer.",
     scenario: "Business wants to understand customer lifespan.",
@@ -387,11 +468,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 5,
     solutionQuery: "SELECT\n    customer_id,\n    MIN(order_date) AS first_order_date,\n    MAX(order_date) AS last_order_date,\n    ROUND(\n        julianday(MAX(order_date)) - julianday(MIN(order_date)),\n        2\n    ) AS lifecycle_days\nFROM orders\nGROUP BY customer_id;",
   },
-  
   {
     id: 27,
-    title: "Average Delivery Delay per Partner",
+    title: "Dual-Timestamp Target vs Actual Delay Balances",
     difficulty: "Intermediate",
+    slug: "sql-dual-timestamp-target-vs-actual-delay-balance",
+    seoTitle: "SQL AVG JULIANDAY Variance Delta Analysis",
+    metaDescription: "Learn how to map operational processing lag values by extracting mean date offsets between dynamic goals and actual target fields.",
+    tags: ["SQL", "AVG", "JULIANDAY", "WHERE NOT NULL", "Performance Vectors"],
     description: "Calculate average delay (actual vs estimated delivery time) per delivery partner.",
     explanation: "Compute difference between delivered_date and estimated_delivery_time.",
     scenario: "Operations monitors SLA performance.",
@@ -402,11 +486,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 4,
     solutionQuery: "SELECT\n    delivery_partner_id,\n    ROUND(\n        AVG(julianday(delivered_date) - julianday(estimated_delivery_time)),\n        2\n    ) AS avg_delay,\n    COUNT(*) AS delivered_orders\nFROM orders\nWHERE delivered_date IS NOT NULL\nGROUP BY delivery_partner_id;",
   },
-  
   {
     id: 28,
-    title: "Customer Order Frequency (Monthly)",
+    title: "Strftime Periodic Cyclical Chronology Sub-Groups",
     difficulty: "Intermediate",
+    slug: "sql-strftime-periodic-cyclical-chronology-sub-group",
+    seoTitle: "SQL STRFTIME Year-Month Intersect Volume Counts",
+    metaDescription: "Learn how to track activity velocity changes across extended spans by normalizing timestamps into standard year-month structural keys.",
+    tags: ["SQL", "STRFTIME", "COUNT", "GROUP BY", "Chronological Blocks"],
     description: "Calculate number of orders per customer per month.",
     explanation: "Group by customer and extracted month.",
     scenario: "Track user engagement trends.",
@@ -417,11 +504,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 8,
     solutionQuery: "SELECT\n    customer_id,\n    strftime('%Y-%m', order_date) AS month,\n    COUNT(*) AS orders\nFROM orders\nGROUP BY customer_id, month\nORDER BY customer_id, month;",
   },
-  
   {
     id: 29,
-    title: "Product Revenue Contribution %",
+    title: "Window-Sum Dynamically Extracted Ratio Matrix Allocations",
     difficulty: "Intermediate+",
+    slug: "sql-window-sum-dynamically-extracted-ratio-matrix-allocation",
+    seoTitle: "SQL SUM Window Expression Proportional Ratio Scales",
+    metaDescription: "Learn how to build distribution matrix engines by processing localized entity sums against a total cross-table window allocation marker.",
+    tags: ["SQL", "SUM OVER", "Window Functions", "Ratio Proportions", "Analytic Queries"],
     description: "Calculate each product's contribution percentage to total revenue.",
     explanation: "Use SUM with window function for total.",
     scenario: "Product team analyzes revenue share.",
@@ -432,11 +522,14 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedRowCount: 5,
     solutionQuery: "SELECT\n    p.product_id,\n    p.product_name,\n    ROUND(SUM(oi.total_price), 2) AS revenue,\n    ROUND(\n        SUM(oi.total_price) * 100.0 /\n        SUM(SUM(oi.total_price)) OVER(),\n        2\n    ) AS pct\nFROM order_items oi\nJOIN products p\n    ON oi.product_id = p.product_id\nGROUP BY p.product_id, p.product_name\nORDER BY revenue DESC;",
   },
-  
   {
     id: 30,
-    title: "Customer Payment Success Rate",
+    title: "Conditional Aggregation Binary Success-Rate Coefficient Factors",
     difficulty: "Intermediate+",
+    slug: "sql-conditional-aggregation-binary-success-rate-coefficient",
+    seoTitle: "SQL SUM CASE WHEN Proportional Frequency Coefficients",
+    metaDescription: "Learn how to convert qualitative character flags into clean numeric success weights using conditional aggregate calculations.",
+    tags: ["SQL", "CASE WHEN", "SUM", "COUNT", "Proportional Fractions"],
     description: "Calculate payment success rate for each customer.",
     explanation: "Conditional aggregation on payment_status.",
     scenario: "Risk team evaluates payment reliability.",
@@ -456,6 +549,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Personalization engine.",
     useCases: ["Recommendation systems", "Segmentation"],
     hint: "ROW_NUMBER partition by customer",
+    slug: "sql-window-row-number-top-category-customer-spend",
+    seoTitle: "SQL ROW_NUMBER PARTITION BY Top Category spend",
+    metaDescription: "Learn how to use ROW_NUMBER with PARTITION BY to find and isolate the highest-grossing product category for individual customers.",
+    tags: ["SQL", "ROW_NUMBER", "PARTITION BY", "CTE", "Window Functions"],
     starterQuery: "WITH cte AS (\nSELECT o.customer_id, p.category, SUM(oi.total_price) as spend\nFROM orders o\nJOIN order_items oi ON o.order_id = oi.order_id\nJOIN products p ON oi.product_id = p.product_id\nGROUP BY o.customer_id, p.category\n)\nSELECT * FROM (\nSELECT *, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY spend DESC) as rn FROM cte\n) t WHERE rn = 1;",
     expectedColumns: ["customer_id", "category", "spend", "rn"],
     expectedRowCount: 5,
@@ -471,6 +568,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Identify growing customers.",
     useCases: ["Growth analysis", "Upsell"],
     hint: "LAG(total_amount)",
+    slug: "sql-lag-window-function-consecutive-order-growth",
+    seoTitle: "SQL LAG Function for Sequential Value Comparison",
+    metaDescription: "Master the SQL LAG window function to compare consecutive customer order records and identify positive growth trajectories.",
+    tags: ["SQL", "LAG", "Window Functions", "Subquery", "Growth Analysis"],
     starterQuery: "SELECT customer_id\nFROM (\nSELECT customer_id, total_amount,\nLAG(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date) as prev_amt\nFROM orders\n) t WHERE total_amount > prev_amt;",
     expectedColumns: ["customer_id"],
     expectedRowCount: 3,
@@ -486,6 +587,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Business monitors funnel.",
     useCases: ["Funnel analysis", "Conversion"],
     hint: "CASE WHEN",
+    slug: "sql-conditional-count-case-when-funnel-conversion",
+    seoTitle: "SQL Case When Conditional Aggregation Funnel Matrix",
+    metaDescription: "Build multi-stage conversion funnels using advanced conditional COUNT and CASE WHEN logic over relational ecommerce data.",
+    tags: ["SQL", "CASE WHEN", "COUNT", "Funnel Analysis", "Conditional Aggregation"],
     starterQuery: "SELECT\nCOUNT(*) as placed,\nCOUNT(CASE WHEN delivered_date IS NOT NULL THEN 1 END) as delivered,\nCOUNT(CASE WHEN payment_status='Success' THEN 1 END) as paid\nFROM orders o\nLEFT JOIN payments p ON o.order_id = p.order_id;",
     expectedColumns: ["placed", "delivered", "paid"],
     expectedRowCount: 1,
@@ -501,6 +606,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Retention tracking.",
     useCases: ["Cohort analysis", "Retention"],
     hint: "Compare current month with previous",
+    slug: "sql-retention-analysis-lag-consecutive-months",
+    seoTitle: "SQL Consecutive Month Active User Retention Analysis",
+    metaDescription: "Track time-series customer retention benchmarks by checking month-over-month active patterns with LAG and date differentials.",
+    tags: ["SQL", "LAG", "Date Functions", "CTE", "Cohort Analysis"],
     starterQuery: "SELECT customer_id\nFROM (\nSELECT customer_id, strftime('%Y-%m', order_date) as month,\nLAG(strftime('%Y-%m', order_date)) OVER (PARTITION BY customer_id ORDER BY order_date) as prev_month\nFROM orders\n) t WHERE month = prev_month;",
     expectedColumns: ["customer_id"],
     expectedRowCount: 3,
@@ -516,6 +625,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Fraud detection.",
     useCases: ["Risk analysis", "Audit"],
     hint: "refund_amount / total_amount",
+    slug: "sql-having-clause-proportional-refund-ratios",
+    seoTitle: "SQL HAVING Filters for Proportional Metric Thresholds",
+    metaDescription: "Isolate risky or fraudulent behaviors by filtering grouped records where aggregated ratios cross a dynamic mathematical threshold.",
+    tags: ["SQL", "HAVING", "GROUP BY", "Arithmetic Operators", "Fraud Detection"],
     starterQuery: "SELECT o.order_id\nFROM orders o\nJOIN payments p ON o.order_id = p.order_id\nGROUP BY o.order_id\nHAVING SUM(p.refund_amount)*1.0 / MAX(o.total_amount) > 0.5;",
     expectedColumns: ["order_id"],
     expectedRowCount: 2,
@@ -531,6 +644,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Leaderboard tracking.",
     useCases: ["Ranking", "Gamification"],
     hint: "RANK() OVER (PARTITION BY month)",
+    slug: "sql-window-rank-monthly-revenue-leaderboard",
+    seoTitle: "SQL RANK OVER PARTITION BY Time-Series Groups",
+    metaDescription: "Construct clean performance leaderboards by calculating dynamic dense ranking groups partition-isolated by month components.",
+    tags: ["SQL", "RANK", "PARTITION BY", "Time Series", "GROUP BY"],
     starterQuery: "WITH monthly AS (\nSELECT customer_id, strftime('%Y-%m', order_date) as month, SUM(total_amount) as revenue\nFROM orders\nGROUP BY customer_id, month\n)\nSELECT *, RANK() OVER (PARTITION BY month ORDER BY revenue DESC) as rnk\nFROM monthly;",
     expectedColumns: ["customer_id", "month", "revenue", "rnk"],
     expectedRowCount: 10,
@@ -546,6 +663,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Recommendation engine.",
     useCases: ["Cross-sell", "Basket analysis"],
     hint: "Self JOIN order_items",
+    slug: "sql-self-join-market-basket-analysis-pairs",
+    seoTitle: "SQL Self Join Patterns for Affinity Basket Analysis",
+    metaDescription: "Leverage self-joining query techniques to find recurring item combinations inside transaction tables for recommendation systems.",
+    tags: ["SQL", "Self Join", "GROUP BY", "Market Basket Analysis", "Cross-Sell"],
     starterQuery: "SELECT a.product_id as p1, b.product_id as p2, COUNT(*) as freq\nFROM order_items a\nJOIN order_items b ON a.order_id = b.order_id AND a.product_id < b.product_id\nGROUP BY p1, p2;",
     expectedColumns: ["p1", "p2", "freq"],
     expectedRowCount: 6,
@@ -561,6 +682,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Growth tracking.",
     useCases: ["Trend analysis", "Forecasting"],
     hint: "LAG(revenue)",
+    slug: "sql-mom-growth-calculations-lag-window",
+    seoTitle: "SQL Month over Month Revenue Change Calculations",
+    metaDescription: "Calculate exact net change values over consecutive historical records using CTE architectures coupled with standard LAG operations.",
+    tags: ["SQL", "LAG", "Arithmetic", "CTE", "Trend Analysis"],
     starterQuery: "WITH monthly AS (\nSELECT customer_id, strftime('%Y-%m', order_date) as month, SUM(total_amount) as revenue\nFROM orders GROUP BY customer_id, month\n)\nSELECT customer_id, month,\n(revenue - LAG(revenue) OVER (PARTITION BY customer_id ORDER BY month)) as growth\nFROM monthly;",
     expectedColumns: ["customer_id", "month", "growth"],
     expectedRowCount: 10,
@@ -576,6 +701,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Operations impact analysis.",
     useCases: ["SLA impact", "Customer satisfaction"],
     hint: "CASE WHEN delay",
+    slug: "sql-categorical-aggregation-sla-delay-impact",
+    seoTitle: "SQL Categorical Aggregation for SLA Impact Metrics",
+    metaDescription: "Translate raw datetime inequality comparisons into clean discrete categorical buckets to evaluate service levels versus user sentiment.",
+    tags: ["SQL", "CASE WHEN", "AVG", "GROUP BY", "SLA Analysis"],
     starterQuery: "SELECT CASE WHEN o.delivered_date > o.estimated_delivery_time THEN 'Delayed' ELSE 'OnTime' END as status,\nAVG(f.rating) as avg_rating\nFROM orders o\nJOIN feedback f ON o.order_id = f.order_id\nGROUP BY status;",
     expectedColumns: ["status", "avg_rating"],
     expectedRowCount: 2,
@@ -591,11 +720,16 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Finance audit.",
     useCases: ["Data validation", "Audit systems"],
     hint: "JOIN orders, items, payments",
+    slug: "sql-data-integrity-audit-cross-table-validation",
+    seoTitle: "SQL Cross Table Financial Discrepancy Audits",
+    metaDescription: "Enforce ledger integrity profiles by aggregating distinct operational dimensions to highlight anomalies where source values diverge.",
+    tags: ["SQL", "HAVING", "COUNT DISTINCT", "SUM", "Data Audit"],
     starterQuery: "SELECT o.order_id\nFROM orders o\nJOIN order_items oi ON o.order_id = oi.order_id\nJOIN payments p ON o.order_id = p.order_id\nGROUP BY o.order_id\nHAVING SUM(oi.total_price) != MAX(o.total_amount)\nOR SUM(p.amount) != MAX(o.total_amount);",
     expectedColumns: ["order_id"],
     expectedRowCount: 3,
     solutionQuery: "SELECT\n    o.order_id,\n    ROUND(MAX(o.total_amount), 2) AS order_total,\n    ROUND(SUM(DISTINCT oi.total_price), 2) AS item_total,\n    ROUND(SUM(DISTINCT p.amount), 2) AS payment_total\nFROM orders o\nJOIN order_items oi\n    ON o.order_id = oi.order_id\nJOIN payments p\n    ON o.order_id = p.order_id\nGROUP BY o.order_id\nHAVING ROUND(SUM(DISTINCT oi.total_price), 2) != ROUND(MAX(o.total_amount), 2)\nOR ROUND(SUM(DISTINCT p.amount), 2) != ROUND(MAX(o.total_amount), 2);",
   },
+  
   {
     id: 41,
     title: "Customer Cohort Month",
@@ -605,6 +739,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Growth team builds cohort analysis.",
     useCases: ["Cohort analysis", "Retention"],
     hint: "MIN(order_date)",
+    slug: "sql-cohort-generation-minimum-date-isolation",
+    seoTitle: "SQL MIN Date Manipulation for Cohort Pinpointing",
+    metaDescription: "Isolate precise lifecycle starting boundaries by aggregating historical customer logs down to their earliest timestamp values.",
+    tags: ["SQL", "MIN", "GROUP BY", "Date Format", "Cohort Generation"],
     starterQuery: "SELECT customer_id, strftime('%Y-%m', MIN(order_date)) as cohort_month\nFROM orders\nGROUP BY customer_id;",
     expectedColumns: ["customer_id", "cohort_month"],
     expectedRowCount: 5,
@@ -620,6 +758,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Retention tracking.",
     useCases: ["Cohort retention", "User behavior"],
     hint: "Join cohort + orders",
+    slug: "sql-retention-matrix-cohort-activity-cross-join",
+    seoTitle: "SQL Cohort Activity Matrix Base Generation",
+    metaDescription: "Formulate underlying transactional maps for complex user lifecycle grids by joining base user cohorts against relative runtime months.",
+    tags: ["SQL", "JOIN", "COUNT DISTINCT", "CTE", "Retention Matrix"],
     starterQuery: "WITH cohort AS (\nSELECT customer_id, strftime('%Y-%m', MIN(order_date)) as cohort_month\nFROM orders GROUP BY customer_id\n)\nSELECT c.cohort_month, strftime('%Y-%m', o.order_date) as active_month, COUNT(DISTINCT o.customer_id)\nFROM cohort c JOIN orders o ON c.customer_id = o.customer_id\nGROUP BY c.cohort_month, active_month;",
     expectedColumns: ["cohort_month", "active_month", "count"],
     expectedRowCount: 10,
@@ -635,6 +777,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Customer segmentation.",
     useCases: ["Segmentation", "Targeting"],
     hint: "NTILE(4)",
+    slug: "sql-ntile-window-function-quantile-segmentation",
+    seoTitle: "SQL NTILE Quartile Distribution Over Revenue Metrics",
+    metaDescription: "Segment distribution landscapes into identical quantitative tiles using the powerful NTILE analytical window function structure.",
+    tags: ["SQL", "NTILE", "Window Functions", "CTE", "Customer Segmentation"],
     starterQuery: "SELECT customer_id, SUM(total_amount) as revenue,\nNTILE(4) OVER (ORDER BY SUM(total_amount) DESC) as segment\nFROM orders GROUP BY customer_id;",
     expectedColumns: ["customer_id", "revenue", "segment"],
     expectedRowCount: 5,
@@ -650,6 +796,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Finance trend tracking.",
     useCases: ["Time-series", "Trend analysis"],
     hint: "ROWS BETWEEN 6 PRECEDING",
+    slug: "sql-rolling-sum-window-rows-preceding-bound",
+    seoTitle: "SQL Rolling Time Window Moving Accumulations",
+    metaDescription: "Utilize precise window specification frames like ROWS BETWEEN to evaluate localized moving totals over clean continuous dates.",
+    tags: ["SQL", "ROWS BETWEEN", "SUM", "Window Frames", "Time Series"],
     starterQuery: "SELECT order_date,\nSUM(total_amount) OVER (ORDER BY order_date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) as rolling_7d\nFROM orders;",
     expectedColumns: ["order_date", "rolling_7d"],
     expectedRowCount: 10,
@@ -665,6 +815,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Personalization system.",
     useCases: ["Recommendation", "Customer journey"],
     hint: "ROW_NUMBER()",
+    slug: "sql-first-touch-attribution-row-number-filter",
+    seoTitle: "SQL Isolating First Touch Customer Purchase Attributes",
+    metaDescription: "Pinpoint early interaction entities across relational tables using explicit row indices sorted chronologically per user partition.",
+    tags: ["SQL", "ROW_NUMBER", "PARTITION BY", "Subquery", "User Journey"],
     starterQuery: "SELECT * FROM (\nSELECT o.customer_id, oi.product_id,\nROW_NUMBER() OVER (PARTITION BY o.customer_id ORDER BY o.order_date) as rn\nFROM orders o JOIN order_items oi ON o.order_id = oi.order_id\n) t WHERE rn = 1;",
     expectedColumns: ["customer_id", "product_id", "rn"],
     expectedRowCount: 5,
@@ -680,6 +834,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Pareto analysis.",
     useCases: ["Revenue concentration", "Risk"],
     hint: "Cumulative SUM / total SUM",
+    slug: "sql-pareto-concentration-cumulative-window-ratio",
+    seoTitle: "SQL Cumulative Ratios for Pareto Revenue Concentration",
+    metaDescription: "Apply advanced bounded running calculations over entire corporate performance baselines to isolate top contributing tiers.",
+    tags: ["SQL", "SUM OVER", "Cumulative Ratios", "CTE", "Pareto Analysis"],
     starterQuery: "WITH cte AS (\nSELECT customer_id, SUM(total_amount) as revenue\nFROM orders GROUP BY customer_id\n), ranked AS (\nSELECT *, SUM(revenue) OVER (ORDER BY revenue DESC) * 1.0 / SUM(revenue) OVER() as cum_pct\nFROM cte\n)\nSELECT * FROM ranked WHERE cum_pct <= 0.8;",
     expectedColumns: ["customer_id", "revenue", "cum_pct"],
     expectedRowCount: 3,
@@ -695,6 +853,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Retention KPI.",
     useCases: ["Retention", "Growth"],
     hint: "COUNT > 1",
+    slug: "sql-reorder-rate-conditional-ratio-aggregates",
+    seoTitle: "SQL Reorder Rate Metric Logic Architectures",
+    metaDescription: "Compute high-level conversion percentages by applying conditional CASE structures against initial customer interaction sums.",
+    tags: ["SQL", "CASE WHEN", "COUNT", "CTE", "Retention KPIs"],
     starterQuery: "WITH cte AS (\nSELECT customer_id, COUNT(*) as cnt FROM orders GROUP BY customer_id\n)\nSELECT COUNT(CASE WHEN cnt > 1 THEN 1 END)*1.0 / COUNT(*) as reorder_rate FROM cte;",
     expectedColumns: ["reorder_rate"],
     expectedRowCount: 1,
@@ -710,6 +872,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Detect outliers.",
     useCases: ["Anomaly detection", "Fraud"],
     hint: "Use AVG and variance",
+    slug: "sql-statistical-zscore-outlier-detection",
+    seoTitle: "SQL Statistical Z-Score Calculation Structures",
+    metaDescription: "Implement standard statistical outlier normalization frameworks natively inside relational sets using global standard deviations.",
+    tags: ["SQL", "AVG", "SQRT", "CROSS JOIN", "Statistical Outliers"],
     starterQuery: "SELECT order_id, total_amount\nFROM orders;",
     expectedColumns: ["order_id", "total_amount"],
     expectedRowCount: 6,
@@ -725,6 +891,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Operations monitoring.",
     useCases: ["SLA breaches", "Performance"],
     hint: "LAG + CASE",
+    slug: "sql-consecutive-incident-streak-lag-matching",
+    seoTitle: "SQL Streak Tracking and Consecutive Incident Analysis",
+    metaDescription: "Identify recurring sequence breakdowns by building lag indicator chains targeting consecutive operational performance anomalies.",
+    tags: ["SQL", "LAG", "CASE WHEN", "Window Functions", "Streak Tracking"],
     starterQuery: "SELECT delivery_partner_id\nFROM (\nSELECT delivery_partner_id,\nCASE WHEN delivered_date > estimated_delivery_time THEN 1 ELSE 0 END as delayed,\nLAG(CASE WHEN delivered_date > estimated_delivery_time THEN 1 ELSE 0 END)\nOVER (PARTITION BY delivery_partner_id ORDER BY order_date) as prev\nFROM orders\n) t WHERE delayed = 1 AND prev = 1;",
     expectedColumns: ["delivery_partner_id"],
     expectedRowCount: 2,
@@ -740,11 +910,16 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "LTV tracking.",
     useCases: ["Customer analytics", "Forecasting"],
     hint: "SUM OVER partition",
+    slug: "sql-clv-running-total-cumulative-sum",
+    seoTitle: "SQL Cumulative Sum Over Time for Customer Lifetime Value",
+    metaDescription: "Plot deep cohort growth charts by executing partitioned chronological running sums to isolate individual user spending pathways.",
+    tags: ["SQL", "SUM OVER", "PARTITION BY", "LTV Tracking", "Window Functions"],
     starterQuery: "SELECT customer_id, order_date,\nSUM(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date) as running_ltv\nFROM orders;",
     expectedColumns: ["customer_id", "order_date", "running_ltv"],
     expectedRowCount: 10,
     solutionQuery: "SELECT\n    customer_id,\n    order_date,\n    total_amount,\n    ROUND(\n        SUM(total_amount) OVER (\n            PARTITION BY customer_id\n            ORDER BY order_date\n        ),\n        2\n    ) AS running_ltv\nFROM orders\nORDER BY customer_id, order_date;",
   },
+  
   {
     id: 51,
     title: "Customer Purchase Interval Variance",
@@ -754,6 +929,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Behavior modeling.",
     useCases: ["Forecasting", "Segmentation"],
     hint: "julianday gap",
+    slug: "sql-purchase-interval-variance-statistical-gaps",
+    seoTitle: "SQL Date Variance and Transaction Gap Tracking",
+    metaDescription: "Evaluate consistency variations in purchase frequencies using sequential date-diff lag structures paired with advanced mathematical aggregate variance formulas.",
+    tags: ["SQL", "LAG", "AVG", "Date Differences", "Variance Analysis"],
     starterQuery: "SELECT customer_id\nFROM orders;",
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
@@ -769,6 +948,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Product trend tracking.",
     useCases: ["Trend analysis", "Strategy"],
     hint: "LAG revenue",
+    slug: "sql-product-category-mom-growth-trends",
+    seoTitle: "SQL Product Category Month over Month Revenue Vectors",
+    metaDescription: "Deconstruct categorical performance paths by combining multi-table product joins with chronological partitioning window calculations.",
+    tags: ["SQL", "LAG", "JOIN", "CTE", "Trend Analysis"],
     starterQuery: "SELECT category FROM products;",
     expectedColumns: ["category"],
     expectedRowCount: 4,
@@ -784,6 +967,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Marketing funnel.",
     useCases: ["Conversion", "Attribution"],
     hint: "COUNT distinct",
+    slug: "sql-multi-channel-marketing-conversion-funnels",
+    seoTitle: "SQL Marketing Funnel Attribution Matrix Builds",
+    metaDescription: "Quantify end-to-end channel acquisition funnels by blending dimension tracking profiles into cross-table conversion counts.",
+    tags: ["SQL", "LEFT JOIN", "COUNT DISTINCT", "GROUP BY", "Marketing Attribution"],
     starterQuery: "SELECT acquisition_channel FROM customers;",
     expectedColumns: ["acquisition_channel"],
     expectedRowCount: 4,
@@ -799,6 +986,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Product strategy.",
     useCases: ["Cannibalization", "Pricing"],
     hint: "Compare monthly revenue",
+    slug: "sql-product-cannibalization-time-series-trends",
+    seoTitle: "SQL Time-Series Inter-Product Cannibalization Analysis",
+    metaDescription: "Examine parallel catalog items performance declines using multi-partitioned window velocity indicators inside common corporate databases.",
+    tags: ["SQL", "LAG", "CTE", "Product Strategy", "Time Series"],
     starterQuery: "SELECT product_id FROM order_items;",
     expectedColumns: ["product_id"],
     expectedRowCount: 5,
@@ -814,6 +1005,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "CRM segmentation.",
     useCases: ["RFM analysis", "Targeting"],
     hint: "MAX, COUNT, SUM",
+    slug: "sql-rfm-customer-segmentation-base-aggregates",
+    seoTitle: "SQL RFM Base Customer Behavioral Segmentation Matrices",
+    metaDescription: "Generate standard Recency, Frequency, and Monetary frameworks directly inside underlying warehouse data setups using compound aggregation.",
+    tags: ["SQL", "MAX", "COUNT", "SUM", "RFM Segmentation"],
     starterQuery: "SELECT customer_id FROM orders;",
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
@@ -829,6 +1024,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Operations tracking.",
     useCases: ["Efficiency", "SLA"],
     hint: "julianday difference",
+    slug: "sql-operational-efficiency-timestamp-differentials",
+    seoTitle: "SQL Timestamp Differentials for Fulfillment Lifecycles",
+    metaDescription: "Analyze precise processing intervals in warehouse chains by deploying specialized mathematical epoch or julian date subtractions.",
+    tags: ["SQL", "Date Functions", "Arithmetic", "WHERE", "Operations Logistics"],
     starterQuery: "SELECT order_id FROM orders;",
     expectedColumns: ["order_id"],
     expectedRowCount: 6,
@@ -844,6 +1043,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Payments optimization.",
     useCases: ["Retry strategy", "Success rate"],
     hint: "attempt_number > 1",
+    slug: "sql-payment-retry-effectiveness-success-rates",
+    seoTitle: "SQL Payment Gateway Retry Success Analytics",
+    metaDescription: "Evaluate payment transaction robustness indicators by grouping conditional success codes isolated to later attempt cycles.",
+    tags: ["SQL", "CASE WHEN", "SUM", "COUNT", "Fintech Analytics"],
     starterQuery: "SELECT attempt_number FROM payments;",
     expectedColumns: ["attempt_number"],
     expectedRowCount: 5,
@@ -859,6 +1062,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Workforce optimization.",
     useCases: ["Utilization", "Efficiency"],
     hint: "COUNT / (MAX-MIN)",
+    slug: "sql-workforce-utilization-active-range-averages",
+    seoTitle: "SQL Delivery Partner Fleet Utilization Balancing",
+    metaDescription: "Evaluate dynamic workforce utilization benchmarks by dividing volumetric counts across aggregated historical chronological footprints.",
+    tags: ["SQL", "COUNT", "MAX", "MIN", "Fleet Optimization"],
     starterQuery: "SELECT delivery_partner_id FROM orders;",
     expectedColumns: ["delivery_partner_id"],
     expectedRowCount: 4,
@@ -874,6 +1081,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Product experience analysis.",
     useCases: ["Retention", "Customer experience"],
     hint: "JOIN feedback + orders",
+    slug: "sql-feedback-sentiment-impact-purchase-frequency",
+    seoTitle: "SQL Customer Feedback Sentiment vs Loyalty Quantities",
+    metaDescription: "Examine behavioral correlation mappings by merging rating dimensions with dense relational activity log counts.",
+    tags: ["SQL", "JOIN", "COUNT DISTINCT", "GROUP BY", "Sentiment Analytics"],
     starterQuery: "SELECT rating FROM feedback;",
     expectedColumns: ["rating"],
     expectedRowCount: 5,
@@ -889,6 +1100,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     scenario: "Executive dashboard.",
     useCases: ["Funnel", "Revenue analysis"],
     hint: "COUNT DISTINCT + SUM",
+    slug: "sql-executive-system-funnel-revenue-aggregation",
+    seoTitle: "SQL Executive End to End Conversion Funnel Frameworks",
+    metaDescription: "Synthesize large-scale multi-table ecommerce interactions into a singular unified executive funnel perspective containing absolute performance totals.",
+    tags: ["SQL", "LEFT JOIN", "COUNT DISTINCT", "SUM", "Executive Dashboards"],
     starterQuery: "SELECT COUNT(DISTINCT customer_id) FROM customers;",
     expectedColumns: ["customers", "orders", "payments", "revenue"],
     expectedRowCount: 1,
@@ -907,6 +1122,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
     solutionQuery: "WITH order_gaps AS (\n    SELECT\n        customer_id,\n        order_date,\n        julianday(order_date) - julianday(\n            LAG(order_date) OVER (\n                PARTITION BY customer_id\n                ORDER BY order_date\n            )\n        ) AS gap_days\n    FROM orders\n),\ngap_comparison AS (\n    SELECT\n        customer_id,\n        order_date,\n        gap_days,\n        LAG(gap_days) OVER (\n            PARTITION BY customer_id\n            ORDER BY order_date\n        ) AS previous_gap\n    FROM order_gaps\n)\nSELECT\n    customer_id,\n    order_date,\n    gap_days,\n    previous_gap,\n    ROUND(gap_days - previous_gap, 2) AS gap_change\nFROM gap_comparison\nWHERE previous_gap IS NOT NULL;",
+    slug: "customer-order-gap-trend",
+    seoTitle: "SQL Query to Calculate Customer Order Gap Trends & Purchase Frequency",
+    metaDescription: "Learn how to use SQL window functions and LAG twice to analyze variations in time gaps between consecutive customer orders for behavioral trend tracking.",
+    tags: ["Window Functions", "LAG", "Customer Analytics", "Time Series"]
   },
   
   {
@@ -922,6 +1141,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["order_date"],
     expectedRowCount: 6,
     solutionQuery: "WITH monthly_revenue AS (\n    SELECT\n        strftime('%Y-%m', order_date) AS revenue_month,\n        ROUND(SUM(total_amount), 2) AS monthly_revenue\n    FROM orders\n    GROUP BY revenue_month\n),\navg_revenue AS (\n    SELECT AVG(monthly_revenue) AS avg_monthly_revenue\n    FROM monthly_revenue\n)\nSELECT\n    m.revenue_month,\n    m.monthly_revenue,\n    ROUND(a.avg_monthly_revenue, 2) AS avg_monthly_revenue,\n    ROUND(\n        m.monthly_revenue - a.avg_monthly_revenue,\n        2\n    ) AS seasonality_index\nFROM monthly_revenue m\nCROSS JOIN avg_revenue a;",
+    slug: "revenue-seasonality-index",
+    seoTitle: "How to Calculate a Revenue Seasonality Index in SQL",
+    metaDescription: "Master financial trend analysis using SQL. Write a query using CTEs and CROSS JOIN to calculate monthly revenue deviations from overall averages.",
+    tags: ["CTEs", "Aggregation", "CROSS JOIN", "Financial Analytics"]
   },
   
   {
@@ -937,6 +1160,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
     solutionQuery: "WITH customer_growth AS (\n    SELECT\n        customer_id,\n        order_date,\n        total_amount,\n        total_amount - LAG(total_amount) OVER (\n            PARTITION BY customer_id\n            ORDER BY order_date\n        ) AS growth\n    FROM orders\n),\nacceleration AS (\n    SELECT\n        customer_id,\n        order_date,\n        growth,\n        LAG(growth) OVER (\n            PARTITION BY customer_id\n            ORDER BY order_date\n        ) AS previous_growth\n    FROM customer_growth\n)\nSELECT\n    customer_id,\n    order_date,\n    growth,\n    previous_growth,\n    ROUND(growth - previous_growth, 2) AS acceleration\nFROM acceleration\nWHERE previous_growth IS NOT NULL\nAND growth > previous_growth;",
+    slug: "customer-spending-acceleration",
+    seoTitle: "SQL Query for Tracking Customer Spending Growth Acceleration",
+    metaDescription: "Identify high-value growth targets by measuring customer spending acceleration. Use nested window functions to track changes in revenue growth rate.",
+    tags: ["LAG", "Growth Hacking", "Customer Segmentation", "Advanced SQL"]
   },
   
   {
@@ -952,6 +1179,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["product_id"],
     expectedRowCount: 10,
     solutionQuery: "WITH product_sales AS (\n    SELECT\n        p.product_id,\n        p.product_name,\n        p.category,\n        ROUND(SUM(oi.total_price), 2) AS revenue\n    FROM products p\n    JOIN order_items oi\n        ON p.product_id = oi.product_id\n    GROUP BY p.product_id, p.product_name, p.category\n)\nSELECT\n    *\nFROM (\n    SELECT\n        *,\n        RANK() OVER (\n            PARTITION BY category\n            ORDER BY revenue DESC\n        ) AS product_rank\n    FROM product_sales\n) t\nWHERE product_rank <= 3;",
+    slug: "top-n-products-category-tie-handling",
+    seoTitle: "SQL Guide: Top N Products per Category with Tie Handling",
+    metaDescription: "Learn how to use the RANK() window function in SQL to generate clean product leaderboards per category without excluding identical sales ties.",
+    tags: ["RANK", "Ranking", "JOINS", "E-commerce Analytics"]
   },
   
   {
@@ -967,6 +1198,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 4,
     solutionQuery: "WITH customer_category AS (\n    SELECT\n        o.customer_id,\n        p.category,\n        CASE\n            WHEN o.order_date < DATE('now', '-6 months') THEN 'Early'\n            ELSE 'Recent'\n        END AS period_type,\n        ROUND(SUM(oi.total_price), 2) AS spend\n    FROM orders o\n    JOIN order_items oi\n        ON o.order_id = oi.order_id\n    JOIN products p\n        ON oi.product_id = p.product_id\n    GROUP BY o.customer_id, p.category, period_type\n),\nranked_categories AS (\n    SELECT\n        *,\n        ROW_NUMBER() OVER (\n            PARTITION BY customer_id, period_type\n            ORDER BY spend DESC\n        ) AS rn\n    FROM customer_category\n)\nSELECT\n    e.customer_id,\n    e.category AS early_category,\n    r.category AS recent_category\nFROM ranked_categories e\nJOIN ranked_categories r\n    ON e.customer_id = r.customer_id\nWHERE e.period_type = 'Early'\nAND r.period_type = 'Recent'\nAND e.rn = 1\nAND r.rn = 1\nAND e.category != r.category;",
+    slug: "customer-purchase-pattern-shift",
+    seoTitle: "Detecting Customer Purchase Behavior Shifts Using Advanced SQL",
+    metaDescription: "Write an advanced SQL query utilizing conditional time periods and ROW_NUMBER() to catch shifts in a customer's favorite product category.",
+    tags: ["ROW_NUMBER", "Self Join", "Conditional Aggregation", "Behavioral Drift"]
   },
   
   {
@@ -982,6 +1217,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["delivery_partner_id"],
     expectedRowCount: 4,
     solutionQuery: "SELECT\n    delivery_partner_id,\n    COUNT(*) AS total_orders,\n    SUM(\n        CASE\n            WHEN delivered_date > estimated_delivery_time THEN 1\n            ELSE 0\n        END\n    ) AS delayed_orders,\n    ROUND(\n        SUM(\n            CASE\n                WHEN delivered_date > estimated_delivery_time THEN 1\n                ELSE 0\n            END\n        ) * 100.0 / COUNT(*),\n        2\n    ) AS delay_probability_pct\nFROM orders\nWHERE delivery_partner_id IS NOT NULL\nGROUP BY delivery_partner_id;",
+    slug: "delayed-delivery-probability-partner",
+    seoTitle: "SQL Query: Calculate SLA Delivery Delay Probability Percentages",
+    metaDescription: "Track logistics and supply chain risk. Use SQL CASE WHEN logic to calculate the exact percentage of delayed orders per delivery partner.",
+    tags: ["CASE WHEN", "SLA Tracking", "Logistics Analytics", "Risk Assessment"]
   },
   
   {
@@ -997,6 +1236,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
     solutionQuery: "WITH customer_orders AS (\n    SELECT\n        customer_id,\n        order_date,\n        total_amount,\n        FIRST_VALUE(total_amount) OVER (\n            PARTITION BY customer_id\n            ORDER BY order_date\n        ) AS first_order_value\n    FROM orders\n)\nSELECT\n    customer_id,\n    ROUND(first_order_value, 2) AS first_order_value,\n    ROUND(AVG(total_amount), 2) AS avg_order_value,\n    ROUND(\n        first_order_value - AVG(total_amount),\n        2\n    ) AS value_decay\nFROM customer_orders\nGROUP BY customer_id, first_order_value;",
+    slug: "customer-value-decay-curve",
+    seoTitle: "SQL Value Decay Analysis: Measuring LTV Drops Post-Onboarding",
+    metaDescription: "Calculate how much customer purchase amounts drop relative to their baseline order using SQL FIRST_VALUE window functions for user retention insights.",
+    tags: ["FIRST_VALUE", "LTV Analytics", "Cohort Analysis", "Retention"]
   },
   
   {
@@ -1012,6 +1255,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["total_amount"],
     expectedRowCount: 6,
     solutionQuery: "WITH ordered_values AS (\n    SELECT\n        total_amount,\n        ROW_NUMBER() OVER (ORDER BY total_amount) AS rn,\n        COUNT(*) OVER () AS total_rows\n    FROM orders\n),\nmedian_calc AS (\n    SELECT AVG(total_amount) AS median_value\n    FROM ordered_values\n    WHERE rn IN ((total_rows + 1) / 2, (total_rows + 2) / 2)\n)\nSELECT\n    ROUND(AVG(o.total_amount), 2) AS mean_value,\n    ROUND(m.median_value, 2) AS median_value,\n    CASE\n        WHEN AVG(o.total_amount) > m.median_value THEN 'Right Skewed'\n        WHEN AVG(o.total_amount) < m.median_value THEN 'Left Skewed'\n        ELSE 'Symmetric'\n    END AS distribution_type\nFROM orders o\nCROSS JOIN median_calc m;",
+    slug: "order-distribution-skewness",
+    seoTitle: "How to Calculate Data Skewness (Mean vs Median) in SQL",
+    metaDescription: "Learn statistical data analysis inside SQL. Calculate the exact median value from a dataset to identify right or left-skewed financial distribution trends.",
+    tags: ["Statistical SQL", "Median Calculation", "ROW_NUMBER", "Data Distribution"]
   },
   
   {
@@ -1027,6 +1274,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["product_id"],
     expectedRowCount: 5,
     solutionQuery: "WITH monthly_product_qty AS (\n    SELECT\n        oi.product_id,\n        strftime('%Y-%m', o.order_date) AS order_month,\n        SUM(oi.quantity) AS total_qty\n    FROM order_items oi\n    JOIN orders o\n        ON oi.order_id = o.order_id\n    GROUP BY oi.product_id, order_month\n)\nSELECT\n    product_id,\n    ROUND(AVG(total_qty), 2) AS avg_monthly_qty,\n    ROUND(\n        AVG(total_qty * total_qty) -\n        AVG(total_qty) * AVG(total_qty),\n        2\n    ) AS demand_volatility\nFROM monthly_product_qty\nGROUP BY product_id;",
+    slug: "product-demand-volatility",
+    seoTitle: "SQL Query for Inventory Planning: Measuring Product Demand Variance",
+    metaDescription: "Calculate variance and volatility mathematical formulas in native SQL to build robust inventory planning frameworks and avoid stockouts.",
+    tags: ["Inventory Management", "Mathematical SQL", "Aggregation", "Supply Chain"]
   },
   
   {
@@ -1042,7 +1293,12 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
     solutionQuery: "WITH rfm AS (\n    SELECT\n        customer_id,\n        ROUND(julianday('now') - julianday(MAX(order_date)), 2) AS recency_days,\n        COUNT(order_id) AS frequency,\n        ROUND(SUM(total_amount), 2) AS monetary_value\n    FROM orders\n    GROUP BY customer_id\n)\nSELECT\n    customer_id,\n    recency_days,\n    frequency,\n    monetary_value,\n    ROUND(\n        (100.0 / (recency_days + 1)) * 0.3 +\n        frequency * 0.3 +\n        monetary_value * 0.4,\n        2\n    ) AS engagement_score\nFROM rfm\nORDER BY engagement_score DESC;",
+    slug: "customer-engagement-composite-score",
+    seoTitle: "Building a Weighted RFM Customer Engagement Score in SQL",
+    metaDescription: "Learn how to calculate Recency, Frequency, and Monetary (RFM) components to establish a dynamic, weighted business customer health metric in SQL.",
+    tags: ["RFM Modeling", "Customer Scoring", "julianday", "CRM Strategy"]
   },
+  
   {
     id: 71,
     title: "Payment Failure Chain Detection",
@@ -1056,6 +1312,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["order_id"],
     expectedRowCount: 3,
     solutionQuery: "WITH payment_sequence AS (\n    SELECT\n        order_id,\n        payment_status,\n        attempt_number,\n        SUM(\n            CASE\n                WHEN payment_status = 'Failed' THEN 1\n                ELSE 0\n            END\n        ) OVER (\n            PARTITION BY order_id\n            ORDER BY attempt_number\n        ) AS cumulative_failures\n    FROM payments\n)\nSELECT\n    order_id,\n    MAX(cumulative_failures) AS failures_before_success\nFROM payment_sequence\nWHERE payment_status = 'Success'\nGROUP BY order_id\nHAVING MAX(cumulative_failures) >= 2;",
+    slug: "payment-failure-chain-detection",
+    seoTitle: "Advanced SQL: Detecting Multi-Attempt Payment Failure Chains",
+    metaDescription: "Build a secure transaction fraud monitoring query. Track dynamic cumulative failure loops preceding successful outcomes using conditional partitioning.",
+    tags: ["Fraud Detection", "Cumulative Sum", "Window Functions", "Transaction Security"]
   },
   
   {
@@ -1071,6 +1331,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["order_id"],
     expectedRowCount: 3,
     solutionQuery: "SELECT\n    o.order_id,\n    ROUND(MAX(o.total_amount), 2) AS order_total,\n    ROUND(SUM(DISTINCT oi.total_price), 2) AS item_total,\n    ROUND(SUM(DISTINCT p.amount), 2) AS payment_total,\n    ROUND(\n        MAX(o.total_amount) - SUM(DISTINCT p.amount),\n        2\n    ) AS revenue_leakage\nFROM orders o\nLEFT JOIN order_items oi\n    ON o.order_id = oi.order_id\nLEFT JOIN payments p\n    ON o.order_id = p.order_id\nGROUP BY o.order_id\nHAVING ROUND(MAX(o.total_amount), 2) != ROUND(SUM(DISTINCT oi.total_price), 2)\nOR ROUND(MAX(o.total_amount), 2) != ROUND(SUM(DISTINCT p.amount), 2);",
+    slug: "revenue-leakage-identification",
+    seoTitle: "Financial Auditing: Spotting Revenue Leakage with SQL",
+    metaDescription: "Audit system mismatches across multiple transaction layers. Safely join three tracking entities using standard SUM DISTINCT criteria to trap leakage leaks.",
+    tags: ["Financial Audits", "Data Integrity", "SUM DISTINCT", "Multiple Joins"]
   },
   
   {
@@ -1086,6 +1350,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
     solutionQuery: "WITH customer_activity AS (\n    SELECT\n        customer_id,\n        MAX(order_date) AS last_order_date,\n        COUNT(order_id) AS total_orders,\n        julianday('now') - julianday(MAX(order_date)) AS recency_days\n    FROM orders\n    GROUP BY customer_id\n)\nSELECT\n    customer_id,\n    total_orders,\n    ROUND(recency_days, 2) AS recency_days,\n    CASE\n        WHEN total_orders = 1 THEN 'New'\n        WHEN recency_days <= 30 THEN 'Active'\n        WHEN recency_days <= 90 THEN 'Dormant'\n        ELSE 'Churned'\n    END AS lifecycle_state\nFROM customer_activity;",
+    slug: "customer-lifecycle-state-machine",
+    seoTitle: "How to Build a Customer Lifecycle State Machine in SQL",
+    metaDescription: "Map customer lifecycles programmatically. Transform customer activity logs into descriptive Active, Dormant, or Churned segments via advanced CASE definitions.",
+    tags: ["State Machine", "Cohort Classification", "User Retention", "Recency"]
   },
   
   {
@@ -1101,6 +1369,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["product_id"],
     expectedRowCount: 5,
     solutionQuery: "WITH monthly_sales AS (\n    SELECT\n        oi.product_id,\n        strftime('%Y-%m', o.order_date) AS revenue_month,\n        ROUND(SUM(oi.total_price), 2) AS revenue\n    FROM order_items oi\n    JOIN orders o\n        ON oi.order_id = o.order_id\n    GROUP BY oi.product_id, revenue_month\n),\nrevenue_change AS (\n    SELECT\n        product_id,\n        revenue_month,\n        revenue,\n        revenue - LAG(revenue) OVER (\n            PARTITION BY product_id\n            ORDER BY revenue_month\n        ) AS revenue_diff\n    FROM monthly_sales\n)\nSELECT\n    a.product_id AS product_a,\n    b.product_id AS product_b,\n    COUNT(*) AS opposite_trend_count\nFROM revenue_change a\nJOIN revenue_change b\n    ON a.revenue_month = b.revenue_month\n    AND a.product_id < b.product_id\nWHERE a.revenue_diff > 0\nAND b.revenue_diff < 0\nGROUP BY product_a, product_b\nORDER BY opposite_trend_count DESC;",
+    slug: "product-cannibalization-matrix",
+    seoTitle: "SQL Strategy: Building a Product Cannibalization Matrix",
+    metaDescription: "Identify portfolio clashes where item growth negatively cuts adjacent product trends. Use cross-product delta correlations in advanced SQL queries.",
+    tags: ["Portfolio Management", "Delta Over Time", "Self Join Matrix", "Trend Analysis"]
   },
   
   {
@@ -1116,6 +1388,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
     solutionQuery: "WITH cohorts AS (\n    SELECT\n        customer_id,\n        strftime('%Y-%m', MIN(order_date)) AS cohort_month\n    FROM orders\n    GROUP BY customer_id\n),\ncohort_revenue AS (\n    SELECT\n        c.cohort_month,\n        strftime('%Y-%m', o.order_date) AS revenue_month,\n        ROUND(SUM(o.total_amount), 2) AS revenue\n    FROM cohorts c\n    JOIN orders o\n        ON c.customer_id = o.customer_id\n    GROUP BY c.cohort_month, revenue_month\n)\nSELECT\n    cohort_month,\n    revenue_month,\n    revenue,\n    ROUND(\n        revenue - LAG(revenue) OVER (\n            PARTITION BY cohort_month\n            ORDER BY revenue_month\n        ),\n        2\n    ) AS revenue_decay\nFROM cohort_revenue;",
+    slug: "customer-cohort-revenue-decay",
+    seoTitle: "Advanced SQL Query for Tracking Cohort Revenue Decay",
+    metaDescription: "Calculate cohort revenue changes by isolating user sign-up groups and comparing ongoing expenditure metrics across sequential calendar periods.",
+    tags: ["Cohort Revenue", "User Tracking", "LAG Analysis", "Growth Engineering"]
   },
   
   {
@@ -1131,6 +1407,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["delivery_partner_id"],
     expectedRowCount: 4,
     solutionQuery: "WITH partner_metrics AS (\n    SELECT\n        dp.delivery_partner_id,\n        dp.rating,\n        dp.total_deliveries,\n        AVG(\n            julianday(o.delivered_date) - julianday(o.order_date)\n        ) AS avg_delivery_days\n    FROM delivery_partners dp\n    LEFT JOIN orders o\n        ON dp.delivery_partner_id = o.delivery_partner_id\n    GROUP BY dp.delivery_partner_id, dp.rating, dp.total_deliveries\n)\nSELECT\n    delivery_partner_id,\n    ROUND(rating, 2) AS rating,\n    total_deliveries,\n    ROUND(avg_delivery_days, 2) AS avg_delivery_days,\n    ROUND(\n        (rating * 0.4) +\n        (total_deliveries * 0.4) -\n        (avg_delivery_days * 0.2),\n        2\n    ) AS efficiency_score\nFROM partner_metrics\nORDER BY efficiency_score DESC;",
+    slug: "delivery-partner-efficiency-score-weighted",
+    seoTitle: "Operations Logic: Multi-Factor Weighted Efficiency Scoring in SQL",
+    metaDescription: "Develop real-world operations dashboards. Combine independent columns (volume, speed, ratings) into an objective score through composite SQL normalization calculations.",
+    tags: ["Weighted Formulas", "Operations Performance", "Normalization Analytics", "LEFT JOIN"]
   },
   
   {
@@ -1146,6 +1426,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 4,
     solutionQuery: "WITH customer_periods AS (\n    SELECT\n        customer_id,\n        CASE\n            WHEN order_date < DATE('now', '-6 months') THEN 'Early'\n            ELSE 'Recent'\n        END AS period_type,\n        COUNT(*) AS total_orders,\n        ROUND(AVG(total_amount), 2) AS avg_order_value\n    FROM orders\n    GROUP BY customer_id, period_type\n)\nSELECT\n    e.customer_id,\n    e.total_orders AS early_orders,\n    r.total_orders AS recent_orders,\n    e.avg_order_value AS early_avg_order,\n    r.avg_order_value AS recent_avg_order\nFROM customer_periods e\nJOIN customer_periods r\n    ON e.customer_id = r.customer_id\nWHERE e.period_type = 'Early'\nAND r.period_type = 'Recent'\nAND (\n    ABS(e.total_orders - r.total_orders) >= 3\n    OR ABS(e.avg_order_value - r.avg_order_value) >= 100\n);",
+    slug: "customer-behavior-drift-detection",
+    seoTitle: "SQL Query to Detect Significant Customer Behavior Drift",
+    metaDescription: "Pinpoint anomalies in ordering frequencies. Write a high-performance query contrasting older user historical volumes against current purchase habits.",
+    tags: ["Anomaly Detection", "Absolute Calculations", "Behavior Tracking", "Self Join"]
   },
   
   {
@@ -1161,6 +1445,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["acquisition_channel"],
     expectedRowCount: 4,
     solutionQuery: "WITH customer_revenue AS (\n    SELECT\n        c.customer_id,\n        c.acquisition_channel,\n        ROUND(SUM(o.total_amount), 2) AS revenue,\n        COUNT(o.order_id) AS total_orders\n    FROM customers c\n    JOIN orders o\n        ON c.customer_id = o.customer_id\n    GROUP BY c.customer_id, c.acquisition_channel\n)\nSELECT\n    acquisition_channel,\n    COUNT(customer_id) AS customers,\n    ROUND(SUM(revenue), 2) AS attributed_revenue,\n    ROUND(AVG(revenue), 2) AS avg_customer_revenue\nFROM customer_revenue\nWHERE total_orders > 1\nGROUP BY acquisition_channel;",
+    slug: "multi-touch-revenue-attribution",
+    seoTitle: "SQL Attribution: Evaluating Marketing Channel ROI for Repeat Buyers",
+    metaDescription: "Isolate high-value repeat consumers and parse total gross proceeds down to acquisition channels using complex grouping and join statements.",
+    tags: ["Marketing Attribution", "Revenue Splitting", "Join Strategy", "Customer ROI"]
   },
   
   {
@@ -1176,6 +1464,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
     solutionQuery: "WITH customer_activity AS (\n    SELECT\n        customer_id,\n        COUNT(order_id) AS total_orders,\n        julianday('now') - julianday(MAX(order_date)) AS recency_days,\n        AVG(total_amount) AS avg_order_value\n    FROM orders\n    GROUP BY customer_id\n)\nSELECT\n    customer_id,\n    total_orders,\n    ROUND(recency_days, 2) AS recency_days,\n    ROUND(avg_order_value, 2) AS avg_order_value,\n    CASE\n        WHEN recency_days > 90 AND total_orders <= 2 THEN 'High Churn Risk'\n        WHEN recency_days > 60 THEN 'Medium Churn Risk'\n        ELSE 'Low Churn Risk'\n    END AS churn_risk\nFROM customer_activity;",
+    slug: "customer-churn-prediction-proxy",
+    seoTitle: "Building an Early-Warning Churn Risk Proxy via SQL Queries",
+    metaDescription: "Don't wait for users to leave. Develop predictive risk flags using composite thresholds matching aggregate recency variables against frequency drops.",
+    tags: ["Churn Prediction", "Risk Engineering", "CRM Analytics", "Date Comparisons"]
   },
   
   {
@@ -1191,7 +1483,12 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["revenue", "aov", "churn_rate", "retention_rate", "refund_rate", "sla_breach"],
     expectedRowCount: 1,
     solutionQuery: "WITH customer_orders AS (\n    SELECT\n        customer_id,\n        COUNT(*) AS total_orders,\n        julianday('now') - julianday(MAX(order_date)) AS recency_days\n    FROM orders\n    GROUP BY customer_id\n)\nSELECT\n    ROUND(SUM(o.total_amount), 2) AS revenue,\n    ROUND(AVG(o.total_amount), 2) AS aov,\n    ROUND(\n        COUNT(CASE WHEN co.recency_days > 90 THEN 1 END) * 100.0 /\n        COUNT(DISTINCT co.customer_id),\n        2\n    ) AS churn_rate,\n    ROUND(\n        COUNT(CASE WHEN co.total_orders > 1 THEN 1 END) * 100.0 /\n        COUNT(DISTINCT co.customer_id),\n        2\n    ) AS retention_rate,\n    ROUND(\n        SUM(p.refund_amount) * 100.0 /\n        SUM(p.amount),\n        2\n    ) AS refund_rate,\n    ROUND(\n        COUNT(CASE WHEN o.delivered_date > o.estimated_delivery_time THEN 1 END) * 100.0 /\n        COUNT(o.order_id),\n        2\n    ) AS sla_breach\nFROM orders o\nLEFT JOIN payments p\n    ON o.order_id = p.order_id\nLEFT JOIN customer_orders co\n    ON o.customer_id = co.customer_id;",
+    slug: "end-to-end-business-kpi-dashboard",
+    seoTitle: "The Ultimate FAANG SQL Interview Question: E2E KPI Dashboard",
+    metaDescription: "Write one monolithic query summarizing AOV, Churn, Retention, and Delivery SLA breach rates to construct an executive business intelligence engine.",
+    tags: ["FAANG Preparation", "KPI Dashboard", "Monolithic Queries", "Executive Metrics"]
   },
+  
   {
     id: 81,
     title: "Customer Order Sequence Consistency",
@@ -1205,6 +1502,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 3,
     solutionQuery: "WITH ordered_data AS (\n    SELECT\n        customer_id,\n        order_id,\n        order_date,\n        LAG(order_date) OVER (\n            PARTITION BY customer_id\n            ORDER BY created_at\n        ) AS previous_order_date\n    FROM orders\n)\nSELECT\n    customer_id,\n    order_id,\n    order_date,\n    previous_order_date\nFROM ordered_data\nWHERE order_date < previous_order_date;",
+    slug: "customer-order-sequence-consistency",
+    seoTitle: "Data Quality Auditing: Catching Timeline Anomaly Corruptions via SQL",
+    metaDescription: "Track race conditions and processing sequence anomalies. Isolate chronologically inverted logs by tracking transactional fields using partition lags.",
+    tags: ["Data Quality", "Data Integrity", "Timeline Debugging", "Advanced Windowing"]
   },
   
   {
@@ -1220,6 +1521,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["order_id"],
     expectedRowCount: 3,
     solutionQuery: "WITH joined_data AS (\n    SELECT\n        o.order_id,\n        o.total_amount,\n        SUM(oi.total_price) AS item_total,\n        SUM(p.amount) AS payment_total,\n        COUNT(DISTINCT oi.order_item_id) AS item_rows,\n        COUNT(DISTINCT p.payment_id) AS payment_rows,\n        COUNT(*) AS joined_rows\n    FROM orders o\n    JOIN order_items oi\n        ON o.order_id = oi.order_id\n    JOIN payments p\n        ON o.order_id = p.order_id\n    GROUP BY o.order_id, o.total_amount\n)\nSELECT\n    order_id,\n    total_amount,\n    item_total,\n    payment_total,\n    joined_rows\nFROM joined_data\nWHERE joined_rows > item_rows\nAND joined_rows > payment_rows;",
+    slug: "revenue-double-counting-detection",
+    seoTitle: "How to Debug Many-to-Many Join Fanout Inflation Issues in SQL",
+    metaDescription: "Master data model debugging. Learn how cartesian line-item fanout duplicates reporting metrics and write expressions to flag inflated rows.",
+    tags: ["Fanout Errors", "Many-to-Many Debugging", "COUNT DISTINCT", "Data Warehouse Tuning"]
   },
   
   {
@@ -1235,6 +1540,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 4,
     solutionQuery: "WITH customer_periods AS (\n    SELECT\n        customer_id,\n        CASE\n            WHEN order_date < DATE('now', '-6 months') THEN 'Early'\n            ELSE 'Recent'\n        END AS period_type,\n        COUNT(*) AS total_orders\n    FROM orders\n    GROUP BY customer_id, period_type\n)\nSELECT\n    e.customer_id,\n    e.total_orders AS early_orders,\n    r.total_orders AS recent_orders,\n    ROUND(\n        (e.total_orders - r.total_orders) * 100.0 /\n        e.total_orders,\n        2\n    ) AS decline_pct\nFROM customer_periods e\nJOIN customer_periods r\n    ON e.customer_id = r.customer_id\nWHERE e.period_type = 'Early'\nAND r.period_type = 'Recent'\nAND r.total_orders < e.total_orders;",
+    slug: "customer-hidden-churn-pattern",
+    seoTitle: "Exposing Hidden Attrition: SQL Methods for Purchase Density Drops",
+    metaDescription: "Unmask silent churn. Calculate localized activity loss percentages among consumers who look active on paper but show dropping transaction density.",
+    tags: ["Silent Churn", "Density Metrics", "User Segment Decay", "Advanced Analytics"]
   },
   
   {
@@ -1250,6 +1559,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["delivery_partner_id"],
     expectedRowCount: 2,
     solutionQuery: "WITH delivery_metrics AS (\n    SELECT\n        delivery_partner_id,\n        julianday(delivered_date) - julianday(order_date) AS delivery_days\n    FROM orders\n    WHERE delivered_date IS NOT NULL\n),\nranked_deliveries AS (\n    SELECT\n        delivery_days,\n        NTILE(10) OVER (ORDER BY delivery_days) AS percentile_rank\n    FROM delivery_metrics\n),\np90 AS (\n    SELECT MIN(delivery_days) AS p90_delivery_days\n    FROM ranked_deliveries\n    WHERE percentile_rank = 10\n)\nSELECT\n    d.delivery_partner_id,\n    ROUND(AVG(d.delivery_days), 2) AS avg_delivery_days\nFROM delivery_metrics d\nCROSS JOIN p90 p\nGROUP BY d.delivery_partner_id\nHAVING AVG(d.delivery_days) > p.p90_delivery_days;",
+    slug: "outlier-delivery-partner-detection",
+    seoTitle: "Statistical SQL Outlier Checks using NTILE Percentile Splitting",
+    metaDescription: "Identify poorly performing vendors by comparing individual average transit records with global 90th-percentile benchmark windows calculated via NTILE.",
+    tags: ["Outlier Detection", "NTILE", "Percentiles", "Vendor Management"]
   },
   
   {
@@ -1265,6 +1578,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["product_id"],
     expectedRowCount: 4,
     solutionQuery: "WITH customer_product_sequence AS (\n    SELECT\n        o.customer_id,\n        oi.product_id,\n        o.order_date,\n        LAG(oi.product_id) OVER (\n            PARTITION BY o.customer_id\n            ORDER BY o.order_date\n        ) AS previous_product\n    FROM orders o\n    JOIN order_items oi\n        ON o.order_id = oi.order_id\n)\nSELECT\n    previous_product,\n    product_id AS new_product,\n    COUNT(*) AS transition_count\nFROM customer_product_sequence\nWHERE previous_product IS NOT NULL\nAND previous_product != product_id\nGROUP BY previous_product, new_product\nORDER BY transition_count DESC;",
+    slug: "product-substitution-detection",
+    seoTitle: "Product Substitution Matrix Analytics Using Window LAG Functions",
+    metaDescription: "Build a product migration map. Track linear cross-item product transitions over customer buying timelines to locate items cannibalizing inventory lines.",
+    tags: ["Substitution Trends", "User Journeys", "Sequential Tracking", "Merchandising"]
   },
   
   {
@@ -1280,6 +1597,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
     solutionQuery: "WITH running_revenue AS (\n    SELECT\n        customer_id,\n        order_date,\n        total_amount,\n        SUM(total_amount) OVER (\n            PARTITION BY customer_id\n            ORDER BY order_date\n        ) AS cumulative_revenue\n    FROM orders\n),\npeak_points AS (\n    SELECT\n        *,\n        MAX(cumulative_revenue) OVER (\n            PARTITION BY customer_id\n        ) AS peak_revenue\n    FROM running_revenue\n)\nSELECT\n    customer_id,\n    order_date,\n    cumulative_revenue AS peak_revenue\nFROM peak_points\nWHERE cumulative_revenue = peak_revenue;",
+    slug: "customer-lifetime-peak-point",
+    seoTitle: "Finding a Customer's Lifetime Maximum Valuation Peak Date in SQL",
+    metaDescription: "Pinpoint the exact chronological peak milestone window where an individual's historical running value metric hit its all-time high water mark.",
+    tags: ["Cumulative Windowing", "Max Window Function", "LTV Analytics", "User Timelines"]
   },
   
   {
@@ -1295,6 +1616,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_type"],
     expectedRowCount: 5,
     solutionQuery: "SELECT\n    c.customer_type,\n    c.acquisition_channel,\n    p.category,\n    COUNT(DISTINCT o.order_id) AS total_orders,\n    ROUND(SUM(oi.total_price), 2) AS revenue\nFROM customers c\nJOIN orders o\n    ON c.customer_id = o.customer_id\nJOIN order_items oi\n    ON o.order_id = oi.order_id\nJOIN products p\n    ON oi.product_id = p.product_id\nGROUP BY c.customer_type, c.acquisition_channel, p.category\nORDER BY revenue DESC;",
+    slug: "multi-level-revenue-attribution",
+    seoTitle: "Multi-Dimensional Revenue Matrix Attribution via Complex SQL Grouping",
+    metaDescription: "Construct multi-dimensional attribution summaries. Join channel demographics against inventory line categories to output top executive revenue blocks.",
+    tags: ["Multi-Join", "Group By Matrix", "BI Dashboards", "Attribution Modeling"]
   },
   
   {
@@ -1307,40 +1632,53 @@ export const SQL_INTERVIEW_PROBLEMS = [
     useCases: ["Data validation", "Workflow"],
     hint: "Compare timestamps",
     starterQuery: "SELECT order_id FROM orders;",
-    expectedColumns: ["order_id"],
+    expectedColumns: ["order_id", "order_date", "out_for_delivery_time", "delivered_date", "order_status"],
     expectedRowCount: 2,
-    solutionQuery: "SELECT\n    order_id,\n    order_date,\n    out_for_delivery_time,\n    delivered_date,\n    order_status\nFROM orders\nWHERE delivered_date < out_for_delivery_time\nOR out_for_delivery_time < order_date\nOR delivered_date < order_date;",
+    solutionQuery: "SELECT\n    order_id,\n    order_date,\n    out_for_delivery_time,\n    delivered_date,\n    order_status\nFROM orders\nWHERE delivered_date < out_for_delivery_time\nOR out_for_delivery_time < order_date;",
+    slug: "order-state-transition-errors",
+    seoTitle: "Using SQL Sanity Queries to Detect System Workflow State Corruptions",
+    metaDescription: "Uncover logistics logic errors. Filter status databases using comparative logic constraints to find dates that defy sequential processing rules.",
+    tags: ["Workflow Auditing", "Data Validation", "Logical Errors", "System Debugging"]
   },
   
   {
     id: 89,
-    title: "Customer Multi-Account Fraud Detection",
+    title: "Flash Sale Peak Concurrency Windows",
     difficulty: "Elite",
-    description: "Detect customers with multiple accounts using same email/phone and overlapping activity.",
-    explanation: "Group by identifiers and analyze patterns.",
-    scenario: "Fraud detection.",
-    useCases: ["Security", "Identity"],
-    hint: "GROUP BY phone/email",
-    starterQuery: "SELECT email FROM customers;",
-    expectedColumns: ["email"],
+    description: "Identify 5-minute intervals where the highest number of concurrent orders occurred.",
+    explanation: "Self-join or overlapping interval analytics to track concurrency thresholds.",
+    scenario: "Infrastructure load analytics.",
+    useCases: ["Performance", "Scaling"],
+    hint: "Self-join on interval windows",
+    starterQuery: "SELECT order_id FROM orders;",
+    expectedColumns: ["window_start", "concurrent_orders"],
     expectedRowCount: 3,
-    solutionQuery: "SELECT\n    email,\n    phone,\n    COUNT(DISTINCT customer_id) AS linked_accounts,\n    MIN(created_date) AS first_account_created,\n    MAX(last_login_date) AS latest_activity\nFROM customers\nGROUP BY email, phone\nHAVING COUNT(DISTINCT customer_id) > 1;",
+    solutionQuery: "SELECT\n    o1.created_at AS window_start,\n    COUNT(o2.order_id) AS concurrent_orders\nFROM orders o1\nJOIN orders o2\n    ON o2.created_at >= o1.created_at\n    AND o2.created_at <= datetime(o1.created_at, '+5 minutes')\nGROUP BY o1.created_at\nORDER BY concurrent_orders DESC\nLIMIT 5;",
+    slug: "flash-sale-peak-concurrency-windows",
+    seoTitle: "SQL Query for Flash Sale Peak Concurrency Windows & Load Tracking",
+    metaDescription: "Master high-throughput infrastructure analytics. Write a self-join SQL query to identify peak 5-minute concurrent order windows during flash sale traffic spikes.",
+    tags: ["Self Join", "Time Series", "Concurrency", "Performance Tuning"]
   },
   
   {
     id: 90,
-    title: "Revenue Recovery Opportunity",
-    difficulty: "Elite",
-    description: "Find orders that failed payment but were never retried successfully.",
-    explanation: "Check failure without later success.",
-    scenario: "Revenue recovery.",
-    useCases: ["Payments", "Revenue"],
-    hint: "Failed AND no success",
-    starterQuery: "SELECT order_id FROM payments;",
-    expectedColumns: ["order_id"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT\n    p.order_id,\n    COUNT(*) AS failed_attempts,\n    ROUND(SUM(p.amount), 2) AS failed_revenue\nFROM payments p\nWHERE p.payment_status = 'Failed'\nAND NOT EXISTS (\n    SELECT 1\n    FROM payments p2\n    WHERE p.order_id = p2.order_id\n    AND p2.payment_status = 'Success'\n)\nGROUP BY p.order_id;",
+    title: "Recursive Referral Chain Depth",
+    difficulty: "Elite (FAANG)",
+    description: "Calculate the maximum referral chain depth for users using a recursive CTE logic framework.",
+    explanation: "Recursive CTE to step through continuous chain networks.",
+    scenario: "Viral marketing evaluation.",
+    useCases: ["Graph networks", "Growth"],
+    hint: "WITH RECURSIVE referral_path",
+    starterQuery: "SELECT user_id FROM users;",
+    expectedColumns: ["root_user_id", "max_depth"],
+    expectedRowCount: 5,
+    solutionQuery: "WITH RECURSIVE referral_path AS (\n    SELECT\n        user_id AS root_user_id,\n        user_id,\n        1 AS depth\n    FROM users\n    WHERE referred_by_id IS NULL\n    \n    UNION ALL\n    \n    SELECT\n        rp.root_user_id,\n        u.user_id,\n        rp.depth + 1\n    FROM users u\n    JOIN referral_path rp\n        ON u.referred_by_id = rp.user_id\n)\nSELECT\n    root_user_id,\n    MAX(depth) AS max_depth\nFROM referral_path\nGROUP BY root_user_id\nORDER BY max_depth DESC;",
+    slug: "recursive-referral-chain-depth",
+    seoTitle: "Advanced SQL Guide: Calculating Recursive Referral Chain Depth",
+    metaDescription: "Learn how to use WITH RECURSIVE CTEs in SQL to traverse network graphs, map hierarchical structures, and evaluate multi-level viral loops.",
+    tags: ["Recursive CTE", "Graph Networks", "Growth Marketing", "FAANG Preparation"]
   },
+  
   {
     id: 91,
     title: "Customer Engagement Decay Curve",
@@ -1354,6 +1692,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
     solutionQuery: "WITH customer_activity AS (\n    SELECT\n        customer_id,\n        MAX(order_date) AS last_order_date,\n        COUNT(order_id) AS total_orders,\n        julianday('now') - julianday(MAX(order_date)) AS recency_days\n    FROM orders\n    GROUP BY customer_id\n)\nSELECT\n    customer_id,\n    total_orders,\n    ROUND(recency_days, 2) AS recency_days,\n    ROUND(\n        total_orders * 1.0 / (recency_days + 1),\n        4\n    ) AS engagement_score\nFROM customer_activity\nORDER BY engagement_score ASC;",
+    slug: "customer-engagement-decay-curve",
+    seoTitle: "SQL Modeling: Mapping Customer Engagement Decay Curves",
+    metaDescription: "Build dynamic customer retention risk models. Use SQL date differences to compute continuous engagement loss based on historical purchase patterns.",
+    tags: ["Retention Modeling", "Recency Analysis", "User Activity Decay", "Customer Analytics"]
   },
   
   {
@@ -1369,6 +1711,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["product_id"],
     expectedRowCount: 5,
     solutionQuery: "WITH monthly_product_metrics AS (\n    SELECT\n        oi.product_id,\n        strftime('%Y-%m', o.order_date) AS revenue_month,\n        ROUND(AVG(oi.unit_price), 2) AS avg_price,\n        SUM(oi.quantity) AS total_quantity\n    FROM order_items oi\n    JOIN orders o\n        ON oi.order_id = o.order_id\n    GROUP BY oi.product_id, revenue_month\n)\nSELECT\n    a.product_id AS product_a,\n    b.product_id AS product_b,\n    a.revenue_month,\n    a.avg_price AS product_a_price,\n    b.total_quantity AS product_b_quantity\nFROM monthly_product_metrics a\nJOIN monthly_product_metrics b\n    ON a.revenue_month = b.revenue_month\n    AND a.product_id != b.product_id\nWHERE a.avg_price > LAG(a.avg_price) OVER (\n    PARTITION BY a.product_id\n    ORDER BY a.revenue_month\n);",
+    slug: "product-cross-elasticity-matrix",
+    seoTitle: "Building a Product Cross-Elasticity Pricing Matrix in SQL",
+    metaDescription: "Analyze retail portfolio correlations using window LAG partitions to isolate how an upward shift in an item's price affects adjacent product volume.",
+    tags: ["Price Elasticity", "Window Functions", "LAG", "Pricing Strategy"]
   },
   
   {
@@ -1384,6 +1730,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["city"],
     expectedRowCount: 4,
     solutionQuery: "SELECT\n    dp.city,\n    COUNT(o.order_id) AS total_orders,\n    ROUND(\n        AVG(julianday(o.delivered_date) - julianday(o.estimated_delivery_time)),\n        2\n    ) AS avg_delay_days,\n    ROUND(\n        COUNT(CASE WHEN o.delivered_date > o.estimated_delivery_time THEN 1 END) * 100.0 /\n        COUNT(o.order_id),\n        2\n    ) AS delayed_order_pct\nFROM delivery_partners dp\nJOIN orders o\n    ON dp.delivery_partner_id = o.delivery_partner_id\nWHERE o.delivered_date IS NOT NULL\nGROUP BY dp.city\nORDER BY avg_delay_days DESC;",
+    slug: "delivery-network-bottleneck-detection",
+    seoTitle: "Logistics SQL: Spotting City-Level Supply Chain Bottlenecks",
+    metaDescription: "Optimize delivery networks using SQL. Track geographical logistical exceptions by combining actual SLA tracking counts against estimated targets.",
+    tags: ["Supply Chain Analytics", "SLA Tracking", "Geographical Grouping", "Operations"]
   },
   
   {
@@ -1399,6 +1749,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
     solutionQuery: "SELECT\n    customer_id,\n    ROUND(AVG(total_amount), 2) AS avg_order_value,\n    ROUND(\n        AVG(total_amount * total_amount) -\n        AVG(total_amount) * AVG(total_amount),\n        2\n    ) AS spending_variance,\n    CASE\n        WHEN (\n            AVG(total_amount * total_amount) -\n            AVG(total_amount) * AVG(total_amount)\n        ) < 100 THEN 'Stable'\n        ELSE 'Unstable'\n    END AS stability_index\nFROM orders\nGROUP BY customer_id;",
+    slug: "customer-value-stability-index",
+    seoTitle: "Calculating Customer Spending Stability & Variance via SQL",
+    metaDescription: "Perform advanced cohort health analysis. Translate standard statistical variance math directly into relational code to identify high-variance consumer groups.",
+    tags: ["Statistical SQL", "Variance Math", "Customer Segmentation", "Risk Profiling"]
   },
   
   {
@@ -1414,6 +1768,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["rating"],
     expectedRowCount: 5,
     solutionQuery: "WITH customer_metrics AS (\n    SELECT\n        f.customer_id,\n        ROUND(AVG(f.rating), 2) AS avg_rating,\n        COUNT(o.order_id) AS total_orders,\n        ROUND(AVG(o.total_amount), 2) AS avg_order_value\n    FROM feedback f\n    JOIN orders o\n        ON f.customer_id = o.customer_id\n    GROUP BY f.customer_id\n)\nSELECT\n    customer_id,\n    avg_rating,\n    total_orders,\n    avg_order_value,\n    ROUND(\n        (avg_rating * 0.5) +\n        (total_orders * 0.2) +\n        (avg_order_value * 0.3),\n        2\n    ) AS reliability_score\nFROM customer_metrics\nORDER BY reliability_score DESC;",
+    slug: "feedback-reliability-score",
+    seoTitle: "SQL Composite Index: Calculating User Review Reliability Scores",
+    metaDescription: "Learn to build multi-factor customer health equations. Join review tracking logs to baseline transaction metrics for objective fraud and sentiment audits.",
+    tags: ["Composite Scoring", "Sentiment Audits", "Data Standardization", "Relational Joins"]
   },
   
   {
@@ -1429,6 +1787,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
     solutionQuery: "WITH customer_cohorts AS (\n    SELECT\n        customer_id,\n        strftime('%Y-%m', MIN(order_date)) AS cohort_month\n    FROM orders\n    GROUP BY customer_id\n),\nmonthly_behavior AS (\n    SELECT\n        c.cohort_month,\n        strftime('%Y-%m', o.order_date) AS activity_month,\n        COUNT(DISTINCT o.customer_id) AS active_customers,\n        ROUND(AVG(o.total_amount), 2) AS avg_order_value\n    FROM customer_cohorts c\n    JOIN orders o\n        ON c.customer_id = o.customer_id\n    GROUP BY c.cohort_month, activity_month\n)\nSELECT\n    cohort_month,\n    activity_month,\n    active_customers,\n    avg_order_value,\n    ROUND(\n        avg_order_value - LAG(avg_order_value) OVER (\n            PARTITION BY cohort_month\n            ORDER BY activity_month\n        ),\n        2\n    ) AS value_drift\nFROM monthly_behavior;",
+    slug: "dynamic-cohort-drift",
+    seoTitle: "Advanced Cohort Tracking: Measuring Dynamic Value Drift in SQL",
+    metaDescription: "Master customer trend forecasting. Use structured dates and partition LAG delta rules to calculate sequential buying value adjustments over distinct retention loops.",
+    tags: ["Cohort Analytics", "LAG Functions", "Growth Engineering", "Behavioral Drift"]
   },
   
   {
@@ -1444,6 +1806,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["order_id"],
     expectedRowCount: 5,
     solutionQuery: "SELECT\n    o.order_id,\n    ROUND(o.discount_amount, 2) AS discount_loss,\n    ROUND(COALESCE(SUM(p.refund_amount), 0), 2) AS refund_loss,\n    ROUND(\n        o.discount_amount + COALESCE(SUM(p.refund_amount), 0),\n        2\n    ) AS total_hidden_loss\nFROM orders o\nLEFT JOIN payments p\n    ON o.order_id = p.order_id\nGROUP BY o.order_id, o.discount_amount\nORDER BY total_hidden_loss DESC;",
+    slug: "hidden-revenue-loss-discount-refund",
+    seoTitle: "Financial Leakage Audit: Quantifying Compound Profit Deficits in SQL",
+    metaDescription: "Audit balance sheet leaks by combining upfront discount margins against historical refund logs using clean aggregate COALESCE fallback criteria.",
+    tags: ["Financial Auditing", "Revenue Leakage", "COALESCE", "Profitability Analytics"]
   },
   
   {
@@ -1459,6 +1825,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
     solutionQuery: "SELECT\n    c.customer_id,\n    c.created_date,\n    MIN(p.payment_date) AS first_successful_payment,\n    ROUND(\n        julianday(MIN(p.payment_date)) - julianday(c.created_date),\n        2\n    ) AS conversion_latency_days\nFROM customers c\nJOIN orders o\n    ON c.customer_id = o.customer_id\nJOIN payments p\n    ON o.order_id = p.order_id\nWHERE p.payment_status = 'Success'\nGROUP BY c.customer_id, c.created_date;",
+    slug: "customer-conversion-latency",
+    seoTitle: "Tracking Funnel Speed: Conversion Latency Calculations via SQL",
+    metaDescription: "Quantify onboarding funnel bottlenecks. Join demographic signup records against minimum successful checkout timestamps to isolate precise setup activation speeds.",
+    tags: ["Funnel Optimization", "Conversion Speed", "MIN Aggregation", "User Activation"]
   },
   
   {
@@ -1474,6 +1844,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["customer_id"],
     expectedRowCount: 5,
     solutionQuery: "WITH customer_metrics AS (\n    SELECT\n        customer_id,\n        ROUND(SUM(total_amount), 2) AS revenue,\n        COUNT(order_id) AS frequency,\n        julianday('now') - julianday(MAX(order_date)) AS recency_days\n    FROM orders\n    GROUP BY customer_id\n),\nranked_customers AS (\n    SELECT\n        *,\n        RANK() OVER (ORDER BY revenue DESC) AS revenue_rank,\n        RANK() OVER (ORDER BY frequency DESC) AS frequency_rank,\n        RANK() OVER (ORDER BY recency_days ASC) AS recency_rank\n    FROM customer_metrics\n)\nSELECT\n    customer_id,\n    revenue,\n    frequency,\n    ROUND(recency_days, 2) AS recency_days,\n    revenue_rank,\n    frequency_rank,\n    recency_rank,\n    (revenue_rank + frequency_rank + recency_rank) AS overall_rank_score\nFROM ranked_customers\nORDER BY overall_rank_score ASC;",
+    slug: "multi-dimensional-ranking-system",
+    seoTitle: "Advanced RFM Indexing: Building Multi-Dimensional Ranks in SQL",
+    metaDescription: "Construct clean, non-arbitrary customer value tiers. Combine multiple separate RANK() window functions into a singular multi-factor score index.",
+    tags: ["RFM Indexing", "RANK Function", "Customer Tiering", "CRM Scoring"]
   },
   
   {
@@ -1489,6 +1863,10 @@ export const SQL_INTERVIEW_PROBLEMS = [
     expectedColumns: ["order_id"],
     expectedRowCount: 5,
     solutionQuery: "SELECT\n    o.order_id,\n    CASE\n        WHEN c.customer_id IS NULL THEN 'Missing Customer'\n        WHEN COUNT(DISTINCT oi.order_item_id) = 0 THEN 'Missing Order Items'\n        WHEN COUNT(DISTINCT p.payment_id) = 0 THEN 'Missing Payments'\n        WHEN o.delivery_partner_id IS NOT NULL AND d.delivery_partner_id IS NULL THEN 'Invalid Delivery Partner'\n        WHEN o.delivered_date < o.order_date THEN 'Invalid Delivery Timeline'\n        WHEN ROUND(COALESCE(SUM(DISTINCT oi.total_price), 0), 2) != ROUND(o.total_amount, 2) THEN 'Order Total Mismatch'\n        ELSE 'Valid'\n    END AS integrity_status,\n    ROUND(o.total_amount, 2) AS order_total,\n    ROUND(COALESCE(SUM(DISTINCT oi.total_price), 0), 2) AS item_total,\n    ROUND(COALESCE(SUM(DISTINCT p.amount), 0), 2) AS payment_total,\n    COUNT(DISTINCT f.feedback_id) AS feedback_count\nFROM orders o\nLEFT JOIN customers c\n    ON o.customer_id = c.customer_id\nLEFT JOIN order_items oi\n    ON o.order_id = oi.order_id\nLEFT JOIN payments p\n    ON o.order_id = p.order_id\nLEFT JOIN feedback f\n    ON o.order_id = f.order_id\nLEFT JOIN delivery_partners d\n    ON o.delivery_partner_id = d.delivery_partner_id\nGROUP BY o.order_id, c.customer_id, d.delivery_partner_id, o.total_amount, o.delivered_date, o.order_date;",
-  }              
+    slug: "full-data-warehouse-integrity-check",
+    seoTitle: "The Monolithic Data Warehouse Integrity Audit Query in SQL",
+    metaDescription: "Master end-to-end data quality validations. Construct a 6-table unified audit script utilizing advanced conditional CASE expressions to flag data anomalies.",
+    tags: ["Data Integrity", "Data Warehouse Audits", "Monolithic Queries", "FAANG Preparation"]
+  }
       
   ];

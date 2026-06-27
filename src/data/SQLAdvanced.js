@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../supabase";
 import { SQL_ADVANCED_PROBLEMS } from "./sqlAdvancedProblems";
 import { matchesProblem, searchSqlProblems } from "./sqlSearch";
@@ -12,6 +12,7 @@ import { checkAndSaveBadges } from "../badges/useBadges";
 import BadgeUnlockModal from "../badges/BadgeUnlockModal";
 
 import { usePageMeta } from "../hooks/usePageMeta"; 
+import StructuredData from "../components/StructuredData";
 
 const MILESTONES = [
   {
@@ -263,6 +264,7 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
 export default function SQLAdvancedPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { problemSlug } = useParams();
   const editorRef = useRef(null);
   const startTimeRef = useRef(Date.now());
   const selectedItemRef = useRef(null);
@@ -293,8 +295,17 @@ const { isGuest, isPro, userEmail, userName: userFullName } = useProStatus();
 const isMobile = useMobile();
 
 usePageMeta({
-  title: "SQL Advanced Practice — 100 Free Problems | Repractiq",
-  description: "Practice SQL Advanced with SELECT, WHERE, ORDER BY, JOINs and aggregations on real customer data. 100 problems with instant feedback, no signup required to start.",
+  title: selectedProblem
+    ? `${selectedProblem.seoTitle} | Repractiq`
+    : "SQL Advanced Practice | Repractiq",
+
+  description: selectedProblem
+    ? selectedProblem.metaDescription
+    : "Practice SQL Advanced interview questions.",
+
+  canonical: selectedProblem
+    ? `https://www.repractiq.com/sql/advanced/${selectedProblem.id}-${selectedProblem.slug}`
+    : "https://www.repractiq.com/sql/advanced"
 });
 
 
@@ -539,7 +550,7 @@ else setExpandedMilestone("gold");
     setResults(null);
     setError(null);
     setValidationStatus(null);
-    navigate(`/sql/advanced/${p.id}`);
+    navigate(`/sql/advanced/${p.id}-${p.slug}`);
   }, [navigate]);
 
   const handleToggleExpand = (id) => {
@@ -559,8 +570,7 @@ else setExpandedMilestone("gold");
         setExpandedId(targetProblem.id);
       }
     } else {
-      const pathParts = location.pathname.split("/");
-      const idFromUrl = parseInt(pathParts[pathParts.length - 1]);
+      const idFromUrl = Number((problemSlug || "").split("-")[0]);
       if (!isNaN(idFromUrl)) {
         const target = SQL_ADVANCED_PROBLEMS.find((p) => p.id === idFromUrl);
         if (target) {
@@ -569,7 +579,7 @@ else setExpandedMilestone("gold");
         }
       }
     }
-  }, [location.state, location.pathname, handleSelectProblem]);
+  }, [problemSlug, location.state, handleSelectProblem]);
 
   useEffect(() => {
     if (selectedItemRef.current) {
@@ -747,7 +757,10 @@ ShareModalComponent={ShareModal}
   };
   return (
     <div style={{ background: "#ffffff", height: "100vh", display: "flex", flexDirection: "column", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a", overflow: "hidden" }}>
-
+         <StructuredData
+      problem={selectedProblem}
+      category="advanced"
+    />
       {/* NAV */}
       <nav style={{ padding: "0.85rem 2rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.97)", flexShrink: 0 }}>
         <span onClick={() => navigate("/")} style={{ fontWeight: 800, cursor: "pointer", fontSize: "1.1rem", letterSpacing: "-0.3px" }}>Repractiq</span>
@@ -966,7 +979,7 @@ ShareModalComponent={ShareModal}
                         <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", fontWeight: 600 }}>✓ Attempted</span>
                       )}
                     </div>
-                    <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>{selectedProblem.title}</h2>
+                    <h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>{selectedProblem.title}</h1>
                   </div>
                   <button
                     onClick={handlePostCommunity}

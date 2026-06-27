@@ -1,0 +1,706 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/1-sql-state-modifier-relative-temporal-intersection</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/2-sql-categorical-grouping-cumulative-aggregation-matrix</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/3-sql-descending-ordered-value-boundary-limit</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/4-sql-explicit-categorical-state-vector-identifier</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/5-sql-asymmetric-left-join-null-complement-inversion</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/6-sql-grouped-mean-distribution-index-formulation</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/7-sql-partitioned-window-rank-maxima-evaluation</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/8-sql-cross-column-fractional-ratio-inequality-condition</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/9-sql-global-vs-localized-scalar-average-benchmark</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/10-sql-frequency-cardinality-lower-bound-exclusion</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/11-sql-multi-timestamp-sequential-path-deviation</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/12-sql-multi-component-matrix-additive-validation</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/13-sql-cross-registry-value-discrepancy-audit</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/14-sql-state-dimension-distribution-categorization-profile</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/15-sql-static-temporal-threshold-boundary-scan</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/16-sql-stored-scalar-vs-computed-aggregate-audit</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/17-sql-relational-intersection-across-masked-flag-state</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/18-sql-currency-token-multi-registry-stratification-matrix</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/19-sql-global-floating-point-sequence-frequency-mean</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/20-sql-distribution-volume-ranking-segment-profile</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/21-sql-chronological-sequence-inversion-anomaly-sweep</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/22-sql-origin-attribute-key-intersect-volumetric-matrix</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/23-sql-string-key-uniqueness-volumetric-audit</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/24-sql-boolean-state-stratified-aggregate-comparator</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/25-sql-ordinal-scale-key-value-average-matrix</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/26-sql-extremum-temporal-span-delta-discrepancy</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/27-sql-dual-timestamp-target-vs-actual-delay-balance</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/28-sql-strftime-periodic-cyclical-chronology-sub-group</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/29-sql-window-sum-dynamically-extracted-ratio-matrix-allocation</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/30-sql-conditional-aggregation-binary-success-rate-coefficient</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/31-sql-window-row-number-top-category-customer-spend</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/32-sql-lag-window-function-consecutive-order-growth</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/33-sql-conditional-count-case-when-funnel-conversion</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/34-sql-retention-analysis-lag-consecutive-months</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/35-sql-having-clause-proportional-refund-ratios</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/36-sql-window-rank-monthly-revenue-leaderboard</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/37-sql-self-join-market-basket-analysis-pairs</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/38-sql-mom-growth-calculations-lag-window</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/39-sql-categorical-aggregation-sla-delay-impact</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/40-sql-data-integrity-audit-cross-table-validation</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/41-sql-cohort-generation-minimum-date-isolation</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/42-sql-retention-matrix-cohort-activity-cross-join</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/43-sql-ntile-window-function-quantile-segmentation</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/44-sql-rolling-sum-window-rows-preceding-bound</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/45-sql-first-touch-attribution-row-number-filter</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/46-sql-pareto-concentration-cumulative-window-ratio</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/47-sql-reorder-rate-conditional-ratio-aggregates</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/48-sql-statistical-zscore-outlier-detection</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/49-sql-consecutive-incident-streak-lag-matching</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/50-sql-clv-running-total-cumulative-sum</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/51-sql-purchase-interval-variance-statistical-gaps</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/52-sql-product-category-mom-growth-trends</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/53-sql-multi-channel-marketing-conversion-funnels</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/54-sql-product-cannibalization-time-series-trends</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/55-sql-rfm-customer-segmentation-base-aggregates</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/56-sql-operational-efficiency-timestamp-differentials</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/57-sql-payment-retry-effectiveness-success-rates</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/58-sql-workforce-utilization-active-range-averages</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/59-sql-feedback-sentiment-impact-purchase-frequency</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/60-sql-executive-system-funnel-revenue-aggregation</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/61-customer-order-gap-trend</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/62-revenue-seasonality-index</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/63-customer-spending-acceleration</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/64-top-n-products-category-tie-handling</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/65-customer-purchase-pattern-shift</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/66-delayed-delivery-probability-partner</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/67-customer-value-decay-curve</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/68-order-distribution-skewness</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/69-product-demand-volatility</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/70-customer-engagement-composite-score</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/71-payment-failure-chain-detection</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/72-revenue-leakage-identification</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/73-customer-lifecycle-state-machine</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/74-product-cannibalization-matrix</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/75-customer-cohort-revenue-decay</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/76-delivery-partner-efficiency-score-weighted</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/77-customer-behavior-drift-detection</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/78-multi-touch-revenue-attribution</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/79-customer-churn-prediction-proxy</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/80-end-to-end-business-kpi-dashboard</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/81-customer-order-sequence-consistency</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/82-revenue-double-counting-detection</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/83-customer-hidden-churn-pattern</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/84-outlier-delivery-partner-detection</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/85-product-substitution-detection</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/86-customer-lifetime-peak-point</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/87-multi-level-revenue-attribution</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/88-order-state-transition-errors</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/89-flash-sale-peak-concurrency-windows</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/90-recursive-referral-chain-depth</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/91-customer-engagement-decay-curve</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/92-product-cross-elasticity-matrix</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/93-delivery-network-bottleneck-detection</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/94-customer-value-stability-index</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/95-feedback-reliability-score</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/96-dynamic-cohort-drift</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/97-hidden-revenue-loss-discount-refund</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/98-customer-conversion-latency</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/99-multi-dimensional-ranking-system</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/interview/100-full-data-warehouse-integrity-check</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+</urlset>
