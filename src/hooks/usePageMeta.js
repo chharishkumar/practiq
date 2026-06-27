@@ -13,7 +13,7 @@ import { useEffect } from "react";
  * Resets to the default homepage meta when the component unmounts
  * (e.g. when navigating away), so the next page can set its own.
  */
-export function usePageMeta({ title, description }) {
+export function usePageMeta({ title, description, canonical }) {
   useEffect(() => {
     const prevTitle = document.title;
     const metaDescTag = document.querySelector('meta[name="description"]');
@@ -42,12 +42,28 @@ export function usePageMeta({ title, description }) {
       twDesc?.setAttribute("content", description);
     }
 
+let canonicalTag = document.querySelector("link[rel='canonical']");
+
+if (!canonicalTag) {
+  canonicalTag = document.createElement("link");
+  canonicalTag.setAttribute("rel", "canonical");
+  document.head.appendChild(canonicalTag);
+}
+
+if (canonical) {
+  canonicalTag.setAttribute("href", canonical);
+}
     // Restore defaults on unmount so the next page isn't stuck with stale meta
     return () => {
       document.title = prevTitle;
+    
       if (metaDescTag && prevDescription) {
         metaDescTag.setAttribute("content", prevDescription);
       }
+    
+      if (canonicalTag) {
+        canonicalTag.remove();
+      }
     };
-  }, [title, description]);
+  }, [title, description, canonical]);
 }

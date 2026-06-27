@@ -14,6 +14,7 @@ import BadgeUnlockModal from "../badges/BadgeUnlockModal";
 import { usePageMeta } from "../hooks/usePageMeta";
 
 import { useParams } from "react-router-dom";
+import StructuredData from "../components/StructuredData";
 
 const MILESTONES = [
   {
@@ -229,7 +230,7 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
           </div>
           <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "8px", padding: "0.625rem 0.75rem", marginBottom: "0.875rem" }}>
             <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "3px" }}>Real-world scenario</div>
-            <p style={{ margin: 0, fontSize: "0.78rem", color: "#1e40af", lineHeight: 1.6 }}>{p.basics}</p>
+            <p style={{ margin: 0, fontSize: "0.78rem", color: "#1e40af", lineHeight: 1.6 }}>{p.scenario}</p>
           </div>
           <div style={{ marginBottom: "0.875rem" }}>
             <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "5px" }}>Common use cases</div>
@@ -281,17 +282,25 @@ export default function SQLBasicsPage() {
   const [shareOpen, setShareOpen] = useState(false);
 const [elapsed, setElapsed] = useState(null);
 const [userFullName, setUserFullName] = useState("");
-const [userEmail, setUserEmail] = useState("");
+const [userEmail, setUserEmail] = useState(""); 
 const [userStreak, setUserStreak] = useState(0);
 const [unlockedBadges, setUnlockedBadges] = useState([]);
   const isMobile = useMobile();
-  const { problemId, slug } = useParams();
+  const { problemSlug } = useParams();
 
   usePageMeta({
-    title: "SQL Basics Practice — 100 Free Problems | Repractiq",
-    description: "Practice SQL Basics with SELECT, WHERE, ORDER BY, JOINs and aggregations on real customer data. 100 problems with instant feedback, no signup required to start.",
-  });
+    title: selectedProblem
+      ? `${selectedProblem.seoTitle} | Repractiq`
+      : "SQL Basics Practice | Repractiq",
+  
+    description: selectedProblem
+      ? selectedProblem.metaDescription
+      : "Practice SQL Basics with 100 real interview questions.",
 
+      canonical: selectedProblem
+    ? `https://www.repractiq.com/sql/basics/${selectedProblem.id}-${selectedProblem.slug}`
+    : "https://www.repractiq.com/sql/basics"
+  });
 
 
   const queryRef = useRef(query);
@@ -568,16 +577,17 @@ const res = currentDb.exec(normalizeQuotes(currentQuery));
         setExpandedId(targetProblem.id);
       }
     } else {
-      const idFromUrl = Number(problemId);
+      const idFromUrl = Number((problemSlug || "").split("-")[0]);
       if (!isNaN(idFromUrl)) {
         const target = SQL_PROBLEMS.find((p) => p.id === idFromUrl);
         if (target) {
-          handleSelectProblem(target);
+          setSelectedProblem(target);
+          setQuery(target.starterQuery);
           setExpandedId(target.id);
         }
       }
     }
-  }, [location.state, location.pathname, handleSelectProblem]);
+  }, [problemSlug, location.state, handleSelectProblem]);
 
   useEffect(() => {
     if (selectedItemRef.current) {
@@ -739,6 +749,10 @@ ShareModalComponent={ShareModal}
 
   return (
     <div style={{ background: "#ffffff", height: "100vh", display: "flex", flexDirection: "column", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a", overflow: "hidden" }}>
+        <StructuredData
+      problem={selectedProblem}
+      category="basics"
+    />
 
       {/* NAV */}
       <nav style={{ padding: "0.85rem 2rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.97)", flexShrink: 0 }}>
@@ -934,7 +948,7 @@ ShareModalComponent={ShareModal}
                         <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", fontWeight: 600 }}>✓ Attempted</span>
                       )}
                     </div>
-                    <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>{selectedProblem.title}</h2>
+                    <h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>{selectedProblem.title}</h1>
                   </div>
                   <button
                     onClick={handlePostCommunity}

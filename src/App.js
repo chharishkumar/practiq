@@ -38,8 +38,7 @@ export default function App() {
         
         {/* Dashboard & Practice Areas */}
         <Route path="/sql" element={<SQLPage />} />
-        {/* <Route path="/sql/basics" element={<SQLBasicsPage />} /> */}
-        <Route path="/sql/basics/:problemId-:slug?" element={<SQLBasicsPage />} />
+        <Route path="/sql/basics/:problemSlug?" element={<SQLBasicsPage />} />
         <Route path="/sql/intermediate/:problemId?" element={<SQLIntermediatePage />} />
         <Route path="/sql/advanced/:problemId?" element={<SQLAdvancedPage />} />
         <Route path="/sql/interview/:problemId?" element={<SQLInterviewPage />}/>

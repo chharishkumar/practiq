@@ -51,6 +51,62 @@ const validationConfig = {
   },
 };
 
+function ExpandedProblemDetails({ p }) {
+  return (
+    <>
+      {p.expectedColumns && (
+        <div style={{ marginTop: "10px", marginBottom: "0.875rem", padding: "12px 14px", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "10px" }}>
+          <div style={{ fontSize: "0.68rem", fontWeight: 700, color: "#2563eb", marginBottom: "8px", letterSpacing: "0.03em" }}>
+            REQUIRED OUTPUT COLUMNS
+          </div>
+          {p.expectedColumns.map(col => (
+            <div key={col} style={{ fontSize: "0.78rem", color: "#0f172a", marginBottom: "5px", display: "flex", alignItems: "center", gap: "6px" }}>
+              <span style={{ color: "#2563eb", fontSize: "0.8rem" }}>•</span> {col}
+            </div>
+          ))}
+          <div style={{ marginTop: "8px", paddingTop: "8px", borderTop: "1px dashed #bfdbfe" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.78rem", color: "#2563eb", fontWeight: 700, marginBottom: "6px" }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <line x1="3" y1="9" x2="21" y2="9" />
+              <line x1="3" y1="15" x2="21" y2="15" />
+              <line x1="9" y1="3" x2="9" y2="21" />
+            </svg>
+            Expected Rows: {p.expectedRowCount}
+          </div>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "6px", fontSize: "0.74rem", color: "#1d4ed8", lineHeight: 1.5 }}>
+            <span style={{ fontSize: "0.8rem", flexShrink: 0 }}>ⓘ</span>
+            <span>Return ONLY these columns. Additional columns will be marked incorrect.</span>
+          </div>
+        </div>
+      )}
+
+      {p.basics && (
+        <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "8px", padding: "0.6rem 0.75rem", marginBottom: "0.875rem" }}>
+          <div style={{ fontSize: "0.65rem", fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "3px" }}>
+            Real-world scenario
+          </div>
+          <p style={{ margin: 0, fontSize: "0.76rem", color: "#1e40af", lineHeight: 1.6 }}>{p.basics}</p>
+        </div>
+      )}
+
+      {p.useCases && p.useCases.length > 0 && (
+        <div style={{ marginBottom: "0.875rem" }}>
+          <div style={{ fontSize: "0.65rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "5px" }}>
+            Common use cases
+          </div>
+          {p.useCases.map((uc, i) => (
+            <div key={i} style={{ display: "flex", gap: "6px", alignItems: "flex-start", marginBottom: "3px" }}>
+              <span style={{ color: "#2563eb", fontSize: "0.68rem", marginTop: "2px" }}>→</span>
+              <span style={{ fontSize: "0.75rem", color: "#475569", lineHeight: 1.5 }}>{uc}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
 export default function MobileSQLLayout({
   problems,
   selectedProblem,
@@ -252,9 +308,10 @@ setExpandedMilestone,
                           <span style={{ fontSize: "0.7rem", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", color: "#94a3b8" }}>▾</span>
                         </div>
                         {isExpanded && (
-                          <div style={{ borderTop: "1px solid #f1f5f9", padding: "0.875rem", background: "#fafbfc" }}>
-                            <p style={{ margin: "0 0 0.75rem", fontSize: "0.82rem", color: "#0f172a", lineHeight: 1.6 }}>{p.description}</p>
-                            {p.hint && (
+  <div style={{ borderTop: "1px solid #f1f5f9", padding: "0.875rem", background: "#fafbfc" }}>
+    <p style={{ margin: "0 0 0.75rem", fontSize: "0.82rem", color: "#0f172a", lineHeight: 1.6 }}>{p.description}</p>
+    <ExpandedProblemDetails p={p} />
+    {p.hint && (
                               <details>
                                 <summary style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", listStyle: "none" }}>💡 Show hint</summary>
                                 <div style={{ marginTop: "6px", padding: "0.5rem 0.625rem", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "6px", fontSize: "0.78rem", color: "#92400e", lineHeight: 1.6, fontFamily: "monospace" }}>
@@ -304,10 +361,11 @@ setExpandedMilestone,
                 <span style={{ fontSize: "0.7rem", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", color: "#94a3b8" }}>▾</span>
               </div>
               {isExpanded && (
-                <div style={{ borderTop: "1px solid #f1f5f9", padding: "0.875rem", background: "#fafbfc" }}>
-                  <p style={{ margin: "0 0 0.75rem", fontSize: "0.82rem", color: "#0f172a", lineHeight: 1.6 }}>{p.description}</p>
-                  {p.explanation && <p style={{ margin: "0 0 0.75rem", fontSize: "0.78rem", color: "#475569", lineHeight: 1.65 }}>{p.explanation}</p>}
-                  {p.hint && (
+  <div style={{ borderTop: "1px solid #f1f5f9", padding: "0.875rem", background: "#fafbfc" }}>
+    <p style={{ margin: "0 0 0.75rem", fontSize: "0.82rem", color: "#0f172a", lineHeight: 1.6 }}>{p.description}</p>
+    {p.explanation && <p style={{ margin: "0 0 0.75rem", fontSize: "0.78rem", color: "#475569", lineHeight: 1.65 }}>{p.explanation}</p>}
+    <ExpandedProblemDetails p={p} />
+    {p.hint && (
                     <details>
                       <summary style={{ fontSize: "0.78rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", listStyle: "none" }}>💡 Show hint</summary>
                       <div style={{ marginTop: "6px", padding: "0.5rem 0.625rem", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "6px", fontSize: "0.78rem", color: "#92400e", lineHeight: 1.6, fontFamily: "monospace" }}>{p.hint}</div>
@@ -491,6 +549,7 @@ setExpandedMilestone,
               <div style={{ fontSize: "0.65rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "2px" }}>#{selectedProblem.id} — Task</div>
               <p style={{ margin: 0, fontSize: "0.83rem", color: "#0f172a", lineHeight: 1.55 }}>{selectedProblem.description}</p>
             </div>
+            <ExpandedProblemDetails p={selectedProblem} />
             {validationStatus && (() => {
               const c = validationConfig[validationStatus];
               return (
