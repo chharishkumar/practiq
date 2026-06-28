@@ -1,23 +1,32 @@
 
 export const SQL_INTERVIEW_PROBLEMS = [
-  {
-    id: 1,
-    title: "State Modifier Relative Temporal Intersections",
-    difficulty: "Basic",
-    slug: "sql-state-modifier-relative-temporal-intersection",
-    seoTitle: "SQL INNER JOIN with Dynamic Temporal Window Assertions",
-    metaDescription: "Learn how to isolate intersections between discrete state indicators and records bounded by dynamic relative date criteria.",
-    tags: ["SQL", "INNER JOIN", "DATE", "Filtering", "Temporal Intervals"],
-    description: "Find all active customers who have placed at least one order in the last 30 days.",
-    explanation: "Filter active customers and join with orders. Use a date condition to restrict orders to the last 30 days.",
-    scenario: "Marketing wants to target recently active users for a campaign.",
-    useCases: ["Customer segmentation", "Retention campaigns"],
-    hint: "JOIN customers and orders, filter status and order_date",
-    starterQuery: "SELECT DISTINCT c.customer_id, c.customer_name\nFROM customers c\nJOIN orders o ON c.customer_id = o.customer_id\nWHERE c.status = 'Active'\nAND o.order_date >= DATE('now','-30 days');",
-    expectedColumns: ["customer_id", "customer_name"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT DISTINCT\n    c.customer_id,\n    c.customer_name\nFROM customers c\nJOIN orders o\n    ON c.customer_id = o.customer_id\nWHERE c.status = 'Active'\nAND o.order_date >= DATE('now','-30 days');",
-  },
+
+{
+  id: 1,
+  title: "Find Customers Who Have Placed Orders",
+  difficulty: "Basic",
+  slug: "sql-inner-join-customers-with-orders",
+  seoTitle: "SQL INNER JOIN Interview Question | Find Customers Who Have Placed Orders",
+  metaDescription: "Learn how to use SQL INNER JOIN to find customers who have placed at least one order.",
+  tags: ["SQL", "INNER JOIN", "Basic", "Customers", "Orders"],
+  description: "Find all customers who have placed at least one order.",
+  explanation: "Use an INNER JOIN between customers and orders. Use DISTINCT to avoid duplicate customers when they have placed multiple orders.",
+  scenario: "The sales team wants a list of customers who have purchased at least once.",
+  useCases: [
+    "Customer segmentation",
+    "Sales reporting",
+    "Marketing campaigns"
+  ],
+  hint: "JOIN customers and orders using customer_id. Use DISTINCT to return each customer only once.",
+  starterQuery: "SELECT DISTINCT c.customer_id, c.customer_name\nFROM customers c\nJOIN orders o ON c.customer_id = o.customer_id;",
+  expectedColumns: [
+    "customer_id",
+    "customer_name"
+  ],
+  expectedRowCount: 10,
+  validateBy: "row_count",
+  solutionQuery: "SELECT DISTINCT\n    c.customer_id,\n    c.customer_name\nFROM customers c\nINNER JOIN orders o\n    ON c.customer_id = o.customer_id;"
+},
   {
     id: 2,
     title: "Categorical Grouping Cumulative Aggregation Matrices",
