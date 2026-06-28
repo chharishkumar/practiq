@@ -5,700 +5,700 @@
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/1-select-all-customers-sql-basic</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/2-select-specific-columns-sql</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/3-filter-records-by-date-sql-where</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/4-sql-order-by-descending-limit-sort</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/5-sql-count-aggregate-function</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/6-sql-limit-clause-preview-records</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/7-sql-where-and-multiple-conditions</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/8-sql-where-or-conditional-logic</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/9-sql-in-operator-set-filtering</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/10-sql-like-operator-wildcard-matching</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/11-sql-group-by-count-aggregation</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/12-sql-sum-revenue-aggregation-metric</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/13-sql-avg-average-order-value-kpi</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/14-sql-max-min-outlier-analysis</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/15-sql-having-clause-post-aggregation-filtering</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/16-sql-distinct-keyword-deduplication</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/17-sql-inner-join-relational-mapping</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/18-sql-left-join-null-filtering-is-null</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/19-sql-as-alias-column-renaming</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/20-sql-is-not-null-data-cleansing</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/21-sql-string-concatenation-pipe-operator</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/22-sql-clv-customer-lifetime-spend-ranking</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/23-sql-between-operator-inclusive-range</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/24-sql-not-in-exclusion-filtering</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/25-sql-min-date-chronological-baseline</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/26-sql-where-filtering-order-by-sorting</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/27-sql-table-aliases-namespace-shortening</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/28-sql-count-column-null-evaluation</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/29-sql-date-wildcard-like-string-matching</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/30-sql-left-join-coalesce-spend-reporting</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/31-sql-product-column-projection-pricing</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/32-sql-where-string-filtering-category</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/33-sql-numeric-comparison-operators-pricing</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/34-sql-order-by-ascending-sorting-default</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/35-sql-like-wildcard-substring-searches</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/36-sql-count-global-catalog-records</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/37-sql-distinct-category-extraction</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/38-sql-where-or-disjunction-multi-category</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/39-sql-between-operator-product-id-range</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/40-sql-min-max-product-pricing-bounds</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/41-sql-exact-string-matching-where-equals</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/42-sql-order-by-sorting-customer-ids</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/43-sql-less-than-operator-numeric-threshold</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/44-sql-sum-total-catalog-valuation</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/45-sql-avg-conditional-category-benchmarks</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/46-sql-is-null-missing-value-audits</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/47-sql-count-daily-order-volume</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/48-sql-order-by-alphabetical-text-sorting</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/49-sql-in-operator-primary-key-lookup</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/50-sql-dynamic-arithmetic-calculated-columns</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/51-sql-substr-instr-email-domain-extraction</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/52-sql-in-operator-price-tier-auditing</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/53-sql-like-operator-infix-substring-matching</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/54-sql-multi-column-order-by-asc-desc</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/55-sql-exact-date-matching-incident-response</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/56-sql-length-function-string-dimension-profiling</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/57-sql-where-pre-aggregation-filtering-sum</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/58-sql-modulo-operator-pricing-consistency-audits</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/59-sql-like-operator-prefix-wildcard-matching</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/60-sql-dynamic-multiplication-tax-estimation</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/61-sql-greater-than-operator-above-average-orders</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/62-sql-not-like-operator-domain-exclusion</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/63-sql-count-distinct-unique-categories</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/64-sql-like-date-prefix-year-filtering</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/65-sql-sum-single-customer-spend</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/66-sql-limit-offset-pagination-controls</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/67-sql-group-by-average-price-per-category</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/68-sql-empty-string-vs-null-verification</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/69-sql-multiplication-operator-bulk-pricing</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/70-sql-in-operator-date-list-filtering</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/71-sql-like-wildcard-anywhere-substring-match</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/72-sql-sum-annual-revenue-wildcard-dates</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/73-sql-order-by-descending-alphabetical-sorting</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/74-sql-is-null-catalog-classification-audits</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/75-sql-avg-global-average-order-value</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/76-sql-order-by-desc-limit-ranking-bounds</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/77-sql-in-operator-discrete-text-matching</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/78-sql-between-operator-inclusive-numeric-ranges</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/79-sql-as-alias-column-renaming</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/80-sql-length-function-conditional-text-filtering</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/81-sql-not-equal-operator-category-exclusion</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/82-sql-subtraction-arithmetic-calculated-fields</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/83-sql-length-function-less-than-threshold</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/84-sql-count-rows-targeted-where-filter</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/85-sql-modulo-operator-whole-number-filtering</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/86-sql-select-static-literals-without-table</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/87-sql-like-operator-suffix-character-matching</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/88-sql-max-function-chronological-dates</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/89-sql-price-unit-conversion-multiplication</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/90-sql-like-infix-substring-category-filtering</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/91-sql-or-operator-compound-outlier-filtering</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/92-sql-order-by-chronological-and-financial-metrics</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/93-sql-fractional-multiplication-markdown-pricing</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/94-sql-date-comparison-greater-than-equals</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/95-sql-in-operator-status-string-lists</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/96-sql-length-function-less-than-bound</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/97-sql-sum-global-processed-revenue</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/98-sql-like-infix-email-provider-auditing</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/99-sql-greater-than-operator-foreign-key-validation</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/basics/100-sql-avg-combined-with-in-list-filtering</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>

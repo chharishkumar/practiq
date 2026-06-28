@@ -5,700 +5,700 @@
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/1-sql-group-by-having-clause</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/2-sql-running-total-window-function</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/3-sql-max-with-group-by</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/4-sql-scalar-subquery</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/5-sql-join-with-sum-aggregation</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/6-sql-rank-partition-by</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/7-sql-cte-common-table-expressions</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/8-sql-where-not-in-subquery</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/9-sql-percentage-of-total-calculation</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/10-sql-date-difference-julianday</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/11-sql-compound-date-filtering</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/12-sql-avg-group-by</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/13-sql-sum-join-order-by-limit</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/14-sql-count-group-by-having</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/15-sql-conditional-aggregation-case-when</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/16-sql-multiple-table-joins-aggregation</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/17-sql-date-comparison-operators</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/18-sql-rank-over-aggregate-function</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/19-sql-timestamp-column-comparison</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/20-sql-group-by-count-order-by-limit</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/21-sql-inner-join-with-where-clause</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/22-sql-avg-with-date-subtraction</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/23-sql-left-join-is-null</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/24-sql-lag-window-function</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/25-sql-mathematical-operators-in-where</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/26-sql-outer-join-data-integrity-validation</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/27-sql-sum-group-by-product-id</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/28-sql-sum-aggregation-customer-id</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/29-sql-having-count-validation</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/30-sql-avg-group-by-customer-id</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/31-sql-count-group-by-where-clause</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/32-sql-join-with-sum-group-by</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/33-sql-group-by-boolean-field</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/34-sql-where-mathematical-percentage-filter</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/35-sql-having-count-equals-one</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/36-sql-where-greater-than-subquery</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/37-sql-group-by-is-not-null</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/38-sql-window-sum-over-nested-aggregation</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/39-sql-scalar-subquery-with-where</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/40-sql-group-by-date-column</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/41-sql-left-join-identity-is-null</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/42-sql-max-aggregate-with-group-by-date</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/43-sql-count-where-string-match</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/44-sql-where-equals-zero-numeric-filter</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/45-sql-group-by-order-by-count-limit</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/46-sql-inner-join-sum-group-by-string</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/47-sql-subquery-with-avg-comparison</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/48-sql-count-group-by-status-string</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/49-sql-group-by-categorical-column</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/50-sql-where-clause-multiple-and-conditions</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/51-sql-join-group-by-having-sum-comparison</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/52-sql-having-count-distinct-condition</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/53-sql-avg-from-nested-subquery-count</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/54-sql-lag-window-function-subquery-comparison</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/55-sql-max-group-by-order-id</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/56-sql-window-count-percentage-ratio</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/57-sql-having-sum-less-than-subquery-avg</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/58-sql-julianday-date-difference-lag-window</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/59-sql-inner-join-with-sum-categorical-grouping</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/60-sql-having-count-distinct-category-keys</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/61-sql-avg-function-with-group-by-order-id</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/62-sql-scalar-subquery-where-clause-filtering</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/63-sql-having-sum-case-when-conditional-logic</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/64-sql-derived-column-subtraction-arithmetic</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/65-sql-inner-join-with-count-group-by-string</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/66-sql-multiple-table-joins-with-avg-order-by</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/67-sql-count-group-by-currency-string</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/68-sql-having-avg-greater-than-scalar-subquery</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/69-sql-max-aggregate-with-group-by-order-id</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/70-sql-strftime-date-extraction-group-by</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/71-sql-having-count-greater-than-nested-subquery-avg</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/72-sql-join-with-sum-regional-group-by</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/73-sql-where-clause-timestamp-comparison-filtering</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/74-sql-having-count-greater-than-subquery-mean</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/75-sql-where-columnar-inequality-operator</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/76-sql-left-join-multiple-conditions-is-null</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/77-sql-inner-join-with-avg-string-grouping</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/78-sql-order-by-mathematical-ratio-expression</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/79-sql-having-count-distinct-payment-methods</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/80-sql-where-greater-than-nested-scalar-subquery</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/81-sql-julianday-chronological-comparison-lag-window</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/82-sql-order-by-ratio-expression-with-limit</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/83-sql-having-clause-sum-inequality-comparison</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/84-sql-composite-group-by-identifier-and-month-string</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/85-sql-inner-join-with-max-regional-string-grouping</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/86-sql-having-count-distinct-user-bounds</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/87-sql-having-sum-case-when-status-inequality</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/88-sql-join-with-sum-and-boolean-flag-grouping</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/89-sql-having-count-distinct-product-category-validation</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/90-sql-avg-aggregate-with-group-by-order-key</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/91-sql-join-with-having-count-distinct-states</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/92-sql-composite-group-by-customer-and-order</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/93-sql-sum-aggregation-grouped-by-payment-string</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/94-sql-correlated-subquery-where-clause-inequality</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/95-sql-multiple-left-joins-with-is-null-filter</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/96-sql-having-sum-greater-than-scalar-subquery</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/97-sql-having-count-greater-than-nested-derived-average</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/98-sql-group-by-order-id-having-count-greater-than-one</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/99-sql-inner-join-with-sum-grouped-by-brand-string</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
     <loc>https://www.repractiq.com/sql/intermediate/100-sql-having-clause-floating-point-ratio-comparison</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
