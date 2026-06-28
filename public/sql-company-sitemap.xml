@@ -1,0 +1,2106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/1-customers-above-average-order-value</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/2-month-over-month-order-growth</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/3-customers-no-feedback</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/4-rank-products-by-revenue-per-category</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/5-second-most-recent-order-per-customer</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/6-high-risk-delayed-shipments-premium-delivery</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/7-on-time-fulfillment-rate-per-partner</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/8-unresolved-payment-failures-gateways</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/9-gross-margin-leakage-product-category</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/10-active-customers-accelerating-purchase-frequency</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/11-top-three-expensive-items-per-order</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/12-corrupted-feedback-logs-without-orders</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/13-marketplace-refund-velocity-outliers</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/14-first-time-promotion-conversion-efficiency</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/15-regional-delivery-density-fleet-capacity</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/16-conscious-basket-size-erosion-patterns</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/17-identification-high-yield-acquisition-channels</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/18-disputed-tax-invoicing-reconciliation-gaps</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/19-warehouse-stock-valuation-overhead-profile</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/20-continuous-thirty-day-churn-risk-inactivity</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/21-multi-item-basket-diversity-index</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/22-negative-sentiment-anomalies-top-rated-invoices</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/23-unresolved-support-issues-telemetry</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/24-anomalous-price-shifts-inventory-carts</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/25-top-spending-customer-segments-geographies</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/26-in-flight-cancellation-sunk-delivery-costs</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/27-brand-value-concentrator-category-penetration</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/28-consecutive-days-payment-dominance-shift</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/29-customer-engagement-lifecycle-value-decoupling</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/amazon/30-complete-enterprise-architecture-audit-baseline</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/1-products-never-ordered</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/2-cumulative-revenue-over-time</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/3-customers-active-three-consecutive-months</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/4-most-common-cancellation-reason</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/5-average-delivery-time-by-partner</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/6-product-unit-price-anomalies-elasticity</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/7-high-value-churn-diagnostics-last-mile</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/8-fraud-sentiment-chargeback-mismatch</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/9-fulfillment-performance-dispersions-transit</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/10-first-touch-attribution-cac-country</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/11-rolling-moving-spend-windows-accounts</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/12-orphaned-payment-settlements-missing-orders</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/13-unproductive-inventory-sluggish-category-turnover</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/14-multi-currency-arbitrage-invoicing-leakage</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/15-gateway-authorization-retries-decay</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/16-vip-multi-purchase-churn-window</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/17-regional-logistics-overhead-delivery-fees</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/18-line-item-allocation-financial-gaps</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/19-fulfillment-bottlenecks-long-pending-orders</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/20-sku-subcategory-pricing-dispersion</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/21-unlinked-customer-communication-audits</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/22-critical-telemetry-late-delivery-reviews</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/23-strategic-product-categories-net-sales</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/24-payment-channel-volume-gateway-mix</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/25-customer-profile-order-ledger-gaps</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/26-micro-geo-demand-clusters-yields</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/27-mid-transit-cancellation-costs</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/28-brand-concentration-category-yields</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/29-anomalous-refund-trends-acquisition-funnels</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/google/30-enterprise-architecture-forensic-loop</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/1-active-vs-non-verified-users</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/2-calculate-average-order-value</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/3-top-three-frequent-product-categories</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/4-unsuccessful-orders-failed-payment-redirections</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/5-fleet-operator-status-audit</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/6-customer-acquisition-value-ratios-channels</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/7-user-conversion-velocity-first-purchase</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/8-underpriced-skus-high-volume</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/9-logistics-sla-breaches-out-for-delivery</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/10-high-value-basket-cancellations-promos</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/11-user-multi-basket-frequency-high-volume</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/12-asymmetric-feedback-short-five-star-reviews</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/13-unlinked-support-interactions-feedback</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/14-regional-sales-performance-state-gross</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/15-product-pricing-dispersions-brands</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/16-dynamic-churn-alerts-active-post-purchase</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/17-reconciling-line-item-tax-rates</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/18-successful-in-app-checkout-conversions</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/19-month-over-month-platform-revenue-growth</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/20-user-retention-cohorts-repeated-shoppers</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/21-product-return-anomalies-high-refunds</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/22-gaps-islands-continuous-active-months</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/23-core-logistics-fleet-sla-completion</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/24-identifying-micro-targeting-segments-postal</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/25-reconciling-profile-lifetime-value-mismatches</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/26-sunk-transportation-cost-cancelled-orders</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/27-top-grossing-merchant-brands</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/28-payment-processing-mix-volumes</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/29-promotional-code-return-refund-risks</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/meta/30-meta-commerce-system-forensic-audit</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/1-legacy-enterprise-accounts-validation</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/2-azure-consumption-metrics-completed-invoices</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/3-surface-device-top-hardware-categories</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/4-flagging-high-value-invoicing-drops</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/5-supplier-performance-underperforming-transit</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/6-commercial-licensing-returns-marketing-funnels</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/7-azure-tenant-onboarding-lag-conversion</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/8-underpriced-commercial-skus-high-volumes</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/9-regional-hardware-fulfillment-transit-drag</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/10-discount-cannibalization-enterprise-cancellations</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/11-high-volume-buyers-power-tenants</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/12-asymmetric-developer-feedback-minimalist</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/13-orphaned-support-interactions-missing-orders</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/14-regional-licensing-performance-territory</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/15-oem-partner-hardware-portfolios-price-spread</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/16-saas-inactivity-risk-dormant-accounts</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/17-reconciling-consolidated-invoices-tax</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/18-evaluating-team-support-channels-portal</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/19-azure-cloud-arr-mom-growth</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/20-saas-expansion-cadence-tenant-invoices</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/21-commercial-contract-revocations-refunds</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/22-gaps-islands-continuous-subscription-streaks</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/23-supply-chain-freight-carrier-sla</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/24-regional-sales-segments-postal</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/25-auditing-discrepancies-central-ledgers</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/26-logistics-sunk-costs-mid-transit</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/27-top-revenue-independent-hardware-vendors</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/28-azure-payment-processing-mix</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/29-acquisition-funnels-channel-refund-exposure</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/microsoft/30-microsoft-cloud-architecture-forensic</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/1-abrupt-title-drops-incomplete-streams</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/2-subscriber-billing-metrics-realized-value</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/3-content-catalog-binge-categories</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/4-identifying-premium-billing-friction</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/5-localization-quality-poor-subtitles</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/6-subscriber-acquisition-marketing-runways</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/7-registration-pipeline-delays-conversion</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/8-low-production-budget-high-streams</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/9-regional-isp-streaming-buffer-drag</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/10-promotional-cannibalization-trial-drops</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/11-binge-watchers-high-engagement</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/12-asymmetric-algorithmic-feedback-reviews</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/13-orphaned-profile-metrics-missing-accounts</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/14-regional-content-footprints-territory</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/15-production-studio-portfolios-runtime-spread</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/16-saas-engagement-drop-dormant-accounts</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/17-reconciling-payment-provider-summaries</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/18-evaluating-device-streaming-mix</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/19-subscriber-stream-volumes-mom-evolution</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/20-content-discovery-cadence-viewing-gaps</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/21-subscription-tier-revocations-refunds</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/22-gaps-islands-continuous-streaming-streaks</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/23-streaming-infrastructure-cdn-sla</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/24-regional-subscriber-segments-postal</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/25-auditing-discrepancies-usage-ledgers</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/26-infrastructure-loss-failed-playback</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/27-top-streaming-independent-studions</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/28-global-alternative-gateway-mix</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/29-acquisition-funnels-localized-refunds</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/netflix/30-netflix-global-streaming-forensic</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/1-flagging-extreme-rider-wait-times</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/2-driver-earnings-net-fare-totals</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/3-high-volume-surge-pricing-cities</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/4-detecting-driver-incentive-fraud-cashouts</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/5-vehicle-compliance-expiring-documents</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/6-rider-acquisition-referral-funnels</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/7-onboarding-pipeline-driver-activation-velocity</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/8-low-mileage-trips-outsized-surge</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/9-gps-ping-telemetry-delays-sync</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/10-promotional-burn-rates-dormancy</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/11-road-warriors-heavy-active-drivers</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/12-asymmetric-app-reviews-tickets</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/13-orphaned-geo-pings-missing-trips</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/14-airport-logistics-corridors-hubs</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/15-regional-fleet-mix-vehicle-age</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/16-driver-activation-dropoff-inactivity</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/17-reconciling-braintree-gateway-summaries</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/18-evaluating-ride-tier-performance</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/19-marketplace-demand-mom-booking-velocity</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/20-driver-ride-dispatches-sequential-gaps</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/21-driver-incentive-fraud-referrals</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/22-gaps-islands-driver-login-streaks</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/23-dispatch-platform-eta-sla</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/24-regional-marketplace-geofence-sectors</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/25-auditing-discrepancies-rider-wallets</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/26-marketplace-loss-surge-cancellations</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/27-top-growth-partner-fleets</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/28-regional-alternative-digital-wallets</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/29-acquisition-funnels-chargeback-exposures</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/uber/30-uber-marketplace-global-forensic</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/1-abandoned-high-value-checkout-funnels</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/2-saas-subscription-metrics-mrr</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/3-document-cloud-pdf-workflows</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/4-identifying-enterprise-billing-failures</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/5-asset-storage-cloud-space-compliance</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/6-marketing-attribution-trial-conversion</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/7-saas-onboarding-days-to-asset-creation</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/8-underutilized-multiapp-seats-high-spend</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/9-adobe-fonts-cdn-latency-drops</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/10-promotional-cannibalization-subscription-drops</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/11-power-creators-firefly-prompts</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/12-asymmetric-stock-feedback-reviews</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/13-orphaned-seat-allocations-missing-corporations</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/14-regional-sales-performance-geography</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/15-product-engineering-feature-version-runways</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/16-saas-activation-drop-dormant-profiles</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/17-reconciling-app-store-receipts</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/18-evaluating-platform-app-mix-ipad</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/19-saas-enterprise-seating-mom-scaling</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/20-collaborative-asset-lifecycle-sync-gaps</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/21-subscription-tier-revocations-chargebacks</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/22-gaps-islands-creative-usage-streaks</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/23-cloud-asset-render-sla</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/24-enterprise-account-densities-sectors</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/25-auditing-discrepancies-stock-credits</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/26-saas-operational-losses-midterm-cancellations</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/27-top-growth-marketing-agencies</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/28-global-commerce-gateway-configurations</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/29-enterprise-renewal-vulnerabilities-refunds</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/adobe/30-adobe-saas-platform-global-forensic</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/1-flagging-stagnant-enterprise-deals</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/2-saas-subscription-metrics-arr</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/3-lead-conversion-marketing-funnels</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/4-multi-tenant-excessive-api-consumption</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/5-account-security-expiring-sandboxes</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/6-customer-success-attribution-tiering</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/7-crm-onboarding-days-to-contact-creation</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/8-disengaged-contacts-open-opportunities</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/9-mulesoft-event-streaming-sync-latencies</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/10-partner-program-cannibalization-attrition</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/11-power-users-custom-objects</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/12-appexchange-review-cleansing</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/13-orphaned-contact-objects-missing-accounts</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/14-regional-sales-clouds-territories</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/15-ecosystem-package-version-runways</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/16-saas-activation-drops-workspace-dormancy</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/17-reconciling-external-billing-records</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/18-evaluating-service-cloud-sla</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/19-saas-enterprise-mom-arr-growth</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/20-collaborative-lead-cycles-stage-transitions</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/21-appexchange-excessive-refund-rates</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/22-gaps-islands-agent-interaction-streaks</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/23-marketing-cloud-processing-latencies</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/24-enterprise-account-densities-industries</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/25-auditing-discrepancies-partner-royalties</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/26-saas-operational-losses-midterm-terminations</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/27-top-growth-consulting-integrators</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/28-global-commerce-hub-transactions</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/29-marketing-cloud-excessive-chargebacks</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/salesforce/30-salesforce-core-platform-forensic</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/1-flagging-critical-out-of-stock-grocery</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/2-omnichannel-returns-refund-capital</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/3-supplier-performance-low-compliance</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/4-black-friday-overloaded-shuttles</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/5-walmart-plus-expiring-trial-conversions</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/6-last-mile-fleet-fuel-efficiency</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/7-supplier-onboarding-inventory-ingestion</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/8-slow-moving-seasonal-apparel</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/9-walmart-pay-pos-latencies</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/10-supplier-price-protection-gaps</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/11-supercenters-high-volume-skus</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/12-ecommerce-review-cleansing</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/13-orphaned-inbound-pallets</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/14-regional-fulfillment-centers-yields</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/15-supply-chain-gateway-release-spread</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/16-grocery-pickup-zero-engagement-lockers</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/17-reconciling-warehouse-logistics-registers</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/18-evaluating-pharmacy-sla-pathways</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/19-ecommerce-mom-marketplace-growth</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/20-perishable-food-cold-chain-gaps</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/21-marketplace-defective-product-refunds</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/22-gaps-islands-register-operating-streaks</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/23-warehouse-inbound-ingestion-latencies</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/24-store-demand-profiling-regions</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/25-auditing-walmart-plus-gift-cards</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/26-cold-storage-carrier-rejections</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/27-top-growth-last-mile-couriers</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/28-self-checkout-payment-modes</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/29-supplier-inbound-deficiency-chargebacks</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/walmart-global-tech/30-walmart-omnichannel-retail-forensic</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/1-flagging-high-cost-oci-instances</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/2-erp-ledger-operating-revenue</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/3-isolating-high-cost-table-scans</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/4-oci-network-ingress-anomalies</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/5-software-license-compliance-expiry</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/6-oci-storage-utilization-tiers</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/7-erp-procurement-order-finalization</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/8-underutilized-cloud-tenancies-churn</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/9-goldengate-replication-latencies</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/10-netsuite-erroneous-commission-balances</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/11-schemas-overloaded-tables</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/12-oci-marketplace-review-cleansing</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/13-orphaned-block-storage-volumes</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/14-oci-global-regions-interconnect</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/15-java-runtime-release-version-spreads</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/16-oci-trial-account-dormancy</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/17-reconciling-oci-metering-data</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/18-evaluating-oci-support-sla</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/19-netsuite-mom-arr-growth</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/20-oci-hardware-provisioning-gaps</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/21-cloud-partner-contract-revocations</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/22-gaps-islands-cloud-backup-streaks</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/23-oci-dns-routing-latencies</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/24-oci-resource-density-regions</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/25-auditing-cerner-health-ledgers</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/26-oci-contract-losses-midterm-terminations</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/27-top-growth-oracle-integrators</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/28-oci-billing-gateway-channels</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/29-oci-marketplace-partner-chargebacks</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+<url>
+    <loc>https://www.repractiq.com/sql/company/oracle/30-oracle-cloud-ecosystem-forensic</loc>
+    <lastmod>2026-06-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+</url>
+
+</urlset>

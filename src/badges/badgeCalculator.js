@@ -25,6 +25,7 @@ export function calculateEarnedBadges(stats = {}) {
     advancedCount     = 0,
     interviewCount    = 0,
     scenariosCount    = 0,
+    companyCount      = 0,
     totalCount        = 0,
     // currentStreak     = 0,
     longestStreak     = 0,
@@ -43,6 +44,7 @@ export function calculateEarnedBadges(stats = {}) {
     sql_advanced:     advancedCount,
     sql_interview:    interviewCount,
     sql_scenario:     scenariosCount,
+    sql_company:      companyCount,
   };
 
   for (const badge of SECTION_BADGES) {
@@ -206,6 +208,7 @@ export function buildStatsFromSubmissions(submissions = [], currentStreak = 0, l
     advancedCount:     solvedPerCategory["sql_advanced"]     || 0,
     interviewCount:    solvedPerCategory["sql_interview"]    || 0,
     scenariosCount:    solvedPerCategory["sql_scenario"]     || 0,
+    companyCount:      solvedPerCategory["sql_company"]      || 0,
     totalCount,
     totalAttempts,
     accuracy,

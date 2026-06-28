@@ -43,6 +43,7 @@ const CATEGORIES = [
   { label: "SQL Advanced", desc: "Window functions, CTEs, performance tuning — senior analyst territory.", path: "/sql/advanced" },
   { label: "SQL Interview ⭐", desc: "The exact questions asked at top companies. Practice until they feel easy.", count: "100+ problems", path: "/sql/interview" },
   { label: "Real-world Scenarios", desc: "Customer churn, revenue analysis, cohort retention — actual business problems.", count: "100+ problems", path: "/sql/scenarios" },
+  { label: "Top Company Questions 🏢", desc: "Real SQL interview questions from Amazon, Google, Meta, Microsoft and more.", count: "300+ problems", path: "/sql/company" },
 ];
 
 export default function LandingPage() {
@@ -58,7 +59,7 @@ export default function LandingPage() {
 
   usePageMeta({
     title: "Repractiq — Free SQL Practice Platform for Data Analysts",
-    description: "Practice SQL on real business datasets. Solve 500+ problems covering customer churn, revenue analysis, cohort retention, and interview prep. Free to start, no signup required.",
+    description: "Practice SQL on real business datasets. Solve 800+ problems covering customer churn, revenue analysis, company interview prep, and FAANG-style questions. Free to start, no signup required.",
   });
   
 

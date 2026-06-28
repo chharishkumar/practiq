@@ -12,6 +12,7 @@ import SQLIntermediatePage from "./data/SQLIntermediate";
 import SQLAdvancedPage from "./data/SQLAdvanced";
 import SQLInterviewPage from "./data/SQLInterview";
 import SQLScenariosPage from "./data/SQLScenarios";
+import SQLCompanyPage from "./data/SQLCompanyPage";
 import SQLProblemPage from "./data/SQLProblemPage";
 import LeaderboardPage from "./LeaderboardPage";
 import BlogPage from "./BlogPage";
@@ -43,6 +44,7 @@ export default function App() {
         <Route path="/sql/advanced/:problemId?" element={<SQLAdvancedPage />} />
         <Route path="/sql/interview/:problemId?" element={<SQLInterviewPage />}/>
         <Route path="/sql/scenarios/:problemId?" element={<SQLScenariosPage />}/>
+        <Route path="/sql/company/:companySlug?/:problemSlug?" element={<SQLCompanyPage />} />
         <Route path="/sql/problem/:id" element={<SQLProblemPage />} />
         
         {/* Placeholder for future Login page to prevent 404s */}

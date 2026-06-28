@@ -279,6 +279,7 @@ export default function BadgeGrid({ profileBadges, earnedIds = [], stats = {}, i
     sql_advanced:     stats.advancedCount     || 0,
     sql_interview:    stats.interviewCount    || 0,
     sql_scenario:     stats.scenariosCount    || 0,
+    sql_company:      stats.companyCount      || 0,
   };
 
   // Section badges grouped by category

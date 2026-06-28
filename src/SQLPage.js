@@ -8,6 +8,8 @@ import { SQL_INTERMEDIATE_PROBLEMS } from "./data/sqlIntermediateProblems";
 import { SQL_ADVANCED_PROBLEMS } from "./data/sqlAdvancedProblems";
 import { SQL_INTERVIEW_PROBLEMS } from "./data/sqlInterviewProblems";
 import { SQL_SCENARIOS_PROBLEMS } from "./data/sqlScenariosProblems";
+import { SQL_COMPANY_PROBLEMS } from "./data/sqlCompanyProblems";
+import { getCompanyProblemPath } from "./data/sqlSearch";
 import { usePageMeta } from "./hooks/usePageMeta";
 
 // ─── SAMPLE DATA ──────────────────────────────────────────────────────────────
@@ -21,6 +23,7 @@ const CATEGORIES = [
 { label: "SQL Advanced", path: "/sql/advanced" },
 { label: "SQL Interview Questions ⭐", path: "/sql/interview" },
 { label: "SQL Scenarios (Real-world)", path: "/sql/scenarios" },
+{ label: "Top Company Questions 🏢", path: "/sql/company" },
 ];
 
 // ─── FEATURED PROBLEMS — first 10 from each category with real paths ──────────
@@ -89,9 +92,15 @@ const scenarios = pickMixed(SQL_SCENARIOS_PROBLEMS, 400).map(p => ({
 ...p,
 category: "Scenarios",
 difficulty: "Hard",
-path: `/sql/scenarios/${p.id}` // ← add /${p.id}
+path: `/sql/scenarios/${p.id}`
 }));
-return [...basics, ...intermediate, ...advanced, ...interview, ...scenarios];
+const company = pickMixed(SQL_COMPANY_PROBLEMS, 500).map(p => ({
+...p,
+category: "Company",
+difficulty: p.difficulty || "Medium",
+path: getCompanyProblemPath(p),
+}));
+return [...basics, ...intermediate, ...advanced, ...interview, ...scenarios, ...company];
 }
 
 const FEATURED_PROBLEMS = buildFeaturedProblems();
@@ -179,6 +188,7 @@ Intermediate: "#7c3aed",
 Advanced: "#dc2626",
 Interview: "#d97706",
 Scenarios: "#16a34a",
+Company: "#0891b2",
 };
 
 // ─── FALLBACKS ────────────────────────────────────────────────────────────────
@@ -221,6 +231,7 @@ sql_intermediate: "Intermediate",
 sql_advanced: "Advanced",
 sql_interview: "Interview",
 sql_scenarios: "Scenarios",
+sql_company: "Company",
 };
 
 // ─── DIFF PILL ────────────────────────────────────────────────────────────────
@@ -390,8 +401,8 @@ const [isGuest, setIsGuest] = useState(true);
 const [solvedByCategory, setSolvedByCategory] = useState({});
 
 usePageMeta({
-  title: "SQL Practice — Basics, Advanced, Interview & Scenarios | Repractiq",
-  description: "Choose your SQL practice path: Basics, Intermediate, Advanced, Interview Prep, or Real-world Scenarios. 500+ problems, instant feedback, completely free to start.",
+  title: "SQL Practice — Basics, Advanced, Interview, Company & Scenarios | Repractiq",
+  description: "Choose your SQL practice path: Basics, Intermediate, Advanced, Interview Prep, Top Company Questions, or Real-world Scenarios. 800+ problems, instant feedback, completely free to start.",
 });
 
 useEffect(() => {
@@ -423,7 +434,8 @@ const topics = [
   { key: "sql_intermediate", label: "Intermediate", icon: "📗", total: SQL_INTERMEDIATE_PROBLEMS.length, solved: solvedByCategory["sql_intermediate"]?.size || 0, path: "/sql/intermediate" },
   { key: "sql_advanced", label: "Advanced", icon: "📙", total: SQL_ADVANCED_PROBLEMS.length, solved: solvedByCategory["sql_advanced"]?.size || 0, path: "/sql/advanced" },
   { key: "sql_interview", label: "Interview", icon: "🎯", total: SQL_INTERVIEW_PROBLEMS.length, solved: solvedByCategory["sql_interview"]?.size || 0, path: "/sql/interview" },
-  { key: "sql_scenarios", label: "Scenarios", icon: "🏢", total: SQL_SCENARIOS_PROBLEMS.length, solved: solvedByCategory["sql_scenarios"]?.size || 0, path: "/sql/scenarios" },
+  { key: "sql_scenario", label: "Scenarios", icon: "🏢", total: SQL_SCENARIOS_PROBLEMS.length, solved: solvedByCategory["sql_scenario"]?.size || 0, path: "/sql/scenarios" },
+  { key: "sql_company", label: "Company", icon: "💼", total: SQL_COMPANY_PROBLEMS.length, solved: solvedByCategory["sql_company"]?.size || 0, path: "/sql/company" },
 ];
 
 const interview = topics.find((t) => t.key === "sql_interview");
@@ -567,7 +579,7 @@ return () => window.removeEventListener("keydown", handler);
 }, [runQuery]);
 
 // Featured filter
-const allCats = ["All", "Basics", "Intermediate", "Advanced", "Interview", "Scenarios"];
+const allCats = ["All", "Basics", "Intermediate", "Advanced", "Interview", "Scenarios", "Company"];
 const filteredFeatured = activeCat === "All"
 ? FEATURED_PROBLEMS
 : FEATURED_PROBLEMS.filter((p) => p.category === activeCat);

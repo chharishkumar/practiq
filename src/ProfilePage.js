@@ -9,6 +9,8 @@ import { SQL_INTERMEDIATE_PROBLEMS } from "./data/sqlIntermediateProblems";
 import { SQL_ADVANCED_PROBLEMS } from "./data/sqlAdvancedProblems";
 import { SQL_INTERVIEW_PROBLEMS } from "./data/sqlInterviewProblems";
 import { SQL_SCENARIOS_PROBLEMS } from "./data/sqlScenariosProblems";
+import { SQL_COMPANY_PROBLEMS } from "./data/sqlCompanyProblems";
+import { getCompanyProblemKey, getSubmissionProblemPath } from "./data/sqlSearch";
 
 import { useBadges } from "./badges/useBadges";
 import BadgeGrid from "./badges/BadgeGrid";
@@ -24,6 +26,7 @@ const ALL_SQL_PROBLEMS = [
   ...(SQL_ADVANCED_PROBLEMS || []).map((p) => ({ ...p, category: "Advanced" })),
   ...(SQL_INTERVIEW_PROBLEMS || []).map((p) => ({ ...p, category: "Interview" })),
   ...(SQL_SCENARIOS_PROBLEMS || []).map((p) => ({ ...p, category: "Scenarios" })),
+  ...(SQL_COMPANY_PROBLEMS || []).map((p) => ({ ...p, category: "Company", submissionId: getCompanyProblemKey(p) })),
 ];
 
 const CATEGORY_TOTALS = {
@@ -32,16 +35,18 @@ const CATEGORY_TOTALS = {
   Advanced:     SQL_ADVANCED_PROBLEMS?.length || 0,
   Interview:    SQL_INTERVIEW_PROBLEMS?.length || 0,
   Scenarios:    SQL_SCENARIOS_PROBLEMS?.length || 0,
+  Company:      SQL_COMPANY_PROBLEMS?.length || 0,
 };
 
-const CATEGORY_PATH_MAP = {
-  sql_basics:       "/sql/basics",
-  sql_intermediate: "/sql/intermediate",
-  sql_advanced:     "/sql/advanced",
-  sql_interview:    "/sql/interview",
-  sql_scenario:     "/sql/scenarios",
-  sql_scenarios:    "/sql/scenarios",
-};
+// const CATEGORY_PATH_MAP = {
+//   sql_basics:       "/sql/basics",
+//   sql_intermediate: "/sql/intermediate",
+//   sql_advanced:     "/sql/advanced",
+//   sql_interview:    "/sql/interview",
+//   sql_scenario:     "/sql/scenarios",
+//   sql_scenarios:    "/sql/scenarios",
+//   sql_company:      "/sql/company",
+// };
 
 // Map category key → label for display
 const CATEGORY_LABEL_MAP = {
@@ -51,6 +56,7 @@ const CATEGORY_LABEL_MAP = {
   sql_interview:    "Interview",
   sql_scenario:     "Scenarios",  // ← add this
   sql_scenarios:    "Scenarios",
+  sql_company:      "Company",
 };
 
 const DIFF_STYLE = {
@@ -484,7 +490,7 @@ const accuracy = totalAttempted > 0 ? Math.round((solvedCount / totalAttempted) 
   });
 
   // Solved by category
-  const solvedByCategory = { Basics: 0, Intermediate: 0, Advanced: 0, Interview: 0, Scenarios: 0 };
+  const solvedByCategory = { Basics: 0, Intermediate: 0, Advanced: 0, Interview: 0, Scenarios: 0, Company: 0 };
   correctSubs.forEach((s) => {
     const label = CATEGORY_LABEL_MAP[s.category];
     if (label && solvedByCategory[label] !== undefined) {
@@ -496,7 +502,10 @@ const accuracy = totalAttempted > 0 ? Math.round((solvedCount / totalAttempted) 
   const byDifficulty = { Easy: 0, Medium: 0, Hard: 0 };
   correctSubs.forEach((s) => {
     const label = CATEGORY_LABEL_MAP[s.category] || "Basics";
-    const match = ALL_SQL_PROBLEMS.find((p) => p.id === s.problem_id && p.category === label);
+    const match = ALL_SQL_PROBLEMS.find((p) => {
+      const submissionId = p.submissionId ?? p.id;
+      return String(submissionId) === String(s.problem_id) && p.category === label;
+    });
     if (match?.difficulty && byDifficulty[match.difficulty] !== undefined) {
       byDifficulty[match.difficulty]++;
     }
@@ -516,7 +525,7 @@ const accuracy = totalAttempted > 0 ? Math.round((solvedCount / totalAttempted) 
 
 const lastSub = submissions[0];
 const lastProblemPath = lastSub
-  ? `${CATEGORY_PATH_MAP[lastSub.category] || "/sql/basics"}/${lastSub.problem_id}`
+  ? getSubmissionProblemPath(lastSub.category, lastSub.problem_id)
   : "/sql/basics";
 
   // Build solved problems list for the table (most recent first, correct only)
@@ -527,13 +536,16 @@ const lastProblemPath = lastSub
     if (seenProblems.has(s.problem_id)) return;
     seenProblems.add(s.problem_id);
     const label = CATEGORY_LABEL_MAP[s.category] || "Basics";
-    const match = ALL_SQL_PROBLEMS.find((p) => p.id === s.problem_id && p.category === label);
+    const match = ALL_SQL_PROBLEMS.find((p) => {
+      const submissionId = p.submissionId ?? p.id;
+      return String(submissionId) === String(s.problem_id) && p.category === label;
+    });
     solvedProblems.push({
       ...s,
       title:      s.problem_title || match?.title || `Problem #${s.problem_id}`,
       difficulty: match?.difficulty || "Easy",
       categoryLabel: label,
-      path:       CATEGORY_PATH_MAP[s.category] || "/sql/basics",
+      path:       getSubmissionProblemPath(s.category, s.problem_id),
     });
   });
 
@@ -691,6 +703,7 @@ gap: isMobile ? "8px" : "10px", }}>
                     { label: "SQL Advanced",     solved: solvedByCategory.Advanced,     total: CATEGORY_TOTALS.Advanced,     color: "#dc2626" },
                     { label: "Interview Qs",     solved: solvedByCategory.Interview,    total: CATEGORY_TOTALS.Interview,    color: "#d97706" },
                     { label: "Scenarios",        solved: solvedByCategory.Scenarios,    total: CATEGORY_TOTALS.Scenarios,    color: "#16a34a" },
+                    { label: "Top Company Qs",   solved: solvedByCategory.Company,      total: CATEGORY_TOTALS.Company,      color: "#0891b2" },
                   ].map((c) => (
                     <div key={c.label} style={{ marginBottom: "12px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.78rem", marginBottom: "4px" }}>

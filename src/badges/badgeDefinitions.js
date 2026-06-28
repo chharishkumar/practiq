@@ -178,9 +178,40 @@ export const TIER_STYLES = {
       shareText:   "Just earned Production Ready Analyst on Repractiq — all 100 Scenarios done! 🥇",
       certificate: true,
     },
+
+    // SQL Company
+    {
+      id:          "company_bronze",
+      title:       "Company Prep Starter",
+      icon:        "🥉",
+      tier:        "bronze",
+      category:    "sql_company",
+      threshold:   25,
+      description: "Completed 25 Top Company SQL problems.",
+      shareText:   "Earned Company Prep Starter on Repractiq — FAANG SQL prep started! 🥉",
+    },
+    {
+      id:          "company_silver",
+      title:       "FAANG Ready",
+      icon:        "🥈",
+      tier:        "silver",
+      category:    "sql_company",
+      threshold:   50,
+      description: "Completed 50 Top Company SQL problems.",
+      shareText:   "Earned FAANG Ready on Repractiq — 50 company interview questions solved! 🥈",
+    },
+    {
+      id:          "company_gold",
+      title:       "Top Company SQL Master",
+      icon:        "🥇",
+      tier:        "gold",
+      category:    "sql_company",
+      threshold:   100,
+      description: "Completed 100 Top Company SQL problems.",
+      shareText:   "Just earned Top Company SQL Master on Repractiq — 100 company questions mastered! 🥇",
+      certificate: true,
+    },
   ];
-  
-  // ─── GLOBAL PROGRESS BADGES ──────────────────────────────────────────────────
   // Earned by total problems solved across all categories
   
   export const GLOBAL_BADGES = [
@@ -234,18 +265,18 @@ export const TIER_STYLES = {
       title:       "SQL Champion",
       icon:        "🏆",
       tier:        "platinum",
-      threshold:   400,
-      description: "Solved 400 problems total.",
-      shareText:   "400 SQL problems solved on Repractiq! Championship level. 🏆",
+      threshold:   600,
+      description: "Solved 600 problems total.",
+      shareText:   "600 SQL problems solved on Repractiq! Championship level. 🏆",
     },
     {
       id:          "practiq_elite",
       title:       "Practiq Elite",
       icon:        "💎",
       tier:        "diamond",
-      threshold:   500,
-      description: "Solved all 500 Repractiq problems.",
-      shareText:   "I just completed ALL 500 SQL problems on Repractiq! 💎 Practiq Elite achieved.",
+      threshold:   800,
+      description: "Solved all 800 Repractiq problems.",
+      shareText:   "I just completed ALL 800 SQL problems on Repractiq! 💎 Practiq Elite achieved.",
       certificate: true,
     },
   ];
@@ -325,10 +356,10 @@ export const TIER_STYLES = {
     title:       "SQL Grandmaster",
     icon:        "👑",
     tier:        "diamond",
-    description: "Completed all 500 Repractiq challenges and demonstrated mastery across SQL fundamentals, analytics, optimization, interviews, and real-world business scenarios.",
-    shareText:   "I just became an SQL Grandmaster on Repractiq — all 500 challenges completed across every category. 👑",
+    description: "Completed all 800 Repractiq challenges and demonstrated mastery across SQL fundamentals, analytics, optimization, interviews, company prep, and real-world business scenarios.",
+    shareText:   "I just became an SQL Grandmaster on Repractiq — all 800 challenges completed across every category. 👑",
     certificate: true,
-    requires:    ["basics_gold", "intermediate_gold", "advanced_gold", "interview_gold", "scenarios_gold"],
+    requires:    ["basics_gold", "intermediate_gold", "advanced_gold", "interview_gold", "scenarios_gold", "company_gold"],
   };
   
   // ─── ALL BADGES COMBINED ─────────────────────────────────────────────────────
@@ -348,4 +379,5 @@ export const TIER_STYLES = {
     sql_advanced:     "SQL Advanced",
     sql_interview:    "SQL Interview",
     sql_scenario:     "SQL Scenarios",
+    sql_company:      "Top Company Questions",
   };

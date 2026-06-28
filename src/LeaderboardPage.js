@@ -13,6 +13,7 @@ const TABS = [
   "SQL Advanced",
   "SQL Interview",
   "SQL Scenarios",
+  "Top Company Questions",
 ];
 
 const BADGES = {
@@ -31,6 +32,7 @@ const CATEGORY_MAP = {
   "SQL Advanced":     "sql_advanced",
   "SQL Interview":    "sql_interview",
   "SQL Scenarios":    "sql_scenario",
+  "Top Company Questions": "sql_company",
 };
 
 const STRENGTH_LABEL = {
@@ -39,6 +41,7 @@ const STRENGTH_LABEL = {
   sql_advanced:     "Advanced",
   sql_interview:    "Interview",
   sql_scenario:     "Scenarios",
+  sql_company:      "Company",
 };
 
 // ── Helpers ──────────────────────────────────────────────────────────────────

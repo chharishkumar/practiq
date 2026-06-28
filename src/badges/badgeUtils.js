@@ -103,6 +103,7 @@ import {
       advancedCount     = 0,
       interviewCount    = 0,
       scenariosCount    = 0,
+      companyCount      = 0,
       totalCount        = 0,
       currentStreak     = 0,
     } = stats;
@@ -113,6 +114,7 @@ import {
       sql_advanced:     advancedCount,
       sql_interview:    interviewCount,
       sql_scenario:     scenariosCount,
+      sql_company:      companyCount,
     };
   
     const candidates = [];

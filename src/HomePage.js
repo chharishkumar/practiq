@@ -9,6 +9,8 @@ import { SQL_INTERMEDIATE_PROBLEMS } from "./data/sqlIntermediateProblems";
 import { SQL_ADVANCED_PROBLEMS } from "./data/sqlAdvancedProblems";
 import { SQL_INTERVIEW_PROBLEMS } from "./data/sqlInterviewProblems";
 import { SQL_SCENARIOS_PROBLEMS } from "./data/sqlScenariosProblems";
+import { SQL_COMPANY_PROBLEMS } from "./data/sqlCompanyProblems";
+import { getCompanyProblemPath, getSubmissionProblemPath, getSubmissionKey } from "./data/sqlSearch";
 
 import { useBadges } from "./badges/useBadges";
 import BadgeUnlockModal from "./badges/BadgeUnlockModal";
@@ -51,13 +53,15 @@ const DIFF = {
   Hard:   { bg: "#fef2f2", color: "#dc2626", border: "#fecaca" },
 };
 
-const CATEGORY_PATH_MAP = {
-  sql_basics:        "/sql/basics",
-  sql_intermediate:  "/sql/intermediate",
-  sql_advanced:      "/sql/advanced",
-  sql_interview:     "/sql/interview",
-  sql_scenario:     "/sql/scenarios",
-};
+// const CATEGORY_PATH_MAP = {
+//   sql_basics:        "/sql/basics",
+//   sql_intermediate:  "/sql/intermediate",
+//   sql_advanced:      "/sql/advanced",
+//   sql_interview:     "/sql/interview",
+//   sql_scenario:     "/sql/scenarios",
+//   sql_scenarios:    "/sql/scenarios",
+//   sql_company:      "/sql/company",
+// };
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
@@ -197,7 +201,8 @@ function HeroGreeting({ user, navigate, isMobile }) {
     (SQL_INTERMEDIATE_PROBLEMS?.length || 0) +
     (SQL_ADVANCED_PROBLEMS?.length || 0) +
     (SQL_INTERVIEW_PROBLEMS?.length || 0) +
-    (SQL_SCENARIOS_PROBLEMS?.length || 0);
+    (SQL_SCENARIOS_PROBLEMS?.length || 0) +
+    (SQL_COMPANY_PROBLEMS?.length || 0);
 
   const accuracyPct = user.totalAttempts > 0
     ? Math.round((user.correctCount / user.totalAttempts) * 100)
@@ -318,7 +323,8 @@ function ProgressFeedback({ user }) {
     (SQL_INTERMEDIATE_PROBLEMS?.length || 0) +
     (SQL_ADVANCED_PROBLEMS?.length || 0) +
     (SQL_INTERVIEW_PROBLEMS?.length || 0) +
-    (SQL_SCENARIOS_PROBLEMS?.length || 0);
+    (SQL_SCENARIOS_PROBLEMS?.length || 0) +
+    (SQL_COMPANY_PROBLEMS?.length || 0);
   const pct = totalSQL > 0 ? Math.round(((user.solvedCount || 0) / totalSQL) * 100) : 0;
 
   // Simple XP estimate: 10 XP per correct solve
@@ -363,15 +369,16 @@ function ProgressFeedback({ user }) {
 
 function RecommendedProblems({ navigate, solvedIds, isMobile }) {
   const ALL_PROBLEMS = [
-    ...SQL_PROBLEMS.map(p => ({ ...p, category: "sql_basics", difficulty: "Easy", path: `/sql/basics/${p.id}` })),
-    ...SQL_INTERMEDIATE_PROBLEMS.map(p => ({ ...p, category: "sql_intermediate", difficulty: "Medium", path: `/sql/intermediate/${p.id}` })),
-    ...SQL_ADVANCED_PROBLEMS.map(p => ({ ...p, category: "sql_advanced", difficulty: "Hard", path: `/sql/advanced/${p.id}` })),
-    ...SQL_INTERVIEW_PROBLEMS.map(p => ({ ...p, category: "sql_interview", difficulty: "Medium", path: `/sql/interview/${p.id}` })),
-    ...SQL_SCENARIOS_PROBLEMS.map(p => ({ ...p, category: "sql_scenario", difficulty: "Hard", path: `/sql/scenarios/${p.id}` })),
+    ...SQL_PROBLEMS.map(p => ({ ...p, category: "sql_basics", difficulty: "Easy", path: `/sql/basics/${p.id}`, solvedKey: getSubmissionKey("sql_basics", p.id) })),
+    ...SQL_INTERMEDIATE_PROBLEMS.map(p => ({ ...p, category: "sql_intermediate", difficulty: "Medium", path: `/sql/intermediate/${p.id}`, solvedKey: getSubmissionKey("sql_intermediate", p.id) })),
+    ...SQL_ADVANCED_PROBLEMS.map(p => ({ ...p, category: "sql_advanced", difficulty: "Hard", path: `/sql/advanced/${p.id}`, solvedKey: getSubmissionKey("sql_advanced", p.id) })),
+    ...SQL_INTERVIEW_PROBLEMS.map(p => ({ ...p, category: "sql_interview", difficulty: "Medium", path: `/sql/interview/${p.id}`, solvedKey: getSubmissionKey("sql_interview", p.id) })),
+    ...SQL_SCENARIOS_PROBLEMS.map(p => ({ ...p, category: "sql_scenario", difficulty: "Hard", path: `/sql/scenarios/${p.id}`, solvedKey: getSubmissionKey("sql_scenario", p.id) })),
+    ...SQL_COMPANY_PROBLEMS.map(p => ({ ...p, category: "sql_company", difficulty: p.difficulty || "Medium", path: getCompanyProblemPath(p), solvedKey: getSubmissionKey("sql_company", `${p.company}::${p.id}`) })),
   ];
 
   // Pick unsolved problems, prioritise basics first then others
-  const unsolved = ALL_PROBLEMS.filter(p => !solvedIds.has(p.id));
+  const unsolved = ALL_PROBLEMS.filter(p => !solvedIds.has(p.solvedKey || getSubmissionKey(p.category, p.id)));
   
   // Get next 4 unsolved — first from basics, then others
   const fromBasics = unsolved.filter(p => p.category === "sql_basics").slice(0, 2);
@@ -384,6 +391,7 @@ function RecommendedProblems({ navigate, solvedIds, isMobile }) {
     sql_advanced:     "Advanced",
     sql_interview:    "Interview",
     sql_scenario:     "Scenarios",
+    sql_company:      "Company",
   };
 
   const REASON_MAP = {
@@ -392,12 +400,13 @@ function RecommendedProblems({ navigate, solvedIds, isMobile }) {
     sql_advanced:     "Challenge yourself",
     sql_interview:    "Interview prep",
     sql_scenario:     "Real-world practice",
+    sql_company:      "Top company prep",
   };
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)", gap: "10px" }}>
       {list.map((p) => (
-        <Card key={`${p.category}-${p.id}`} onClick={() => navigate(p.path)} style={{ padding: "1rem 1.125rem" }}>
+        <Card key={p.solvedKey || `${p.category}-${p.id}`} onClick={() => navigate(p.path)} style={{ padding: "1rem 1.125rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "6px" }}>
             <DiffPill d={p.difficulty} />
             <span style={{ fontSize: "0.65rem", color: "#94a3b8", background: "#f8fafc", padding: "2px 7px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
@@ -609,6 +618,7 @@ function BadgesCard({ user, badges, navigate }) {
                   sql_advanced:     "/sql/advanced",
                   sql_interview:    "/sql/interview",
                   sql_scenario:     "/sql/scenarios",
+                  sql_company:      "/sql/company",
                 }[badge.category] || "/sql"
               : "/sql";
 
@@ -899,6 +909,7 @@ export default function HomePage() {
       basics:   "/sql/intermediate",
       joins:    "/sql/advanced",
       advanced: "/sql/interview",
+      interview: "/sql/company",
     };
     const recommendedPath = pathMap[answers.experience] || "/sql/basics";
 
@@ -947,7 +958,7 @@ export default function HomePage() {
 
       // Correct submissions only
       const correctSubs   = subs.filter((s) => s.status === "correct");
-      const solvedIdSet   = new Set(correctSubs.map((s) => s.problem_id));
+      const solvedIdSet   = new Set(correctSubs.map((s) => getSubmissionKey(s.category, s.problem_id)));
       setSolvedIds(solvedIdSet);
 
       // Weekly / last-week counts (based on updated_at of correct submissions)
@@ -966,7 +977,7 @@ export default function HomePage() {
       const lastProblem = lastSub
       ? {
           title:      lastSub.problem_title || "Unnamed problem",
-          path:       `${CATEGORY_PATH_MAP[lastSub.category] || "/sql/basics"}/${lastSub.problem_id}`,
+          path:       getSubmissionProblemPath(lastSub.category, lastSub.problem_id),
           category:   lastSub.category,
           difficulty: "Easy",
         }
@@ -1084,7 +1095,8 @@ export default function HomePage() {
     (SQL_INTERMEDIATE_PROBLEMS?.length || 0) +
     (SQL_ADVANCED_PROBLEMS?.length || 0) +
     (SQL_INTERVIEW_PROBLEMS?.length || 0) +
-    (SQL_SCENARIOS_PROBLEMS?.length || 0);
+    (SQL_SCENARIOS_PROBLEMS?.length || 0) +
+    (SQL_COMPANY_PROBLEMS?.length || 0);
 
   const isNewUser = (user.solvedCount || 0) === 0;
 

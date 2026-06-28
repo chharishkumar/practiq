@@ -7,6 +7,7 @@ import { SQL_INTERMEDIATE_PROBLEMS } from "../src/data/sqlIntermediateProblems.j
 import { SQL_ADVANCED_PROBLEMS } from "../src/data/sqlAdvancedProblems.js";
 import { SQL_INTERVIEW_PROBLEMS } from "../src/data/sqlInterviewProblems.js";
 import { SQL_SCENARIOS_PROBLEMS } from "../src/data/sqlScenariosProblems.js";
+import { SQL_COMPANY_PROBLEMS } from "../src/data/sqlCompanyProblems.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,6 +17,17 @@ const BASE_URL = "https://www.repractiq.com";
 const TODAY = new Date().toISOString().split("T")[0];
 
 const PUBLIC_DIR = path.join(__dirname, "../public");
+
+function slugifyCompany(name) {
+  return String(name || "").toLowerCase().replace(/\s+/g, "-");
+}
+
+function getProblemUrl(category, problem) {
+  if (category.name === "company") {
+    return `${BASE_URL}/sql/company/${slugifyCompany(problem.company)}/${problem.id}-${problem.slug}`;
+  }
+  return `${BASE_URL}${category.landing}/${problem.id}-${problem.slug}`;
+}
 
 const categories = [
   {
@@ -47,6 +59,12 @@ const categories = [
     filename: "sql-scenarios-sitemap.xml",
     landing: "/sql/scenarios",
     problems: SQL_SCENARIOS_PROBLEMS,
+  },
+  {
+    name: "company",
+    filename: "sql-company-sitemap.xml",
+    landing: "/sql/company",
+    problems: SQL_COMPANY_PROBLEMS,
   },
 ];
 
@@ -96,11 +114,7 @@ writeSitemap("pages-sitemap.xml", pages);
 
 categories.forEach((category) => {
   const urls = category.problems.map((problem) =>
-    createUrl(
-      `${BASE_URL}${category.landing}/${problem.id}-${problem.slug}`,
-      "0.8",
-      "monthly"
-    )
+    createUrl(getProblemUrl(category, problem), "0.8", "monthly")
   );
 
   writeSitemap(category.filename, urls);

@@ -1,4 +1,17 @@
 import { useEffect } from "react";
+import { getCompanyProblemPath } from "../data/sqlSearch";
+
+function getProblemUrl(problem, category, baseUrl) {
+  if (category === "company" && problem.company) {
+    return `${baseUrl}${getCompanyProblemPath(problem)}`;
+  }
+  return `${baseUrl}/sql/${category.toLowerCase()}/${problem.id}-${problem.slug}`;
+}
+
+function getCategoryUrl(category, baseUrl) {
+  if (category === "company") return `${baseUrl}/sql/company`;
+  return `${baseUrl}/sql/${category.toLowerCase()}`;
+}
 
 export default function StructuredData({
   problem,
@@ -10,6 +23,10 @@ export default function StructuredData({
 
     const existing = document.getElementById("repractiq-schema");
     if (existing) existing.remove();
+
+    const problemUrl = getProblemUrl(problem, category, baseUrl);
+    const categoryUrl = getCategoryUrl(category, baseUrl);
+    const categoryLabel = category === "company" ? "Top Company SQL Questions" : category;
 
     const schema = {
       "@context": "https://schema.org",
@@ -53,15 +70,14 @@ export default function StructuredData({
             {
               "@type": "ListItem",
               "position": 2,
-              "name": category,
-              "item": `${baseUrl}/sql/${category.toLowerCase()}`
+              "name": categoryLabel,
+              "item": categoryUrl
             },
             {
               "@type": "ListItem",
               "position": 3,
               "name": problem.title,
-              "item":
-                `${baseUrl}/sql/${category.toLowerCase()}/${problem.id}-${problem.slug}`
+              "item": problemUrl
             }
           ]
         },
@@ -70,11 +86,9 @@ export default function StructuredData({
         {
           "@type": "LearningResource",
 
-          "@id":
-            `${baseUrl}/sql/${category.toLowerCase()}/${problem.id}-${problem.slug}`,
+          "@id": problemUrl,
 
-          "url":
-            `${baseUrl}/sql/${category.toLowerCase()}/${problem.id}-${problem.slug}`,
+          "url": problemUrl,
 
           "name": problem.seoTitle,
 
@@ -99,7 +113,7 @@ export default function StructuredData({
 
           "isPartOf": {
             "@type": "Course",
-            "name": category
+            "name": categoryLabel
           },
 
           "publisher": {
@@ -125,8 +139,7 @@ export default function StructuredData({
             "@id": `${baseUrl}/#organization`
           },
 
-          "mainEntityOfPage":
-            `${baseUrl}/sql/${category.toLowerCase()}/${problem.id}-${problem.slug}`
+          "mainEntityOfPage": problemUrl
         }
       ]
     };
