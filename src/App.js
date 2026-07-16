@@ -22,6 +22,12 @@ import PrivacyPolicyPage from "./PrivacyPolicyPage";
 import TermsUse from "./TermsUse";
 import PricingPage from "./PricingPage";
 import StartHerePage from "./data/StartHerePage"; 
+import PythonBasicsPage from "./python/PythonBasicsPage";
+import PythonIntermediatePage from "./python/PythonIntermediatePage";
+import PythonAdvancedPage from "./python/PythonAdvancedPage";
+import PythonInterviewPage from "./python/PythonInterviewPage";
+import PythonScenariosPage from "./python/PythonScenariosPage";
+import PythonPage from "./python/PythonPage";
 
 
 export default function App() {
@@ -59,6 +65,16 @@ export default function App() {
         <Route path="/share" element={<TermsUse />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/sql/start" element={<StartHerePage />} />
+
+        <Route path="/python/basics/:problemSlug?" element={<PythonBasicsPage />} />
+        <Route path="/python/intermediate/:problemSlug?" element={<PythonIntermediatePage />} />
+        <Route path="/python/advanced/:problemSlug?" element={<PythonAdvancedPage />} />
+        <Route path="/python/interview/:problemSlug?" element={<PythonInterviewPage />} />
+        <Route path="/python/scenarios/:problemSlug?" element={<PythonScenariosPage />} />
+        <Route path="/python" element={<PythonPage />} />
+
+
+      
       </Routes>
     </BrowserRouter>
   );

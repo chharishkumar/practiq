@@ -461,7 +461,7 @@ export const SQL_PROBLEMS = [
     expectedColumns: ["Customer Name", "Email Address"],
     expectedRowCount: 5,
     validateBy: "exact",
-    solutionQuery: "SELECT customer_name AS \"Customer Name\", email AS \"Email Address\" FROM customers;"
+    solutionQuery: "SELECT customer_name AS \"Customer_Name\", email AS \"Email_Address\" FROM customers;"
   },
   {
     id: 20,
