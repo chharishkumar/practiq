@@ -857,7 +857,7 @@ export const PYTHON_SCENARIOS_PROBLEMS = [
         type: "function",
         description: "Write a function `clean_emails(emails)` that returns a list of valid email addresses, converted to lowercase, removing any entries that don't match standard email format.",
         explanation: "Validated user datasets reduce bounced emails and prevent data quality issues in CRM systems.",
-        hint: "Use regex `r'[^@]+@[^@]+\.[^@]+'` to check format validity.",
+        hint: "Use regex `r'[^@]+@[^@]+\\.[^@]+'` to check format validity.",
         starterCode: `import re\n\ndef clean_emails(emails):\n    # your code here\n    pass\n`,
         expectedOutput: "",
         testCases: [

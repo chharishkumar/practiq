@@ -953,7 +953,6 @@ export const PYTHON_INTERMEDIATE_PROBLEMS = [
         type: "function",
         description: "Write a function called `count_extensions` that takes a list of filenames and compiles a dictionary tracking the frequency of each unique file extension (e.g., '.txt', '.py').",
         explanation: "Extract file extensions using splitting techniques like `filename.split('.')[-1]`. Then, loop through the extensions to build and update your frequency count dictionary.",
-        explanation: "Isolate extensions via splitting routines: `filename.split('.')[-1]`. Map loop metrics building frequency output indices.",
         hint: "Check for period indicators, split out extension labels, and count occurrences using a dictionary.",
         starterCode: `def count_extensions(filenames):\n    # your code here\n    pass\n`,
         expectedOutput: "",
@@ -981,7 +980,6 @@ export const PYTHON_INTERMEDIATE_PROBLEMS = [
         ],
       },
       {
-        id: 43, // Note: Schema updates to index alignment sequences
         id: 53,
         title: "Lambda Sorting Multi Tier Dictionary Keys",
         slug: "python-lambda-sorting-multi-tier-dictionary-keys",
@@ -1175,7 +1173,8 @@ export const PYTHON_INTERMEDIATE_PROBLEMS = [
         tags: ["OOP basics", "math"],
         difficulty: "Intermediate",
         type: "function",
-        description: "Create a class named `Circle` that initializes with a `radius` attribute. Import the `math` module and add an instance method called `get_area` that returns the area of the circle ($\pi r^2$).",
+        description: "Create a class named `Circle` that initializes with a `radius` attribute. Import the `math` module and add an instance method called `get_area` that returns the area of the circle ($\\pi r^2$).",
+        
         explanation: "Instance methods use `self` to read instance attributes. You can compute the area using Python's built-in `math.pi` value.",
         hint: "Inside `get_area(self)`, return `math.pi * (self.radius ** 2)`.",
         starterCode: `import math\n\nclass Circle:\n    # your code here\n    pass\n`,
