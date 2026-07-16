@@ -74,238 +74,559 @@ export const SQL_ADVANCED_PROBLEMS = [
   },
   {
     id: 5,
-    title: "Detect Payment Fraud Patterns",
+    title: "Top Spending Customer in Each State",
     difficulty: "Advanced",
-    slug: "sql-having-sum-case-when-sequence-analysis",
-    seoTitle: "SQL HAVING SUM with CASE WHEN Sequence Logic Constraints",
-    metaDescription: "Learn how to trace specific pipeline sequences by evaluating dual categorical column markers across standard grouping arrays.",
-    tags: ["SQL", "GROUP BY", "HAVING", "CASE WHEN"],
-    description: "Find orders where multiple failed payments occurred before a success.",
-    explanation: "Sequence analysis using window functions.",
-    scenario: "Fraud team identifies suspicious retry patterns.",
-    useCases: ["Fraud detection", "Security monitoring"],
-    hint: "Use ROW_NUMBER or COUNT with condition",
-    starterQuery: "SELECT order_id\nFROM payments\nGROUP BY order_id\nHAVING SUM(CASE WHEN payment_status = 'Failed' THEN 1 ELSE 0 END) > 2\nAND SUM(CASE WHEN payment_status = 'Success' THEN 1 ELSE 0 END) >= 1;",
-    expectedColumns: ["order_id"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT order_id\nFROM payments\nGROUP BY order_id\nHAVING SUM(CASE WHEN payment_status = 'Failed' THEN 1 ELSE 0 END) > 2\nAND SUM(CASE WHEN payment_status = 'Success' THEN 1 ELSE 0 END) >= 1;",
-  },
-  {
+    slug: "sql-dense-rank-top-customer-by-state",
+    seoTitle: "SQL DENSE_RANK Partition by State",
+    metaDescription: "Learn how to combine CTEs, aggregation, and DENSE_RANK() to identify the highest spending customer in each state.",
+    tags: ["SQL", "CTE", "DENSE_RANK", "Window Functions", "JOIN"],
+    description: "Find the highest spending customer in each state.",
+    explanation: "First calculate each customer's total spending, then rank customers within each state using DENSE_RANK().",
+    scenario: "Regional managers want to identify their highest-value customers.",
+    useCases: ["Customer analytics", "Regional reporting", "Revenue analysis"],
+    hint: "Create a CTE for customer revenue and rank customers within each state.",
+    starterQuery: `WITH CustomerRevenue AS (
+    SELECT
+        c.state,
+        c.customer_id,
+        c.customer_name,
+        SUM(o.total_amount) AS total_spent
+    FROM customers c
+    JOIN orders o
+        ON c.customer_id = o.customer_id
+    GROUP BY
+        c.state,
+        c.customer_id,
+        c.customer_name
+)
+SELECT
+    state,
+    customer_name,
+    total_spent
+FROM (
+    SELECT *,
+           DENSE_RANK() OVER(
+               PARTITION BY state
+               ORDER BY total_spent DESC
+           ) AS rank_no
+    FROM CustomerRevenue
+)
+WHERE rank_no = 1;`,
+    expectedColumns: ["state","customer_name","total_spent"],
+    solutionQuery: `WITH CustomerRevenue AS (
+    SELECT
+        c.state,
+        c.customer_id,
+        c.customer_name,
+        SUM(o.total_amount) AS total_spent
+    FROM customers c
+    JOIN orders o
+        ON c.customer_id = o.customer_id
+    GROUP BY
+        c.state,
+        c.customer_id,
+        c.customer_name
+)
+SELECT
+    state,
+    customer_name,
+    total_spent
+FROM (
+    SELECT *,
+           DENSE_RANK() OVER(
+               PARTITION BY state
+               ORDER BY total_spent DESC
+           ) AS rank_no
+    FROM CustomerRevenue
+)
+WHERE rank_no = 1;`,
+},
+{
     id: 6,
-    title: "Churned Customers Detection",
+    title: "Orders Above Customer Average",
     difficulty: "Advanced",
-    slug: "sql-having-max-date-subtraction-interval",
-    seoTitle: "SQL HAVING MAX Date Subtraction and Interval Thresholds",
-    metaDescription: "Learn how to benchmark temporal drop-offs by extracting maximum dates and filtering via systematic baseline offsets.",
-    tags: ["SQL", "Date Functions", "MAX", "HAVING"],
-    description: "Find customers who haven't placed any order in the last 90 days but had activity before.",
-    explanation: "Compare max(order_date) with current date.",
-    scenario: "Retention team targets churned users.",
-    useCases: ["Churn prediction", "Retention campaigns"],
-    hint: "MAX(order_date) < DATE('now','-90 days')",
-    starterQuery: "SELECT customer_id\nFROM orders\nGROUP BY customer_id\nHAVING MAX(order_date) < DATE('now','-90 days');",
-    expectedColumns: ["customer_id"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT customer_id\nFROM orders\nGROUP BY customer_id\nHAVING MAX(order_date) < DATE('now','-90 days');",
-  },
-  {
+    slug: "sql-correlated-subquery-average-orders",
+    seoTitle: "SQL Correlated Subquery with AVG",
+    metaDescription: "Learn how to compare each order with the customer's average order value using correlated subqueries.",
+    tags: ["SQL", "Correlated Subquery", "AVG"],
+    description: "Find orders whose total amount is greater than the customer's average order amount.",
+    explanation: "The correlated subquery calculates the average order value separately for every customer.",
+    scenario: "Analytics wants to identify unusually expensive purchases.",
+    useCases: ["Customer analytics", "Anomaly detection", "Spending analysis"],
+    hint: "Compare total_amount with AVG(total_amount) for the same customer.",
+    starterQuery: `SELECT
+    order_id,
+    customer_id,
+    total_amount
+FROM orders o
+WHERE total_amount >
+(
+    SELECT AVG(total_amount)
+    FROM orders
+    WHERE customer_id = o.customer_id
+);`,
+    expectedColumns: ["order_id","customer_id","total_amount"],
+    solutionQuery: `SELECT
+    order_id,
+    customer_id,
+    total_amount
+FROM orders o
+WHERE total_amount >
+(
+    SELECT AVG(total_amount)
+    FROM orders
+    WHERE customer_id = o.customer_id
+);`,
+},
+{
     id: 7,
-    title: "Revenue Spike Detection",
+    title: "Top 10 Revenue Days",
     difficulty: "Advanced",
-    slug: "sql-lag-window-function-growth-ratio",
-    seoTitle: "SQL LAG Window Function and Floating Growth Ratio Evaluation",
-    metaDescription: "Learn how to catch vector spikes by mapping leading index rows to historical positions using standard window offsets.",
-    tags: ["SQL", "LAG Function", "Window Functions", "Anomaly Detection"],
-    description: "Identify days where revenue increased more than 2x compared to previous day.",
-    explanation: "LAG helps compare previous day's revenue.",
-    scenario: "Business investigates unusual spikes.",
-    useCases: ["Anomaly detection", "Trend analysis"],
-    hint: "LAG(revenue)",
-    starterQuery: "WITH daily AS (\n  SELECT order_date, SUM(total_amount) as revenue FROM orders GROUP BY order_date\n)\nSELECT order_date, revenue\nFROM (\n  SELECT *, LAG(revenue) OVER (ORDER BY order_date) as prev_rev FROM daily\n) t\nWHERE revenue > 2 * prev_rev;",
-    expectedColumns: ["order_date", "revenue"],
-    expectedRowCount: 2,
-    solutionQuery: "WITH daily AS (\n  SELECT order_date, SUM(total_amount) as revenue FROM orders GROUP BY order_date\n)\nSELECT order_date, revenue\nFROM (\n  SELECT *, LAG(revenue) OVER (ORDER BY order_date) as prev_rev FROM daily\n) t\nWHERE revenue > 2 * prev_rev;",
-  },
-  {
-    id: 8,
-    title: "Customer Purchase Funnel",
-    difficulty: "Advanced",
-    slug: "sql-left-join-with-min-date-and-count-funnel",
-    seoTitle: "SQL LEFT JOIN with MIN Date and COUNT Funnel Pipeline",
-    metaDescription: "Learn how to structure complex tracking channels by relating identity rows with operational activity logs via left joins.",
-    tags: ["SQL", "LEFT JOIN", "MIN Function", "COUNT"],
-    description: "Track customers from signup → first order → repeat order.",
-    explanation: "Combining multiple stages via joins and aggregation.",
-    scenario: "Growth team analyzes conversion funnel.",
-    useCases: ["Funnel analysis", "Conversion tracking"],
-    hint: "Use MIN(order_date) and COUNT(order_id)",
-    starterQuery: "SELECT c.customer_id,\nMIN(o.order_date) as first_order,\nCOUNT(o.order_id) as total_orders\nFROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id\nGROUP BY c.customer_id;",
-    expectedColumns: ["customer_id", "first_order", "total_orders"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT c.customer_id,\nMIN(o.order_date) as first_order,\nCOUNT(o.order_id) as total_orders\nFROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id\nGROUP BY c.customer_id;",
-  },
-  {
-    id: 9,
-    title: "Delivery SLA Breach %",
-    difficulty: "Advanced",
-    slug: "sql-conditional-sum-ratio-with-group-by",
-    seoTitle: "SQL Conditional SUM Ratio with Group By Identifiers",
-    metaDescription: "Learn how to compile precise compliance indicators by dividing case-specific sum metrics against absolute column volumes.",
-    tags: ["SQL", "CASE WHEN", "SUM", "GROUP BY"],
-    description: "Calculate percentage of orders delivered late per partner.",
-    explanation: "Conditional aggregation for SLA breaches.",
-    scenario: "Operations monitors delivery performance.",
-    useCases: ["SLA tracking", "Logistics optimization"],
-    hint: "CASE WHEN delivered_date > estimated_delivery_time",
-    starterQuery: "SELECT delivery_partner_id,\nSUM(CASE WHEN delivered_date > estimated_delivery_time THEN 1 ELSE 0 END)*100.0/COUNT(*) as breach_pct\nFROM orders GROUP BY delivery_partner_id;",
-    expectedColumns: ["delivery_partner_id", "breach_pct"],
-    expectedRowCount: 4,
-    solutionQuery: "SELECT delivery_partner_id,\nSUM(CASE WHEN delivered_date > estimated_delivery_time THEN 1 ELSE 0 END)*100.0/COUNT(*) as breach_pct\nFROM orders GROUP BY delivery_partner_id;",
-  },
-  {
-    id: 10,
-    title: "Product Basket Affinity",
-    difficulty: "Advanced",
-    slug: "sql-self-join-on-order-id-inequality-matching",
-    seoTitle: "SQL Self-JOIN on Order ID with Column Inequality Matching",
-    metaDescription: "Learn how to find dataset co-occurrence metrics by running systematic self-joins alongside index comparison filters.",
-    tags: ["SQL", "Self-JOIN", "COUNT", "GROUP BY"],
-    description: "Find product pairs frequently bought together.",
-    explanation: "Self-join on order_items identifies co-occurrence.",
-    scenario: "Recommendation system for cross-selling.",
-    useCases: ["Market basket analysis", "Recommendations"],
-    hint: "Self JOIN order_items on same order_id",
-    starterQuery: "SELECT a.product_id as prod1, b.product_id as prod2, COUNT(*) as freq\nFROM order_items a JOIN order_items b\nON a.order_id = b.order_id AND a.product_id < b.product_id\nGROUP BY prod1, prod2 ORDER BY freq DESC;",
-    expectedColumns: ["prod1", "prod2", "freq"],
-    expectedRowCount: 6,
-    solutionQuery: "SELECT a.product_id as prod1, b.product_id as prod2, COUNT(*) as freq\nFROM order_items a JOIN order_items b\nON a.order_id = b.order_id AND a.product_id < b.product_id\nGROUP BY prod1, prod2 ORDER BY freq DESC;",
-  },
-  {
-    id: 11,
-    title: "Rolling 7-Day Revenue",
-    difficulty: "Advanced",
-    slug: "sql-window-sum-rows-between-preceding-frame",
-    seoTitle: "SQL Window SUM with ROWS BETWEEN PRECEDING Sliding Frames",
-    metaDescription: "Learn how to build time-series moving parameters by defining continuous boundary constraints within window statements.",
-    tags: ["SQL", "Window Frame", "SUM", "ROWS BETWEEN"],
-    description: "Calculate 7-day rolling revenue.",
-    explanation: "Window frame defines rolling window.",
-    scenario: "Finance tracks short-term trends.",
-    useCases: ["Time series analysis", "Trend smoothing"],
-    hint: "ROWS BETWEEN 6 PRECEDING AND CURRENT ROW",
-    starterQuery: "SELECT order_date,\nSUM(total_amount) OVER (ORDER BY order_date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) as rolling_7d\nFROM orders;",
-    expectedColumns: ["order_date", "rolling_7d"],
-    expectedRowCount: 10,
-    solutionQuery: "SELECT order_date,\nSUM(total_amount) OVER (ORDER BY order_date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) as rolling_7d\nFROM orders;",
-  },
-  {
-    id: 12,
-    title: "Customer Segmentation (Quartiles)",
-    difficulty: "Advanced",
-    slug: "sql-ntile-window-function-dataset-partitioning",
-    seoTitle: "SQL NTILE Window Function and Dataset Equal Partitioning",
-    metaDescription: "Learn how to segment rows into static categorical groups by leveraging the standard NTILE window rank mechanism.",
-    tags: ["SQL", "NTILE", "Window Functions", "GROUP BY"],
-    description: "Segment customers into quartiles based on total spend.",
-    explanation: "NTILE divides dataset into equal buckets.",
-    scenario: "Marketing creates spending tiers.",
-    useCases: ["Segmentation", "Targeting"],
-    hint: "NTILE(4) OVER (ORDER BY total_spend DESC)",
-    starterQuery: "SELECT customer_id, total_spend,\nNTILE(4) OVER (ORDER BY total_spend DESC) as segment\nFROM (SELECT customer_id, SUM(total_amount) as total_spend FROM orders GROUP BY customer_id);",
-    expectedColumns: ["customer_id", "total_spend", "segment"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT customer_id, total_spend,\nNTILE(4) OVER (ORDER BY total_spend DESC) as segment\nFROM (SELECT customer_id, SUM(total_amount) as total_spend FROM orders GROUP BY customer_id);",
-  },
-  {
-    id: 13,
-    title: "Delayed Delivery Streak",
-    difficulty: "Advanced",
-    slug: "sql-lag-nested-window-conditional-streak",
-    seoTitle: "SQL LAG Nested Window Function and Conditional Streak Filters",
-    metaDescription: "Learn how to track repetitive events by evaluating standard row flags alongside their historical positions via windowing logs.",
-    tags: ["SQL", "LAG", "CASE WHEN", "Window Functions"],
-    description: "Find delivery partners with consecutive delayed deliveries.",
-    explanation: "Use LAG and streak logic.",
-    scenario: "Operations identifies consistent underperformers.",
-    useCases: ["Performance tracking", "SLA breaches"],
-    hint: "Compare current and previous delay flag",
-    starterQuery: "SELECT delivery_partner_id\nFROM (\n  SELECT delivery_partner_id,\n  CASE WHEN delivered_date > estimated_delivery_time THEN 1 ELSE 0 END as delayed,\n  LAG(CASE WHEN delivered_date > estimated_delivery_time THEN 1 ELSE 0 END)\n  OVER (PARTITION BY delivery_partner_id ORDER BY order_date) as prev_delayed\n  FROM orders\n) t WHERE delayed = 1 AND prev_delayed = 1;",
-    expectedColumns: ["delivery_partner_id"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT delivery_partner_id\nFROM (\n  SELECT delivery_partner_id,\n  CASE WHEN delivered_date > estimated_delivery_time THEN 1 ELSE 0 END as delayed,\n  LAG(CASE WHEN delivered_date > estimated_delivery_time THEN 1 ELSE 0 END)\n  OVER (PARTITION BY delivery_partner_id ORDER BY order_date) as prev_delayed\n  FROM orders\n) t WHERE delayed = 1 AND prev_delayed = 1;",
-  },
-  {
-    id: 14,
-    title: "Revenue Share by Category Over Time",
-    difficulty: "Advanced",
-    slug: "sql-sum-over-partition-by-month-proportional-ratio",
-    seoTitle: "SQL SUM OVER PARTITION BY Month Proportional Ratio Calculations",
-    metaDescription: "Learn how to map matrix percentages by contrasting localized dataset block volumes against dynamic partition sums.",
-    tags: ["SQL", "Window Functions", "SUM", "strftime", "CTE"],
-    description: "Calculate percentage revenue contribution per category per month.",
-    explanation: "Window functions combined with grouping.",
-    scenario: "Business tracks category performance trends.",
-    useCases: ["Trend analysis", "Product strategy"],
-    hint: "SUM(...) OVER(PARTITION BY month)",
-    starterQuery: "WITH data AS (\nSELECT strftime('%Y-%m', o.order_date) as month, p.category, SUM(oi.total_price) as revenue\nFROM order_items oi JOIN products p ON oi.product_id = p.product_id\nJOIN orders o ON oi.order_id = o.order_id\nGROUP BY month, p.category\n)\nSELECT *, revenue * 100.0 / SUM(revenue) OVER (PARTITION BY month) as pct\nFROM data;",
-    expectedColumns: ["month", "category", "revenue", "pct"],
-    expectedRowCount: 10,
-    solutionQuery: "WITH data AS (\nSELECT strftime('%Y-%m', o.order_date) as month, p.category, SUM(oi.total_price) as revenue\nFROM order_items oi JOIN products p ON oi.product_id = p.product_id\nJOIN orders o ON oi.order_id = o.order_id\nGROUP BY month, p.category\n)\nSELECT *, revenue * 100.0 / SUM(revenue) OVER (PARTITION BY month) as pct\nFROM data;",
-  },
-  {
-    id: 15,
-    title: "Customers with Increasing Order Trend",
-    difficulty: "Advanced",
-    slug: "sql-lag-partition-by-customer-trend-validation",
-    seoTitle: "SQL LAG PARTITION BY Customer Monotonic Trend Validation",
-    metaDescription: "Learn how to audit continuous behavioral increases by verifying record value changes across sequential transaction streams.",
-    tags: ["SQL", "LAG", "PARTITION BY", "CASE WHEN", "CTE"],
-    description: "Find customers whose order values consistently increase.",
-    explanation: "Compare current vs previous using LAG.",
-    scenario: "Identify growing customers.",
-    useCases: ["Upsell targeting", "Growth analysis"],
-    hint: "total_amount > prev_amount",
-    starterQuery: "SELECT customer_id\nFROM (\n  SELECT customer_id, total_amount,\n  LAG(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date) as prev_amt\n  FROM orders\n) t WHERE total_amount > prev_amt;",
-    expectedColumns: ["customer_id"],
-    expectedRowCount: 3,
-    solutionQuery: "WITH ordered_data AS (\n    SELECT\n        customer_id,\n        order_date,\n        total_amount,\n        LAG(total_amount) OVER (\n            PARTITION BY customer_id\n            ORDER BY order_date\n        ) AS prev_amount\n    FROM orders\n),\ntrend_check AS (\n    SELECT\n        customer_id,\n        COUNT(*) AS total_orders,\n        SUM(\n            CASE\n                WHEN total_amount > prev_amount THEN 1\n                ELSE 0\n            END\n        ) AS increasing_orders\n    FROM ordered_data\n    WHERE prev_amount IS NOT NULL\n    GROUP BY customer_id\n)\nSELECT customer_id\nFROM trend_check\nWHERE increasing_orders = total_orders;",
-  },
-  {
-    id: 16,
-    title: "Payment Failure Rate per Attempt Number",
-    difficulty: "Advanced",
-    slug: "sql-conditional-sum-ratio-grouped-by-attempt",
-    seoTitle: "SQL Conditional SUM Ratio Grouped by Attempt Column Integer",
-    metaDescription: "Learn how to formulate sequence failure ratios by grouping dataset indices and dividing targeted subsets against whole counts.",
-    tags: ["SQL", "SUM", "COUNT", "GROUP BY"],
-    description: "Calculate failure rate grouped by attempt_number.",
-    explanation: "Helps analyze retry success patterns.",
-    scenario: "Payments team optimizes retry logic.",
-    useCases: ["Retry strategy", "Payment optimization"],
-    hint: "GROUP BY attempt_number",
-    starterQuery: "SELECT attempt_number,\nSUM(CASE WHEN payment_status='Failed' THEN 1 ELSE 0 END)*100.0/COUNT(*) as failure_rate\nFROM payments GROUP BY attempt_number;",
-    expectedColumns: ["attempt_number", "failure_rate"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT attempt_number,\nSUM(CASE WHEN payment_status='Failed' THEN 1 ELSE 0 END)*100.0/COUNT(*) as failure_rate\nFROM payments GROUP BY attempt_number;",
-  },
-  {
-    id: 17,
-    title: "Product Cannibalization Detection",
-    difficulty: "Advanced",
-    slug: "sql-lag-partition-by-product-revenue-shift",
-    seoTitle: "SQL LAG PARTITION BY Product Month-over-Month Revenue Shifts",
-    metaDescription: "Learn how to measure critical product index modifications across timestamp barriers using nested window tracking structures.",
-    tags: ["SQL", "LAG", "strftime", "JOIN", "CTE"],
-    description: "Find products whose sales dropped after another product launched.",
-    explanation: "Compare time-based revenue shifts.",
-    scenario: "Product team detects cannibalization.",
-    useCases: ["Product strategy", "Revenue impact"],
-    hint: "Compare before/after periods",
-    starterQuery: "SELECT product_id, SUM(total_price) as revenue\nFROM order_items GROUP BY product_id;",
-    expectedColumns: ["product_id", "month", "revenue", "prev_revenue", "revenue_change_pct"],
-    expectedRowCount: 5,
-    solutionQuery: "WITH monthly_sales AS (\n    SELECT\n        oi.product_id,\n        strftime('%Y-%m', o.order_date) AS month,\n        SUM(oi.total_price) AS revenue\n    FROM order_items oi\n    JOIN orders o\n        ON oi.order_id = o.order_id\n    GROUP BY oi.product_id, month\n),\nsales_change AS (\n    SELECT\n        product_id,\n        month,\n        revenue,\n        LAG(revenue) OVER (\n            PARTITION BY product_id\n            ORDER BY month\n        ) AS prev_revenue\n    FROM monthly_sales\n)\nSELECT\n    product_id,\n    month,\n    revenue,\n    prev_revenue,\n    ROUND(\n        (revenue - prev_revenue) * 100.0 / prev_revenue,\n        2\n    ) AS revenue_change_pct\nFROM sales_change\nWHERE revenue < prev_revenue * 0.7;",
-  },
+    slug: "sql-cte-dense-rank-daily-revenue",
+    seoTitle: "SQL CTE with DENSE_RANK for Daily Revenue",
+    metaDescription: "Learn how to combine CTEs, aggregation, and DENSE_RANK() to rank daily revenue.",
+    tags: ["SQL", "CTE", "DENSE_RANK", "Window Functions"],
+    description: "Find the top 10 highest revenue days.",
+    explanation: "Calculate daily revenue, then rank each day based on total revenue using DENSE_RANK().",
+    scenario: "Finance wants to identify the highest revenue days.",
+    useCases: ["Revenue analysis", "Trend analysis", "Executive reporting"],
+    hint: "Create a CTE for daily revenue and rank it using DENSE_RANK().",
+    starterQuery: `WITH DailyRevenue AS (
+    SELECT
+        order_date,
+        SUM(total_amount) AS revenue
+    FROM orders
+    GROUP BY order_date
+)
+SELECT
+    order_date,
+    revenue
+FROM (
+    SELECT *,
+           DENSE_RANK() OVER(
+               ORDER BY revenue DESC
+           ) AS rank_no
+    FROM DailyRevenue
+)
+WHERE rank_no <= 10
+ORDER BY revenue DESC;`,
+    expectedColumns: ["order_date","revenue"],
+    solutionQuery: `WITH DailyRevenue AS (
+    SELECT
+        order_date,
+        SUM(total_amount) AS revenue
+    FROM orders
+    GROUP BY order_date
+)
+SELECT
+    order_date,
+    revenue
+FROM (
+    SELECT *,
+           DENSE_RANK() OVER(
+               ORDER BY revenue DESC
+           ) AS rank_no
+    FROM DailyRevenue
+)
+WHERE rank_no <= 10
+ORDER BY revenue DESC;`,
+},
+{
+  id: 8,
+  title: "Rank Customers by Total Spending",
+  difficulty: "Advanced",
+  slug: "sql-dense-rank-total-customer-spending",
+  seoTitle: "SQL DENSE_RANK Window Function",
+  metaDescription: "Learn how to rank customers by their total spending using SQL DENSE_RANK() and aggregation.",
+  tags: ["SQL", "DENSE_RANK", "Window Functions", "GROUP BY"],
+  description: "Rank customers based on their total spending.",
+  explanation: "First calculate each customer's total spending using SUM(), then use DENSE_RANK() to assign rankings. Customers with the same spending receive the same rank.",
+  scenario: "The sales team wants to identify the highest-value customers.",
+  useCases: ["Customer ranking", "Revenue analysis", "Business reporting"],
+  hint: "Aggregate total spending first, then apply DENSE_RANK() OVER (ORDER BY total_spent DESC).",
+  starterQuery: `SELECT
+  customer_id,
+  total_spent,
+  DENSE_RANK() OVER (ORDER BY total_spent DESC) AS customer_rank
+FROM (
+  SELECT
+      customer_id,
+      SUM(total_amount) AS total_spent
+  FROM orders
+  GROUP BY customer_id
+) t;`,
+  expectedColumns: ["customer_id", "total_spent", "customer_rank"],
+  solutionQuery: `SELECT
+  customer_id,
+  total_spent,
+  DENSE_RANK() OVER (ORDER BY total_spent DESC) AS customer_rank
+FROM (
+  SELECT
+      customer_id,
+      SUM(total_amount) AS total_spent
+  FROM orders
+  GROUP BY customer_id
+) t;`,
+},
+{
+  id: 9,
+  title: "Customers Who Have Placed Orders",
+  difficulty: "Advanced",
+  slug: "sql-exists-subquery",
+  seoTitle: "SQL EXISTS Subquery Tutorial",
+  metaDescription: "Learn how to use the SQL EXISTS operator to check whether related records exist.",
+  tags: ["SQL", "EXISTS", "Subquery"],
+  description: "Find all customers who have placed at least one order.",
+  explanation: "The EXISTS operator returns TRUE if the subquery finds at least one matching row. It is commonly used instead of JOIN when checking for existence.",
+  scenario: "The marketing team wants a list of customers who have already made a purchase.",
+  useCases: ["Customer segmentation", "Purchase analysis", "Campaign targeting"],
+  hint: "Use EXISTS with a correlated subquery.",
+  starterQuery: `SELECT
+  customer_id,
+  customer_name
+FROM customers c
+WHERE EXISTS (
+  SELECT 1
+  FROM orders o
+  WHERE o.customer_id = c.customer_id
+);`,
+  expectedColumns: ["customer_id", "customer_name"],
+  solutionQuery: `SELECT
+  customer_id,
+  customer_name
+FROM customers c
+WHERE EXISTS (
+  SELECT 1
+  FROM orders o
+  WHERE o.customer_id = c.customer_id
+);`,
+},
+{
+  id: 10,
+  title: "Previous Order for Every Customer",
+  difficulty: "Advanced",
+  slug: "sql-lag-window-function",
+  seoTitle: "SQL LAG Window Function",
+  metaDescription: "Learn how to access the previous row using the SQL LAG() window function.",
+  tags: ["SQL", "LAG", "Window Functions"],
+  description: "For every order, display the previous order date of the same customer.",
+  explanation: "LAG() returns the value from the previous row within a partition. Here, orders are partitioned by customer and ordered by order_date.",
+  scenario: "The analytics team wants to study the time between consecutive customer purchases.",
+  useCases: ["Customer behavior", "Purchase history", "Window function practice"],
+  hint: "Use LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date).",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  LAG(order_date) OVER (
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS previous_order_date
+FROM orders;`,
+  expectedColumns: ["customer_id", "order_id", "order_date", "previous_order_date"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  LAG(order_date) OVER (
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS previous_order_date
+FROM orders;`,
+},
+{
+  id: 11,
+  title: "Next Order Date for Every Customer",
+  difficulty: "Advanced",
+  slug: "sql-lead-window-function",
+  seoTitle: "SQL LEAD Window Function Tutorial",
+  metaDescription: "Learn how to use the SQL LEAD() window function to access the next row within a partition.",
+  tags: ["SQL", "LEAD", "Window Functions"],
+  description: "For every order, display the next order date of the same customer.",
+  explanation: "LEAD() returns the value from the following row within the same partition. This is useful for analyzing future events without performing a self join.",
+  scenario: "The analytics team wants to analyze the gap until each customer's next purchase.",
+  useCases: ["Customer behavior", "Purchase interval analysis", "Window function practice"],
+  hint: "Use LEAD(order_date) OVER (PARTITION BY customer_id ORDER BY order_date).",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  LEAD(order_date) OVER (
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS next_order_date
+FROM orders;`,
+  expectedColumns: ["customer_id", "order_id", "order_date", "next_order_date"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  LEAD(order_date) OVER (
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS next_order_date
+FROM orders;`,
+},
+{
+  id: 12,
+  title: "First Order of Every Customer",
+  difficulty: "Advanced",
+  slug: "sql-row-number-first-order",
+  seoTitle: "SQL ROW_NUMBER First Record per Group",
+  metaDescription: "Learn how to use ROW_NUMBER() to return the first record from each group.",
+  tags: ["SQL", "ROW_NUMBER", "Window Functions"],
+  description: "Find the first order placed by every customer.",
+  explanation: "Assign a row number to each customer's orders based on order date, then return only the first row.",
+  scenario: "The CRM team wants to identify every customer's first purchase.",
+  useCases: ["Customer onboarding", "Purchase history", "Window function practice"],
+  hint: "Use ROW_NUMBER() partitioned by customer_id ordered by order_date.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date
+FROM (
+  SELECT
+      customer_id,
+      order_id,
+      order_date,
+      ROW_NUMBER() OVER (
+          PARTITION BY customer_id
+          ORDER BY order_date
+      ) AS rn
+  FROM orders
+) t
+WHERE rn = 1;`,
+  expectedColumns: ["customer_id", "order_id", "order_date"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date
+FROM (
+  SELECT
+      customer_id,
+      order_id,
+      order_date,
+      ROW_NUMBER() OVER (
+          PARTITION BY customer_id
+          ORDER BY order_date
+      ) AS rn
+  FROM orders
+) t
+WHERE rn = 1;`,
+},
+{
+  id: 13,
+  title: "Customers Above Overall Average Spending",
+  difficulty: "Advanced",
+  slug: "sql-cte-overall-average-comparison",
+  seoTitle: "SQL CTE with Overall Average Comparison",
+  metaDescription: "Learn how to use Common Table Expressions (CTEs) to compare grouped values against an overall average.",
+  tags: ["SQL", "CTE", "AVG", "GROUP BY"],
+  description: "Find customers whose total spending is greater than the average customer spending.",
+  explanation: "First calculate the total spending for every customer. Then compare each customer's spending against the average of all customer totals using a CTE.",
+  scenario: "The finance team wants to identify customers whose spending is above the company average.",
+  useCases: ["Customer segmentation", "Revenue analysis", "Business reporting"],
+  hint: "Create a CTE for customer totals, then compare against AVG(total_spent).",
+  starterQuery: `WITH CustomerTotals AS (
+  SELECT
+      customer_id,
+      SUM(total_amount) AS total_spent
+  FROM orders
+  GROUP BY customer_id
+)
+SELECT
+  customer_id,
+  total_spent
+FROM CustomerTotals
+WHERE total_spent >
+(
+  SELECT AVG(total_spent)
+  FROM CustomerTotals
+);`,
+  expectedColumns: ["customer_id", "total_spent"],
+  solutionQuery: `WITH CustomerTotals AS (
+  SELECT
+      customer_id,
+      SUM(total_amount) AS total_spent
+  FROM orders
+  GROUP BY customer_id
+)
+SELECT
+  customer_id,
+  total_spent
+FROM CustomerTotals
+WHERE total_spent >
+(
+  SELECT AVG(total_spent)
+  FROM CustomerTotals
+);`,
+},
+{
+  id: 14,
+  title: "Latest Order for Every Customer",
+  difficulty: "Advanced",
+  slug: "sql-row-number-latest-order",
+  seoTitle: "SQL ROW_NUMBER Latest Record per Group",
+  metaDescription: "Learn how to use ROW_NUMBER() to retrieve the most recent record from each group.",
+  tags: ["SQL", "ROW_NUMBER", "Window Functions"],
+  description: "Find the latest order placed by every customer.",
+  explanation: "Assign a row number ordered by the most recent order date within each customer. The first ranked row represents the customer's latest order.",
+  scenario: "The CRM team wants to know every customer's most recent purchase.",
+  useCases: ["Customer activity", "Purchase history", "Window function practice"],
+  hint: "Use ROW_NUMBER() partitioned by customer_id ordered by order_date DESC.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date
+FROM (
+  SELECT
+      customer_id,
+      order_id,
+      order_date,
+      ROW_NUMBER() OVER (
+          PARTITION BY customer_id
+          ORDER BY order_date DESC
+      ) AS rn
+  FROM orders
+) t
+WHERE rn = 1;`,
+  expectedColumns: ["customer_id", "order_id", "order_date"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date
+FROM (
+  SELECT
+      customer_id,
+      order_id,
+      order_date,
+      ROW_NUMBER() OVER (
+          PARTITION BY customer_id
+          ORDER BY order_date DESC
+      ) AS rn
+  FROM orders
+) t
+WHERE rn = 1;`,
+},
+{
+  id: 15,
+  title: "Rank Orders by Amount for Each Customer",
+  difficulty: "Advanced",
+  slug: "sql-rank-orders-per-customer",
+  seoTitle: "SQL RANK Window Function Tutorial",
+  metaDescription: "Learn how to use SQL RANK() to rank rows within each customer partition.",
+  tags: ["SQL", "RANK", "Window Functions"],
+  description: "Rank every customer's orders based on total amount.",
+  explanation: "Use RANK() to order each customer's purchases from highest to lowest. Orders with equal amounts receive the same rank.",
+  scenario: "The sales team wants to identify each customer's biggest purchases.",
+  useCases: ["Purchase analysis", "Customer insights", "Ranking"],
+  hint: "Use RANK() OVER(PARTITION BY customer_id ORDER BY total_amount DESC).",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  RANK() OVER (
+      PARTITION BY customer_id
+      ORDER BY total_amount DESC
+  ) AS order_rank
+FROM orders;`,
+  expectedColumns: ["customer_id", "order_id", "total_amount", "order_rank"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  RANK() OVER (
+      PARTITION BY customer_id
+      ORDER BY total_amount DESC
+  ) AS order_rank
+FROM orders;`,
+},
+{
+  id: 16,
+  title: "Products Priced Above Category Average",
+  difficulty: "Advanced",
+  slug: "sql-correlated-subquery-category-average",
+  seoTitle: "SQL Correlated Subquery with Category Average",
+  metaDescription: "Learn how to use correlated subqueries to compare each product against its category average.",
+  tags: ["SQL", "Correlated Subquery", "AVG"],
+  description: "Find products whose price is greater than the average price of products in the same category.",
+  explanation: "The correlated subquery calculates the average product price for the current category and compares each product against it.",
+  scenario: "The merchandising team wants to identify premium-priced products within every category.",
+  useCases: ["Pricing analysis", "Product analytics", "Category benchmarking"],
+  hint: "Compare price with AVG(price) for the same category.",
+  starterQuery: `SELECT
+  product_id,
+  product_name,
+  category,
+  price
+FROM products p
+WHERE price >
+(
+  SELECT AVG(price)
+  FROM products
+  WHERE category = p.category
+);`,
+  expectedColumns: ["product_id", "product_name", "category", "price"],
+  solutionQuery: `SELECT
+  product_id,
+  product_name,
+  category,
+  price
+FROM products p
+WHERE price >
+(
+  SELECT AVG(price)
+  FROM products
+  WHERE category = p.category
+);`,
+},  
+{
+  id: 17,
+  title: "Second Highest Order for Every Customer",
+  difficulty: "Advanced",
+  slug: "sql-row-number-second-highest-order",
+  seoTitle: "SQL ROW_NUMBER Second Highest Order",
+  metaDescription: "Learn how to use ROW_NUMBER() to retrieve the second highest order for every customer.",
+  tags: ["SQL", "ROW_NUMBER", "Window Functions"],
+  description: "Find the second highest order amount placed by every customer.",
+  explanation: "Assign a row number based on descending order amount within each customer and return only the second ranked order.",
+  scenario: "The sales team wants to analyze customers' second largest purchases.",
+  useCases: ["Purchase analysis", "Customer insights", "Window Functions"],
+  hint: "Use ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY total_amount DESC).",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount
+FROM (
+  SELECT
+      customer_id,
+      order_id,
+      total_amount,
+      ROW_NUMBER() OVER (
+          PARTITION BY customer_id
+          ORDER BY total_amount DESC
+      ) AS rn
+  FROM orders
+) t
+WHERE rn = 2;`,
+  expectedColumns: ["customer_id", "order_id", "total_amount"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount
+FROM (
+  SELECT
+      customer_id,
+      order_id,
+      total_amount,
+      ROW_NUMBER() OVER (
+          PARTITION BY customer_id
+          ORDER BY total_amount DESC
+      ) AS rn
+  FROM orders
+) t
+WHERE rn = 2;`,
+},
   {
     id: 18,
     title: "Customer Revenue Rank Change",
@@ -362,130 +683,301 @@ export const SQL_ADVANCED_PROBLEMS = [
   },
   {
     id: 21,
-    title: "Inventory Turnover Proxy",
+    title: "First Order Amount for Every Customer",
     difficulty: "Advanced",
-    slug: "sql-inner-join-with-count-distinct-order-ratio",
-    seoTitle: "SQL INNER JOIN with COUNT DISTINCT Item Volume Ratios",
-    metaDescription: "Learn how to structure asset throughput metrics by dividing consolidated product metrics against distinct transaction counters.",
-    tags: ["SQL", "INNER JOIN", "SUM", "COUNT DISTINCT", "GROUP BY"],
-    description: "Calculate how quickly products are sold relative to availability.",
-    explanation: "Compare quantity sold over time.",
-    scenario: "Inventory optimization.",
-    useCases: ["Stock planning", "Demand analysis"],
-    hint: "SUM(quantity)",
-    starterQuery: "SELECT product_id, SUM(quantity) as sold_qty FROM order_items GROUP BY product_id;",
-    expectedColumns: ["product_id", "product_name", "total_units_sold", "total_orders", "turnover_proxy"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT\n    p.product_id,\n    p.product_name,\n    SUM(oi.quantity) AS total_units_sold,\n    COUNT(DISTINCT oi.order_id) AS total_orders,\n    ROUND(\n        SUM(oi.quantity) * 1.0 /\n        COUNT(DISTINCT oi.order_id),\n        2\n    ) AS turnover_proxy\nFROM products p\nJOIN order_items oi\n    ON p.product_id = oi.product_id\nGROUP BY p.product_id, p.product_name;",
-  },
+    slug: "sql-first-value-window-function",
+    seoTitle: "SQL FIRST_VALUE Window Function",
+    metaDescription: "Learn how to use SQL FIRST_VALUE() to retrieve the first value within each partition.",
+    tags: ["SQL", "FIRST_VALUE", "Window Functions"],
+    description: "For every order, display the amount of the customer's first order.",
+    explanation: "FIRST_VALUE() returns the first value in each partition. Partition the data by customer_id and order the rows by order_date to display the amount from each customer's first purchase.",
+    scenario: "The analytics team wants to compare every purchase against the customer's first purchase.",
+    useCases: [
+        "Customer behavior",
+        "Purchase history",
+        "Window function practice"
+    ],
+    hint: "Use FIRST_VALUE(total_amount) OVER(PARTITION BY customer_id ORDER BY order_date).",
+    starterQuery: `SELECT
+    customer_id,
+    order_id,
+    order_date,
+    total_amount,
+    FIRST_VALUE(total_amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS first_order_amount
+FROM orders;`,
+    expectedColumns: [
+        "customer_id",
+        "order_id",
+        "order_date",
+        "total_amount",
+        "first_order_amount"
+    ],
+    solutionQuery: `SELECT
+    customer_id,
+    order_id,
+    order_date,
+    total_amount,
+    FIRST_VALUE(total_amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS first_order_amount
+FROM orders;`,
+},
   {
     id: 22,
-    title: "Customer Order Interval Consistency",
+    title: "Difference from Previous Order Amount",
     difficulty: "Advanced",
-    slug: "sql-julianday-lag-window-variance-simulation",
-    seoTitle: "SQL julianday and LAG Window Variance Simulation Models",
-    metaDescription: "Learn how to parse operational variance arrays by applying square-root mathematical logic over timestamp diff variables.",
-    tags: ["SQL", "LAG", "julianday", "SQRT", "AVG", "CTE"],
-    description: "Measure variance in time between orders per customer.",
-    explanation: "Use LAG and variance calculation.",
-    scenario: "Identify predictable vs random customers.",
-    useCases: ["Behavior modeling", "Forecasting"],
-    hint: "julianday difference",
-    starterQuery: "SELECT customer_id,\nAVG(julianday(order_date) - julianday(prev_date)) as avg_gap\nFROM (\nSELECT customer_id, order_date,\nLAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date) as prev_date\nFROM orders\n) t GROUP BY customer_id;",
-    expectedColumns: ["customer_id", "avg_gap", "gap_stddev"],
-    expectedRowCount: 5,
-    solutionQuery: "WITH order_gaps AS (\n    SELECT\n        customer_id,\n        julianday(order_date) -\n        julianday(\n            LAG(order_date) OVER (\n                PARTITION BY customer_id\n                ORDER BY order_date\n            )\n        ) AS gap_days\n    FROM orders\n)\nSELECT\n    customer_id,\n    ROUND(AVG(gap_days), 2) AS avg_gap,\n    ROUND(\n        SQRT(\n            AVG(gap_days * gap_days) -\n            AVG(gap_days) * AVG(gap_days)\n        ),\n        2\n    ) AS gap_stddev\nFROM order_gaps\nWHERE gap_days IS NOT NULL\nGROUP BY customer_id;",
-  },
-  {
+    slug: "sql-lag-order-difference",
+    seoTitle: "SQL LAG Difference Between Rows",
+    metaDescription: "Learn how to compare each order amount with the previous order using the SQL LAG() window function.",
+    tags: ["SQL", "LAG", "Window Functions"],
+    description: "For every customer, calculate the difference between the current order amount and the previous order amount.",
+    explanation: "LAG() retrieves the previous order amount for each customer. Subtract it from the current order amount to measure spending changes.",
+    scenario: "The analytics team wants to analyze spending trends between consecutive purchases.",
+    useCases: ["Purchase trend analysis", "Customer analytics", "Window function practice"],
+    hint: "Use LAG(total_amount) OVER(PARTITION BY customer_id ORDER BY order_date).",
+    starterQuery: `SELECT
+    customer_id,
+    order_id,
+    total_amount,
+    total_amount -
+    LAG(total_amount) OVER(
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS amount_difference
+FROM orders;`,
+    expectedColumns: ["customer_id", "order_id", "total_amount", "amount_difference"],
+    solutionQuery: `SELECT
+    customer_id,
+    order_id,
+    total_amount,
+    total_amount -
+    LAG(total_amount) OVER(
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS amount_difference
+FROM orders;`,
+},
+{
     id: 23,
-    title: "Payment Provider Success Ranking",
+    title: "Top Product in Every Category",
     difficulty: "Advanced",
-    slug: "sql-rank-over-conditional-sum-ratio-desc",
-    seoTitle: "SQL RANK OVER Conditional SUM Ratio Descending Arrays",
-    metaDescription: "Learn how to rank database categories by injecting structured evaluation ratios directly into a window index statement.",
-    tags: ["SQL", "RANK", "SUM", "CASE WHEN", "GROUP BY"],
-    description: "Rank payment providers by success rate.",
-    explanation: "Conditional aggregation + ranking.",
-    scenario: "Choose best payment provider.",
-    useCases: ["Provider evaluation", "Optimization"],
-    hint: "RANK() ORDER BY success_rate",
-    starterQuery: "SELECT payment_provider,\nSUM(CASE WHEN payment_status='Success' THEN 1 ELSE 0 END)*1.0/COUNT(*) as success_rate,\nRANK() OVER (ORDER BY SUM(CASE WHEN payment_status='Success' THEN 1 ELSE 0 END)*1.0/COUNT(*) DESC) as rnk\nFROM payments GROUP BY payment_provider;",
-    expectedColumns: ["payment_provider", "success_rate", "rnk"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT payment_provider,\nSUM(CASE WHEN payment_status='Success' THEN 1 ELSE 0 END)*1.0/COUNT(*) as success_rate,\nRANK() OVER (ORDER BY SUM(CASE WHEN payment_status='Success' THEN 1 ELSE 0 END)*1.0/COUNT(*) DESC) as rnk\nFROM payments GROUP BY payment_provider;",
-  },
+    slug: "sql-row-number-top-product-category",
+    seoTitle: "SQL ROW_NUMBER Top Product by Category",
+    metaDescription: "Learn how to identify the highest revenue product in every category using ROW_NUMBER().",
+    tags: ["SQL", "ROW_NUMBER", "JOIN", "GROUP BY", "Window Functions"],
+    description: "Find the highest revenue product in each category.",
+    explanation: "Calculate total revenue for every product, then assign a row number within each category ordered by revenue. Return only the top-ranked product.",
+    scenario: "The merchandising team wants to identify the best-performing product in every category.",
+    useCases: ["Product analytics", "Category reporting", "Revenue analysis"],
+    hint: "Aggregate revenue first, then use ROW_NUMBER() PARTITION BY category.",
+    starterQuery: `WITH ProductRevenue AS (
+    SELECT
+        p.category,
+        p.product_id,
+        p.product_name,
+        SUM(oi.total_price) AS revenue
+    FROM products p
+    JOIN order_items oi
+        ON p.product_id = oi.product_id
+    GROUP BY
+        p.category,
+        p.product_id,
+        p.product_name
+)
+SELECT
+    category,
+    product_name,
+    revenue
+FROM (
+    SELECT *,
+           ROW_NUMBER() OVER(
+               PARTITION BY category
+               ORDER BY revenue DESC
+           ) AS rn
+    FROM ProductRevenue
+) t
+WHERE rn = 1;`,
+    expectedColumns: ["category", "product_name", "revenue"],
+    solutionQuery: `WITH ProductRevenue AS (
+    SELECT
+        p.category,
+        p.product_id,
+        p.product_name,
+        SUM(oi.total_price) AS revenue
+    FROM products p
+    JOIN order_items oi
+        ON p.product_id = oi.product_id
+    GROUP BY
+        p.category,
+        p.product_id,
+        p.product_name
+)
+SELECT
+    category,
+    product_name,
+    revenue
+FROM (
+    SELECT *,
+           ROW_NUMBER() OVER(
+               PARTITION BY category
+               ORDER BY revenue DESC
+           ) AS rn
+    FROM ProductRevenue
+) t
+WHERE rn = 1;`,
+},
   {
     id: 24,
-    title: "Order Value Distribution Bands",
+    title: "Last Order Amount for Every Customer",
     difficulty: "Advanced",
-    slug: "sql-case-when-conditional-value-banding-aggregates",
-    seoTitle: "SQL CASE WHEN Conditional Value Banding and Aggregates",
-    metaDescription: "Learn how to assemble unified summary matrix grids by routing rows through a conditional CASE categorization statement.",
-    tags: ["SQL", "CASE WHEN", "COUNT", "AVG", "GROUP BY"],
-    description: "Bucket orders into value bands (low, medium, high).",
-    explanation: "CASE statement for segmentation.",
-    scenario: "Business analyzes order distribution.",
-    useCases: ["Segmentation", "Pricing analysis"],
-    hint: "CASE WHEN",
-    starterQuery: "SELECT order_id,\nCASE WHEN total_amount < 50 THEN 'Low'\nWHEN total_amount < 200 THEN 'Medium'\nELSE 'High' END as band\nFROM orders;",
-    expectedColumns: ["order_band", "total_orders", "avg_order_value"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT\n    CASE\n        WHEN total_amount < 50 THEN 'Low'\n        WHEN total_amount < 200 THEN 'Medium'\n        ELSE 'High'\n    END AS order_band,\n    COUNT(*) AS total_orders,\n    ROUND(\n        AVG(total_amount),\n        2\n    ) AS avg_order_value\nFROM orders\nGROUP BY order_band;",
-  },
-  {
+    slug: "sql-last-value-window-function",
+    seoTitle: "SQL LAST_VALUE Window Function",
+    metaDescription: "Learn how to use SQL LAST_VALUE() to retrieve the last value within each partition.",
+    tags: ["SQL", "LAST_VALUE", "Window Functions"],
+    description: "For every order, display the amount of the customer's most recent order.",
+    explanation: "LAST_VALUE() returns the last value within the current window. Extend the window frame so every row can access the customer's final order amount.",
+    scenario: "The analytics team wants to compare each purchase with the customer's latest purchase.",
+    useCases: ["Customer analytics", "Purchase history", "Window Functions"],
+    hint: "Use LAST_VALUE() with ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING.",
+    starterQuery: `SELECT
+    customer_id,
+    order_id,
+    order_date,
+    total_amount,
+    LAST_VALUE(total_amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+    ) AS latest_order_amount
+FROM orders;`,
+    expectedColumns: ["customer_id","order_id","order_date","total_amount","latest_order_amount"],
+    solutionQuery: `SELECT
+    customer_id,
+    order_id,
+    order_date,
+    total_amount,
+    LAST_VALUE(total_amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+    ) AS latest_order_amount
+FROM orders;`,
+},
+{
     id: 25,
-    title: "End-to-End Revenue Reconciliation",
+    title: "Customer Spending Percentage",
     difficulty: "Advanced",
-    slug: "sql-inner-join-multi-table-sum-reconciliation",
-    seoTitle: "SQL INNER JOIN Multi-Table SUM Ledger Reconciliation",
-    metaDescription: "Learn how to verify relational data compliance across system registries by combining primary records and matching absolute totals.",
-    tags: ["SQL", "INNER JOIN", "SUM Aggregation"],
-    description: "Compare total order revenue vs total payment collected.",
-    explanation: "Join orders and payments to detect mismatches.",
-    scenario: "Finance ensures books are accurate.",
-    useCases: ["Reconciliation", "Audit"],
-    hint: "SUM(order) vs SUM(payment)",
-    starterQuery: "SELECT SUM(o.total_amount) as total_orders, SUM(p.amount) as total_payments\nFROM orders o JOIN payments p ON o.order_id = p.order_id;",
-    expectedColumns: ["total_orders", "total_payments"],
-    expectedRowCount: 1,
-    solutionQuery: "SELECT SUM(o.total_amount) as total_orders, SUM(p.amount) as total_payments\nFROM orders o JOIN payments p ON o.order_id = p.order_id;",
-  },
-  {
+    slug: "sql-window-percentage-of-total",
+    seoTitle: "SQL Percentage of Customer Total Using Window Functions",
+    metaDescription: "Learn how to calculate each order's percentage contribution to a customer's total spending.",
+    tags: ["SQL", "SUM OVER", "Window Functions"],
+    description: "Show what percentage each order contributes to the customer's total spending.",
+    explanation: "SUM() OVER(PARTITION BY customer_id) calculates each customer's lifetime spending without collapsing rows.",
+    scenario: "The finance team wants to understand how important each purchase is within a customer's lifetime value.",
+    useCases: ["Revenue analysis", "Customer lifetime value", "Window Functions"],
+    hint: "Divide total_amount by SUM(total_amount) OVER(PARTITION BY customer_id).",
+    starterQuery: `SELECT
+    customer_id,
+    order_id,
+    total_amount,
+    ROUND(
+        total_amount * 100.0 /
+        SUM(total_amount) OVER(PARTITION BY customer_id),
+        2
+    ) AS spending_percentage
+FROM orders;`,
+    expectedColumns: ["customer_id","order_id","total_amount","spending_percentage"],
+    solutionQuery: `SELECT
+    customer_id,
+    order_id,
+    total_amount,
+    ROUND(
+        total_amount * 100.0 /
+        SUM(total_amount) OVER(PARTITION BY customer_id),
+        2
+    ) AS spending_percentage
+FROM orders;`,
+},
+{
     id: 26,
-    title: "True Repeat Purchase Rate",
+    title: "Running Average Order Amount",
     difficulty: "Advanced",
-    slug: "sql-conditional-case-sum-over-cte-frequency",
-    seoTitle: "SQL Conditional CASE SUM over CTE Frequency Metrics",
-    metaDescription: "Learn how to generate retention coefficients by isolating identity counts inside subqueries and applying total ratio division.",
-    tags: ["SQL", "CTE", "COUNT", "CASE WHEN", "Mathematical Ratio"],
-    description: "Calculate percentage of customers who made more than one order.",
-    explanation: "This measures real repeat behavior using aggregation and division.",
-    scenario: "Growth team wants to evaluate customer retention quality.",
-    useCases: ["Retention metrics", "Customer analysis"],
-    hint: "COUNT customers with >1 orders divided by total customers",
-    starterQuery: "WITH order_counts AS (\nSELECT customer_id, COUNT(*) as cnt FROM orders GROUP BY customer_id\n)\nSELECT COUNT(CASE WHEN cnt > 1 THEN 1 END)*100.0/COUNT(*) as repeat_rate FROM order_counts;",
-    expectedColumns: ["repeat_rate"],
-    expectedRowCount: 1,
-    solutionQuery: "WITH order_counts AS (\nSELECT customer_id, COUNT(*) as cnt FROM orders GROUP BY customer_id\n)\nSELECT COUNT(CASE WHEN cnt > 1 THEN 1 END)*100.0/COUNT(*) as repeat_rate FROM order_counts;",
-  },
-  {
+    slug: "sql-running-average-window-function",
+    seoTitle: "SQL Running Average Using Window Functions",
+    metaDescription: "Learn how to calculate a running average using SQL AVG() OVER().",
+    tags: ["SQL", "AVG OVER", "Window Functions"],
+    description: "Calculate the running average order amount for every customer.",
+    explanation: "AVG() OVER() computes the average from the customer's first order up to the current order.",
+    scenario: "The analytics team wants to observe how customer spending changes over time.",
+    useCases: ["Trend analysis", "Customer analytics", "Window Functions"],
+    hint: "Use AVG(total_amount) OVER(PARTITION BY customer_id ORDER BY order_date).",
+    starterQuery: `SELECT
+    customer_id,
+    order_id,
+    order_date,
+    total_amount,
+    AVG(total_amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS running_average
+FROM orders;`,
+    expectedColumns: ["customer_id","order_id","order_date","total_amount","running_average"],
+    solutionQuery: `SELECT
+    customer_id,
+    order_id,
+    order_date,
+    total_amount,
+    AVG(total_amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS running_average
+FROM orders;`,
+},
+{
     id: 27,
-    title: "First vs Last Order Value Change",
+    title: "Previous and Next Order Amount",
     difficulty: "Advanced",
-    slug: "sql-first-value-and-last-value-window-frames",
-    seoTitle: "SQL FIRST_VALUE and LAST_VALUE Window Frame Delta Evaluators",
-    metaDescription: "Learn how to pull initial and terminal row values inside structured user partitions using unbounded scrolling frames.",
-    tags: ["SQL", "FIRST_VALUE", "LAST_VALUE", "Window Frame", "DISTINCT"],
-    description: "Calculate difference between first and last order value per customer.",
-    explanation: "Use window functions to isolate first and last records.",
-    scenario: "Business wants to track customer value growth.",
-    useCases: ["Growth tracking", "Customer behavior"],
-    hint: "FIRST_VALUE and LAST_VALUE",
-    starterQuery: "SELECT customer_id,\nFIRST_VALUE(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date) as first_val,\nLAST_VALUE(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as last_val\nFROM orders;",
-    expectedColumns: ["customer_id", "first_order_value", "last_order_value", "value_change", "pct_change"],
-    expectedRowCount: 10,
-    solutionQuery: "WITH ranked_orders AS (\n    SELECT\n        customer_id,\n        order_date,\n        total_amount,\n        FIRST_VALUE(total_amount) OVER (\n            PARTITION BY customer_id\n            ORDER BY order_date\n        ) AS first_order_value,\n        LAST_VALUE(total_amount) OVER (\n            PARTITION BY customer_id\n            ORDER BY order_date\n            ROWS BETWEEN UNBOUNDED PRECEDING\n            AND UNBOUNDED FOLLOWING\n        ) AS last_order_value\n    FROM orders\n)\nSELECT DISTINCT\n    customer_id,\n    first_order_value,\n    last_order_value,\n    ROUND(\n        last_order_value - first_order_value,\n        2\n    ) AS value_change,\n    ROUND(\n        (last_order_value - first_order_value)\n        * 100.0 / first_order_value,\n        2\n    ) AS pct_change\nFROM ranked_orders;",
-  },
+    slug: "sql-lag-lead-window-functions",
+    seoTitle: "SQL LAG and LEAD Window Functions",
+    metaDescription: "Learn how to use SQL LAG() and LEAD() together to compare neighboring rows.",
+    tags: ["SQL", "LAG", "LEAD", "Window Functions"],
+    description: "Display the previous and next order amount for every customer order.",
+    explanation: "LAG() accesses the previous row while LEAD() accesses the following row within the same customer partition.",
+    scenario: "The analytics team wants to compare purchases before and after each transaction.",
+    useCases: ["Customer behavior", "Purchase sequence analysis", "Window Functions"],
+    hint: "Use both LAG() and LEAD() partitioned by customer_id.",
+    starterQuery: `SELECT
+    customer_id,
+    order_id,
+    total_amount,
+    LAG(total_amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS previous_amount,
+    LEAD(total_amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS next_amount
+FROM orders;`,
+    expectedColumns: ["customer_id","order_id","total_amount","previous_amount","next_amount"],
+    solutionQuery: `SELECT
+    customer_id,
+    order_id,
+    total_amount,
+    LAG(total_amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS previous_amount,
+    LEAD(total_amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS next_amount
+FROM orders;`,
+},
   {
     id: 28,
     title: "Revenue Drop Detection",
@@ -524,58 +1016,129 @@ export const SQL_ADVANCED_PROBLEMS = [
   },
   {
     id: 30,
-    title: "Customer Purchase Consistency Score",
+    title: "Rank Orders by Date for Each Customer",
     difficulty: "Advanced",
-    slug: "sql-julianday-lag-sqrt-standard-deviation-simulation",
-    seoTitle: "SQL julianday and LAG Standard Deviation Deviation Scores",
-    metaDescription: "Learn how to model user regularity matrices by calculating square-root variance simulations over order calendar intervals.",
-    tags: ["SQL", "LAG", "julianday", "SQRT", "Window Functions", "CTE"],
-    description: "Calculate standard deviation of order gaps per customer to quantify purchase stability.",
-    explanation: "Measures consistency of purchasing behavior by checking standard deviation across temporal order gaps.",
-    scenario: "Identify stable vs erratic customers.",
-    useCases: ["Behavior modeling", "Forecasting"],
-    hint: "Compute gaps using LAG and calculate mathematical standard deviation over variance.",
-    starterQuery: "WITH order_gaps AS (\n    SELECT customer_id,\n    julianday(order_date) - julianday(LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date)) AS gap\n    FROM orders\n)\nSELECT customer_id, AVG(gap) as avg_gap FROM order_gaps WHERE gap IS NOT NULL GROUP BY customer_id;",
-    expectedColumns: ["customer_id", "avg_gap", "gap_consistency_score"],
-    expectedRowCount: 5,
-    solutionQuery: "WITH order_gaps AS (\n    SELECT \n        customer_id,\n        julianday(order_date) - \n        julianday(\n            LAG(order_date) OVER (\n                PARTITION BY customer_id \n                ORDER BY order_date\n            )\n        ) AS gap\n    FROM orders\n)\nSELECT \n    customer_id,\n    ROUND(AVG(gap), 2) AS avg_gap,\n    ROUND(\n        SQRT(\n            AVG(gap * gap) - \n            AVG(gap) * AVG(gap)\n        ),\n        2\n    ) AS gap_consistency_score\nFROM order_gaps\nWHERE gap IS NOT NULL\nGROUP BY customer_id;",
-  },
-  {
+    slug: "sql-row-number-order-history",
+    seoTitle: "SQL ROW_NUMBER Customer Order History",
+    metaDescription: "Learn how to use SQL ROW_NUMBER() to assign a sequential number to every order for each customer.",
+    tags: ["SQL", "ROW_NUMBER", "Window Functions"],
+    description: "Assign a sequential order number to every customer's purchase history.",
+    explanation: "ROW_NUMBER() generates a unique sequence within each customer based on order date.",
+    scenario: "The analytics team wants to identify the first, second, third, and subsequent purchases for every customer.",
+    useCases: ["Purchase history", "Customer journey", "Window Functions"],
+    hint: "Use ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY order_date).",
+    starterQuery: `SELECT
+    customer_id,
+    order_id,
+    order_date,
+    ROW_NUMBER() OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS purchase_number
+FROM orders;`,
+    expectedColumns: ["customer_id","order_id","order_date","purchase_number"],
+    solutionQuery: `SELECT
+    customer_id,
+    order_id,
+    order_date,
+    ROW_NUMBER() OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS purchase_number
+FROM orders;`,
+},
+{
     id: 31,
-    title: "Cross-Product Conditional Probability Matrix",
+    title: "Customer Revenue Share",
     difficulty: "Advanced",
-    slug: "sql-conditional-probability-matrix-self-join",
-    seoTitle: "SQL Conditional Probability Matrix via Self-JOIN and Subqueries",
-    metaDescription: "Learn how to compute relational frequency intersection metrics by joining an order item table to itself and dividing subset counts against explicit row denominators.",
-    tags: ["SQL", "Self-JOIN", "Subqueries", "Conditional Probability"],
-    description: "Calculate probability of buying product B given product A.",
-    explanation: "Uses conditional probability via self joins.",
-    scenario: "Recommendation system optimization.",
-    useCases: ["Market basket", "Recommendations"],
-    hint: "COUNT(A,B)/COUNT(A)",
-    starterQuery: "SELECT a.product_id as prodA, b.product_id as prodB,\nCOUNT(*) * 1.0 / (SELECT COUNT(*) FROM order_items WHERE product_id = a.product_id) as probability\nFROM order_items a JOIN order_items b\nON a.order_id = b.order_id AND a.product_id != b.product_id\nGROUP BY prodA, prodB;",
-    expectedColumns: ["prodA", "prodB", "probability"],
-    expectedRowCount: 6,
-    solutionQuery: "SELECT a.product_id as prodA, b.product_id as prodB,\nCOUNT(*) * 1.0 / (SELECT COUNT(*) FROM order_items WHERE product_id = a.product_id) as probability\nFROM order_items a JOIN order_items b\nON a.order_id = b.order_id AND a.product_id != b.product_id\nGROUP BY prodA, prodB;",
-  },
-  {
+    slug: "sql-window-percent-of-total-revenue",
+    seoTitle: "SQL Window Functions Revenue Share",
+    metaDescription: "Learn how to calculate each customer's contribution to the overall revenue using SQL window functions.",
+    tags: ["SQL", "SUM OVER", "Window Functions"],
+    description: "Calculate what percentage of the company's total revenue comes from each customer.",
+    explanation: "First calculate total spending per customer. Then divide each customer's spending by the overall revenue using a window aggregate.",
+    scenario: "Finance wants to understand which customers contribute the largest share of revenue.",
+    useCases: ["Revenue analysis", "Customer segmentation", "Business intelligence"],
+    hint: "Aggregate revenue by customer, then divide by SUM(total_spent) OVER().",
+    starterQuery: `SELECT
+    customer_id,
+    total_spent,
+    ROUND(
+        total_spent * 100.0 /
+        SUM(total_spent) OVER (),
+        2
+    ) AS revenue_percentage
+FROM (
+    SELECT
+        customer_id,
+        SUM(total_amount) AS total_spent
+    FROM orders
+    GROUP BY customer_id
+) t;`,
+    expectedColumns: ["customer_id","total_spent","revenue_percentage"],
+    solutionQuery: `SELECT
+    customer_id,
+    total_spent,
+    ROUND(
+        total_spent * 100.0 /
+        SUM(total_spent) OVER (),
+        2
+    ) AS revenue_percentage
+FROM (
+    SELECT
+        customer_id,
+        SUM(total_amount) AS total_spent
+    FROM orders
+    GROUP BY customer_id
+) t;`,
+},
+{
     id: 32,
-    title: "Order Value Outliers (Z-Score Framework)",
+    title: "Order Amount Compared to Previous Order",
     difficulty: "Advanced",
-    slug: "sql-z-score-outlier-detection-variance-math",
-    seoTitle: "SQL Z-Score Outlier Detection with SQRT Variance Simulation",
-    metaDescription: "Learn how to isolate dataset statistical anomalies by calculating standard deviations manually using cross-joined baseline statistics.",
-    tags: ["SQL", "SQRT", "AVG", "CROSS JOIN", "Outlier Detection"],
-    description: "Identify orders with unusually high values using Z-score logic.",
-    explanation: "Normalize values using mean and standard deviation.",
-    scenario: "Finance detects anomalies.",
-    useCases: ["Outlier detection", "Fraud detection"],
-    hint: "(value - avg)/stddev",
-    starterQuery: "SELECT order_id, total_amount\nFROM orders;",
-    expectedColumns: ["order_id", "customer_id", "total_amount", "z_score"],
-    expectedRowCount: 5,
-    solutionQuery: "WITH stats AS (\n    SELECT\n        AVG(total_amount) AS avg_amount,\n        SQRT(\n            AVG(total_amount * total_amount) -\n            AVG(total_amount) * AVG(total_amount)\n        ) AS stddev\n    FROM orders\n)\nSELECT\n    o.order_id,\n    o.customer_id,\n    o.total_amount,\n    ROUND(\n        (o.total_amount - s.avg_amount) / s.stddev,\n        2\n    ) AS z_score\nFROM orders o\nCROSS JOIN stats s\nWHERE ABS(\n    (o.total_amount - s.avg_amount) / s.stddev\n) > 2;",
-  },
+    slug: "sql-lag-order-comparison",
+    seoTitle: "SQL Compare Current and Previous Rows Using LAG",
+    metaDescription: "Learn how to compare every order with the customer's previous order using the SQL LAG() window function.",
+    tags: ["SQL", "LAG", "CASE WHEN", "Window Functions"],
+    description: "For every order, determine whether the customer spent more, less, or the same as their previous order.",
+    explanation: "Use LAG() to retrieve the previous order amount and compare it with the current order using a CASE expression.",
+    scenario: "The analytics team wants to identify whether customers are increasing or decreasing their spending over time.",
+    useCases: ["Purchase trend analysis", "Customer behavior", "Window Functions"],
+    hint: "Combine LAG() with a CASE expression.",
+    starterQuery: `SELECT
+    customer_id,
+    order_id,
+    total_amount,
+    CASE
+        WHEN total_amount > LAG(total_amount) OVER (
+            PARTITION BY customer_id
+            ORDER BY order_date
+        ) THEN 'Higher'
+        WHEN total_amount < LAG(total_amount) OVER (
+            PARTITION BY customer_id
+            ORDER BY order_date
+        ) THEN 'Lower'
+        ELSE 'Same'
+    END AS comparison
+FROM orders;`,
+    expectedColumns: ["customer_id","order_id","total_amount","comparison"],
+    solutionQuery: `SELECT
+    customer_id,
+    order_id,
+    total_amount,
+    CASE
+        WHEN total_amount > LAG(total_amount) OVER (
+            PARTITION BY customer_id
+            ORDER BY order_date
+        ) THEN 'Higher'
+        WHEN total_amount < LAG(total_amount) OVER (
+            PARTITION BY customer_id
+            ORDER BY order_date
+        ) THEN 'Lower'
+        ELSE 'Same'
+    END AS comparison
+FROM orders;`,
+},
   {
     id: 33,
     title: "Temporal Recency Case Segmentations",
@@ -596,1210 +1159,3443 @@ export const SQL_ADVANCED_PROBLEMS = [
   },
   {
     id: 34,
-    title: "Gross vs Net Value Leakage Calculations",
+    title: "Moving Average of Customer Orders",
     difficulty: "Advanced",
-    slug: "sql-gross-net-revenue-leakage-proportional-sum",
-    seoTitle: "SQL Gross vs Net Revenue Leakage with Proportional Sum Division",
-    metaDescription: "Learn how to parse operational variance values by applying multi-column floating math operations over absolute product ledgers.",
-    tags: ["SQL", "SUM", "Arithmetic Operators", "Data Transformation"],
-    description: "Calculate total revenue lost due to discounts and determine the percentage of revenue impacted by discounts.",
-    explanation: "Discount leakage analysis compares gross revenue before discounts against the actual collected revenue after discounts.",
-    scenario: "Finance teams want to measure how promotions and discounts impact profitability.",
-    useCases: ["Profitability analysis", "Pricing strategy", "Promotion effectiveness", "Revenue optimization"],
-    hint: "Use SUM(discount_amount) and compare against subtotal_amount",
-    starterQuery: "SELECT SUM(discount_amount) AS total_discount FROM orders;",
-    expectedColumns: ["gross_revenue", "total_discount", "net_revenue", "discount_pct"],
-    expectedRowCount: 1,
-    solutionQuery: "SELECT\n    SUM(subtotal_amount) AS gross_revenue,\n    SUM(discount_amount) AS total_discount,\n    SUM(total_amount) AS net_revenue,\n    ROUND(\n        SUM(discount_amount) * 100.0 /\n        SUM(subtotal_amount),\n        2\n    ) AS discount_pct\nFROM orders;",
-  },
-  {
+    slug: "sql-moving-average-window-function",
+    seoTitle: "SQL Moving Average Using Window Functions",
+    metaDescription: "Learn how to calculate a moving average using SQL window frames with AVG() OVER().",
+    tags: ["SQL", "AVG OVER", "Window Functions"],
+    description: "Calculate a moving average of the current and previous order amount for every customer.",
+    explanation: "Window frames allow you to define exactly which rows participate in a calculation. Here, AVG() computes the average of the current order and the immediately previous order.",
+    scenario: "The analytics team wants to smooth customer spending trends over time.",
+    useCases: ["Trend analysis", "Customer analytics", "Moving averages"],
+    hint: "Use AVG() OVER(PARTITION BY customer_id ORDER BY order_date ROWS BETWEEN 1 PRECEDING AND CURRENT ROW).",
+    starterQuery: `SELECT
+    customer_id,
+    order_id,
+    order_date,
+    total_amount,
+    AVG(total_amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+        ROWS BETWEEN 1 PRECEDING AND CURRENT ROW
+    ) AS moving_average
+FROM orders;`,
+    expectedColumns: ["customer_id","order_id","order_date","total_amount","moving_average"],
+    solutionQuery: `SELECT
+    customer_id,
+    order_id,
+    order_date,
+    total_amount,
+    AVG(total_amount) OVER (
+        PARTITION BY customer_id
+        ORDER BY order_date
+        ROWS BETWEEN 1 PRECEDING AND CURRENT ROW
+    ) AS moving_average
+FROM orders;`,
+},
+{
     id: 35,
-    title: "Consecutive State Row-Number Group Streaks",
+    title: "Previous Order Gap in Days",
     difficulty: "Advanced",
-    slug: "sql-consecutive-streak-isogroup-row-number-offset",
-    seoTitle: "SQL Consecutive Streak Grouping via Row-Number Iso-Offsets",
-    metaDescription: "Learn how to partition sequence boundaries across dates by subtracting an incremental row counter index directly from standard calendar fields.",
-    tags: ["SQL", "ROW_NUMBER", "DATE Functions", "CTE", "GROUP BY"],
-    description: "Find delivery partner with longest consecutive successful deliveries.",
-    explanation: "Streak logic using row_number difference trick.",
-    scenario: "Operations tracks consistency.",
-    useCases: ["Performance analysis", "Ranking"],
-    hint: "ROW_NUMBER difference grouping",
-    starterQuery: "SELECT delivery_partner_id FROM orders;",
-    expectedColumns: ["delivery_partner_id", "streak_length"],
-    expectedRowCount: 4,
-    solutionQuery: "WITH successful_orders AS (\n    SELECT\n        delivery_partner_id,\n        order_date,\n        ROW_NUMBER() OVER (\n            PARTITION BY delivery_partner_id\n            ORDER BY order_date\n        ) AS rn\n    FROM orders\n    WHERE order_status = 'Delivered'\n),\nstreak_groups AS (\n    SELECT\n        delivery_partner_id,\n        DATE(order_date, '-' || rn || ' days') AS grp\n    FROM successful_orders\n)\nSELECT\n    delivery_partner_id,\n    COUNT(*) AS streak_length\nFROM streak_groups\nGROUP BY delivery_partner_id, grp\nORDER BY streak_length DESC\nLIMIT 1;",
-  },
-  {
+    slug: "sql-lag-date-difference",
+    seoTitle: "SQL LAG with Date Difference",
+    metaDescription: "Learn how to calculate the number of days between consecutive orders using SQL LAG() and julianday().",
+    tags: ["SQL", "LAG", "julianday", "Window Functions"],
+    description: "Calculate the number of days between every order and the customer's previous order.",
+    explanation: "LAG() retrieves the previous order date while julianday() converts dates into numeric values so their difference can be calculated.",
+    scenario: "The CRM team wants to measure the average time between customer purchases.",
+    useCases: ["Purchase interval analysis", "Customer retention", "Window Functions"],
+    hint: "Subtract julianday(LAG(order_date)) from julianday(order_date).",
+    starterQuery: `SELECT
+    customer_id,
+    order_id,
+    order_date,
+    julianday(order_date) -
+    julianday(
+        LAG(order_date) OVER (
+            PARTITION BY customer_id
+            ORDER BY order_date
+        )
+    ) AS days_since_previous_order
+FROM orders;`,
+    expectedColumns: ["customer_id","order_id","order_date","days_since_previous_order"],
+    solutionQuery: `SELECT
+    customer_id,
+    order_id,
+    order_date,
+    julianday(order_date) -
+    julianday(
+        LAG(order_date) OVER (
+            PARTITION BY customer_id
+            ORDER BY order_date
+        )
+    ) AS days_since_previous_order
+FROM orders;`,
+},
+{
     id: 36,
-    title: "Proportional Base-Index Revenue Decay Curves",
-    difficulty: "Advanced",
-    slug: "sql-first-value-proportional-revenue-decay-curve",
-    seoTitle: "SQL FIRST_VALUE Proportional Vector Decay Curve Operations",
-    metaDescription: "Learn how to benchmark sequence deterioration parameters by contrasting sliding row entries directly against initial boundary records via FIRST_VALUE.",
-    tags: ["SQL", "FIRST_VALUE", "Window Functions", "Proportional Math"],
-    description: "Measure how revenue declines after first purchase.",
-    explanation: "Compare subsequent orders relative to first.",
-    scenario: "Growth team studies long-term value.",
-    useCases: ["LTV modeling", "Retention"],
-    hint: "Divide by first order value",
-    starterQuery: "SELECT customer_id, total_amount FROM orders;",
-    expectedColumns: ["customer_id", "order_date", "total_amount", "revenue_decay_pct"],
-    expectedRowCount: 10,
-    solutionQuery: "WITH ranked_orders AS (\n    SELECT\n        customer_id,\n        order_date,\n        total_amount,\n        FIRST_VALUE(total_amount) OVER (\n            PARTITION BY customer_id\n            ORDER BY order_date\n        ) AS first_order_value\n    FROM orders\n)\nSELECT\n    customer_id,\n    order_date,\n    total_amount,\n    ROUND(total_amount * 100.0 / first_order_value, 2) AS revenue_decay_pct\nFROM ranked_orders;",
-  },
-  {
-    id: 37,
-    title: "Baseline-Crossed Value Spike Detectors",
-    difficulty: "Advanced",
-    slug: "sql-cross-join-average-outlier-spike-detection",
-    seoTitle: "SQL CROSS JOIN Aggregate Baselines for Value Spike Detection",
-    metaDescription: "Learn how to filter micro-spikes by processing multi-row summary values across continuous individual daily data blocks via cross-joins.",
-    tags: ["SQL", "SUM", "AVG", "CROSS JOIN", "CTE"],
-    description: "Identify days with unusually high refunds.",
-    explanation: "Compare refund sums with average.",
-    scenario: "Finance monitors refund spikes.",
-    useCases: ["Anomaly detection", "Fraud"],
-    hint: "SUM(refund_amount) > AVG",
-    starterQuery: "SELECT refund_date, SUM(refund_amount) as total_refund\nFROM payments GROUP BY refund_date;",
-    expectedColumns: ["refund_date", "total_refund"],
-    expectedRowCount: 5,
-    solutionQuery: "WITH daily_refunds AS (\n    SELECT\n        refund_date,\n        SUM(refund_amount) AS total_refund\n    FROM payments\n    WHERE refund_amount > 0\n    GROUP BY refund_date\n),\nrefund_stats AS (\n    SELECT AVG(total_refund) AS avg_refund\n    FROM daily_refunds\n)\nSELECT\n    d.refund_date,\n    d.total_refund\nFROM daily_refunds d\nCROSS JOIN refund_stats r\nWHERE d.total_refund > r.avg_refund * 2;",
-  },
-  {
-    id: 38,
-    title: "Relational Margin Product Cost Analytics",
-    difficulty: "Advanced",
-    slug: "sql-inner-join-profit-margin-ratio-evaluation",
-    seoTitle: "SQL INNER JOIN Profit Margin Cost-to-Revenue Evaluation",
-    metaDescription: "Learn how to quantify margin metrics by mapping item volumes to product dimension tables using specific math operations.",
-    tags: ["SQL", "INNER JOIN", "SUM", "Arithmetic Operators"],
-    description: "Calculate profit by subtracting product cost from revenue.",
-    explanation: "Join products and order_items.",
-    scenario: "Finance calculates profitability.",
-    useCases: ["Profit tracking", "Margin analysis"],
-    hint: "SUM(price - cost_price)",
-    starterQuery: "SELECT SUM((p.price - p.cost_price) * oi.quantity) as profit\nFROM order_items oi JOIN products p ON oi.product_id = p.product_id;",
-    expectedColumns: ["total_profit", "total_revenue", "profit_margin_pct"],
-    expectedRowCount: 1,
-    solutionQuery: "SELECT\n    SUM((p.price - p.cost_price) * oi.quantity) AS total_profit,\n    SUM(oi.total_price) AS total_revenue,\n    ROUND(\n        SUM((p.price - p.cost_price) * oi.quantity) * 100.0 /\n        SUM(oi.total_price),\n        2\n    ) AS profit_margin_pct\nFROM order_items oi\nJOIN products p\n    ON oi.product_id = p.product_id;",
-  },
-  {
-    id: 39,
-    title: "Composite Vector Multi-Signal Linear Scaling",
-    difficulty: "Advanced",
-    slug: "sql-composite-linear-scoring-julianday-recency",
-    seoTitle: "SQL Composite Multi-Signal Linear Scaling with julianday Models",
-    metaDescription: "Learn how to standardize behavioral patterns by mapping temporal min-max variables into normalized score vectors using clear scalar parameters.",
-    tags: ["SQL", "julianday", "COUNT", "SUM", "Arithmetic Weighting"],
-    description: "Create a score based on order count, frequency, and recency.",
-    explanation: "Composite metric combining multiple signals.",
-    scenario: "Marketing prioritizes outreach.",
-    useCases: ["Scoring models", "CRM"],
-    hint: "Combine COUNT + AVG gap + MAX date",
-    starterQuery: "SELECT customer_id, COUNT(*) as orders FROM orders GROUP BY customer_id;",
-    expectedColumns: ["customer_id", "total_orders", "total_spend", "active_days", "recency_days", "engagement_score"],
-    expectedRowCount: 5,
-    solutionQuery: "WITH customer_metrics AS (\n    SELECT\n        customer_id,\n        COUNT(*) AS total_orders,\n        SUM(total_amount) AS total_spend,\n        julianday(MAX(order_date)) - julianday(MIN(order_date)) AS active_days,\n        julianday('now') - julianday(MAX(order_date)) AS recency_days\n    FROM orders\n    GROUP BY customer_id\n)\nSELECT\n    customer_id,\n    total_orders,\n    total_spend,\n    active_days,\n    recency_days,\n    ROUND(\n        (total_orders * 0.4) +\n        (total_spend * 0.01) +\n        (active_days * 0.1) -\n        (recency_days * 0.05),\n        2\n    ) AS engagement_score\nFROM customer_metrics\nORDER BY engagement_score DESC;",
-  },
-  {
-    id: 40,
-    title: "Multi-Currency Case Normalization Matrices",
-    difficulty: "Advanced",
-    slug: "sql-multi-currency-case-when-normalization",
-    seoTitle: "SQL Multi-Currency Case-Expression Revenue Normalization",
-    metaDescription: "Learn how to homogenize mismatched currencies by running inline case evaluation statements inside unified dataset aggregate blocks.",
-    tags: ["SQL", "CASE WHEN", "SUM", "GROUP BY"],
-    description: "Convert revenue into single currency before aggregation.",
-    explanation: "Requires mapping conversion rates.",
-    scenario: "Global finance reporting.",
-    useCases: ["Currency normalization", "Global dashboards"],
-    hint: "CASE currency",
-    starterQuery: "SELECT currency, SUM(total_amount) FROM orders GROUP BY currency;",
-    expectedColumns: ["currency", "normalized_usd_revenue"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT\n    currency,\n    SUM(\n        CASE\n            WHEN currency = 'USD' THEN total_amount\n            WHEN currency = 'EUR' THEN total_amount * 1.08\n            WHEN currency = 'INR' THEN total_amount * 0.012\n            ELSE total_amount\n        END\n    ) AS normalized_usd_revenue\nFROM orders\nGROUP BY currency;",
-  },
-  {
-    id: 41,
-    title: "Row Frequency NTILE Cluster Distribution",
-    difficulty: "Advanced",
-    slug: "sql-ntile-group-frequency-clustering-distribution",
-    seoTitle: "SQL NTILE Volume Quantile Segmentation Arrays",
-    metaDescription: "Learn how to distribute records evenly across specific grouping buckets by processing intermediate row volumes via NTILE statements.",
-    tags: ["SQL", "NTILE", "COUNT", "GROUP BY"],
-    description: "Segment customers based on order frequency using NTILE.",
-    explanation: "Divide into clusters.",
-    scenario: "Customer segmentation.",
-    useCases: ["Targeting", "Marketing"],
-    hint: "NTILE(3)",
-    starterQuery: "SELECT customer_id, COUNT(*) as orders,\nNTILE(3) OVER (ORDER BY COUNT(*) DESC) as segment\nFROM orders GROUP BY customer_id;",
-    expectedColumns: ["customer_id", "total_orders", "frequency_segment"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT\n    customer_id,\n    COUNT(*) AS total_orders,\n    NTILE(3) OVER (ORDER BY COUNT(*) DESC) AS frequency_segment\nFROM orders\nGROUP BY customer_id;",
-  },
-  {
-    id: 42,
-    title: "Temporal Delta Evaluation (Julianday Intervals)",
-    difficulty: "Advanced",
-    slug: "sql-julianday-temporal-delta-interval-tracking",
-    seoTitle: "SQL julianday Epoch-to-Epoch Structural Delta Tracking",
-    metaDescription: "Learn how to parse floating timeline durations by running row-level timestamp comparisons filtering out NULL entries.",
-    tags: ["SQL", "julianday", "ROUND", "Filtering"],
-    description: "Calculate time between payment_date and refund_date.",
-    explanation: "Date difference.",
-    scenario: "Finance tracks refund delays.",
-    useCases: ["Customer satisfaction", "Process efficiency"],
-    hint: "julianday difference",
-    starterQuery: "SELECT payment_id, julianday(refund_date) - julianday(payment_date) as days_to_refund FROM payments;",
-    expectedColumns: ["payment_id", "order_id", "payment_date", "refund_date", "days_to_refund"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT\n    payment_id,\n    order_id,\n    payment_date,\n    refund_date,\n    ROUND(\n        julianday(refund_date) -\n        julianday(payment_date),\n        2\n    ) AS days_to_refund\nFROM payments\nWHERE refund_date IS NOT NULL;",
-  },
-  {
-    id: 43,
-    title: "Aggregate Volume Velocity Over Nullif Durations",
-    difficulty: "Advanced",
-    slug: "sql-nullif-duration-volume-velocity-ratio",
-    seoTitle: "SQL NULLIF Boundary Guards for Temporal Velocity Ratios",
-    metaDescription: "Learn how to block zero-division execution bugs by wrapping calculated calendar spans inside functional NULLIF constraints.",
-    tags: ["SQL", "SUM", "julianday", "NULLIF", "GROUP BY"],
-    description: "Calculate average revenue per day per customer.",
-    explanation: "Divide total revenue by active duration.",
-    scenario: "Measure spending speed.",
-    useCases: ["LTV modeling", "Behavior analysis"],
-    hint: "SUM / date difference",
-    starterQuery: "SELECT customer_id, SUM(total_amount) as total FROM orders GROUP BY customer_id;",
-    expectedColumns: ["customer_id", "total_revenue", "revenue_per_day"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT\n    customer_id,\n    SUM(total_amount) AS total_revenue,\n    ROUND(\n        SUM(total_amount) * 1.0 /\n        NULLIF(\n            julianday(MAX(order_date)) -\n            julianday(MIN(order_date)),\n            0\n        ),\n        2\n    ) AS revenue_per_day\nFROM orders\nGROUP BY customer_id;",
-  },
-  {
-    id: 44,
-    title: "Multi-Field Attribute Redundancy Audits",
-    difficulty: "Advanced",
-    slug: "sql-multi-field-attribute-redundancy-having-count",
-    seoTitle: "SQL Multi-Field Deduplication Audits with HAVING COUNT",
-    metaDescription: "Learn how to map indexing errors and identity cross-matching loops by implementing multi-column GROUP BY blocks coupled with specific balance constraints.",
-    tags: ["SQL", "GROUP BY", "HAVING", "Deduplication"],
-    description: "Find orders with identical attributes (possible duplicates).",
-    explanation: "Group by multiple columns.",
-    scenario: "Data quality checks.",
-    useCases: ["Deduplication", "Integrity"],
-    hint: "GROUP BY multiple fields",
-    starterQuery: "SELECT customer_id, order_date, total_amount, COUNT(*) as cnt\nFROM orders GROUP BY customer_id, order_date, total_amount HAVING cnt > 1;",
-    expectedColumns: ["customer_id", "order_date", "total_amount", "duplicate_count"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    customer_id,\n    order_date,\n    total_amount,\n    COUNT(*) AS duplicate_count\nFROM orders\nGROUP BY customer_id, order_date, total_amount\nHAVING COUNT(*) > 1;",
-  },
-  {
-    id: 45,
-    title: "Double-Nested Window Vector Acceleration Trends",
-    difficulty: "Advanced",
-    slug: "sql-double-nested-window-lag-acceleration-trend",
-    seoTitle: "SQL Double-Nested Window LAG Vectors for Acceleration Trends",
-    metaDescription: "Learn how to compute second-derivative velocity change signals by evaluating sequence alterations over previously processed row-lag datasets.",
-    tags: ["SQL", "LAG", "Window Functions", "strftime", "CTE"],
-    description: "Find customers whose growth rate is increasing over time.",
-    explanation: "Second-level LAG comparison.",
-    scenario: "Identify accelerating growth.",
-    useCases: ["Growth analysis", "Forecasting"],
-    hint: "Compare growth vs previous growth",
-    starterQuery: "SELECT customer_id, total_amount FROM orders;",
-    expectedColumns: ["customer_id", "month", "growth", "acceleration"],
-    expectedRowCount: 10,
-    solutionQuery: "WITH monthly_revenue AS (\n    SELECT\n        customer_id,\n        strftime('%Y-%m', order_date) AS month,\n        SUM(total_amount) AS revenue\n    FROM orders\n    GROUP BY customer_id, month\n),\ngrowth_calc AS (\n    SELECT\n        customer_id,\n        month,\n        revenue,\n        revenue - LAG(revenue) OVER (\n            PARTITION BY customer_id\n            ORDER BY month\n        ) AS growth\n    FROM monthly_revenue\n)\nSELECT\n    customer_id,\n    month,\n    growth,\n    growth - LAG(growth) OVER (\n        PARTITION BY customer_id\n        ORDER BY month\n    ) AS acceleration\nFROM growth_calc;",
-  },
-  {
-    id: 46,
-    title: "Proportional Price Elasticity Factor Proxies",
-    difficulty: "Advanced",
-    slug: "sql-inner-join-proportional-elasticity-factor-ratio",
-    seoTitle: "SQL Price Coefficient Elasticity Calculations via Volume Grouping",
-    metaDescription: "Learn how to compute baseline item index coefficients by processing specific unit totals relative to localized product catalog dimensions.",
-    tags: ["SQL", "INNER JOIN", "SUM", "GROUP BY", "Ratio Estimation"],
-    description: "Measure how changes in price affect quantity sold.",
-    explanation: "Compare price vs quantity trends.",
-    scenario: "Pricing optimization.",
-    useCases: ["Elasticity analysis", "Revenue optimization"],
-    hint: "Compare price vs SUM(quantity)",
-    starterQuery: "SELECT product_id, SUM(quantity) as qty FROM order_items GROUP BY product_id;",
-    expectedColumns: ["product_id", "product_name", "price", "total_quantity_sold", "elasticity_proxy"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT\n    p.product_id,\n    p.product_name,\n    p.price,\n    SUM(oi.quantity) AS total_quantity_sold,\n    ROUND(SUM(oi.quantity) * 1.0 / p.price, 2) AS elasticity_proxy\nFROM products p\nJOIN order_items oi\n    ON p.product_id = oi.product_id\nGROUP BY p.product_id, p.product_name, p.price;",
-  },
-  {
-    id: 47,
-    title: "Inactivity Window Breach Threshold Logs",
-    difficulty: "Advanced",
-    slug: "sql-julianday-lag-inactivity-window-breach",
-    seoTitle: "SQL Window LAG and julianday Inactivity Threshold Parsing",
-    metaDescription: "Learn how to parse operational re-engagement records by filtering consecutive row dates whose day difference exceeds strict constants.",
-    tags: ["SQL", "LAG", "julianday", "Window Functions", "DISTINCT"],
-    description: "Find customers who returned after being inactive for 90+ days.",
-    explanation: "Detect inactivity gaps using LAG.",
-    scenario: "Retention success tracking.",
-    useCases: ["Reactivation analysis", "Growth"],
-    hint: "gap > 90 days",
-    starterQuery: "SELECT customer_id FROM orders;",
-    expectedColumns: ["customer_id"],
-    expectedRowCount: 3,
-    solutionQuery: "WITH customer_activity AS (\n    SELECT\n        customer_id,\n        order_date,\n        julianday(order_date) -\n        julianday(\n            LAG(order_date) OVER (\n                PARTITION BY customer_id\n                ORDER BY order_date\n            )\n        ) AS inactivity_gap\n    FROM orders\n)\nSELECT DISTINCT\n    customer_id\nFROM customer_activity\nWHERE inactivity_gap >= 90;",
-  },
-  {
-    id: 48,
-    title: "Multi-Dimensional Efficiency Scoring Kernels",
-    difficulty: "Advanced",
-    slug: "sql-inner-join-multi-dimensional-efficiency-score",
-    seoTitle: "SQL Multi-Dimensional Operational Efficiency Kernels",
-    metaDescription: "Learn how to map operational indices by extracting disparate scalar counts, averages, and durations into a single parameterized equation.",
-    tags: ["SQL", "INNER JOIN", "COUNT", "AVG", "julianday", "Linear Weighting"],
-    description: "Combine delivery time, rating, and volume into a score.",
-    explanation: "Composite KPI.",
-    scenario: "Rank delivery partners.",
-    useCases: ["Performance scoring", "Ranking"],
-    hint: "Combine metrics",
-    starterQuery: "SELECT delivery_partner_id, COUNT(*) as total_orders FROM orders GROUP BY delivery_partner_id;",
-    expectedColumns: ["delivery_partner_id", "total_orders", "avg_delivery_days", "avg_rating", "efficiency_score"],
-    expectedRowCount: 4,
-    solutionQuery: "WITH partner_metrics AS (\n    SELECT\n        o.delivery_partner_id,\n        COUNT(*) AS total_orders,\n        AVG(julianday(o.delivered_date) - julianday(o.order_date)) AS avg_delivery_days,\n        AVG(dp.rating) AS avg_rating\n    FROM orders o\n    JOIN delivery_partners dp\n        ON o.delivery_partner_id = dp.delivery_partner_id\n    WHERE o.delivered_date IS NOT NULL\n    GROUP BY o.delivery_partner_id\n)\nSELECT\n    delivery_partner_id,\n    total_orders,\n    avg_delivery_days,\n    avg_rating,\n    ROUND(\n        (total_orders * 0.5) +\n        (avg_rating * 20) -\n        (avg_delivery_days * 5),\n        2\n    ) AS efficiency_score\nFROM partner_metrics\nORDER BY efficiency_score DESC;",
-  },
-  {
-    id: 49,
-    title: "Partitioned Peak Cron Volume Ranks",
-    difficulty: "Advanced",
-    slug: "sql-partitioned-rank-peak-chron-volume",
-    seoTitle: "SQL Partitioned RANK Over Chronological Date Peak Selectors",
-    metaDescription: "Learn how to extract structural transaction spikes inside identity sub-blocks by routing internal row rankings through window filters.",
-    tags: ["SQL", "RANK", "strftime", "Window Functions", "Filtering"],
-    description: "Identify peak months for each customer.",
-    explanation: "Ranking within customer.",
-    scenario: "Seasonal behavior.",
-    useCases: ["Seasonality", "Forecasting"],
-    hint: "RANK() per customer",
-    starterQuery: "SELECT customer_id, strftime('%m', order_date) as month, COUNT(*) as cnt\nFROM orders GROUP BY customer_id, month;",
-    expectedColumns: ["customer_id", "month", "total_orders", "season_rank"],
-    expectedRowCount: 10,
-    solutionQuery: "WITH monthly_orders AS (\n    SELECT\n        customer_id,\n        strftime('%m', order_date) AS month,\n        COUNT(*) AS total_orders\n    FROM orders\n    GROUP BY customer_id, month\n)\nSELECT *\nFROM (\n    SELECT\n        customer_id,\n        month,\n        total_orders,\n        RANK() OVER (\n            PARTITION BY customer_id\n            ORDER BY total_orders DESC\n        ) AS season_rank\n    FROM monthly_orders\n) t\nWHERE season_rank = 1;",
-  },
-  {
-    id: 50,
-    title: "Multi-Stage Left-Join Funnel Conversion",
-    difficulty: "Advanced",
-    slug: "sql-multi-stage-left-join-funnel-conversion",
-    seoTitle: "SQL Multi-Stage LEFT JOIN Funnel Retention Matrices",
-    metaDescription: "Learn how to calculate systemic pipeline attrition ratios by connecting registration rows across downstream sequential activity tables.",
-    tags: ["SQL", "LEFT JOIN", "COUNT DISTINCT", "CASE WHEN", "Ratios"],
-    description: "Measure drop-off from signup → order → payment success.",
-    explanation: "Compare counts across funnel stages.",
-    scenario: "Growth team analyzes conversion funnel.",
-    useCases: ["Funnel analysis", "Conversion optimization"],
-    hint: "COUNT distinct at each stage",
-    starterQuery: "SELECT\nCOUNT(DISTINCT customer_id) as signups,\nCOUNT(DISTINCT o.customer_id) as ordered,\nCOUNT(DISTINCT p.order_id) as paid\nFROM customers c\nLEFT JOIN orders o ON c.customer_id = o.customer_id\nLEFT JOIN payments p ON o.order_id = p.order_id AND p.payment_status = 'Success';",
-    expectedColumns: ["total_signups", "customers_with_orders", "successful_payment_customers", "signup_to_order_pct", "order_to_payment_pct"],
-    expectedRowCount: 1,
-    solutionQuery: "SELECT\n    COUNT(DISTINCT c.customer_id) AS total_signups,\n    COUNT(DISTINCT o.customer_id) AS customers_with_orders,\n    COUNT(DISTINCT CASE WHEN p.payment_status = 'Success' THEN o.customer_id END) AS successful_payment_customers,\n    ROUND(\n        COUNT(DISTINCT o.customer_id) * 100.0 /\n        COUNT(DISTINCT c.customer_id),\n        2\n    ) AS signup_to_order_pct,\n    ROUND(\n        COUNT(DISTINCT CASE WHEN p.payment_status = 'Success' THEN o.customer_id END) * 100.0 /\n        COUNT(DISTINCT o.customer_id),\n        2\n    ) AS order_to_payment_pct\nFROM customers c\nLEFT JOIN orders o\n    ON c.customer_id = o.customer_id\nLEFT JOIN payments p\n    ON o.order_id = p.order_id;",
-  },
-  {
-    id: 51,
-    title: "Aggregate Density Share (Decile NTILE Models)",
-    difficulty: "Advanced",
-    slug: "sql-decile-ntile-aggregate-density-share",
-    seoTitle: "SQL Decile NTILE Accumulation Share Metrics",
-    metaDescription: "Learn how to parse group concentration vectors by sorting core users into explicit quantiles and computing conditional matrix ratios.",
-    tags: ["SQL", "NTILE", "SUM", "CASE WHEN", "Concentration Modeling"],
-    description: "Calculate what percentage of revenue comes from top 10% of customers.",
-    explanation: "Sort customers by revenue, then compute cumulative share.",
-    scenario: "Business checks dependency risk on top customers.",
-    useCases: ["Revenue concentration", "Risk analysis"],
-    hint: "Use NTILE or cumulative SUM",
-    starterQuery: "WITH cust_rev AS (\nSELECT customer_id, SUM(total_amount) as revenue FROM orders GROUP BY customer_id\n)\nSELECT * FROM cust_rev;",
-    expectedColumns: ["top_10pct_revenue_share"],
-    expectedRowCount: 1,
-    solutionQuery: "WITH customer_revenue AS (\n    SELECT\n        customer_id,\n        SUM(total_amount) AS revenue\n    FROM orders\n    GROUP BY customer_id\n),\nranked_customers AS (\n    SELECT\n        customer_id,\n        revenue,\n        NTILE(10) OVER (ORDER BY revenue DESC) AS revenue_decile\n    FROM customer_revenue\n)\nSELECT\n    ROUND(\n        SUM(CASE WHEN revenue_decile = 1 THEN revenue ELSE 0 END) * 100.0 /\n        SUM(revenue),\n        2\n    ) AS top_10pct_revenue_share\nFROM ranked_customers;",
-  },
-  {
-    id: 52,
-    title: "Double LAG Sequential Gap Deceleration",
-    difficulty: "Advanced",
-    slug: "sql-double-lag-sequential-gap-deceleration",
-    seoTitle: "SQL Double LAG Window Offsets for Sequence Convergence",
-    metaDescription: "Learn how to audit sequence pacing changes by evaluating current delta values directly against localized row positions using dual window transformations.",
-    tags: ["SQL", "LAG", "julianday", "Window Functions", "CTE"],
-    description: "Find customers whose order frequency is increasing over time.",
-    explanation: "Compare gaps between orders using LAG twice.",
-    scenario: "Identify highly engaged customers.",
-    useCases: ["Growth tracking", "Engagement"],
-    hint: "Compare current gap vs previous gap",
-    starterQuery: "SELECT customer_id, order_date FROM orders;",
-    expectedColumns: ["customer_id", "order_date", "current_gap", "previous_gap"],
-    expectedRowCount: 10,
-    solutionQuery: "WITH order_gaps AS (\n    SELECT\n        customer_id,\n        order_date,\n        julianday(order_date) - julianday(\n            LAG(order_date) OVER (\n                PARTITION BY customer_id\n                ORDER BY order_date\n            )\n        ) AS current_gap\n    FROM orders\n),\ngap_trends AS (\n    SELECT\n        customer_id,\n        order_date,\n        current_gap,\n        LAG(current_gap) OVER (\n            PARTITION BY customer_id\n            ORDER BY order_date\n        ) AS previous_gap\n    FROM order_gaps\n)\nSELECT\n    customer_id,\n    order_date,\n    current_gap,\n    previous_gap\nFROM gap_trends\nWHERE current_gap < previous_gap;",
-  },
-  {
-    id: 53,
-    title: "Multi-Table Relational Fractional Ratios",
-    difficulty: "Advanced",
-    slug: "sql-multi-table-fractional-ratio-sums",
-    seoTitle: "SQL Multi-Table Inner JOIN Fractional Product Return Metrics",
-    metaDescription: "Learn how to formulate subset risk variables by executing dense multi-registry inner joins and dividing target conditions against gross sums.",
-    tags: ["SQL", "INNER JOIN", "SUM", "GROUP BY", "Fractional Math"],
-    description: "Identify products with highest refund ratio.",
-    explanation: "Join order_items and payments and calculate refund/amount ratio.",
-    scenario: "Product team investigates problematic items.",
-    useCases: ["Product quality", "Returns analysis"],
-    hint: "SUM(refund)/SUM(amount)",
-    starterQuery: "SELECT product_id FROM order_items;",
-    expectedColumns: ["product_id", "product_name", "total_refund", "total_payment", "refund_ratio_pct"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT\n    oi.product_id,\n    p.product_name,\n    SUM(pay.refund_amount) AS total_refund,\n    SUM(pay.amount) AS total_payment,\n    ROUND(\n        SUM(pay.refund_amount) * 100.0 /\n        SUM(pay.amount),\n        2\n    ) AS refund_ratio_pct\nFROM order_items oi\nJOIN orders o\n    ON oi.order_id = o.order_id\nJOIN payments pay\n    ON o.order_id = pay.order_id\nJOIN products p\n    ON oi.product_id = p.product_id\nWHERE pay.refund_amount > 0\nGROUP BY oi.product_id, p.product_name\nORDER BY refund_ratio_pct DESC;",
-  },
-  {
-    id: 54,
-    title: "Calculated Population Variance Simulators",
-    difficulty: "Advanced",
-    slug: "sql-calculated-population-variance-squared-difference",
-    seoTitle: "SQL Population Variance Simulations via Squared Averages",
-    metaDescription: "Learn how to write algebraic variance equations directly into SQL systems by contrasting mean-square aggregates against standard squared values.",
-    tags: ["SQL", "AVG", "Arithmetic Scaling", "Variance Simulation"],
-    description: "Calculate variance in order values per customer.",
-    explanation: "Measures stability of spending behavior.",
-    scenario: "Finance identifies unpredictable customers.",
-    useCases: ["Behavior analysis", "Risk scoring"],
-    hint: "Use AVG and squared difference",
-    starterQuery: "SELECT customer_id, total_amount FROM orders;",
-    expectedColumns: ["customer_id", "order_value_variance"],
-    expectedRowCount: 10,
-    solutionQuery: "WITH customer_stats AS (\n    SELECT\n        customer_id,\n        AVG(total_amount) AS avg_order_value,\n        AVG(total_amount * total_amount) AS avg_square_value\n    FROM orders\n    GROUP BY customer_id\n)\nSELECT\n    customer_id,\n    ROUND(\n        avg_square_value - (avg_order_value * avg_order_value),\n        2\n    ) AS order_value_variance\nFROM customer_stats\nORDER BY order_value_variance DESC;",
-  },
-  {
-    id: 55,
-    title: "Julianday Range Bucket Classifications",
-    difficulty: "Advanced",
-    slug: "sql-julianday-range-bucket-case-when",
-    seoTitle: "SQL julianday Range Bucketing with CASE WHEN Aggregates",
-    metaDescription: "Learn how to compress raw linear floating day records into descriptive string-band dimensions using conditional case grouping matrix fields.",
-    tags: ["SQL", "CASE WHEN", "julianday", "COUNT", "GROUP BY"],
-    description: "Bucket delivery delays into ranges (0-1, 1-3, 3+ days).",
-    explanation: "CASE-based bucketing.",
-    scenario: "Operations analyzes delay severity.",
-    useCases: ["SLA tracking", "Delivery analysis"],
-    hint: "CASE with julianday difference",
-    starterQuery: "SELECT order_id FROM orders;",
-    expectedColumns: ["delay_bucket", "total_orders"],
-    expectedRowCount: 3,
-    solutionQuery: "WITH delivery_delays AS (\n    SELECT\n        order_id,\n        julianday(delivered_date) - julianday(estimated_delivery_time) AS delay_days\n    FROM orders\n    WHERE delivered_date IS NOT NULL\n)\nSELECT\n    CASE\n        WHEN delay_days <= 1 THEN '0-1 Days'\n        WHEN delay_days <= 3 THEN '1-3 Days'\n        ELSE '3+ Days'\n    END AS delay_bucket,\n    COUNT(*) AS total_orders\nFROM delivery_delays\nGROUP BY delay_bucket;",
-  },
-  {
-    id: 56,
-    title: "Month-over-Month Window RANK Stability",
-    difficulty: "Advanced",
-    slug: "sql-month-over-month-window-rank-stability",
-    seoTitle: "SQL Window RANK and Month-over-Month LAG Trajectories",
-    metaDescription: "Learn how to track rank-index trajectory modifications by running chronological row lag calculations over standalone grouped dense matrices.",
-    tags: ["SQL", "RANK", "LAG", "strftime", "INNER JOIN", "CTE"],
-    description: "Track how product rank changes month-over-month.",
-    explanation: "Compare RANK across months.",
-    scenario: "Product team monitors trend shifts.",
-    useCases: ["Trend analysis", "Ranking"],
-    hint: "RANK() + LAG",
-    starterQuery: "SELECT product_id FROM order_items;",
-    expectedColumns: ["product_id", "revenue_month", "revenue_rank", "previous_rank"],
-    expectedRowCount: 10,
-    solutionQuery: "WITH monthly_product_revenue AS (\n    SELECT\n        oi.product_id,\n        strftime('%Y-%m', o.order_date) AS revenue_month,\n        SUM(oi.total_price) AS revenue\n    FROM order_items oi\n    JOIN orders o\n        ON oi.order_id = o.order_id\n    GROUP BY oi.product_id, revenue_month\n),\nranked_products AS (\n    SELECT\n        product_id,\n        revenue_month,\n        revenue,\n        RANK() OVER (\n            PARTITION BY revenue_month\n            ORDER BY revenue DESC\n        ) AS revenue_rank\n    FROM monthly_product_revenue\n)\nSELECT\n    product_id,\n    revenue_month,\n    revenue_rank,\n    LAG(revenue_rank) OVER (\n        PARTITION BY product_id\n        ORDER BY revenue_month\n    ) AS previous_rank\nFROM ranked_products;",
-  },
-  {
-    id: 57,
-    title: "Mean Temporal Gap Case Conditional Segments",
-    difficulty: "Advanced",
-    slug: "sql-mean-temporal-gap-case-segmentation",
-    seoTitle: "SQL Mean Temporal Gap CASE Segmentations via Window LAG",
-    metaDescription: "Learn how to categorize continuous behavioral profiles by applying case evaluation expressions over normalized row gap averages.",
-    tags: ["SQL", "LAG", "AVG", "julianday", "CASE WHEN", "CTE"],
-    description: "Classify customers into short, medium, long purchase gap segments.",
-    explanation: "Use average gap between orders.",
-    scenario: "Marketing segmentation.",
-    useCases: ["Customer segmentation", "Retention"],
-    hint: "AVG(julianday gap)",
-    starterQuery: "SELECT customer_id FROM orders;",
-    expectedColumns: ["customer_id", "avg_gap_days", "purchase_gap_segment"],
-    expectedRowCount: 5,
-    solutionQuery: "WITH customer_gaps AS (\n    SELECT\n        customer_id,\n        julianday(order_date) - julianday(\n            LAG(order_date) OVER (\n                PARTITION BY customer_id\n                ORDER BY order_date\n            )\n        ) AS gap_days\n    FROM orders\n),\navg_gaps AS (\n    SELECT\n        customer_id,\n        AVG(gap_days) AS avg_gap_days\n    FROM customer_gaps\n    WHERE gap_days IS NOT NULL\n    GROUP BY customer_id\n)\nSELECT\n    customer_id,\n    ROUND(avg_gap_days, 2) AS avg_gap_days,\n    CASE\n        WHEN avg_gap_days <= 7 THEN 'Short Gap'\n        WHEN avg_gap_days <= 30 THEN 'Medium Gap'\n        ELSE 'Long Gap'\n    END AS purchase_gap_segment\nFROM avg_gaps;",
-  },
-  {
-    id: 58,
-    title: "Isomorphic Group ROW_NUMBER Partition Limits",
-    difficulty: "Advanced",
-    slug: "sql-isomorphic-row-number-partition-limits",
-    seoTitle: "SQL Isomorphic ROW_NUMBER Partition Group Filters",
-    metaDescription: "Learn how to extract structural maximal records across individual groupings by running ranked row indices inside explicit outer filtering loops.",
-    tags: ["SQL", "ROW_NUMBER", "INNER JOIN", "SUM", "GROUP BY", "CTE"],
-    description: "Find which category contributes most to each customer's spending.",
-    explanation: "Partition by customer and rank categories.",
-    scenario: "Personalization engine.",
-    useCases: ["Recommendation systems", "Customer profiling"],
-    hint: "ROW_NUMBER partitioned by customer",
-    starterQuery: "SELECT customer_id FROM orders;",
-    expectedColumns: ["customer_id", "category", "total_spend"],
-    expectedRowCount: 5,
-    solutionQuery: "WITH category_spend AS (\n    SELECT\n        o.customer_id,\n        p.category,\n        SUM(oi.total_price) AS total_spend\n    FROM orders o\n    JOIN order_items oi\n        ON o.order_id = oi.order_id\n    JOIN products p\n        ON oi.product_id = p.product_id\n    GROUP BY o.customer_id, p.category\n),\nranked_categories AS (\n    SELECT\n        customer_id,\n        category,\n        total_spend,\n        ROW_NUMBER() OVER (\n            PARTITION BY customer_id\n            ORDER BY total_spend DESC\n        ) AS category_rank\n    FROM category_spend\n)\nSELECT\n    customer_id,\n    category,\n    total_spend\nFROM ranked_categories\nWHERE category_rank = 1;",
-  },
-  {
-    id: 59,
-    title: "Chronological Moving Covariance Coefficient Matrices",
-    difficulty: "Advanced",
-    slug: "sql-chronological-moving-covariance-coefficient-matrix",
-    seoTitle: "SQL Chronological Moving Covariance Coefficient Simulations",
-    metaDescription: "Learn how to build index predictability metrics by calculating multi-row variance factors over sliding timeline aggregations.",
-    tags: ["SQL", "AVG", "SQRT", "strftime", "CROSS JOIN", "CTE"],
-    description: "Evaluate chronological tracking variance parameters by generating relational baseline math matrices over sequential monthly entries.",
-    explanation: "Tracks structural dataset consistency by dividing temporal squared variances against cross-joined absolute baselines.",
-    scenario: "Finance reviews revenue stability trends.",
-    useCases: ["Trend predictability", "Risk modeling"],
-    hint: "Contrast monthly squared summaries with full baseline statistical averages.",
-    starterQuery: "WITH monthly_totals AS (\n    SELECT strftime('%Y-%m', order_date) AS month, SUM(total_amount) AS revenue\n    FROM orders GROUP BY month\n)\nSELECT month, revenue FROM monthly_totals;",
-    expectedColumns: ["month", "revenue", "global_avg", "stability_variance"],
-    expectedRowCount: 12,
-    solutionQuery: "WITH monthly_revenue AS (\n    SELECT\n        strftime('%Y-%m', order_date) AS month,\n        SUM(total_amount) AS revenue\n    FROM orders\n    GROUP BY month\n),\nglobal_stats AS (\n    SELECT\n        AVG(revenue) AS global_avg\n    FROM monthly_revenue\n)\nSELECT\n    m.month,\n    m.revenue,\n    ROUND(g.global_avg, 2) AS global_avg,\n    ROUND((m.revenue - g.global_avg) * (m.revenue - g.global_avg), 2) AS stability_variance\nFROM monthly_revenue m\nCROSS JOIN global_stats g\nORDER BY m.month ASC;",
-  },
-  {
-    id: 60,
-    title: "Recursive Multi-Tier Dependency Path Traversals",
-    difficulty: "Advanced",
-    slug: "sql-recursive-cte-multi-tier-dependency-path",
-    seoTitle: "SQL Recursive CTE Hierarchical Path-String Traversals",
-    metaDescription: "Learn how to trace complete linear infrastructure graphs from terminal points to structural roots using iterative anchor common table expressions.",
-    tags: ["SQL", "Recursive CTE", "UNION ALL", "Hierarchical Joins"],
-    description: "Trace and generate structural dependency tracks mapping ancestral relational links across network records from bottom to top.",
-    explanation: "Leverages an iterative UNION ALL loop macro to traverse structural relationship trees while updating breadcrumb log properties dynamically.",
-    scenario: "Infrastructure or product assembly trees map systemic dependencies.",
-    useCases: ["Graph traversal", "Network dependency trees", "Hierarchical parsing"],
-    hint: "Run an anchor subquery linked into a child-parent JOIN step via UNION ALL.",
-    starterQuery: "WITH RECURSIVE graph_trace AS (\n    SELECT item_id, parent_item_id FROM structural_dependencies\n)\nSELECT * FROM graph_trace;",
-    expectedColumns: ["item_id", "parent_item_id", "dependency_depth", "lineage_path"],
-    expectedRowCount: 8,
-    solutionQuery: "WITH RECURSIVE dependency_hierarchy AS (\n    SELECT\n        item_id,\n        parent_item_id,\n        1 AS dependency_depth,\n        CAST(item_id AS TEXT) AS lineage_path\n    FROM structural_dependencies\n    WHERE parent_item_id IS NULL\n\n    UNION ALL\n\n    SELECT\n        d.item_id,\n        d.parent_item_id,\n        h.dependency_depth + 1 AS dependency_depth,\n        h.lineage_path || ' -> ' || d.item_id AS lineage_path\n    FROM structural_dependencies d\n    INNER JOIN dependency_hierarchy h\n        ON d.parent_item_id = h.item_id\n)\nSELECT\n    item_id,\n    parent_item_id,\n    dependency_depth,\n    lineage_path\nFROM dependency_hierarchy\nORDER BY dependency_depth ASC, item_id ASC;"
-  },
-  {
-    id: 61,
-    title: "Chronological Sub-String Metric Mode",
-    difficulty: "Advanced",
-    slug: "sql-strftime-hour-extraction-volume-mode",
-    seoTitle: "SQL strftime Hourly Sub-String Aggregation and Mode Selection",
-    metaDescription: "Learn how to parse operational peak distributions by extracting hour components from transaction timestamps and sorting count aggregates.",
-    tags: ["SQL", "strftime", "COUNT", "GROUP BY", "LIMIT"],
-    description: "Find the hour of day with highest order volume.",
-    explanation: "Extract hour from order_date.",
-    scenario: "Operations optimizes staffing.",
-    useCases: ["Demand planning", "Scheduling"],
-    hint: "strftime('%H')",
-    starterQuery: "SELECT order_date FROM orders;",
-    expectedColumns: ["order_hour", "total_orders"],
-    expectedRowCount: 1,
-    solutionQuery: "SELECT\n    strftime('%H', order_date) AS order_hour,\n    COUNT(*) AS total_orders\nFROM orders\nGROUP BY order_hour\nORDER BY total_orders DESC\nLIMIT 1;",
-  },
-  {
-    id: 62,
-    title: "Post-Peak Vector Variance Decay Parameters",
-    difficulty: "Advanced",
-    slug: "sql-post-peak-conditional-aggregate-decay-rate",
-    seoTitle: "SQL Post-Peak Vector Decay Analysis with Conditional Aggregates",
-    metaDescription: "Learn how to benchmark sequence deterioration by contrasting maximum historical baselines with subsequent conditional lower-valued records.",
-    tags: ["SQL", "MAX", "AVG", "CASE WHEN", "INNER JOIN", "Proportional Math"],
-    description: "Measure decline in spending after peak purchase.",
-    explanation: "Compare peak vs later orders.",
-    scenario: "Identify churn patterns.",
-    useCases: ["Retention analysis", "LTV modeling"],
-    hint: "MAX(total_amount)",
-    starterQuery: "SELECT customer_id FROM orders;",
-    expectedColumns: ["customer_id", "peak_order_value", "avg_later_spend", "decay_rate_pct"],
-    expectedRowCount: 5,
-    solutionQuery: "WITH peak_orders AS (\n    SELECT\n        customer_id,\n        MAX(total_amount) AS peak_order_value\n    FROM orders\n    GROUP BY customer_id\n)\nSELECT\n    o.customer_id,\n    p.peak_order_value,\n    ROUND(AVG(CASE WHEN o.total_amount < p.peak_order_value THEN o.total_amount END), 2) AS avg_later_spend,\n    ROUND(\n        (\n            p.peak_order_value - AVG(CASE WHEN o.total_amount < p.peak_order_value THEN o.total_amount END)\n        ) * 100.0 / p.peak_order_value,\n        2\n    ) AS decay_rate_pct\nFROM orders o\nJOIN peak_orders p\n    ON o.customer_id = p.customer_id\nGROUP BY o.customer_id, p.peak_order_value;",
-  },
-  {
-    id: 63,
-    title: "Floating-Point Temporal Step Multipliers",
-    difficulty: "Advanced",
-    slug: "sql-julianday-floating-point-hour-step-multiplier",
-    seoTitle: "SQL julianday Epoch Differences with Floating-Point Hour Scaling",
-    metaDescription: "Learn how to quantify narrow timeline execution speeds by extracting continuous julianday deltas and converting scales using mathematical products.",
-    tags: ["SQL", "julianday", "Arithmetic Operators", "Filtering"],
-    description: "Calculate time between order_date and out_for_delivery_time.",
-    explanation: "Date difference calculation.",
-    scenario: "Operations monitors processing speed.",
-    useCases: ["Efficiency tracking", "SLA"],
-    hint: "julianday difference",
-    starterQuery: "SELECT order_id FROM orders;",
-    expectedColumns: ["order_id", "processing_hours"],
-    expectedRowCount: 6,
-    solutionQuery: "SELECT\n    order_id,\n    ROUND(\n        (julianday(out_for_delivery_time) - julianday(order_date)) * 24,\n        2\n    ) AS processing_hours\nFROM orders\nWHERE out_for_delivery_time IS NOT NULL;",
-  },
-  {
-    id: 64,
-    title: "Dual-Nested Partition Window Velocity Trends",
-    difficulty: "Advanced",
-    slug: "sql-dual-nested-window-lag-velocity-trends",
-    seoTitle: "SQL Dual-Nested Window LAG Vectors for Velocity Acceleration",
-    metaDescription: "Learn how to identify shifting trends across a series by comparing localized positional row differences against prior timeline vectors.",
-    tags: ["SQL", "LAG", "Window Functions", "CTE", "Filtering"],
-    description: "Identify customers whose spending trend is accelerating.",
-    explanation: "Second-level comparison using LAG.",
-    scenario: "Identify growth users.",
-    useCases: ["Growth analysis", "Upsell"],
-    hint: "Compare growth vs previous growth",
-    starterQuery: "SELECT customer_id FROM orders;",
-    expectedColumns: ["customer_id", "order_date", "growth", "previous_growth"],
-    expectedRowCount: 10,
-    solutionQuery: "WITH customer_growth AS (\n    SELECT\n        customer_id,\n        order_date,\n        total_amount,\n        total_amount - LAG(total_amount) OVER (\n            PARTITION BY customer_id\n            ORDER BY order_date\n        ) AS growth\n    FROM orders\n),\nacceleration_check AS (\n    SELECT\n        customer_id,\n        order_date,\n        growth,\n        LAG(growth) OVER (\n            PARTITION BY customer_id\n            ORDER BY order_date\n        ) AS previous_growth\n    FROM customer_growth\n)\nSELECT\n    customer_id,\n    order_date,\n    growth,\n    previous_growth\nFROM acceleration_check\nWHERE growth > previous_growth;",
-  },
-  {
-    id: 65,
-    title: "Calculated Population Variance Co-Factors",
-    difficulty: "Advanced",
-    slug: "sql-calculated-population-variance-cofactors-strftime",
-    seoTitle: "SQL Population Variance Co-Factors via Mean-Square Aggregates",
-    metaDescription: "Learn how to isolate volatility coefficients over chronological strings by deploying mean-squared equations across structured subset rows.",
-    tags: ["SQL", "AVG", "strftime", "Arithmetic Weighting", "GROUP BY"],
-    description: "Measure how seasonal a product is based on monthly revenue variation.",
-    explanation: "Compare monthly revenue variation.",
-    scenario: "Inventory planning.",
-    useCases: ["Seasonality", "Forecasting"],
-    hint: "Monthly revenue + variance",
-    starterQuery: "SELECT product_id FROM order_items;",
-    expectedColumns: ["product_id", "seasonality_score"],
-    expectedRowCount: 5,
-    solutionQuery: "WITH monthly_product_revenue AS (\n    SELECT\n        oi.product_id,\n        strftime('%Y-%m', o.order_date) AS revenue_month,\n        SUM(oi.total_price) AS revenue\n    FROM order_items oi\n    JOIN orders o\n        ON oi.order_id = o.order_id\n    GROUP BY oi.product_id, revenue_month\n),\nrevenue_stats AS (\n    SELECT\n        product_id,\n        AVG(revenue) AS avg_revenue,\n        AVG(revenue * revenue) AS avg_square_revenue\n    FROM monthly_product_revenue\n    GROUP BY product_id\n)\nSELECT\n    product_id,\n    ROUND(\n        avg_square_revenue - (avg_revenue * avg_revenue),\n        2\n    ) AS seasonality_score\nFROM revenue_stats\nORDER BY seasonality_score DESC;",
-  },
-  {
-    id: 66,
-    title: "Multi-Table Left-Join Proportional Pipelines",
-    difficulty: "Advanced",
-    slug: "sql-multi-table-left-join-proportional-pipelines",
-    seoTitle: "SQL Multi-Table LEFT JOIN Pipeline Conversion Matrices",
-    metaDescription: "Learn how to evaluate multi-tiered attribute drop-offs by chaining separate event tables and processing conditional denominator fractions.",
-    tags: ["SQL", "LEFT JOIN", "COUNT DISTINCT", "CASE WHEN", "GROUP BY"],
-    description: "Measure funnel conversion grouped by acquisition_channel.",
-    explanation: "Join customers, orders, payments.",
-    scenario: "Marketing compares channels.",
-    useCases: ["Channel performance", "Funnel analysis"],
-    hint: "GROUP BY acquisition_channel",
-    starterQuery: "SELECT acquisition_channel FROM customers;",
-    expectedColumns: ["acquisition_channel", "total_customers", "ordering_customers", "paying_customers", "conversion_rate_pct"],
-    expectedRowCount: 4,
-    solutionQuery: "SELECT\n    c.acquisition_channel,\n    COUNT(DISTINCT c.customer_id) AS total_customers,\n    COUNT(DISTINCT o.customer_id) AS ordering_customers,\n    COUNT(DISTINCT CASE WHEN p.payment_status = 'Success' THEN o.customer_id END) AS paying_customers,\n    ROUND(\n        COUNT(DISTINCT CASE WHEN p.payment_status = 'Success' THEN o.customer_id END) * 100.0 /\n        COUNT(DISTINCT c.customer_id),\n        2\n    ) AS conversion_rate_pct\nFROM customers c\nLEFT JOIN orders o\n    ON c.customer_id = o.customer_id\nLEFT JOIN payments p\n    ON o.order_id = p.order_id\nGROUP BY c.acquisition_channel;",
-  },
-  {
-    id: 67,
-    title: "Cross-Registry Absolute Price Delta Audits",
-    difficulty: "Advanced",
-    slug: "sql-cross-registry-absolute-price-delta-audit",
-    seoTitle: "SQL Cross-Registry Absolute Delta Audits via INNER JOIN",
-    metaDescription: "Learn how to check for asset variance anomalies by using ABS math metrics to contrast line item values with master catalog parameters.",
-    tags: ["SQL", "INNER JOIN", "ABS", "Filtering", "Pricing Validation"],
-    description: "Find items priced significantly different from product price.",
-    explanation: "Compare unit_price vs product price.",
-    scenario: "Data quality checks.",
-    useCases: ["Anomaly detection", "Pricing validation"],
-    hint: "ABS difference",
-    starterQuery: "SELECT order_item_id FROM order_items;",
-    expectedColumns: ["order_item_id", "product_name", "unit_price", "catalog_price", "price_difference"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT\n    oi.order_item_id,\n    p.product_name,\n    oi.unit_price,\n    p.price AS catalog_price,\n    ROUND(ABS(oi.unit_price - p.price), 2) AS price_difference\nFROM order_items oi\nJOIN products p\n    ON oi.product_id = p.product_id\nWHERE ABS(oi.unit_price - p.price) > 10;",
-  },
-  {
-    id: 68,
-    title: "Min-Max Absolute Temporal Interval Spans",
-    difficulty: "Advanced",
-    slug: "sql-min-max-absolute-temporal-interval-spans",
-    seoTitle: "SQL Min-Max Envelope Limits for Absolute Timeline Spans",
-    metaDescription: "Learn how to extract individual activity limits by computing localized julianday differences between minimum and maximum date metrics.",
-    tags: ["SQL", "MIN", "MAX", "julianday", "GROUP BY"],
-    description: "Calculate active duration per customer (first to last order).",
-    explanation: "MIN and MAX order_date.",
-    scenario: "Customer lifecycle tracking.",
-    useCases: ["Lifecycle analysis", "Retention"],
-    hint: "MAX - MIN",
-    starterQuery: "SELECT customer_id FROM orders;",
-    expectedColumns: ["customer_id", "first_order_date", "last_order_date", "active_days"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT\n    customer_id,\n    MIN(order_date) AS first_order_date,\n    MAX(order_date) AS last_order_date,\n    ROUND(\n        julianday(MAX(order_date)) - julianday(MIN(order_date)),\n        2\n    ) AS active_days\nFROM orders\nGROUP BY customer_id;",
-  },
-  {
-    id: 69,
-    title: "Chronological Fraction Fractions via strftime",
-    difficulty: "Advanced",
-    slug: "sql-chronological-fractional-sums-strftime",
-    seoTitle: "SQL strftime Chronological Fractional Ratio Proportions",
-    metaDescription: "Learn how to isolate systemic rolling output shifts by grouping timelines into monthly text fields and calculating fraction sums.",
-    tags: ["SQL", "strftime", "SUM", "GROUP BY", "Ratio Estimation"],
-    description: "Track refund ratio month-over-month.",
-    explanation: "Aggregate refund and revenue per month.",
-    scenario: "Finance monitors trend.",
-    useCases: ["Financial analysis", "Trend tracking"],
-    hint: "SUM(refund)/SUM(amount)",
-    starterQuery: "SELECT payment_date FROM payments;",
-    expectedColumns: ["refund_month", "total_refund", "total_payment", "refund_ratio_pct"],
-    expectedRowCount: 6,
-    solutionQuery: "SELECT\n    strftime('%Y-%m', payment_date) AS refund_month,\n    SUM(refund_amount) AS total_refund,\n    SUM(amount) AS total_payment,\n    ROUND(\n        SUM(refund_amount) * 100.0 /\n        SUM(amount),\n        2\n    ) AS refund_ratio_pct\nFROM payments\nGROUP BY refund_month\nORDER BY refund_month;",
-  },
-  {
-    id: 70,
-    title: "Sub-Block Ranking Temporal Frequency Filters",
-    difficulty: "Advanced",
-    slug: "sql-sub-block-ranking-temporal-frequency-filter",
-    seoTitle: "SQL Partitioned RANK Filter and Sub-Block Frequency Counters",
-    metaDescription: "Learn how to track identity consistency across time buckets by computing nested window indices and evaluating global count frequencies.",
-    tags: ["SQL", "RANK", "strftime", "COUNT", "GROUP BY", "CTE"],
-    description: "Measure how consistently customers stay in top ranks.",
-    explanation: "Track rank changes across periods.",
-    scenario: "Identify loyal top customers.",
-    useCases: ["Customer ranking", "Retention"],
-    hint: "RANK + COUNT appearances",
-    starterQuery: "SELECT customer_id FROM orders;",
-    expectedColumns: ["customer_id", "top_rank_appearances"],
-    expectedRowCount: 5,
-    solutionQuery: "WITH monthly_customer_revenue AS (\n    SELECT\n        customer_id,\n        strftime('%Y-%m', order_date) AS revenue_month,\n        SUM(total_amount) AS revenue\n    FROM orders\n    GROUP BY customer_id, revenue_month\n),\nranked_customers AS (\n    SELECT\n        customer_id,\n        revenue_month,\n        revenue,\n        RANK() OVER (\n            PARTITION BY revenue_month\n            ORDER BY revenue DESC\n        ) AS revenue_rank\n    FROM monthly_customer_revenue\n)\nSELECT\n    customer_id,\n    COUNT(*) AS top_rank_appearances\nFROM ranked_customers\nWHERE revenue_rank <= 3\nGROUP BY customer_id\nORDER BY top_rank_appearances DESC;",
-  },
-  {
-    id: 71,
-    title: "Linear Volume NTILE Percentile Quantiles",
-    difficulty: "Advanced",
-    slug: "sql-linear-volume-ntile-percentile-quantiles",
-    seoTitle: "SQL NTILE Distribution Framework for Quantile Scaling",
-    metaDescription: "Learn how to map absolute numeric values into precise percentile ranges by processing row values through multi-bucket NTILE scripts.",
-    tags: ["SQL", "NTILE", "Window Functions", "Sorting"],
-    description: "Bucket orders into percentile groups.",
-    explanation: "Use NTILE.",
-    scenario: "Understand distribution.",
-    useCases: ["Segmentation", "Analytics"],
-    hint: "NTILE(10)",
-    starterQuery: "SELECT order_id FROM orders;",
-    expectedColumns: ["order_id", "total_amount", "percentile_group"],
-    expectedRowCount: 6,
-    solutionQuery: "SELECT\n    order_id,\n    total_amount,\n    NTILE(10) OVER (ORDER BY total_amount) AS percentile_group\nFROM orders;",
-  },
-  {
-    id: 72,
-    title: "Aggregate Span Capacity Ratios",
-    difficulty: "Advanced",
-    slug: "sql-aggregate-span-capacity-utilization-ratio",
-    seoTitle: "SQL Absolute Capacity Ratios via julianday Range Math",
-    metaDescription: "Learn how to establish performance density variables by extracting absolute span limits and dividing target row counts against those intervals.",
-    tags: ["SQL", "COUNT", "julianday", "MIN", "MAX", "GROUP BY"],
-    description: "Calculate utilization based on active days vs total days.",
-    explanation: "Compare activity span vs actual deliveries.",
-    scenario: "Operations efficiency.",
-    useCases: ["Workforce optimization", "Efficiency"],
-    hint: "COUNT vs date range",
-    starterQuery: "SELECT delivery_partner_id FROM orders;",
-    expectedColumns: ["delivery_partner_id", "total_deliveries", "active_days", "utilization_rate"],
-    expectedRowCount: 4,
-    solutionQuery: "WITH partner_activity AS (\n    SELECT\n        delivery_partner_id,\n        COUNT(*) AS total_deliveries,\n        julianday(MAX(order_date)) - julianday(MIN(order_date)) + 1 AS active_days\n    FROM orders\n    WHERE delivery_partner_id IS NOT NULL\n    GROUP BY delivery_partner_id\n)\nSELECT\n    delivery_partner_id,\n    total_deliveries,\n    ROUND(active_days, 2) AS active_days,\n    ROUND(total_deliveries * 100.0 / active_days, 2) AS utilization_rate\nFROM partner_activity;",
-  },
-  {
-    id: 73,
-    title: "Conditional Identity Binary Reliability Scores",
-    difficulty: "Advanced",
-    slug: "sql-conditional-identity-binary-reliability-score",
-    seoTitle: "SQL Binary Indicator Aggregates for Reliability Scores",
-    metaDescription: "Learn how to build index scores by executing multi-table joins and compiling conditional binary parameters against absolute record volumes.",
-    tags: ["SQL", "INNER JOIN", "SUM", "CASE WHEN", "COUNT", "GROUP BY"],
-    description: "Score customers based on payment success rate.",
-    explanation: "Success / total attempts.",
-    scenario: "Risk scoring.",
-    useCases: ["Fraud detection", "Customer scoring"],
-    hint: "SUM(success)/COUNT",
-    starterQuery: "SELECT customer_id FROM orders;",
-    expectedColumns: ["customer_id", "successful_payments", "total_attempts", "reliability_score"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT\n    o.customer_id,\n    SUM(CASE WHEN p.payment_status = 'Success' THEN 1 ELSE 0 END) AS successful_payments,\n    COUNT(*) AS total_attempts,\n    ROUND(\n        SUM(CASE WHEN p.payment_status = 'Success' THEN 1 ELSE 0 END) * 100.0 /\n        COUNT(*),\n        2\n    ) AS reliability_score\nFROM orders o\nJOIN payments p\n    ON o.order_id = p.order_id\nGROUP BY o.customer_id;",
-  },
-  {
-    id: 74,
-    title: "Continuous Epoch Lifecycle Duration Deltas",
-    difficulty: "Advanced",
-    slug: "sql-continuous-epoch-lifecycle-duration-deltas",
-    seoTitle: "SQL julianday Continuous Epoch Lifecycle Delta Tracking",
-    metaDescription: "Learn how to output timeline fulfillment latencies by tracking localized row-level timestamp offsets across system records.",
-    tags: ["SQL", "julianday", "Filtering", "Data Transformation"],
-    description: "Calculate total lifecycle from order to delivery.",
-    explanation: "Date difference.",
-    scenario: "Operations analysis.",
-    useCases: ["Efficiency", "SLA"],
-    hint: "delivered_date - order_date",
-    starterQuery: "SELECT order_id FROM orders;",
-    expectedColumns: ["order_id", "lifecycle_days"],
-    expectedRowCount: 6,
-    solutionQuery: "SELECT\n    order_id,\n    ROUND(\n        julianday(delivered_date) - julianday(order_date),\n        2\n    ) AS lifecycle_days\nFROM orders\nWHERE delivered_date IS NOT NULL;",
-  },
-  {
-    id: 75,
-    title: "Volume Intensity Density Coefficients",
-    difficulty: "Advanced",
-    slug: "sql-volume-intensity-density-coefficients",
-    seoTitle: "SQL Unit Volume Density Over Absolute Calendar Envelopes",
-    metaDescription: "Learn how to isolate activity frequency concentrations by dividing the cumulative sum of numeric records against computed temporal boundaries.",
-    tags: ["SQL", "SUM", "julianday", "MIN", "MAX", "GROUP BY"],
-    description: "Calculate revenue per active day per customer.",
-    explanation: "Divide total revenue by active duration.",
-    scenario: "Compare customer intensity.",
-    useCases: ["Customer value", "Behavior"],
-    hint: "SUM / (MAX-MIN)",
-    starterQuery: "SELECT customer_id FROM orders;",
-    expectedColumns: ["customer_id", "total_revenue", "active_days", "revenue_density"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT\n    customer_id,\n    SUM(total_amount) AS total_revenue,\n    ROUND(\n        julianday(MAX(order_date)) - julianday(MIN(order_date)) + 1,\n        2\n    ) AS active_days,\n    ROUND(\n        SUM(total_amount) * 1.0 /\n        (julianday(MAX(order_date)) - julianday(MIN(order_date)) + 1),\n        2\n    ) AS revenue_density\nFROM orders\nGROUP BY customer_id;",
-  },
-  {
-    id: 76,
-    title: "Cross-Registry Value Mismatch Audits",
-    difficulty: "Advanced",
-    slug: "sql-cross-registry-value-mismatch-audit-having",
-    seoTitle: "SQL Cross-Registry Financial Reconciliation with HAVING Clauses",
-    metaDescription: "Learn how to spot internal dataset discrepancies by joining structural transactional registries and parsing imbalance values inside HAVING loops.",
-    tags: ["SQL", "INNER JOIN", "SUM", "GROUP BY", "HAVING", "Reconciliation"],
-    description: "Find orders where order total_amount does not match sum of order_items total_price.",
-    explanation: "Detects inconsistencies between transactional and item-level data.",
-    scenario: "Finance audits revenue mismatches.",
-    useCases: ["Data validation", "Audit"],
-    hint: "SUM(order_items.total_price) vs orders.total_amount",
-    starterQuery: "SELECT o.order_id, o.total_amount, SUM(oi.total_price) as item_total\nFROM orders o JOIN order_items oi ON o.order_id = oi.order_id\nGROUP BY o.order_id\nHAVING item_total != o.total_amount;",
-    expectedColumns: ["order_id", "total_amount", "item_total", "difference_amount"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT\n    o.order_id,\n    o.total_amount,\n    ROUND(SUM(oi.total_price), 2) AS item_total,\n    ROUND(o.total_amount - SUM(oi.total_price), 2) AS difference_amount\nFROM orders o\nJOIN order_items oi\n    ON o.order_id = oi.order_id\nGROUP BY o.order_id, o.total_amount\nHAVING ROUND(SUM(oi.total_price), 2) != ROUND(o.total_amount, 2);",
-  },
-  {
-    id: 77,
-    title: "Orphaned Row Left-Join Exclusion Checks",
-    difficulty: "Advanced",
-    slug: "sql-orphaned-row-left-join-exclusion-check",
-    seoTitle: "SQL Orphaned Row Audits via LEFT JOIN Null Filtering",
-    metaDescription: "Learn how to find structural reference errors and processing breakdowns by running left outer joins and testing parent identity elements for null states.",
-    tags: ["SQL", "LEFT JOIN", "Filtering", "IS NULL", "Data Integrity"],
-    description: "Find payments that exist without corresponding orders.",
-    explanation: "LEFT JOIN payments to orders and filter missing matches.",
-    scenario: "Finance identifies orphan transactions.",
-    useCases: ["Data integrity", "Fraud detection"],
-    hint: "LEFT JOIN orders IS NULL",
-    starterQuery: "SELECT p.payment_id\nFROM payments p LEFT JOIN orders o ON p.order_id = o.order_id\nWHERE o.order_id IS NULL;",
-    expectedColumns: ["payment_id", "order_id", "amount"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    p.payment_id,\n    p.order_id,\n    p.amount\nFROM payments p\nLEFT JOIN orders o\n    ON p.order_id = o.order_id\nWHERE o.order_id IS NULL;",
-  },
-  {
-    id: 78,
-    title: "Negative Profit Margin Filter Equations",
-    difficulty: "Advanced",
-    slug: "sql-negative-profit-margin-filter-equation",
-    seoTitle: "SQL Multi-Table Margin Equations with HAVING Assertions",
-    metaDescription: "Learn how to flag structural loss records by cross-referencing multi-registry tables and subtracting cost vectors from gross prices.",
-    tags: ["SQL", "INNER JOIN", "SUM", "Arithmetic Operators", "GROUP BY", "HAVING"],
-    description: "Find orders where total revenue is less than total cost.",
-    explanation: "Compare revenue vs cost using products.",
-    scenario: "Business identifies loss-making orders.",
-    useCases: ["Profitability analysis", "Cost control"],
-    hint: "SUM(price - cost_price)",
-    starterQuery: "SELECT o.order_id\nFROM orders o\nJOIN order_items oi ON o.order_id = oi.order_id\nJOIN products p ON oi.product_id = p.product_id\nGROUP BY o.order_id\nHAVING SUM((p.price - p.cost_price) * oi.quantity) < 0;",
-    expectedColumns: ["order_id", "revenue", "total_cost", "profit"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    o.order_id,\n    SUM(oi.total_price) AS revenue,\n    SUM(p.cost_price * oi.quantity) AS total_cost,\n    ROUND(\n        SUM(oi.total_price) - SUM(p.cost_price * oi.quantity),\n        2\n    ) AS profit\nFROM orders o\nJOIN order_items oi\n    ON o.order_id = oi.order_id\nJOIN products p\n    ON oi.product_id = p.product_id\nGROUP BY o.order_id\nHAVING profit < 0;",
-  },
-  {
-    id: 79,
-    title: "Multi-Field Identity Intersect Union Audits",
-    difficulty: "Advanced",
-    slug: "sql-multi-field-identity-intersect-union-audit",
-    seoTitle: "SQL Multi-Field Redundancy Sweeps with UNION ALL Blocks",
-    metaDescription: "Learn how to isolate duplicated registry attributes across different string fields by using structured aggregate blocks connected via UNION ALL statements.",
-    tags: ["SQL", "UNION ALL", "GROUP BY", "HAVING", "Deduplication"],
-    description: "Find customers with same email or phone.",
-    explanation: "Group by email/phone to detect duplicates.",
-    scenario: "CRM cleans duplicate records.",
-    useCases: ["Data cleaning", "User identity"],
-    hint: "GROUP BY email HAVING COUNT > 1",
-    starterQuery: "SELECT email, COUNT(*) as cnt\nFROM customers GROUP BY email HAVING cnt > 1;",
-    expectedColumns: ["duplicate_type", "duplicate_value", "duplicate_count"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    'Email' AS duplicate_type,\n    email AS duplicate_value,\n    COUNT(*) AS duplicate_count\nFROM customers\nWHERE email IS NOT NULL\nGROUP BY email\nHAVING COUNT(*) > 1\n\nUNION ALL\n\nSELECT\n    'Phone' AS duplicate_type,\n    phone AS duplicate_value,\n    COUNT(*) AS duplicate_count\nFROM customers\nWHERE phone IS NOT NULL\nGROUP BY phone\nHAVING COUNT(*) > 1;",
-  },
-  {
-    id: 80,
-    title: "Logical Chronological Inversion Validations",
-    difficulty: "Advanced",
-    slug: "sql-logical-chronological-inversion-validation",
-    seoTitle: "SQL Temporal Inversion Detection with Relational Operators",
-    metaDescription: "Learn how to assert data collection rules by writing filter states that isolate rows where event finalization occurs prior to initiation timestamps.",
-    tags: ["SQL", "Relational Operators", "Filtering", "Data Quality"],
-    description: "Find orders where delivered_date is before order_date.",
-    explanation: "Logical inconsistency check.",
-    scenario: "Data team checks timestamp issues.",
-    useCases: ["Data validation", "Debugging"],
-    hint: "delivered_date < order_date",
-    starterQuery: "SELECT order_id FROM orders WHERE delivered_date < order_date;",
-    expectedColumns: ["order_id", "order_date", "delivered_date"],
-    expectedRowCount: 1,
-    solutionQuery: "SELECT\n    order_id,\n    order_date,\n    delivered_date\nFROM orders\nWHERE delivered_date < order_date;",
-  },
-  {
-    id: 81,
-    title: "Double-Table Aggregate Balance Reconciliation",
-    difficulty: "Advanced",
-    slug: "sql-double-table-aggregate-balance-reconciliation",
-    seoTitle: "SQL Double-Table Ledger Balancing with HAVING Filters",
-    metaDescription: "Learn how to execute reconciliation cross-checks by contrasting main row floats directly against separate summed transactional sub-registries.",
-    tags: ["SQL", "INNER JOIN", "SUM", "GROUP BY", "HAVING", "Reconciliation"],
-    description: "Find orders where total payment amount differs from total order amount.",
-    explanation: "Aggregate payments and compare.",
-    scenario: "Finance reconciliation.",
-    useCases: ["Audit", "Revenue validation"],
-    hint: "SUM(payments.amount)",
-    starterQuery: "SELECT o.order_id, SUM(p.amount) as paid, o.total_amount\nFROM orders o JOIN payments p ON o.order_id = p.order_id\nGROUP BY o.order_id\nHAVING paid != o.total_amount;",
-    expectedColumns: ["order_id", "paid", "total_amount", "difference_amount"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT\n    o.order_id,\n    ROUND(SUM(p.amount), 2) AS paid,\n    ROUND(o.total_amount, 2) AS total_amount,\n    ROUND(SUM(p.amount) - o.total_amount, 2) AS difference_amount\nFROM orders o\nJOIN payments p\n    ON o.order_id = p.order_id\nGROUP BY o.order_id, o.total_amount\nHAVING ROUND(SUM(p.amount), 2) != ROUND(o.total_amount, 2);",
-  },
-  {
-    id: 82,
-    title: "Concurrent Collision Composite Group Audits",
-    difficulty: "Advanced",
-    slug: "sql-concurrent-collision-composite-group-audit",
-    seoTitle: "SQL Identity Collision Audits with Composite Key HAVING Counters",
-    metaDescription: "Learn how to trap transaction double-processing errors by establishing multi-field composite keys inside a restrictive HAVING loop.",
-    tags: ["SQL", "GROUP BY", "HAVING", "COUNT", "Collision Auditing"],
-    description: "Find customers placing multiple orders at same timestamp.",
-    explanation: "Group by customer_id + order_date.",
-    scenario: "Detect duplicate transactions.",
-    useCases: ["Fraud detection", "Data issues"],
-    hint: "GROUP BY customer_id, order_date",
-    starterQuery: "SELECT customer_id, order_date, COUNT(*) as cnt\nFROM orders GROUP BY customer_id, order_date HAVING cnt > 1;",
-    expectedColumns: ["customer_id", "order_date", "cnt"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    customer_id,\n    order_date,\n    COUNT(*) AS cnt\nFROM orders\nGROUP BY customer_id, order_date\nHAVING COUNT(*) > 1;",
-  },
-  {
-    id: 83,
-    title: "Zero-Value Core Relational Intersection Assertions",
-    difficulty: "Advanced",
-    slug: "sql-zero-value-core-relational-intersection-assertion",
-    seoTitle: "SQL Zero-Value Parent Assertions with Child Row Inner JOINS",
-    metaDescription: "Learn how to extract internal database logic errors by tracking cases where core system values equal zero while dependent sub-tables verify item existence.",
-    tags: ["SQL", "INNER JOIN", "COUNT", "GROUP BY", "Data Anomalies"],
-    description: "Find orders where total_amount is zero but items exist.",
-    explanation: "Mismatch scenario between items and order.",
-    scenario: "Finance detects abnormal transactions.",
-    useCases: ["Revenue issues", "Audit"],
-    hint: "total_amount = 0 AND items exist",
-    starterQuery: "SELECT o.order_id\nFROM orders o JOIN order_items oi ON o.order_id = oi.order_id\nWHERE o.total_amount = 0;",
-    expectedColumns: ["order_id", "total_amount", "item_count"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    o.order_id,\n    o.total_amount,\n    COUNT(oi.order_item_id) AS item_count\nFROM orders o\nJOIN order_items oi\n    ON o.order_id = oi.order_id\nWHERE o.total_amount = 0\nGROUP BY o.order_id, o.total_amount;",
-  },
-  {
-    id: 84,
-    title: "Flag-Filtered Aggregate Threshold Targets",
-    difficulty: "Advanced",
-    slug: "sql-flag-filtered-aggregate-threshold-target",
-    seoTitle: "SQL Binary State Filtering and Aggregated Threshold Sweeps",
-    metaDescription: "Learn how to segment high-risk data tracks by implementing strict binary profile filters alongside grouped value threshold constraints.",
-    tags: ["SQL", "INNER JOIN", "SUM", "GROUP BY", "HAVING", "Binary Filtering"],
-    description: "Find unverified customers with high total spend.",
-    explanation: "Combine verification flag and aggregated spend.",
-    scenario: "Risk team flags suspicious accounts.",
-    useCases: ["Fraud detection", "Security"],
-    hint: "is_verified = 0",
-    starterQuery: "SELECT c.customer_id, SUM(o.total_amount) as total\nFROM customers c JOIN orders o ON c.customer_id = o.customer_id\nWHERE c.is_verified = 0\nGROUP BY c.customer_id HAVING total > 1000;",
-    expectedColumns: ["customer_id", "customer_name", "total_spend"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    c.customer_id,\n    c.customer_name,\n    ROUND(SUM(o.total_amount), 2) AS total_spend\nFROM customers c\nJOIN orders o\n    ON c.customer_id = o.customer_id\nWHERE c.is_verified = 0\nGROUP BY c.customer_id, c.customer_name\nHAVING SUM(o.total_amount) > 1000;",
-  },
-  {
-    id: 85,
-    title: "Cross-Table Catalog Variance Macro Audits",
-    difficulty: "Advanced",
-    slug: "sql-cross-table-catalog-variance-macro-audit",
-    seoTitle: "SQL Catalog Price-Inversion Validation via ABS Operators",
-    metaDescription: "Learn how to enforce pricing standards across distributed registries by writing absolute difference calculations that isolate significant margin deltas.",
-    tags: ["SQL", "INNER JOIN", "ABS", "Filtering", "Data Audits"],
-    description: "Find order items where unit_price differs significantly from product price.",
-    explanation: "Compare unit_price vs product price.",
-    scenario: "Pricing team audits inconsistencies.",
-    useCases: ["Pricing validation", "Data quality"],
-    hint: "ABS(unit_price - price)",
-    starterQuery: "SELECT oi.order_item_id\nFROM order_items oi JOIN products p ON oi.product_id = p.product_id\nWHERE ABS(oi.unit_price - p.price) > 50;",
-    expectedColumns: ["order_item_id", "product_name", "unit_price", "catalog_price", "price_difference"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT\n    oi.order_item_id,\n    p.product_name,\n    oi.unit_price,\n    p.price AS catalog_price,\n    ROUND(ABS(oi.unit_price - p.price), 2) AS price_difference\nFROM order_items oi\nJOIN products p\n    ON oi.product_id = p.product_id\nWHERE ABS(oi.unit_price - p.price) > 50;",
-  },
-  {
-    id: 86,
-    title: "Cross-Joined Variable Multiplier Outlier Sweeps",
-    difficulty: "Advanced",
-    slug: "sql-cross-joined-variable-multiplier-outlier-sweep",
-    seoTitle: "SQL CROSS JOIN Baseline Multipliers for Outlier Segments",
-    metaDescription: "Learn how to flag structural capacity overloads by running multi-row aggregates inside a cross-join block to filter extreme variance values.",
-    tags: ["SQL", "COUNT", "AVG", "CROSS JOIN", "CTE", "Outlier Filters"],
-    description: "Find partners handling more than 2x average orders.",
-    explanation: "Compare partner orders vs average.",
-    scenario: "Operations balances workload.",
-    useCases: ["Workforce optimization", "Performance"],
-    hint: "COUNT > 2 * AVG",
-    starterQuery: "SELECT delivery_partner_id, COUNT(*) as cnt\nFROM orders GROUP BY delivery_partner_id\nHAVING cnt > (SELECT AVG(c)*2 FROM (SELECT COUNT(*) as c FROM orders GROUP BY delivery_partner_id));",
-    expectedColumns: ["delivery_partner_id", "partner_orders"],
-    expectedRowCount: 2,
-    solutionQuery: "WITH partner_orders AS (\n    SELECT\n        delivery_partner_id,\n        COUNT(*) AS partner_orders\n    FROM orders\n    WHERE delivery_partner_id IS NOT NULL\n    GROUP BY delivery_partner_id\n),\navg_orders AS (\n    SELECT AVG(partner_orders) AS avg_partner_orders\n    FROM partner_orders\n)\nSELECT\n    p.delivery_partner_id,\n    p.partner_orders\nFROM partner_orders p\nCROSS JOIN avg_orders a\nWHERE p.partner_orders > a.avg_partner_orders * 2;",
-  },
-  {
-    id: 87,
-    title: "Multi-Condition String Intersect Value Validations",
-    difficulty: "Advanced",
-    slug: "sql-multi-condition-string-intersect-value-validation",
-    seoTitle: "SQL Case-Insensitive LOWER String Parsing and Intersects",
-    metaDescription: "Learn how to identify mismatched data streams by pairing numeric criteria filters with wildcard sub-string lookups using lower-case mapping statements.",
-    tags: ["SQL", "LOWER", "LIKE", "Logical Operators", "String Evaluation"],
-    description: "Find high rating but negative review text cases.",
-    explanation: "Text + rating mismatch detection.",
-    scenario: "Quality team flags inconsistencies.",
-    useCases: ["Sentiment analysis", "Data validation"],
-    hint: "rating >= 4 AND negative keywords",
-    starterQuery: "SELECT feedback_id FROM feedback WHERE rating >= 4 AND review_text LIKE '%bad%';",
-    expectedColumns: ["feedback_id", "rating", "review_text"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    feedback_id,\n    rating,\n    review_text\nFROM feedback\nWHERE rating >= 4\nAND (\n    LOWER(review_text) LIKE '%bad%'\n    OR LOWER(review_text) LIKE '%poor%'\n    OR LOWER(review_text) LIKE '%terrible%'\n    OR LOWER(review_text) LIKE '%worst%'\n    OR LOWER(review_text) LIKE '%broken%'\n    OR LOWER(review_text) LIKE '%late%'\n);",
-  },
-  {
-    id: 88,
-    title: "Asymmetric Multi-Condition Attribute Validations",
-    difficulty: "Advanced",
-    slug: "sql-asymmetric-multi-condition-attribute-validation",
-    seoTitle: "SQL Asymmetric Multi-Condition Null Reference Sweeps",
-    metaDescription: "Learn how to audit relational inconsistencies by designing multi-variable check constraints that locate terminal activity missing key identity links.",
-    tags: ["SQL", "Relational Operators", "IS NULL", "Data Verification"],
-    description: "Find orders marked delivered but missing delivery_partner_id.",
-    explanation: "Logical inconsistency.",
-    scenario: "Operations audit.",
-    useCases: ["Data integrity", "Debugging"],
-    hint: "delivery_partner_id IS NULL",
-    starterQuery: "SELECT order_id FROM orders WHERE order_status = 'Delivered' AND delivery_partner_id IS NULL;",
-    expectedColumns: ["order_id", "order_status", "delivery_partner_id"],
-    expectedRowCount: 1,
-    solutionQuery: "SELECT\n    order_id,\n    order_status,\n    delivery_partner_id\nFROM orders\nWHERE order_status = 'Delivered'\nAND delivery_partner_id IS NULL;",
-  },
-  {
-    id: 89,
-    title: "Identical-Key Row Instability Sums",
-    difficulty: "Advanced",
-    slug: "sql-identical-key-row-instability-sums",
-    seoTitle: "SQL Parent Identity Value Summaries with HAVING Thresholds",
-    metaDescription: "Learn how to uncover operational transaction processing failures by applying HAVING checks that detect repeating keys alongside unified decimal calculations.",
-    tags: ["SQL", "COUNT", "SUM", "GROUP BY", "HAVING"],
-    description: "Find orders with multiple refund transactions.",
-    explanation: "GROUP BY order_id HAVING COUNT(refund)>1.",
-    scenario: "Finance detects excessive refunds.",
-    useCases: ["Fraud detection", "Audit"],
-    hint: "COUNT(refund_date)",
-    starterQuery: "SELECT order_id, COUNT(*) as cnt\nFROM payments WHERE refund_amount > 0\nGROUP BY order_id HAVING cnt > 1;",
-    expectedColumns: ["order_id", "refund_count", "total_refund_amount"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    order_id,\n    COUNT(*) AS refund_count,\n    ROUND(SUM(refund_amount), 2) AS total_refund_amount\nFROM payments\nWHERE refund_amount > 0\nGROUP BY order_id\nHAVING COUNT(*) > 1;",
-  },
-  {
-    id: 90,
-    title: "DATE-String Truncated Volume Matrix Filters",
-    difficulty: "Advanced",
-    slug: "sql-date-string-truncated-volume-matrix-filter",
-    seoTitle: "SQL DATE Extraction Loops and Identity Frequency Filters",
-    metaDescription: "Learn how to sweep for high-frequency processing anomalies by formatting variable timestamps into simple text lines and running count threshold checks.",
-    tags: ["SQL", "DATE", "COUNT", "GROUP BY", "HAVING"],
-    description: "Find customers placing 3+ orders within 1 day.",
-    explanation: "Use grouping + date filters.",
-    scenario: "Fraud or bot detection.",
-    useCases: ["Fraud detection", "Behavior analysis"],
-    hint: "COUNT orders per day",
-    starterQuery: "SELECT customer_id, order_date, COUNT(*) as cnt\nFROM orders GROUP BY customer_id, order_date HAVING cnt >= 3;",
-    expectedColumns: ["customer_id", "order_day", "cnt"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    customer_id,\n    DATE(order_date) AS order_day,\n    COUNT(*) AS cnt\nFROM orders\nGROUP BY customer_id, DATE(order_date)\nHAVING COUNT(*) >= 3;",
-  },
-  {
-    id: 91,
-    title: "Binary Exclusion State Inner Intersection",
-    difficulty: "Advanced",
-    slug: "sql-binary-exclusion-state-inner-intersection",
-    seoTitle: "SQL INNER JOIN Cardinality over Inactive Binary Profiles",
-    metaDescription: "Learn how to parse relational anomalies by running an inner join intersection across an item registry filtering for inactive state modifiers.",
-    tags: ["SQL", "INNER JOIN", "COUNT DISTINCT", "GROUP BY", "Binary States"],
-    description: "Find inactive products that still appear in orders.",
-    explanation: "Join products and order_items.",
-    scenario: "Catalog inconsistency.",
-    useCases: ["Data validation", "Catalog management"],
-    hint: "is_active = 0",
-    starterQuery: "SELECT DISTINCT p.product_id\nFROM products p JOIN order_items oi ON p.product_id = oi.product_id\nWHERE p.is_active = 0;",
-    expectedColumns: ["product_id", "product_name", "total_orders"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    p.product_id,\n    p.product_name,\n    COUNT(DISTINCT oi.order_id) AS total_orders\nFROM products p\nJOIN order_items oi\n    ON p.product_id = oi.product_id\nWHERE p.is_active = 0\nGROUP BY p.product_id, p.product_name;",
-  },
-  {
-    id: 92,
-    title: "Asymmetric Null Identity Exclusion Queries",
-    difficulty: "Advanced",
-    slug: "sql-asymmetric-null-identity-exclusion-query",
-    seoTitle: "SQL LEFT JOIN Unmatched Parent Row Null Assertions",
-    metaDescription: "Learn how to detect transaction gaps by mapping primary tables to subset records using left outer joins and checking for foreign key null parameters.",
-    tags: ["SQL", "LEFT JOIN", "IS NULL", "Data Verification", "Relational Algebra"],
-    description: "Find orders with no payment attempts.",
-    explanation: "LEFT JOIN payments.",
-    scenario: "Revenue leakage.",
-    useCases: ["Audit", "Payment tracking"],
-    hint: "payments IS NULL",
-    starterQuery: "SELECT o.order_id\nFROM orders o LEFT JOIN payments p ON o.order_id = p.order_id\nWHERE p.payment_id IS NULL;",
-    expectedColumns: ["order_id", "customer_id", "total_amount"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    o.order_id,\n    o.customer_id,\n    o.total_amount\nFROM orders o\nLEFT JOIN payments p\n    ON o.order_id = p.order_id\nWHERE p.payment_id IS NULL;",
-  },
-  {
-    id: 93,
-    title: "Non-Unique Field Value Redundancy Clusters",
-    difficulty: "Advanced",
-    slug: "sql-non-unique-field-value-redundancy-cluster",
-    seoTitle: "SQL String Field Redundancy Sweps with HAVING Constraints",
-    metaDescription: "Learn how to detect identity partitioning bugs by grouping text-based fields and executing restrictive HAVING criteria counts over unique rows.",
-    tags: ["SQL", "GROUP BY", "HAVING", "COUNT", "Data Deduplication"],
-    description: "Find customers sharing same phone but different IDs.",
-    explanation: "Group by phone.",
-    scenario: "Fraud detection.",
-    useCases: ["Identity matching", "Security"],
-    hint: "GROUP BY phone",
-    starterQuery: "SELECT phone, COUNT(*) as cnt\nFROM customers GROUP BY phone HAVING cnt > 1;",
-    expectedColumns: ["phone", "cnt"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    phone,\n    COUNT(*) AS cnt\nFROM customers\nWHERE phone IS NOT NULL\nGROUP BY phone\nHAVING COUNT(*) > 1;",
-  },
-  {
-    id: 94,
-    title: "Fractional Threshold Scale-Factor Multipliers",
-    difficulty: "Advanced",
-    slug: "sql-fractional-threshold-scale-factor-multiplier",
-    seoTitle: "SQL Fractional Threshold Predicates and Floating-Point Math",
-    metaDescription: "Learn how to isolate extreme numeric variances by evaluating column ratios directly inside the query filtering condition block.",
-    tags: ["SQL", "Arithmetic Operators", "Filtering", "ROUND", "Ratio Evaluation"],
-    description: "Find orders where discount > 50% of subtotal.",
-    explanation: "Ratio-based filtering.",
-    scenario: "Finance audits discounts.",
-    useCases: ["Promotion analysis", "Fraud"],
-    hint: "discount / subtotal > 0.5",
-    starterQuery: "SELECT order_id FROM orders WHERE discount_amount * 1.0 / subtotal_amount > 0.5;",
-    expectedColumns: ["order_id", "subtotal_amount", "discount_amount", "discount_pct"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    order_id,\n    subtotal_amount,\n    discount_amount,\n    ROUND(discount_amount * 100.0 / subtotal_amount, 2) AS discount_pct\nFROM orders\nWHERE discount_amount * 1.0 / subtotal_amount > 0.5;",
-  },
-  {
-    id: 95,
-    title: "Inverted Temporal Linear Step Assertions",
-    difficulty: "Advanced",
-    slug: "sql-inverted-temporal-linear-step-assertion",
-    seoTitle: "SQL Temporal Inversion Detection with Relational Operators",
-    metaDescription: "Learn how to uncover date collection errors by setting conditional parameters that highlight row data that violates continuous forward timelines.",
-    tags: ["SQL", "Relational Operators", "Filtering", "Temporal Validations"],
-    description: "Find orders where out_for_delivery_time is before order_date.",
-    explanation: "Logical inconsistency.",
-    scenario: "Data issue detection.",
-    useCases: ["Debugging", "Validation"],
-    hint: "out_for_delivery_time < order_date",
-    starterQuery: "SELECT order_id FROM orders WHERE out_for_delivery_time < order_date;",
-    expectedColumns: ["order_id", "order_date", "out_for_delivery_time"],
-    expectedRowCount: 1,
-    solutionQuery: "SELECT\n    order_id,\n    order_date,\n    out_for_delivery_time\nFROM orders\nWHERE out_for_delivery_time < order_date;",
-  },
-  {
-    id: 96,
-    title: "Null-State or Zero-Value Identity Matrices",
-    difficulty: "Advanced",
-    slug: "sql-null-state-zero-value-identity-matrix",
-    seoTitle: "SQL Compound Missing-Value Filter Audits with Logical OR",
-    metaDescription: "Learn how to flag critical omissions in configuration data sets by validating fields against both missing null objects and explicit zero states.",
-    tags: ["SQL", "IS NULL", "Logical Operators", "Filtering", "Data Scrubbing"],
-    description: "Find products where cost_price is NULL or zero.",
-    explanation: "Missing cost leads to incorrect profit.",
-    scenario: "Finance cleanup.",
-    useCases: ["Data validation", "Profit analysis"],
-    hint: "cost_price IS NULL OR = 0",
-    starterQuery: "SELECT product_id FROM products WHERE cost_price IS NULL OR cost_price = 0;",
-    expectedColumns: ["product_id", "product_name", "cost_price"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    product_id,\n    product_name,\n    cost_price\nFROM products\nWHERE cost_price IS NULL\nOR cost_price = 0;",
-  },
-  {
-    id: 97,
-    title: "Asymmetric Lifecycle Sequential Step Audits",
-    difficulty: "Advanced",
-    slug: "sql-asymmetric-lifecycle-sequential-step-audit",
-    seoTitle: "SQL Step-Omission Integrity Loops via Combined Filtering",
-    metaDescription: "Learn how to audit distributed process tracking logic by combining terminal string states with missing intermediate null markers.",
-    tags: ["SQL", "Relational Operators", "IS NULL", "Logical Operators", "Process Verification"],
-    description: "Find orders marked delivered but missing out_for_delivery_time.",
-    explanation: "Lifecycle inconsistency.",
-    scenario: "Logistics audit.",
-    useCases: ["Process validation", "Data integrity"],
-    hint: "out_for_delivery_time IS NULL",
-    starterQuery: "SELECT order_id FROM orders WHERE order_status = 'Delivered' AND out_for_delivery_time IS NULL;",
-    expectedColumns: ["order_id", "order_status", "out_for_delivery_time"],
-    expectedRowCount: 1,
-    solutionQuery: "SELECT\n    order_id,\n    order_status,\n    out_for_delivery_time\nFROM orders\nWHERE order_status = 'Delivered'\nAND out_for_delivery_time IS NULL;",
-  },
-  {
-    id: 98,
-    title: "Cross-Registry Multi-Column Inversion Thresholds",
-    difficulty: "Advanced",
-    slug: "sql-cross-registry-multi-column-inversion-threshold",
-    seoTitle: "SQL Multi-Table Aggregate Sweeps with HAVING Inequalities",
-    metaDescription: "Learn how to write anomaly filters by joining system registries, executing multi-column aggregates, and filtering out inverse ratios inside a HAVING clause.",
-    tags: ["SQL", "INNER JOIN", "COUNT DISTINCT", "SUM", "GROUP BY", "HAVING"],
-    description: "Find customers with few orders but high refunds.",
-    explanation: "Mismatch pattern detection.",
-    scenario: "Fraud risk.",
-    useCases: ["Risk scoring", "Fraud detection"],
-    hint: "SUM(refund) high AND COUNT orders low",
-    starterQuery: "SELECT o.customer_id, COUNT(*) as orders, SUM(p.refund_amount) as refund\nFROM orders o JOIN payments p ON o.order_id = p.order_id\nGROUP BY o.customer_id HAVING orders < 3 AND refund > 500;",
-    expectedColumns: ["customer_id", "total_orders", "total_refund"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    o.customer_id,\n    COUNT(DISTINCT o.order_id) AS total_orders,\n    ROUND(SUM(p.refund_amount), 2) AS total_refund\nFROM orders o\nJOIN payments p\n    ON o.order_id = p.order_id\nGROUP BY o.customer_id\nHAVING COUNT(DISTINCT o.order_id) < 3\nAND SUM(p.refund_amount) > 500;",
-  },
-  {
-    id: 99,
-    title: "Structural Child-Row Omission Filter Blocks",
-    difficulty: "Advanced",
-    slug: "sql-structural-child-row-omission-filter-block",
-    seoTitle: "SQL LEFT JOIN Child-Table Omission Audits with Scalar Filters",
-    metaDescription: "Learn how to find structural reference errors where primary parent record floats exist but referenced foreign key entries are completely missing.",
-    tags: ["SQL", "LEFT JOIN", "IS NULL", "Relational Operators", "Ledger Validation"],
-    description: "Find orders where no items exist but total_amount > 0.",
-    explanation: "Mismatch detection.",
-    scenario: "Data issue.",
-    useCases: ["Data validation", "Audit"],
-    hint: "LEFT JOIN items IS NULL",
-    starterQuery: "SELECT o.order_id\nFROM orders o LEFT JOIN order_items oi ON o.order_id = oi.order_id\nWHERE oi.order_id IS NULL AND o.total_amount > 0;",
-    expectedColumns: ["order_id", "total_amount"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT\n    o.order_id,\n    o.total_amount\nFROM orders o\nLEFT JOIN order_items oi\n    ON o.order_id = oi.order_id\nWHERE oi.order_id IS NULL\nAND o.total_amount > 0;",
-  },
-  {
-    id: 100,
-    title: "Multi-Layer Cross-Registry Validation Matrices",
-    difficulty: "Advanced",
-    slug: "sql-multi-layer-cross-registry-validation-matrix",
-    seoTitle: "SQL Multi-Table Validation Matrix via Nested CASE Expressions",
-    metaDescription: "Learn how to build a unified system tracking matrix by running multi-layer left outer joins and processing field mismatches using nested CASE logic.",
-    tags: ["SQL", "LEFT JOIN", "CASE WHEN", "ROUND", "COALESCE", "GROUP BY", "SUM"],
-    description: "Create a report combining revenue mismatch, payment mismatch, and item mismatch.",
-    explanation: "Multi-layer validation across all tables.",
-    scenario: "Final audit dashboard.",
-    useCases: ["Data quality", "Audit systems"],
-    hint: "Combine multiple mismatch conditions",
-    starterQuery: "SELECT o.order_id\nFROM orders o\nLEFT JOIN payments p ON o.order_id = p.order_id\nLEFT JOIN order_items oi ON o.order_id = oi.order_id;",
-    expectedColumns: ["order_id", "payment_mismatch", "item_mismatch", "missing_payment_record"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT\n    o.order_id,\n    CASE\n        WHEN ROUND(COALESCE(SUM(p.amount), 0), 2) != ROUND(o.total_amount, 2)\n        THEN 'Yes'\n        ELSE 'No'\n    END AS payment_mismatch,\n    CASE\n        WHEN ROUND(COALESCE(SUM(oi.total_price), 0), 2) != ROUND(o.total_amount, 2)\n        THEN 'Yes'\n        ELSE 'No'\n    END AS item_mismatch,\n    CASE\n        WHEN COUNT(DISTINCT p.payment_id) = 0\n        THEN 'Yes'\n        ELSE 'No'\n    END AS missing_payment_record\nFROM orders o\nLEFT JOIN payments p\n    ON o.order_id = p.order_id\nLEFT JOIN order_items oi\n    ON o.order_id = oi.order_id\nGROUP BY o.order_id, o.total_amount;",
-  }   
+    title: "Customer Purchase Quartiles",
+    difficulty: "Advanced",
+    slug: "sql-ntile-window-function",
+    seoTitle: "SQL NTILE Window Function Tutorial",
+    metaDescription: "Learn how to divide rows into equal groups using the SQL NTILE() window function.",
+    tags: ["SQL", "NTILE", "Window Functions"],
+    description: "Divide customers into four spending groups based on their total spending.",
+    explanation: "First calculate each customer's total spending, then use NTILE(4) to split customers into four equally sized groups ordered by spending.",
+    scenario: "The marketing team wants to segment customers into spending tiers.",
+    useCases: ["Customer segmentation", "Marketing", "Window Functions"],
+    hint: "Calculate total spending first, then use NTILE(4) OVER(ORDER BY total_spent DESC).",
+    starterQuery: `SELECT
+    customer_id,
+    total_spent,
+    NTILE(4) OVER (
+        ORDER BY total_spent DESC
+    ) AS spending_quartile
+FROM (
+    SELECT
+        customer_id,
+        SUM(total_amount) AS total_spent
+    FROM orders
+    GROUP BY customer_id
+) t;`,
+    expectedColumns: ["customer_id","total_spent","spending_quartile"],
+    solutionQuery: `SELECT
+    customer_id,
+    total_spent,
+    NTILE(4) OVER (
+        ORDER BY total_spent DESC
+    ) AS spending_quartile
+FROM (
+    SELECT
+        customer_id,
+        SUM(total_amount) AS total_spent
+    FROM orders
+    GROUP BY customer_id
+) t;`,
+},
+{
+  id: 37,
+  title: "Customer Revenue Growth",
+  difficulty: "Advanced",
+  slug: "sql-running-revenue-growth",
+  seoTitle: "SQL Running Revenue Growth Using Window Functions",
+  metaDescription: "Learn how to compare each order with the cumulative revenue earned before it using SQL window functions.",
+  tags: ["SQL", "SUM OVER", "Window Functions"],
+  description: "For every customer, display the cumulative revenue before the current order.",
+  explanation: "Window frames can exclude the current row. This allows you to compare the current purchase against everything the customer spent previously.",
+  scenario: "The finance team wants to compare every purchase against the customer's historical revenue.",
+  useCases: ["Customer lifetime value", "Revenue analysis", "Window Functions"],
+  hint: "Use SUM() OVER() with ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  total_amount,
+  SUM(total_amount) OVER (
+      PARTITION BY customer_id
+      ORDER BY order_date
+      ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING
+  ) AS previous_revenue
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","order_date","total_amount","previous_revenue"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  total_amount,
+  SUM(total_amount) OVER (
+      PARTITION BY customer_id
+      ORDER BY order_date
+      ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING
+  ) AS previous_revenue
+FROM orders;`,
+},
+{
+  id: 38,
+  title: "Customer Purchase Percentile",
+  difficulty: "Advanced",
+  slug: "sql-percent-rank-window-function",
+  seoTitle: "SQL PERCENT_RANK Window Function",
+  metaDescription: "Learn how to calculate the percentile ranking of customer orders using SQL PERCENT_RANK().",
+  tags: ["SQL", "PERCENT_RANK", "Window Functions"],
+  description: "Calculate the percentile rank of every customer's order amount.",
+  explanation: "PERCENT_RANK() assigns a percentile score between 0 and 1 based on the order amount within each customer.",
+  scenario: "The analytics team wants to understand how each purchase compares to the customer's other purchases.",
+  useCases: ["Customer analytics", "Percentile analysis", "Window Functions"],
+  hint: "Use PERCENT_RANK() OVER(PARTITION BY customer_id ORDER BY total_amount).",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  PERCENT_RANK() OVER (
+      PARTITION BY customer_id
+      ORDER BY total_amount
+  ) AS percentile_rank
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","total_amount","percentile_rank"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  PERCENT_RANK() OVER (
+      PARTITION BY customer_id
+      ORDER BY total_amount
+  ) AS percentile_rank
+FROM orders;`,
+},
+{
+  id: 39,
+  title: "Customer Order Distribution",
+  difficulty: "Advanced",
+  slug: "sql-cume-dist-window-function",
+  seoTitle: "SQL CUME_DIST Window Function",
+  metaDescription: "Learn how to calculate cumulative distribution using SQL CUME_DIST().",
+  tags: ["SQL", "CUME_DIST", "Window Functions"],
+  description: "Calculate the cumulative distribution of order amounts for every customer.",
+  explanation: "CUME_DIST() returns the cumulative proportion of rows less than or equal to the current row within a partition.",
+  scenario: "The analytics team wants to understand where each purchase sits within the customer's spending distribution.",
+  useCases: ["Distribution analysis", "Customer behavior", "Window Functions"],
+  hint: "Use CUME_DIST() OVER(PARTITION BY customer_id ORDER BY total_amount).",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  CUME_DIST() OVER (
+      PARTITION BY customer_id
+      ORDER BY total_amount
+  ) AS cumulative_distribution
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","total_amount","cumulative_distribution"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  CUME_DIST() OVER (
+      PARTITION BY customer_id
+      ORDER BY total_amount
+  ) AS cumulative_distribution
+FROM orders;`,
+},
+{
+  id: 40,
+  title: "Order Amount Compared to Customer Average",
+  difficulty: "Advanced",
+  slug: "sql-window-average-comparison",
+  seoTitle: "SQL Window Average Comparison",
+  metaDescription: "Learn how to compare each row against a partition average using SQL window functions.",
+  tags: ["SQL", "AVG OVER", "CASE WHEN", "Window Functions"],
+  description: "Determine whether each order is above, below, or equal to the customer's average order amount.",
+  explanation: "AVG() OVER(PARTITION BY customer_id) calculates the customer's average order amount without collapsing rows. A CASE expression is then used to classify every purchase.",
+  scenario: "Business analysts want to classify purchases relative to each customer's normal spending.",
+  useCases: ["Customer profiling", "Purchase analysis", "Business intelligence"],
+  hint: "Combine AVG() OVER(PARTITION BY customer_id) with CASE.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  CASE
+      WHEN total_amount > AVG(total_amount) OVER (PARTITION BY customer_id) THEN 'Above Average'
+      WHEN total_amount < AVG(total_amount) OVER (PARTITION BY customer_id) THEN 'Below Average'
+      ELSE 'Average'
+  END AS spending_level
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","total_amount","spending_level"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  CASE
+      WHEN total_amount > AVG(total_amount) OVER (PARTITION BY customer_id) THEN 'Above Average'
+      WHEN total_amount < AVG(total_amount) OVER (PARTITION BY customer_id) THEN 'Below Average'
+      ELSE 'Average'
+  END AS spending_level
+FROM orders;`,
+},
+{
+  id: 41,
+  title: "Customer Revenue with Purchase Rank",
+  difficulty: "Advanced",
+  slug: "sql-cte-row-number-customer-revenue",
+  seoTitle: "SQL CTE with ROW_NUMBER Window Function",
+  metaDescription: "Learn how to combine Common Table Expressions and ROW_NUMBER() to rank customer purchases chronologically.",
+  tags: ["SQL", "CTE", "ROW_NUMBER", "Window Functions"],
+  description: "Show each customer's orders along with the purchase number and cumulative revenue.",
+  explanation: "Use a CTE to prepare the data, then combine ROW_NUMBER() and SUM() OVER() to calculate purchase order and cumulative revenue.",
+  scenario: "The analytics team wants to understand how customer lifetime value grows after each purchase.",
+  useCases: ["Customer lifetime value", "Purchase history", "Revenue analysis"],
+  hint: "Use ROW_NUMBER() and SUM() OVER() inside a CTE.",
+  starterQuery: `WITH CustomerOrders AS (
+  SELECT
+      customer_id,
+      order_id,
+      order_date,
+      total_amount
+  FROM orders
+)
+SELECT
+  customer_id,
+  order_id,
+  order_date,
+  total_amount,
+  ROW_NUMBER() OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS purchase_number,
+  SUM(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS cumulative_revenue
+FROM CustomerOrders;`,
+  expectedColumns: ["customer_id","order_id","order_date","total_amount","purchase_number","cumulative_revenue"],
+  solutionQuery: `WITH CustomerOrders AS (
+  SELECT
+      customer_id,
+      order_id,
+      order_date,
+      total_amount
+  FROM orders
+)
+SELECT
+  customer_id,
+  order_id,
+  order_date,
+  total_amount,
+  ROW_NUMBER() OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS purchase_number,
+  SUM(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS cumulative_revenue
+FROM CustomerOrders;`,
+},
+{
+  id: 42,
+  title: "Customer Purchase Gap Analysis",
+  difficulty: "Advanced",
+  slug: "sql-lag-julianday-gap-analysis",
+  seoTitle: "SQL LAG with Date Difference Analysis",
+  metaDescription: "Learn how to combine LAG() and julianday() to calculate the number of days between customer purchases.",
+  tags: ["SQL", "LAG", "julianday", "Window Functions"],
+  description: "For every order, display the previous order date and the number of days since the previous purchase.",
+  explanation: "LAG() retrieves the previous order date, while julianday() converts dates into numeric values so their difference can be calculated.",
+  scenario: "The retention team wants to measure the average gap between purchases.",
+  useCases: ["Customer retention", "Purchase frequency", "Behavior analysis"],
+  hint: "Combine LAG() with julianday().",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  LAG(order_date) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS previous_order_date,
+  julianday(order_date) -
+  julianday(
+      LAG(order_date) OVER(
+          PARTITION BY customer_id
+          ORDER BY order_date
+      )
+  ) AS days_between_orders
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","order_date","previous_order_date","days_between_orders"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  LAG(order_date) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS previous_order_date,
+  julianday(order_date) -
+  julianday(
+      LAG(order_date) OVER(
+          PARTITION BY customer_id
+          ORDER BY order_date
+      )
+  ) AS days_between_orders
+FROM orders;`,
+},
+{
+  id: 43,
+  title: "Top 2 Orders per Customer",
+  difficulty: "Advanced",
+  slug: "sql-row-number-top-n-per-group",
+  seoTitle: "SQL Top N Records Per Group",
+  metaDescription: "Learn how to retrieve the top N records within each group using ROW_NUMBER().",
+  tags: ["SQL", "ROW_NUMBER", "Window Functions"],
+  description: "Find the two highest-value orders for every customer.",
+  explanation: "Assign a row number ordered by total_amount within each customer and return the first two rows.",
+  scenario: "Sales managers want to review each customer's largest purchases.",
+  useCases: ["Purchase analysis", "Customer insights", "Top-N reporting"],
+  hint: "Use ROW_NUMBER() and filter rows where rn <= 2.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount
+FROM (
+  SELECT
+      customer_id,
+      order_id,
+      total_amount,
+      ROW_NUMBER() OVER(
+          PARTITION BY customer_id
+          ORDER BY total_amount DESC
+      ) AS rn
+  FROM orders
+) t
+WHERE rn <= 2;`,
+  expectedColumns: ["customer_id","order_id","total_amount"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount
+FROM (
+  SELECT
+      customer_id,
+      order_id,
+      total_amount,
+      ROW_NUMBER() OVER(
+          PARTITION BY customer_id
+          ORDER BY total_amount DESC
+      ) AS rn
+  FROM orders
+) t
+WHERE rn <= 2;`,
+},
+{
+  id: 44,
+  title: "Top Spending Day for Every Customer",
+  difficulty: "Advanced",
+  slug: "sql-cte-row-number-top-day",
+  seoTitle: "SQL ROW_NUMBER Top Spending Day per Customer",
+  metaDescription: "Learn how to combine CTEs and ROW_NUMBER() to identify each customer's highest spending day.",
+  tags: ["SQL", "CTE", "ROW_NUMBER", "Window Functions"],
+  description: "Find the day on which each customer spent the most money.",
+  explanation: "First calculate total spending per customer per day, then rank the days for each customer using ROW_NUMBER().",
+  scenario: "Marketing wants to identify each customer's biggest shopping day.",
+  useCases: ["Customer analytics", "Purchase behavior", "Window Functions"],
+  hint: "Aggregate by customer_id and order_date, then use ROW_NUMBER().",
+  starterQuery: `WITH DailySpend AS (
+  SELECT
+      customer_id,
+      order_date,
+      SUM(total_amount) AS daily_total
+  FROM orders
+  GROUP BY customer_id, order_date
+)
+SELECT
+  customer_id,
+  order_date,
+  daily_total
+FROM (
+  SELECT *,
+         ROW_NUMBER() OVER(
+             PARTITION BY customer_id
+             ORDER BY daily_total DESC
+         ) AS rn
+  FROM DailySpend
+) t
+WHERE rn = 1;`,
+  expectedColumns: ["customer_id","order_date","daily_total"],
+  solutionQuery: `WITH DailySpend AS (
+  SELECT
+      customer_id,
+      order_date,
+      SUM(total_amount) AS daily_total
+  FROM orders
+  GROUP BY customer_id, order_date
+)
+SELECT
+  customer_id,
+  order_date,
+  daily_total
+FROM (
+  SELECT *,
+         ROW_NUMBER() OVER(
+             PARTITION BY customer_id
+             ORDER BY daily_total DESC
+         ) AS rn
+  FROM DailySpend
+) t
+WHERE rn = 1;`,
+},
+{
+  id: 45,
+  title: "Customer Revenue Running Percentage",
+  difficulty: "Advanced",
+  slug: "sql-running-percentage-window-function",
+  seoTitle: "SQL Running Percentage Using Window Functions",
+  metaDescription: "Learn how to calculate running revenue percentages using cumulative window aggregates.",
+  tags: ["SQL", "SUM OVER", "Window Functions"],
+  description: "For every customer, calculate the cumulative percentage of revenue after each order.",
+  explanation: "Combine two window aggregates to calculate cumulative revenue and total customer revenue.",
+  scenario: "Finance wants to know how quickly customers reach their lifetime value.",
+  useCases: ["Revenue analysis", "Customer lifetime value", "Window Functions"],
+  hint: "Use two SUM() OVER() functions.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  total_amount,
+  ROUND(
+      SUM(total_amount) OVER(
+          PARTITION BY customer_id
+          ORDER BY order_date
+      ) * 100.0 /
+      SUM(total_amount) OVER(
+          PARTITION BY customer_id
+      ),
+      2
+  ) AS cumulative_percentage
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","order_date","total_amount","cumulative_percentage"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  total_amount,
+  ROUND(
+      SUM(total_amount) OVER(
+          PARTITION BY customer_id
+          ORDER BY order_date
+      ) * 100.0 /
+      SUM(total_amount) OVER(
+          PARTITION BY customer_id
+      ),
+      2
+  ) AS cumulative_percentage
+FROM orders;`,
+},
+{
+  id: 46,
+  title: "Customer Spending Trend",
+  difficulty: "Advanced",
+  slug: "sql-lag-case-trend-analysis",
+  seoTitle: "SQL LAG with CASE Expression",
+  metaDescription: "Learn how to combine LAG() and CASE expressions to classify customer spending trends.",
+  tags: ["SQL", "LAG", "CASE WHEN", "Window Functions"],
+  description: "Classify every order as Increased, Decreased or Unchanged compared to the previous order.",
+  explanation: "Use LAG() to retrieve the previous order amount and compare it using CASE.",
+  scenario: "Business analysts want to understand whether customers are spending more or less over time.",
+  useCases: ["Trend analysis", "Customer behavior", "Window Functions"],
+  hint: "Combine LAG() with CASE.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  CASE
+      WHEN LAG(total_amount) OVER(
+          PARTITION BY customer_id
+          ORDER BY order_date
+      ) IS NULL THEN 'First Order'
+      WHEN total_amount >
+           LAG(total_amount) OVER(
+               PARTITION BY customer_id
+               ORDER BY order_date
+           ) THEN 'Increased'
+      WHEN total_amount <
+           LAG(total_amount) OVER(
+               PARTITION BY customer_id
+               ORDER BY order_date
+           ) THEN 'Decreased'
+      ELSE 'Unchanged'
+  END AS spending_trend
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","total_amount","spending_trend"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  CASE
+      WHEN LAG(total_amount) OVER(
+          PARTITION BY customer_id
+          ORDER BY order_date
+      ) IS NULL THEN 'First Order'
+      WHEN total_amount >
+           LAG(total_amount) OVER(
+               PARTITION BY customer_id
+               ORDER BY order_date
+           ) THEN 'Increased'
+      WHEN total_amount <
+           LAG(total_amount) OVER(
+               PARTITION BY customer_id
+               ORDER BY order_date
+           ) THEN 'Decreased'
+      ELSE 'Unchanged'
+  END AS spending_trend
+FROM orders;`,
+},
+{
+  id: 47,
+  title: "Top 3 Products by Revenue",
+  difficulty: "Advanced",
+  slug: "sql-cte-dense-rank-product-revenue",
+  seoTitle: "SQL DENSE_RANK Product Revenue",
+  metaDescription: "Learn how to combine CTEs, aggregation and DENSE_RANK() to rank products by revenue.",
+  tags: ["SQL", "CTE", "DENSE_RANK", "JOIN", "Window Functions"],
+  description: "Find the three highest revenue generating products.",
+  explanation: "Calculate revenue for every product using order_items, then rank products by revenue using DENSE_RANK().",
+  scenario: "The merchandising team wants to identify the company's highest revenue products.",
+  useCases: ["Product analytics", "Revenue analysis", "Business intelligence"],
+  hint: "Aggregate revenue first, then use DENSE_RANK().",
+  starterQuery: `WITH ProductRevenue AS (
+  SELECT
+      p.product_id,
+      p.product_name,
+      SUM(oi.total_price) AS revenue
+  FROM products p
+  JOIN order_items oi
+      ON p.product_id = oi.product_id
+  GROUP BY
+      p.product_id,
+      p.product_name
+)
+SELECT
+  product_id,
+  product_name,
+  revenue
+FROM (
+  SELECT *,
+         DENSE_RANK() OVER(
+             ORDER BY revenue DESC
+         ) AS rank_no
+  FROM ProductRevenue
+) t
+WHERE rank_no <= 3;`,
+  expectedColumns: ["product_id","product_name","revenue"],
+  solutionQuery: `WITH ProductRevenue AS (
+  SELECT
+      p.product_id,
+      p.product_name,
+      SUM(oi.total_price) AS revenue
+  FROM products p
+  JOIN order_items oi
+      ON p.product_id = oi.product_id
+  GROUP BY
+      p.product_id,
+      p.product_name
+)
+SELECT
+  product_id,
+  product_name,
+  revenue
+FROM (
+  SELECT *,
+         DENSE_RANK() OVER(
+             ORDER BY revenue DESC
+         ) AS rank_no
+  FROM ProductRevenue
+) t
+WHERE rank_no <= 3;`,
+},
+{
+  id: 48,
+  title: "Rank Products Within Each Category",
+  difficulty: "Advanced",
+  slug: "sql-dense-rank-products-by-category",
+  seoTitle: "SQL DENSE_RANK Products by Category",
+  metaDescription: "Learn how to rank products within each category using DENSE_RANK() and window functions.",
+  tags: ["SQL", "DENSE_RANK", "Window Functions", "JOIN"],
+  description: "Rank every product by price within its category.",
+  explanation: "DENSE_RANK() assigns rankings within each category. Products with the same price receive the same rank without gaps.",
+  scenario: "The merchandising team wants to compare product pricing within each category.",
+  useCases: ["Product ranking", "Pricing analysis", "Business reporting"],
+  hint: "Partition by category and order by price DESC.",
+  starterQuery: `SELECT
+  category,
+  product_id,
+  product_name,
+  price,
+  DENSE_RANK() OVER(
+      PARTITION BY category
+      ORDER BY price DESC
+  ) AS price_rank
+FROM products;`,
+  expectedColumns: ["category","product_id","product_name","price","price_rank"],
+  solutionQuery: `SELECT
+  category,
+  product_id,
+  product_name,
+  price,
+  DENSE_RANK() OVER(
+      PARTITION BY category
+      ORDER BY price DESC
+  ) AS price_rank
+FROM products;`,
+},
+{
+  id: 49,
+  title: "Customer Purchase Timeline",
+  difficulty: "Advanced",
+  slug: "sql-lead-lag-purchase-timeline",
+  seoTitle: "SQL LEAD and LAG Purchase Timeline",
+  metaDescription: "Learn how to combine LAG() and LEAD() to analyze customer purchase history.",
+  tags: ["SQL", "LAG", "LEAD", "Window Functions"],
+  description: "For every order, display both the previous and next order dates of the customer.",
+  explanation: "LAG() retrieves the previous order while LEAD() retrieves the next order, making it easy to analyze purchase sequences.",
+  scenario: "The analytics team wants to understand customer purchase timelines.",
+  useCases: ["Purchase history", "Customer analytics", "Window Functions"],
+  hint: "Use both LAG() and LEAD() partitioned by customer_id.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  LAG(order_date) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS previous_order,
+  LEAD(order_date) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS next_order
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","order_date","previous_order","next_order"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  LAG(order_date) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS previous_order,
+  LEAD(order_date) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS next_order
+FROM orders;`,
+},
+{
+  id: 50,
+  title: "Customer Revenue Summary",
+  difficulty: "Advanced",
+  slug: "sql-multiple-window-aggregates",
+  seoTitle: "SQL Multiple Window Aggregates",
+  metaDescription: "Learn how to calculate multiple customer metrics using SQL window aggregate functions.",
+  tags: ["SQL", "SUM OVER", "AVG OVER", "COUNT OVER", "Window Functions"],
+  description: "For every order, display the customer's total revenue, average order amount, and total number of orders.",
+  explanation: "Window aggregates allow multiple customer-level metrics to be calculated without grouping the data.",
+  scenario: "Finance wants a complete customer summary available on every order.",
+  useCases: ["Customer analytics", "Revenue reporting", "Business intelligence"],
+  hint: "Use SUM(), AVG(), and COUNT() as window functions.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  SUM(total_amount) OVER(
+      PARTITION BY customer_id
+  ) AS total_revenue,
+  AVG(total_amount) OVER(
+      PARTITION BY customer_id
+  ) AS average_order,
+  COUNT(*) OVER(
+      PARTITION BY customer_id
+  ) AS total_orders
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","total_amount","total_revenue","average_order","total_orders"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  SUM(total_amount) OVER(
+      PARTITION BY customer_id
+  ) AS total_revenue,
+  AVG(total_amount) OVER(
+      PARTITION BY customer_id
+  ) AS average_order,
+  COUNT(*) OVER(
+      PARTITION BY customer_id
+  ) AS total_orders
+FROM orders;`,
+},
+{
+  id: 51,
+  title: "Highest Revenue Category",
+  difficulty: "Advanced",
+  slug: "sql-cte-category-revenue-ranking",
+  seoTitle: "SQL Category Revenue Ranking",
+  metaDescription: "Learn how to combine CTEs, JOINs, aggregation and ranking to identify the highest revenue product category.",
+  tags: ["SQL", "CTE", "JOIN", "SUM", "ROW_NUMBER"],
+  description: "Find the product category with the highest total revenue.",
+  explanation: "Calculate revenue for every category using a CTE, then rank the categories using ROW_NUMBER().",
+  scenario: "Leadership wants to know which category generates the most revenue.",
+  useCases: ["Revenue analysis", "Category reporting", "Executive dashboard"],
+  hint: "Aggregate revenue by category, then rank categories.",
+  starterQuery: `WITH CategoryRevenue AS (
+  SELECT
+      p.category,
+      SUM(oi.total_price) AS revenue
+  FROM products p
+  JOIN order_items oi
+      ON p.product_id = oi.product_id
+  GROUP BY p.category
+)
+SELECT
+  category,
+  revenue
+FROM (
+  SELECT *,
+         ROW_NUMBER() OVER(
+             ORDER BY revenue DESC
+         ) AS rn
+  FROM CategoryRevenue
+) t
+WHERE rn = 1;`,
+  expectedColumns: ["category","revenue"],
+  solutionQuery: `WITH CategoryRevenue AS (
+  SELECT
+      p.category,
+      SUM(oi.total_price) AS revenue
+  FROM products p
+  JOIN order_items oi
+      ON p.product_id = oi.product_id
+  GROUP BY p.category
+)
+SELECT
+  category,
+  revenue
+FROM (
+  SELECT *,
+         ROW_NUMBER() OVER(
+             ORDER BY revenue DESC
+         ) AS rn
+  FROM CategoryRevenue
+) t
+WHERE rn = 1;`,
+},
+{
+  id: 52,
+  title: "Customer Revenue and Purchase Rank",
+  difficulty: "Advanced",
+  slug: "sql-multi-cte-customer-revenue-rank",
+  seoTitle: "SQL Multiple CTEs with ROW_NUMBER",
+  metaDescription: "Learn how to combine multiple CTEs with window functions to build customer revenue reports.",
+  tags: ["SQL", "CTE", "ROW_NUMBER", "SUM", "Window Functions"],
+  description: "For each customer, show every order, cumulative revenue, and purchase rank.",
+  explanation: "The first CTE prepares order data, while the second applies multiple window functions to calculate purchase order and cumulative revenue.",
+  scenario: "The finance team wants a chronological customer revenue report.",
+  useCases: ["Customer analytics", "Revenue reporting", "Business intelligence"],
+  hint: "Use two CTEs followed by ROW_NUMBER() and SUM() OVER().",
+  starterQuery: `WITH CustomerOrders AS (
+  SELECT
+      customer_id,
+      order_id,
+      order_date,
+      total_amount
+  FROM orders
+),
+OrderMetrics AS (
+  SELECT
+      *,
+      ROW_NUMBER() OVER(
+          PARTITION BY customer_id
+          ORDER BY order_date
+      ) AS purchase_rank,
+      SUM(total_amount) OVER(
+          PARTITION BY customer_id
+          ORDER BY order_date
+      ) AS cumulative_revenue
+  FROM CustomerOrders
+)
+SELECT
+  customer_id,
+  order_id,
+  order_date,
+  total_amount,
+  purchase_rank,
+  cumulative_revenue
+FROM OrderMetrics;`,
+  expectedColumns: ["customer_id","order_id","order_date","total_amount","purchase_rank","cumulative_revenue"],
+  solutionQuery: `WITH CustomerOrders AS (
+  SELECT
+      customer_id,
+      order_id,
+      order_date,
+      total_amount
+  FROM orders
+),
+OrderMetrics AS (
+  SELECT
+      *,
+      ROW_NUMBER() OVER(
+          PARTITION BY customer_id
+          ORDER BY order_date
+      ) AS purchase_rank,
+      SUM(total_amount) OVER(
+          PARTITION BY customer_id
+          ORDER BY order_date
+      ) AS cumulative_revenue
+  FROM CustomerOrders
+)
+SELECT
+  customer_id,
+  order_id,
+  order_date,
+  total_amount,
+  purchase_rank,
+  cumulative_revenue
+FROM OrderMetrics;`,
+},
+{
+  id: 53,
+  title: "Order Value Compared to Running Average",
+  difficulty: "Advanced",
+  slug: "sql-running-average-comparison",
+  seoTitle: "SQL Running Average Comparison",
+  metaDescription: "Learn how to compare each order with the running average using SQL window functions.",
+  tags: ["SQL", "AVG OVER", "CASE WHEN", "Window Functions"],
+  description: "Determine whether each order is above or below the customer's running average.",
+  explanation: "Calculate the running average using AVG() OVER() and compare the current order using a CASE expression.",
+  scenario: "The analytics team wants to identify unusually large purchases as customers continue buying.",
+  useCases: ["Purchase analysis", "Trend analysis", "Customer behavior"],
+  hint: "Use AVG() OVER() together with CASE.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  CASE
+      WHEN total_amount >
+           AVG(total_amount) OVER(
+               PARTITION BY customer_id
+               ORDER BY order_date
+           )
+      THEN 'Above Average'
+      ELSE 'Below Average'
+  END AS comparison
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","total_amount","comparison"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  CASE
+      WHEN total_amount >
+           AVG(total_amount) OVER(
+               PARTITION BY customer_id
+               ORDER BY order_date
+           )
+      THEN 'Above Average'
+      ELSE 'Below Average'
+  END AS comparison
+FROM orders;`,
+},
+{
+  id: 54,
+  title: "Customer Purchase Sequence Summary",
+  difficulty: "Advanced",
+  slug: "sql-first-last-order-summary",
+  seoTitle: "SQL FIRST_VALUE and LAST_VALUE",
+  metaDescription: "Learn how to combine FIRST_VALUE() and LAST_VALUE() to summarize customer purchases.",
+  tags: ["SQL", "FIRST_VALUE", "LAST_VALUE", "Window Functions"],
+  description: "For every order, display the customer's first order amount and latest order amount.",
+  explanation: "Combine FIRST_VALUE() and LAST_VALUE() using a full window frame to retrieve the first and last purchase amounts.",
+  scenario: "The sales team wants to compare customers' first purchase with their latest purchase.",
+  useCases: ["Customer history", "Purchase analytics", "Window Functions"],
+  hint: "Use FIRST_VALUE() and LAST_VALUE() together.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  FIRST_VALUE(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS first_purchase,
+  LAST_VALUE(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+      ROWS BETWEEN UNBOUNDED PRECEDING
+      AND UNBOUNDED FOLLOWING
+  ) AS latest_purchase
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","total_amount","first_purchase","latest_purchase"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  FIRST_VALUE(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS first_purchase,
+  LAST_VALUE(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+      ROWS BETWEEN UNBOUNDED PRECEDING
+      AND UNBOUNDED FOLLOWING
+  ) AS latest_purchase
+FROM orders;`,
+},
+{
+  id: 55,
+  title: "Product Revenue Contribution",
+  difficulty: "Advanced",
+  slug: "sql-product-revenue-share",
+  seoTitle: "SQL Product Revenue Share",
+  metaDescription: "Learn how to calculate each product's contribution to total revenue using CTEs and window functions.",
+  tags: ["SQL", "CTE", "SUM OVER", "JOIN", "Window Functions"],
+  description: "Calculate each product's percentage contribution to overall product revenue.",
+  explanation: "First aggregate revenue by product, then use SUM() OVER() to calculate each product's percentage contribution.",
+  scenario: "Product managers want to know how much each product contributes to overall revenue.",
+  useCases: ["Revenue reporting", "Product analytics", "Business intelligence"],
+  hint: "Aggregate first, then divide by SUM(revenue) OVER().",
+  starterQuery: `WITH ProductRevenue AS (
+  SELECT
+      p.product_id,
+      p.product_name,
+      SUM(oi.total_price) AS revenue
+  FROM products p
+  JOIN order_items oi
+      ON p.product_id = oi.product_id
+  GROUP BY
+      p.product_id,
+      p.product_name
+)
+SELECT
+  product_id,
+  product_name,
+  revenue,
+  ROUND(
+      revenue * 100.0 /
+      SUM(revenue) OVER(),
+      2
+  ) AS revenue_percentage
+FROM ProductRevenue;`,
+  expectedColumns: ["product_id","product_name","revenue","revenue_percentage"],
+  solutionQuery: `WITH ProductRevenue AS (
+  SELECT
+      p.product_id,
+      p.product_name,
+      SUM(oi.total_price) AS revenue
+  FROM products p
+  JOIN order_items oi
+      ON p.product_id = oi.product_id
+  GROUP BY
+      p.product_id,
+      p.product_name
+)
+SELECT
+  product_id,
+  product_name,
+  revenue,
+  ROUND(
+      revenue * 100.0 /
+      SUM(revenue) OVER(),
+      2
+  ) AS revenue_percentage
+FROM ProductRevenue;`,
+},
+{
+  id: 56,
+  title: "Customer Purchase Milestones",
+  difficulty: "Advanced",
+  slug: "sql-cte-row-number-milestones",
+  seoTitle: "SQL Customer Purchase Milestones using ROW_NUMBER",
+  metaDescription: "Learn how to identify customer purchase milestones using CTEs and ROW_NUMBER().",
+  tags: ["SQL", "CTE", "ROW_NUMBER", "Window Functions"],
+  description: "Display every customer's first, second and third purchase number.",
+  explanation: "ROW_NUMBER() assigns an order to every purchase. The result can be used to identify customer milestones.",
+  scenario: "The CRM team wants to trigger campaigns after a customer's first three purchases.",
+  useCases: ["Customer lifecycle", "Marketing automation", "Purchase milestones"],
+  hint: "Use ROW_NUMBER() inside a CTE.",
+  starterQuery: `WITH RankedOrders AS (
+  SELECT
+      customer_id,
+      order_id,
+      order_date,
+      ROW_NUMBER() OVER(
+          PARTITION BY customer_id
+          ORDER BY order_date
+      ) AS purchase_number
+  FROM orders
+)
+SELECT
+  customer_id,
+  order_id,
+  purchase_number
+FROM RankedOrders
+WHERE purchase_number <= 3;`,
+  expectedColumns: ["customer_id","order_id","purchase_number"],
+  solutionQuery: `WITH RankedOrders AS (
+  SELECT
+      customer_id,
+      order_id,
+      order_date,
+      ROW_NUMBER() OVER(
+          PARTITION BY customer_id
+          ORDER BY order_date
+      ) AS purchase_number
+  FROM orders
+)
+SELECT
+  customer_id,
+  order_id,
+  purchase_number
+FROM RankedOrders
+WHERE purchase_number <= 3;`,
+},
+{
+  id: 57,
+  title: "Customer Revenue Difference",
+  difficulty: "Advanced",
+  slug: "sql-running-total-lag-difference",
+  seoTitle: "SQL Running Total with LAG",
+  metaDescription: "Learn how to combine running totals with LAG() to compare cumulative customer revenue.",
+  tags: ["SQL", "SUM OVER", "LAG", "Window Functions"],
+  description: "Show the increase in cumulative revenue after every customer order.",
+  explanation: "First calculate a running total for each customer, then use LAG() to compare the current cumulative revenue with the previous cumulative revenue.",
+  scenario: "The finance team wants to understand how much each new purchase increases a customer's lifetime revenue.",
+  useCases: [
+    "Revenue analysis",
+    "Customer lifetime value",
+    "Financial reporting"
+  ],
+  hint: "Calculate the running total in a CTE, then use LAG() on the cumulative revenue.",
+  starterQuery: `WITH RevenueCTE AS (
+SELECT
+    customer_id,
+    order_id,
+    order_date,
+    SUM(total_amount) OVER(
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS cumulative_revenue
+FROM orders
+)
+SELECT
+customer_id,
+order_id,
+cumulative_revenue,
+cumulative_revenue -
+LAG(cumulative_revenue) OVER(
+    PARTITION BY customer_id
+    ORDER BY order_date
+) AS revenue_increase
+FROM RevenueCTE
+ORDER BY customer_id, order_date;`,
+  expectedColumns: [
+    "customer_id",
+    "order_id",
+    "cumulative_revenue",
+    "revenue_increase"
+  ],
+  solutionQuery: `WITH RevenueCTE AS (
+SELECT
+    customer_id,
+    order_id,
+    order_date,
+    SUM(total_amount) OVER(
+        PARTITION BY customer_id
+        ORDER BY order_date
+    ) AS cumulative_revenue
+FROM orders
+)
+SELECT
+customer_id,
+order_id,
+cumulative_revenue,
+cumulative_revenue -
+LAG(cumulative_revenue) OVER(
+    PARTITION BY customer_id
+    ORDER BY order_date
+) AS revenue_increase
+FROM RevenueCTE
+ORDER BY customer_id, order_date;`,
+},
+{
+  id: 58,
+  title: "Top Revenue Product Per Category",
+  difficulty: "Advanced",
+  slug: "sql-category-product-ranking",
+  seoTitle: "SQL Product Revenue Ranking by Category",
+  metaDescription: "Learn how to rank products by revenue within each category using CTEs and window functions.",
+  tags: ["SQL", "CTE", "JOIN", "ROW_NUMBER", "Window Functions"],
+  description: "Find the highest revenue generating product in each category.",
+  explanation: "Aggregate product revenue, then rank products within each category using ROW_NUMBER().",
+  scenario: "The merchandising team wants to identify the best-performing product in every category.",
+  useCases: ["Revenue analysis", "Category reporting", "Product analytics"],
+  hint: "Aggregate first, then use ROW_NUMBER() partitioned by category.",
+  starterQuery: `WITH ProductRevenue AS (
+  SELECT
+      p.category,
+      p.product_id,
+      p.product_name,
+      SUM(oi.total_price) AS revenue
+  FROM products p
+  JOIN order_items oi
+      ON p.product_id = oi.product_id
+  GROUP BY
+      p.category,
+      p.product_id,
+      p.product_name
+)
+SELECT
+  category,
+  product_name,
+  revenue
+FROM (
+  SELECT *,
+         ROW_NUMBER() OVER(
+             PARTITION BY category
+             ORDER BY revenue DESC
+         ) AS rn
+  FROM ProductRevenue
+) t
+WHERE rn = 1;`,
+  expectedColumns: ["category","product_name","revenue"],
+  solutionQuery: `WITH ProductRevenue AS (
+  SELECT
+      p.category,
+      p.product_id,
+      p.product_name,
+      SUM(oi.total_price) AS revenue
+  FROM products p
+  JOIN order_items oi
+      ON p.product_id = oi.product_id
+  GROUP BY
+      p.category,
+      p.product_id,
+      p.product_name
+)
+SELECT
+  category,
+  product_name,
+  revenue
+FROM (
+  SELECT *,
+         ROW_NUMBER() OVER(
+             PARTITION BY category
+             ORDER BY revenue DESC
+         ) AS rn
+  FROM ProductRevenue
+) t
+WHERE rn = 1;`,
+},
+{
+  id: 59,
+  title: "Customer Purchase Gap Classification",
+  difficulty: "Advanced",
+  slug: "sql-lag-julianday-case",
+  seoTitle: "SQL LAG with Date Gap Classification",
+  metaDescription: "Learn how to classify purchase frequency using LAG(), julianday(), and CASE.",
+  tags: ["SQL", "LAG", "CASE WHEN", "julianday", "Window Functions"],
+  description: "Classify the gap between consecutive customer purchases.",
+  explanation: "Calculate the difference between consecutive orders and classify them as Short, Medium, or Long gaps.",
+  scenario: "The retention team wants to identify purchasing frequency patterns.",
+  useCases: ["Customer retention", "Behavior analysis", "Purchase frequency"],
+  hint: "Combine LAG(), julianday(), and CASE.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  CASE
+      WHEN LAG(order_date) OVER(
+          PARTITION BY customer_id
+          ORDER BY order_date
+      ) IS NULL THEN 'First Order'
+      WHEN julianday(order_date) -
+           julianday(LAG(order_date) OVER(
+               PARTITION BY customer_id
+               ORDER BY order_date
+           )) <= 7 THEN 'Short Gap'
+      WHEN julianday(order_date) -
+           julianday(LAG(order_date) OVER(
+               PARTITION BY customer_id
+               ORDER BY order_date
+           )) <= 30 THEN 'Medium Gap'
+      ELSE 'Long Gap'
+  END AS purchase_gap
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","order_date","purchase_gap"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  CASE
+      WHEN LAG(order_date) OVER(
+          PARTITION BY customer_id
+          ORDER BY order_date
+      ) IS NULL THEN 'First Order'
+      WHEN julianday(order_date) -
+           julianday(LAG(order_date) OVER(
+               PARTITION BY customer_id
+               ORDER BY order_date
+           )) <= 7 THEN 'Short Gap'
+      WHEN julianday(order_date) -
+           julianday(LAG(order_date) OVER(
+               PARTITION BY customer_id
+               ORDER BY order_date
+           )) <= 30 THEN 'Medium Gap'
+      ELSE 'Long Gap'
+  END AS purchase_gap
+FROM orders;`,
+},
+{
+  id: 60,
+  title: "Customer Revenue Dashboard",
+  difficulty: "Advanced",
+  slug: "sql-customer-dashboard-window-functions",
+  seoTitle: "SQL Customer Revenue Dashboard",
+  metaDescription: "Learn how to build a customer dashboard using multiple SQL window functions.",
+  tags: ["SQL", "SUM OVER", "AVG OVER", "ROW_NUMBER", "Window Functions"],
+  description: "Build a customer dashboard showing purchase rank, total revenue, average order value and cumulative revenue.",
+  explanation: "Combine multiple window functions in a single query to generate a customer analytics dashboard.",
+  scenario: "Business analysts need all important customer metrics in one result set.",
+  useCases: ["Customer dashboard", "Business intelligence", "Revenue reporting"],
+  hint: "Use ROW_NUMBER(), SUM() OVER(), and AVG() OVER() together.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  ROW_NUMBER() OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS purchase_rank,
+  SUM(total_amount) OVER(
+      PARTITION BY customer_id
+  ) AS total_revenue,
+  AVG(total_amount) OVER(
+      PARTITION BY customer_id
+  ) AS average_order_value,
+  SUM(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS cumulative_revenue
+FROM orders;`,
+  expectedColumns: [
+      "customer_id",
+      "order_id",
+      "total_amount",
+      "purchase_rank",
+      "total_revenue",
+      "average_order_value",
+      "cumulative_revenue"
+  ],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  ROW_NUMBER() OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS purchase_rank,
+  SUM(total_amount) OVER(
+      PARTITION BY customer_id
+  ) AS total_revenue,
+  AVG(total_amount) OVER(
+      PARTITION BY customer_id
+  ) AS average_order_value,
+  SUM(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS cumulative_revenue
+FROM orders;`,
+},
+{
+  id: 61,
+  title: "Customer Spending Deciles",
+  difficulty: "Advanced",
+  slug: "sql-ntile-customer-spending",
+  seoTitle: "SQL NTILE Customer Spending Analysis",
+  metaDescription: "Learn how to divide customers into spending deciles using SQL NTILE() window function.",
+  tags: ["SQL", "NTILE", "SUM", "Window Functions"],
+  description: "Divide customers into 10 spending groups based on their total revenue.",
+  explanation: "First calculate total spending for every customer, then use NTILE(10) to assign customers into spending deciles.",
+  scenario: "The marketing team wants to build Bronze, Silver, Gold, and Platinum style customer segments.",
+  useCases: ["Customer segmentation", "Marketing", "Revenue analysis"],
+  hint: "Aggregate customer revenue first, then use NTILE(10).",
+  starterQuery: `WITH CustomerRevenue AS (
+  SELECT
+      customer_id,
+      SUM(total_amount) AS total_revenue
+  FROM orders
+  GROUP BY customer_id
+)
+SELECT
+  customer_id,
+  total_revenue,
+  NTILE(10) OVER(
+      ORDER BY total_revenue DESC
+  ) AS revenue_decile
+FROM CustomerRevenue;`,
+  expectedColumns: ["customer_id","total_revenue","revenue_decile"],
+  solutionQuery: `WITH CustomerRevenue AS (
+  SELECT
+      customer_id,
+      SUM(total_amount) AS total_revenue
+  FROM orders
+  GROUP BY customer_id
+)
+SELECT
+  customer_id,
+  total_revenue,
+  NTILE(10) OVER(
+      ORDER BY total_revenue DESC
+  ) AS revenue_decile
+FROM CustomerRevenue;`,
+},
+{
+  id: 62,
+  title: "Customer Purchase Velocity",
+  difficulty: "Advanced",
+  slug: "sql-lag-lead-purchase-velocity",
+  seoTitle: "SQL Purchase Velocity Analysis",
+  metaDescription: "Learn how to analyze purchase velocity using SQL LAG(), LEAD(), and date functions.",
+  tags: ["SQL", "LAG", "LEAD", "julianday", "Window Functions"],
+  description: "Display the number of days since the previous order and until the next order for every purchase.",
+  explanation: "Combine LAG() and LEAD() with julianday() to calculate both backward and forward purchase intervals.",
+  scenario: "The CRM team wants to understand customer buying frequency.",
+  useCases: ["Retention", "Purchase frequency", "Customer analytics"],
+  hint: "Use both LAG() and LEAD() together.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  julianday(order_date) -
+  julianday(LAG(order_date) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  )) AS days_since_previous,
+  julianday(LEAD(order_date) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  )) -
+  julianday(order_date) AS days_until_next
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","order_date","days_since_previous","days_until_next"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  order_date,
+  julianday(order_date) -
+  julianday(LAG(order_date) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  )) AS days_since_previous,
+  julianday(LEAD(order_date) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  )) -
+  julianday(order_date) AS days_until_next
+FROM orders;`,
+},
+{
+  id: 63,
+  title: "Customer Revenue Trend Dashboard",
+  difficulty: "Advanced",
+  slug: "sql-window-dashboard-metrics",
+  seoTitle: "SQL Window Function Dashboard",
+  metaDescription: "Learn how to build a customer analytics dashboard using multiple SQL window functions.",
+  tags: ["SQL", "ROW_NUMBER", "SUM OVER", "AVG OVER", "LAG"],
+  description: "For every order, display purchase number, cumulative revenue, average order amount and previous order amount.",
+  explanation: "Combine several window functions in a single query to create a customer analytics dashboard.",
+  scenario: "Business analysts want multiple customer KPIs without grouping the data.",
+  useCases: ["Dashboards", "Business Intelligence", "Customer Analytics"],
+  hint: "Use ROW_NUMBER(), SUM(), AVG() and LAG() together.",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  ROW_NUMBER() OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS purchase_number,
+  SUM(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS cumulative_revenue,
+  AVG(total_amount) OVER(
+      PARTITION BY customer_id
+  ) AS average_order,
+  LAG(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS previous_order
+FROM orders;`,
+  expectedColumns: [
+      "customer_id",
+      "order_id",
+      "total_amount",
+      "purchase_number",
+      "cumulative_revenue",
+      "average_order",
+      "previous_order"
+  ],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  ROW_NUMBER() OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS purchase_number,
+  SUM(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS cumulative_revenue,
+  AVG(total_amount) OVER(
+      PARTITION BY customer_id
+  ) AS average_order,
+  LAG(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS previous_order
+FROM orders;`,
+},
+{
+  id: 64,
+  title: "Top Revenue Product Per Brand",
+  difficulty: "Advanced",
+  slug: "sql-brand-product-ranking",
+  seoTitle: "SQL Product Ranking by Brand",
+  metaDescription: "Learn how to rank products within every brand using SQL CTEs and ROW_NUMBER().",
+  tags: ["SQL", "CTE", "JOIN", "ROW_NUMBER", "Window Functions"],
+  description: "Find the highest revenue product for every brand.",
+  explanation: "Aggregate revenue by product, then rank products within each brand using ROW_NUMBER().",
+  scenario: "Product managers want to identify the flagship product for every brand.",
+  useCases: ["Product analytics", "Revenue reporting", "Business intelligence"],
+  hint: "Aggregate revenue first, then partition by brand.",
+  starterQuery: `WITH ProductRevenue AS (
+  SELECT
+      p.brand,
+      p.product_id,
+      p.product_name,
+      SUM(oi.total_price) AS revenue
+  FROM products p
+  JOIN order_items oi
+      ON p.product_id = oi.product_id
+  GROUP BY
+      p.brand,
+      p.product_id,
+      p.product_name
+)
+SELECT
+  brand,
+  product_name,
+  revenue
+FROM (
+  SELECT *,
+         ROW_NUMBER() OVER(
+             PARTITION BY brand
+             ORDER BY revenue DESC
+         ) AS rn
+  FROM ProductRevenue
+) t
+WHERE rn = 1;`,
+  expectedColumns: ["brand","product_name","revenue"],
+  solutionQuery: `WITH ProductRevenue AS (
+  SELECT
+      p.brand,
+      p.product_id,
+      p.product_name,
+      SUM(oi.total_price) AS revenue
+  FROM products p
+  JOIN order_items oi
+      ON p.product_id = oi.product_id
+  GROUP BY
+      p.brand,
+      p.product_id,
+      p.product_name
+)
+SELECT
+  brand,
+  product_name,
+  revenue
+FROM (
+  SELECT *,
+         ROW_NUMBER() OVER(
+             PARTITION BY brand
+             ORDER BY revenue DESC
+         ) AS rn
+  FROM ProductRevenue
+) t
+WHERE rn = 1;`,
+},
+{
+  id: 65,
+  title: "Customer Purchase Summary",
+  difficulty: "Advanced",
+  slug: "sql-customer-window-summary",
+  seoTitle: "SQL Customer Summary Using Window Functions",
+  metaDescription: "Learn how to combine multiple window functions to create a customer purchase summary.",
+  tags: ["SQL", "FIRST_VALUE", "LAST_VALUE", "COUNT OVER", "SUM OVER"],
+  description: "For every order, display the customer's first purchase amount, latest purchase amount, total orders and lifetime revenue.",
+  explanation: "This query combines multiple window functions to produce a compact customer summary without grouping rows.",
+  scenario: "Executives need a customer summary embedded in every transaction record.",
+  useCases: ["Executive dashboards", "Customer analytics", "Business intelligence"],
+  hint: "Combine FIRST_VALUE(), LAST_VALUE(), COUNT() OVER() and SUM() OVER().",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  FIRST_VALUE(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS first_purchase,
+  LAST_VALUE(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+      ROWS BETWEEN UNBOUNDED PRECEDING
+      AND UNBOUNDED FOLLOWING
+  ) AS latest_purchase,
+  COUNT(*) OVER(
+      PARTITION BY customer_id
+  ) AS total_orders,
+  SUM(total_amount) OVER(
+      PARTITION BY customer_id
+  ) AS lifetime_revenue
+FROM orders;`,
+  expectedColumns: [
+      "customer_id",
+      "order_id",
+      "total_amount",
+      "first_purchase",
+      "latest_purchase",
+      "total_orders",
+      "lifetime_revenue"
+  ],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  FIRST_VALUE(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+  ) AS first_purchase,
+  LAST_VALUE(total_amount) OVER(
+      PARTITION BY customer_id
+      ORDER BY order_date
+      ROWS BETWEEN UNBOUNDED PRECEDING
+      AND UNBOUNDED FOLLOWING
+  ) AS latest_purchase,
+  COUNT(*) OVER(
+      PARTITION BY customer_id
+  ) AS total_orders,
+  SUM(total_amount) OVER(
+      PARTITION BY customer_id
+  ) AS lifetime_revenue
+FROM orders;`,
+},
+{
+  id: 66,
+  title: "Customer Order Statistics",
+  difficulty: "Advanced",
+  slug: "sql-multiple-window-statistics",
+  seoTitle: "SQL Customer Statistics with Window Functions",
+  metaDescription: "Learn how to combine multiple window aggregates to generate customer statistics.",
+  tags: ["SQL", "MIN OVER", "MAX OVER", "AVG OVER", "Window Functions"],
+  description: "For every order, display the customer's minimum, maximum and average order amount.",
+  explanation: "Window aggregates allow statistical calculations without collapsing individual rows.",
+  scenario: "Finance wants every transaction enriched with customer spending statistics.",
+  useCases: ["Business Intelligence", "Customer Analytics", "Statistics"],
+  hint: "Use MIN(), MAX() and AVG() OVER(PARTITION BY customer_id).",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  MIN(total_amount) OVER(PARTITION BY customer_id) AS minimum_order,
+  MAX(total_amount) OVER(PARTITION BY customer_id) AS maximum_order,
+  AVG(total_amount) OVER(PARTITION BY customer_id) AS average_order
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","total_amount","minimum_order","maximum_order","average_order"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  MIN(total_amount) OVER(PARTITION BY customer_id) AS minimum_order,
+  MAX(total_amount) OVER(PARTITION BY customer_id) AS maximum_order,
+  AVG(total_amount) OVER(PARTITION BY customer_id) AS average_order
+FROM orders;`,
+},
+{
+  id: 67,
+  title: "Order Value Relative to Customer Maximum",
+  difficulty: "Advanced",
+  slug: "sql-window-max-comparison",
+  seoTitle: "SQL Compare Rows to Window Maximum",
+  metaDescription: "Learn how to compare every row against the maximum value within its partition.",
+  tags: ["SQL", "MAX OVER", "CASE WHEN", "Window Functions"],
+  description: "Show how far each order is below the customer's highest order amount.",
+  explanation: "Calculate the customer's highest order once using MAX() OVER(), then subtract the current order amount.",
+  scenario: "Sales wants to know how close every purchase is to the customer's largest purchase.",
+  useCases: ["Customer Analytics", "Revenue Analysis", "Window Functions"],
+  hint: "Subtract total_amount from MAX(total_amount) OVER(PARTITION BY customer_id).",
+  starterQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  MAX(total_amount) OVER(PARTITION BY customer_id) - total_amount AS difference_from_max
+FROM orders;`,
+  expectedColumns: ["customer_id","order_id","total_amount","difference_from_max"],
+  solutionQuery: `SELECT
+  customer_id,
+  order_id,
+  total_amount,
+  MAX(total_amount) OVER(PARTITION BY customer_id) - total_amount AS difference_from_max
+FROM orders;`,
+},
+{
+  id: 68,
+  title: "Category Revenue Ranking",
+  difficulty: "Advanced",
+  slug: "sql-category-revenue-dense-rank",
+  seoTitle: "SQL Category Revenue Ranking",
+  metaDescription: "Learn how to rank product categories based on total revenue.",
+  tags: ["SQL", "CTE", "JOIN", "DENSE_RANK"],
+  description: "Rank product categories by their total revenue.",
+  explanation: "Aggregate revenue by category, then rank the categories using DENSE_RANK().",
+  scenario: "Leadership wants to identify the strongest performing product categories.",
+  useCases: ["Revenue Reporting", "Category Analysis", "Executive Dashboards"],
+  hint: "Aggregate first, then use DENSE_RANK().",
+  starterQuery: `WITH CategoryRevenue AS (
+SELECT
+  p.category,
+  SUM(oi.total_price) AS revenue
+FROM products p
+JOIN order_items oi
+ON p.product_id = oi.product_id
+GROUP BY p.category
+)
+SELECT
+  category,
+  revenue,
+  DENSE_RANK() OVER(ORDER BY revenue DESC) AS revenue_rank
+FROM CategoryRevenue;`,
+  expectedColumns: ["category","revenue","revenue_rank"],
+  solutionQuery: `WITH CategoryRevenue AS (
+SELECT
+  p.category,
+  SUM(oi.total_price) AS revenue
+FROM products p
+JOIN order_items oi
+ON p.product_id = oi.product_id
+GROUP BY p.category
+)
+SELECT
+  category,
+  revenue,
+  DENSE_RANK() OVER(ORDER BY revenue DESC) AS revenue_rank
+FROM CategoryRevenue;`,
+},
+{
+  id: 69,
+  title: "Customer Purchase Share",
+  difficulty: "Advanced",
+  slug: "sql-count-window-share",
+  seoTitle: "SQL Customer Purchase Share",
+  metaDescription: "Learn how to calculate each customer's contribution to the total number of orders.",
+  tags: ["SQL", "COUNT OVER", "Window Functions"],
+  description: "Calculate what percentage of all orders belongs to each customer.",
+  explanation: "Aggregate order counts first, then compare them against the total number of orders.",
+  scenario: "Operations wants to understand customer contribution to platform activity.",
+  useCases: ["Customer Segmentation", "Business Reporting", "Analytics"],
+  hint: "Aggregate first, then divide by SUM(order_count) OVER().",
+  starterQuery: `SELECT
+customer_id,
+order_count,
+ROUND(
+order_count*100.0/
+SUM(order_count) OVER(),
+2
+) AS order_share
+FROM(
+SELECT
+customer_id,
+COUNT(*) AS order_count
+FROM orders
+GROUP BY customer_id
+)t;`,
+  expectedColumns: ["customer_id","order_count","order_share"],
+  solutionQuery: `SELECT
+customer_id,
+order_count,
+ROUND(
+order_count*100.0/
+SUM(order_count) OVER(),
+2
+) AS order_share
+FROM(
+SELECT
+customer_id,
+COUNT(*) AS order_count
+FROM orders
+GROUP BY customer_id
+)t;`,
+},
+{
+  id: 70,
+  title: "Customer Revenue Report",
+  difficulty: "Advanced",
+  slug: "sql-multi-cte-dashboard-report",
+  seoTitle: "SQL Multiple CTE Revenue Dashboard",
+  metaDescription: "Learn how to build a customer revenue report using multiple Common Table Expressions.",
+  tags: ["SQL", "CTE", "JOIN", "SUM", "AVG"],
+  description: "Create a report showing each customer's total revenue, total orders and average order value.",
+  explanation: "Multiple CTEs make large reporting queries easier to build and maintain.",
+  scenario: "Management needs a reusable customer revenue report.",
+  useCases: ["Executive Dashboard", "Business Intelligence", "Customer Reporting"],
+  hint: "Create separate CTEs for revenue and order counts before joining them.",
+  starterQuery: `WITH Revenue AS (
+SELECT
+customer_id,
+SUM(total_amount) AS total_revenue,
+AVG(total_amount) AS average_order
+FROM orders
+GROUP BY customer_id
+),
+OrdersCount AS (
+SELECT
+customer_id,
+COUNT(*) AS total_orders
+FROM orders
+GROUP BY customer_id
+)
+SELECT
+r.customer_id,
+r.total_revenue,
+o.total_orders,
+r.average_order
+FROM Revenue r
+JOIN OrdersCount o
+ON r.customer_id=o.customer_id;`,
+  expectedColumns: ["customer_id","total_revenue","total_orders","average_order"],
+  solutionQuery: `WITH Revenue AS (
+SELECT
+customer_id,
+SUM(total_amount) AS total_revenue,
+AVG(total_amount) AS average_order
+FROM orders
+GROUP BY customer_id
+),
+OrdersCount AS (
+SELECT
+customer_id,
+COUNT(*) AS total_orders
+FROM orders
+GROUP BY customer_id
+)
+SELECT
+r.customer_id,
+r.total_revenue,
+o.total_orders,
+r.average_order
+FROM Revenue r
+JOIN OrdersCount o
+ON r.customer_id=o.customer_id;`,
+},
+{
+  id: 71,
+  title: "Customer Purchase Timeline Report",
+  difficulty: "Advanced",
+  slug: "sql-customer-purchase-timeline-report",
+  seoTitle: "SQL Customer Purchase Timeline Report",
+  metaDescription: "Learn how to combine multiple window functions to build a customer purchase timeline report.",
+  tags: ["SQL", "ROW_NUMBER", "LAG", "LEAD", "Window Functions"],
+  description: "Generate a purchase timeline showing purchase number, previous purchase date and next purchase date for every customer.",
+  explanation: "Combine ROW_NUMBER(), LAG() and LEAD() to produce a complete purchase history timeline.",
+  scenario: "CRM analysts need a timeline of every customer's shopping history.",
+  useCases: ["Customer Journey", "Purchase Analysis", "Business Reporting"],
+  hint: "Use ROW_NUMBER(), LAG() and LEAD() together.",
+  starterQuery: `SELECT
+customer_id,
+order_id,
+order_date,
+ROW_NUMBER() OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS purchase_number,
+LAG(order_date) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS previous_purchase,
+LEAD(order_date) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS next_purchase
+FROM orders;`,
+  expectedColumns:["customer_id","order_id","order_date","purchase_number","previous_purchase","next_purchase"],
+  solutionQuery:`SELECT
+customer_id,
+order_id,
+order_date,
+ROW_NUMBER() OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS purchase_number,
+LAG(order_date) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS previous_purchase,
+LEAD(order_date) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS next_purchase
+FROM orders;`,
+},
+{
+  id:72,
+  title:"Category Revenue Dashboard",
+  difficulty:"Advanced",
+  slug:"sql-category-revenue-dashboard",
+  seoTitle:"SQL Category Revenue Dashboard",
+  metaDescription:"Learn how to build a category revenue dashboard using CTEs and window functions.",
+  tags:["SQL","CTE","SUM","DENSE_RANK","Window Functions"],
+  description:"Display every product category along with revenue, percentage contribution and category rank.",
+  explanation:"Aggregate category revenue once and use window functions for ranking and percentage contribution.",
+  scenario:"Executives need a category-level revenue dashboard.",
+  useCases:["Executive Dashboard","Revenue Analysis","Business Intelligence"],
+  hint:"Use a CTE followed by DENSE_RANK() and SUM() OVER().",
+  starterQuery:`WITH CategoryRevenue AS(
+SELECT
+p.category,
+SUM(oi.total_price) AS revenue
+FROM products p
+JOIN order_items oi
+ON p.product_id=oi.product_id
+GROUP BY p.category
+)
+SELECT
+category,
+revenue,
+ROUND(revenue*100.0/
+SUM(revenue) OVER(),2) AS revenue_share,
+DENSE_RANK() OVER(
+ORDER BY revenue DESC
+) AS revenue_rank
+FROM CategoryRevenue;`,
+  expectedColumns:["category","revenue","revenue_share","revenue_rank"],
+  solutionQuery:`WITH CategoryRevenue AS(
+SELECT
+p.category,
+SUM(oi.total_price) AS revenue
+FROM products p
+JOIN order_items oi
+ON p.product_id=oi.product_id
+GROUP BY p.category
+)
+SELECT
+category,
+revenue,
+ROUND(revenue*100.0/
+SUM(revenue) OVER(),2) AS revenue_share,
+DENSE_RANK() OVER(
+ORDER BY revenue DESC
+) AS revenue_rank
+FROM CategoryRevenue;`,
+},
+{
+  id:73,
+  title:"Customer Order Distribution",
+  difficulty:"Advanced",
+  slug:"sql-customer-order-distribution",
+  seoTitle:"SQL Customer Order Distribution",
+  metaDescription:"Learn how to summarize customer order distributions using multiple window functions.",
+  tags:["SQL","COUNT OVER","NTILE","Window Functions"],
+  description:"Display each customer's order count along with their spending quartile.",
+  explanation:"Aggregate order counts and revenue, then divide customers into quartiles using NTILE().",
+  scenario:"Marketing wants to divide customers into purchasing segments.",
+  useCases:["Segmentation","Customer Analytics","Reporting"],
+  hint:"Aggregate first, then use NTILE().",
+  starterQuery:`WITH CustomerSummary AS(
+SELECT
+customer_id,
+COUNT(*) AS total_orders,
+SUM(total_amount) AS revenue
+FROM orders
+GROUP BY customer_id
+)
+SELECT
+customer_id,
+total_orders,
+revenue,
+NTILE(4) OVER(
+ORDER BY revenue DESC
+) AS spending_group
+FROM CustomerSummary;`,
+  expectedColumns:["customer_id","total_orders","revenue","spending_group"],
+  solutionQuery:`WITH CustomerSummary AS(
+SELECT
+customer_id,
+COUNT(*) AS total_orders,
+SUM(total_amount) AS revenue
+FROM orders
+GROUP BY customer_id
+)
+SELECT
+customer_id,
+total_orders,
+revenue,
+NTILE(4) OVER(
+ORDER BY revenue DESC
+) AS spending_group
+FROM CustomerSummary;`,
+},
+{
+  id:74,
+  title:"Running Revenue vs Lifetime Revenue",
+  difficulty:"Advanced",
+  slug:"sql-running-vs-total-revenue",
+  seoTitle:"SQL Running Revenue vs Lifetime Revenue",
+  metaDescription:"Learn how to compare running revenue with lifetime revenue using window functions.",
+  tags:["SQL","SUM OVER","Window Functions"],
+  description:"For every order, display cumulative revenue alongside the customer's lifetime revenue.",
+  explanation:"Use one ordered window and one partition window to compare running progress against the final total.",
+  scenario:"Finance wants to visualize customer lifetime value growth.",
+  useCases:["Revenue Analysis","Customer Lifetime Value","Business Reporting"],
+  hint:"Use two SUM() OVER() functions.",
+  starterQuery:`SELECT
+customer_id,
+order_id,
+total_amount,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS running_revenue,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+) AS lifetime_revenue
+FROM orders;`,
+  expectedColumns:["customer_id","order_id","total_amount","running_revenue","lifetime_revenue"],
+  solutionQuery:`SELECT
+customer_id,
+order_id,
+total_amount,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS running_revenue,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+) AS lifetime_revenue
+FROM orders;`,
+},
+{
+  id:75,
+  title:"Customer Performance Dashboard",
+  difficulty:"Advanced",
+  slug:"sql-customer-performance-dashboard",
+  seoTitle:"SQL Customer Performance Dashboard",
+  metaDescription:"Learn how to build a complete customer performance dashboard using multiple SQL window functions.",
+  tags:["SQL","ROW_NUMBER","SUM OVER","AVG OVER","FIRST_VALUE","LAST_VALUE"],
+  description:"Build a dashboard showing purchase number, first purchase, latest purchase, average order and cumulative revenue.",
+  explanation:"This combines several window functions into a single business-ready report.",
+  scenario:"Executives want a complete customer performance dashboard.",
+  useCases:["Executive Dashboard","Business Intelligence","Customer Analytics"],
+  hint:"Combine ROW_NUMBER(), FIRST_VALUE(), LAST_VALUE(), AVG() OVER() and SUM() OVER().",
+  starterQuery:`SELECT
+customer_id,
+order_id,
+order_date,
+total_amount,
+ROW_NUMBER() OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS purchase_number,
+FIRST_VALUE(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS first_purchase,
+LAST_VALUE(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+ROWS BETWEEN UNBOUNDED PRECEDING
+AND UNBOUNDED FOLLOWING
+) AS latest_purchase,
+AVG(total_amount) OVER(
+PARTITION BY customer_id
+) AS average_order,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS cumulative_revenue
+FROM orders;`,
+  expectedColumns:["customer_id","order_id","order_date","total_amount","purchase_number","first_purchase","latest_purchase","average_order","cumulative_revenue"],
+  solutionQuery:`SELECT
+customer_id,
+order_id,
+order_date,
+total_amount,
+ROW_NUMBER() OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS purchase_number,
+FIRST_VALUE(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS first_purchase,
+LAST_VALUE(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+ROWS BETWEEN UNBOUNDED PRECEDING
+AND UNBOUNDED FOLLOWING
+) AS latest_purchase,
+AVG(total_amount) OVER(
+PARTITION BY customer_id
+) AS average_order,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS cumulative_revenue
+FROM orders;`,
+},
+{
+  id: 76,
+  title: "Top Spending Customer Per Country",
+  difficulty: "Advanced",
+  slug: "sql-country-top-customer-row-number",
+  seoTitle: "SQL Top Spending Customer Per Country",
+  metaDescription: "Learn how to identify the highest spending customer in each country using CTEs and ROW_NUMBER().",
+  tags: ["SQL", "CTE", "JOIN", "ROW_NUMBER", "SUM"],
+  description: "Find the customer with the highest total revenue in every country.",
+  explanation: "Aggregate customer revenue first, then rank customers within each country using ROW_NUMBER().",
+  scenario: "Regional managers want to recognize their highest-value customer.",
+  useCases: ["Regional reporting", "Customer analytics", "Revenue analysis"],
+  hint: "Aggregate revenue first, then partition ROW_NUMBER() by country.",
+  starterQuery: `WITH CustomerRevenue AS (
+SELECT
+c.country,
+c.customer_id,
+c.customer_name,
+SUM(o.total_amount) AS revenue
+FROM customers c
+JOIN orders o
+ON c.customer_id = o.customer_id
+GROUP BY
+c.country,
+c.customer_id,
+c.customer_name
+)
+SELECT
+country,
+customer_name,
+revenue
+FROM (
+SELECT *,
+ROW_NUMBER() OVER(
+PARTITION BY country
+ORDER BY revenue DESC
+) AS rn
+FROM CustomerRevenue
+)t
+WHERE rn=1;`,
+  expectedColumns:["country","customer_name","revenue"],
+  solutionQuery:`WITH CustomerRevenue AS (
+SELECT
+c.country,
+c.customer_id,
+c.customer_name,
+SUM(o.total_amount) AS revenue
+FROM customers c
+JOIN orders o
+ON c.customer_id = o.customer_id
+GROUP BY
+c.country,
+c.customer_id,
+c.customer_name
+)
+SELECT
+country,
+customer_name,
+revenue
+FROM (
+SELECT *,
+ROW_NUMBER() OVER(
+PARTITION BY country
+ORDER BY revenue DESC
+) AS rn
+FROM CustomerRevenue
+)t
+WHERE rn=1;`,
+},
+{
+  id:77,
+  title:"Customer Revenue Breakdown",
+  difficulty:"Advanced",
+  slug:"sql-conditional-aggregation-dashboard",
+  seoTitle:"SQL Conditional Aggregation Dashboard",
+  metaDescription:"Learn how to build customer dashboards using CASE expressions inside aggregate functions.",
+  tags:["SQL","CASE WHEN","SUM","GROUP BY"],
+  description:"Show each customer's delivered, cancelled and total order revenue.",
+  explanation:"Conditional aggregation allows multiple business metrics to be produced in a single grouped query.",
+  scenario:"Operations wants a customer revenue breakdown by order status.",
+  useCases:["Dashboards","Reporting","Business Intelligence"],
+  hint:"Use SUM(CASE WHEN...).",
+  starterQuery:`SELECT
+customer_id,
+SUM(CASE WHEN order_status='Delivered' THEN total_amount ELSE 0 END) AS delivered_revenue,
+SUM(CASE WHEN order_status='Cancelled' THEN total_amount ELSE 0 END) AS cancelled_revenue,
+SUM(total_amount) AS total_revenue
+FROM orders
+GROUP BY customer_id;`,
+  expectedColumns:["customer_id","delivered_revenue","cancelled_revenue","total_revenue"],
+  solutionQuery:`SELECT
+customer_id,
+SUM(CASE WHEN order_status='Delivered' THEN total_amount ELSE 0 END) AS delivered_revenue,
+SUM(CASE WHEN order_status='Cancelled' THEN total_amount ELSE 0 END) AS cancelled_revenue,
+SUM(total_amount) AS total_revenue
+FROM orders
+GROUP BY customer_id;`,
+},
+{
+  id:78,
+  title:"Customer Revenue Ranking Dashboard",
+  difficulty:"Advanced",
+  slug:"sql-ranking-dashboard",
+  seoTitle:"SQL Revenue Ranking Dashboard",
+  metaDescription:"Learn how to combine aggregation and multiple ranking functions in SQL.",
+  tags:["SQL","CTE","RANK","DENSE_RANK","ROW_NUMBER"],
+  description:"Calculate customer revenue and display ROW_NUMBER(), RANK() and DENSE_RANK() together.",
+  explanation:"This exercise demonstrates the difference between SQL ranking functions on the same dataset.",
+  scenario:"The BI team wants to compare different ranking methods.",
+  useCases:["Analytics","Reporting","Ranking"],
+  hint:"Aggregate revenue first, then apply three ranking functions.",
+  starterQuery:`WITH Revenue AS(
+SELECT
+customer_id,
+SUM(total_amount) AS revenue
+FROM orders
+GROUP BY customer_id
+)
+SELECT
+customer_id,
+revenue,
+ROW_NUMBER() OVER(ORDER BY revenue DESC) AS row_num,
+RANK() OVER(ORDER BY revenue DESC) AS rank_num,
+DENSE_RANK() OVER(ORDER BY revenue DESC) AS dense_rank_num
+FROM Revenue;`,
+  expectedColumns:["customer_id","revenue","row_num","rank_num","dense_rank_num"],
+  solutionQuery:`WITH Revenue AS(
+SELECT
+customer_id,
+SUM(total_amount) AS revenue
+FROM orders
+GROUP BY customer_id
+)
+SELECT
+customer_id,
+revenue,
+ROW_NUMBER() OVER(ORDER BY revenue DESC) AS row_num,
+RANK() OVER(ORDER BY revenue DESC) AS rank_num,
+DENSE_RANK() OVER(ORDER BY revenue DESC) AS dense_rank_num
+FROM Revenue;`,
+},
+{
+  id:79,
+  title:"Monthly Revenue Trend",
+  difficulty:"Advanced",
+  slug:"sql-monthly-revenue-growth",
+  seoTitle:"SQL Monthly Revenue Trend Analysis",
+  metaDescription:"Learn how to compare monthly revenue using LAG() and Common Table Expressions.",
+  tags:["SQL","CTE","LAG","SUM","Window Functions"],
+  description:"Calculate monthly revenue and compare it with the previous month's revenue.",
+  explanation:"Aggregate monthly revenue first, then use LAG() to compare consecutive months.",
+  scenario:"Finance monitors month-over-month business performance.",
+  useCases:["Trend Analysis","Financial Reporting","Business Intelligence"],
+  hint:"Aggregate first, then apply LAG().",
+  starterQuery:`WITH MonthlyRevenue AS(
+SELECT
+strftime('%Y-%m',order_date) AS month,
+SUM(total_amount) AS revenue
+FROM orders
+GROUP BY month
+)
+SELECT
+month,
+revenue,
+LAG(revenue) OVER(
+ORDER BY month
+) AS previous_month_revenue
+FROM MonthlyRevenue;`,
+  expectedColumns:["month","revenue","previous_month_revenue"],
+  solutionQuery:`WITH MonthlyRevenue AS(
+SELECT
+strftime('%Y-%m',order_date) AS month,
+SUM(total_amount) AS revenue
+FROM orders
+GROUP BY month
+)
+SELECT
+month,
+revenue,
+LAG(revenue) OVER(
+ORDER BY month
+) AS previous_month_revenue
+FROM MonthlyRevenue;`,
+},
+{
+  id:80,
+  title:"Customer Lifetime Value Dashboard",
+  difficulty:"Advanced",
+  slug:"sql-customer-lifetime-dashboard",
+  seoTitle:"SQL Customer Lifetime Value Dashboard",
+  metaDescription:"Learn how to build a complete customer lifetime value report using multiple CTEs and window functions.",
+  tags:["SQL","CTE","ROW_NUMBER","SUM OVER","AVG OVER","LAG"],
+  description:"Build a customer lifetime dashboard showing purchase number, cumulative revenue, average order value, previous order amount and lifetime revenue.",
+  explanation:"This combines multiple window functions with CTEs to produce a business-ready customer analytics report.",
+  scenario:"Leadership wants a reusable customer lifetime value dashboard.",
+  useCases:["Executive Dashboard","Customer Analytics","Business Intelligence"],
+  hint:"Use a CTE and combine ROW_NUMBER(), SUM(), AVG() and LAG().",
+  starterQuery:`WITH CustomerOrders AS(
+SELECT
+customer_id,
+order_id,
+order_date,
+total_amount
+FROM orders
+)
+SELECT
+customer_id,
+order_id,
+order_date,
+total_amount,
+ROW_NUMBER() OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS purchase_number,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS cumulative_revenue,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+) AS lifetime_revenue,
+AVG(total_amount) OVER(
+PARTITION BY customer_id
+) AS average_order,
+LAG(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS previous_order_amount
+FROM CustomerOrders;`,
+  expectedColumns:[
+"customer_id",
+"order_id",
+"order_date",
+"total_amount",
+"purchase_number",
+"cumulative_revenue",
+"lifetime_revenue",
+"average_order",
+"previous_order_amount"
+],
+  solutionQuery:`WITH CustomerOrders AS(
+SELECT
+customer_id,
+order_id,
+order_date,
+total_amount
+FROM orders
+)
+SELECT
+customer_id,
+order_id,
+order_date,
+total_amount,
+ROW_NUMBER() OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS purchase_number,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS cumulative_revenue,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+) AS lifetime_revenue,
+AVG(total_amount) OVER(
+PARTITION BY customer_id
+) AS average_order,
+LAG(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS previous_order_amount
+FROM CustomerOrders;`,
+},
+{
+  id: 81,
+  title: "Customer Revenue by Payment Method",
+  difficulty: "Advanced",
+  slug: "sql-payment-method-revenue-dashboard",
+  seoTitle: "SQL Revenue Dashboard by Payment Method",
+  metaDescription: "Learn how to build customer revenue reports grouped by payment methods using SQL joins and window functions.",
+  tags: ["SQL", "JOIN", "CTE", "SUM", "DENSE_RANK"],
+  description: "Calculate the total revenue generated by each payment method and rank them from highest to lowest.",
+  explanation: "Join orders with payments, aggregate revenue by payment method, then rank the payment methods using DENSE_RANK().",
+  scenario: "Finance wants to know which payment methods generate the highest revenue.",
+  useCases: ["Finance Reporting", "Payment Analytics", "Executive Dashboard"],
+  hint: "Aggregate first, then apply DENSE_RANK().",
+  starterQuery: `WITH PaymentRevenue AS (
+SELECT
+p.payment_method,
+SUM(o.total_amount) AS revenue
+FROM payments p
+JOIN orders o
+ON p.order_id=o.order_id
+GROUP BY p.payment_method
+)
+SELECT
+payment_method,
+revenue,
+DENSE_RANK() OVER(
+ORDER BY revenue DESC
+) AS revenue_rank
+FROM PaymentRevenue;`,
+  expectedColumns:["payment_method","revenue","revenue_rank"],
+  solutionQuery:`WITH PaymentRevenue AS (
+SELECT
+p.payment_method,
+SUM(o.total_amount) AS revenue
+FROM payments p
+JOIN orders o
+ON p.order_id=o.order_id
+GROUP BY p.payment_method
+)
+SELECT
+payment_method,
+revenue,
+DENSE_RANK() OVER(
+ORDER BY revenue DESC
+) AS revenue_rank
+FROM PaymentRevenue;`,
+},
+{
+  id: 82,
+  title: "Daily Revenue Performance",
+  difficulty: "Advanced",
+  slug: "sql-daily-revenue-performance",
+  seoTitle: "SQL Daily Revenue Performance Dashboard",
+  metaDescription: "Learn how to compare daily revenue with historical averages using SQL window functions.",
+  tags: ["SQL", "CTE", "AVG OVER", "LAG"],
+  description: "Show daily revenue together with the previous day's revenue and the overall average daily revenue.",
+  explanation: "Aggregate revenue by day, then combine LAG() and AVG() OVER() to create a daily performance report.",
+  scenario: "Executives monitor revenue trends every morning.",
+  useCases: ["Revenue Dashboard", "Trend Analysis", "Business Intelligence"],
+  hint: "Aggregate daily revenue first.",
+  starterQuery: `WITH DailyRevenue AS(
+SELECT
+order_date,
+SUM(total_amount) AS revenue
+FROM orders
+GROUP BY order_date
+)
+SELECT
+order_date,
+revenue,
+LAG(revenue) OVER(
+ORDER BY order_date
+) AS previous_day,
+AVG(revenue) OVER() AS average_daily_revenue
+FROM DailyRevenue;`,
+  expectedColumns:["order_date","revenue","previous_day","average_daily_revenue"],
+  solutionQuery:`WITH DailyRevenue AS(
+SELECT
+order_date,
+SUM(total_amount) AS revenue
+FROM orders
+GROUP BY order_date
+)
+SELECT
+order_date,
+revenue,
+LAG(revenue) OVER(
+ORDER BY order_date
+) AS previous_day,
+AVG(revenue) OVER() AS average_daily_revenue
+FROM DailyRevenue;`,
+},
+{
+  id: 83,
+  title: "Top Customer in Every City",
+  difficulty: "Advanced",
+  slug: "sql-top-customer-per-city",
+  seoTitle: "SQL Top Customer Per City",
+  metaDescription: "Learn how to identify the highest revenue customer in every city using SQL window functions.",
+  tags: ["SQL", "JOIN", "ROW_NUMBER", "CTE"],
+  description: "Find the highest revenue customer in every city.",
+  explanation: "Aggregate customer revenue by city, then rank customers within each city using ROW_NUMBER().",
+  scenario: "Regional sales managers want to identify their best customer.",
+  useCases: ["Regional Analytics", "Revenue Reporting", "Customer Insights"],
+  hint: "Partition ROW_NUMBER() by city.",
+  starterQuery: `WITH CustomerRevenue AS(
+SELECT
+c.city,
+c.customer_name,
+SUM(o.total_amount) AS revenue
+FROM customers c
+JOIN orders o
+ON c.customer_id=o.customer_id
+GROUP BY
+c.city,
+c.customer_name
+)
+SELECT
+city,
+customer_name,
+revenue
+FROM(
+SELECT *,
+ROW_NUMBER() OVER(
+PARTITION BY city
+ORDER BY revenue DESC
+) AS rn
+FROM CustomerRevenue
+)t
+WHERE rn=1;`,
+  expectedColumns:["city","customer_name","revenue"],
+  solutionQuery:`WITH CustomerRevenue AS(
+SELECT
+c.city,
+c.customer_name,
+SUM(o.total_amount) AS revenue
+FROM customers c
+JOIN orders o
+ON c.customer_id=o.customer_id
+GROUP BY
+c.city,
+c.customer_name
+)
+SELECT
+city,
+customer_name,
+revenue
+FROM(
+SELECT *,
+ROW_NUMBER() OVER(
+PARTITION BY city
+ORDER BY revenue DESC
+) AS rn
+FROM CustomerRevenue
+)t
+WHERE rn=1;`,
+},
+{
+  id: 84,
+  title: "Customer Order Frequency Report",
+  difficulty: "Advanced",
+  slug: "sql-order-frequency-report",
+  seoTitle: "SQL Customer Order Frequency Report",
+  metaDescription: "Learn how to analyze customer ordering frequency using SQL date functions and window functions.",
+  tags: ["SQL", "LAG", "AVG", "julianday"],
+  description: "Calculate the average number of days between orders for each customer.",
+  explanation: "Use LAG() to find the previous order date and calculate the average purchase interval for every customer.",
+  scenario: "The CRM team wants to identify highly engaged customers.",
+  useCases: ["Retention", "Customer Analytics", "Purchase Frequency"],
+  hint: "Use LAG() inside a CTE, then calculate AVG().",
+  starterQuery: `WITH OrderGap AS(
+SELECT
+customer_id,
+julianday(order_date)-
+julianday(
+LAG(order_date) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+)
+) AS gap_days
+FROM orders
+)
+SELECT
+customer_id,
+ROUND(AVG(gap_days),2) AS average_gap_days
+FROM OrderGap
+GROUP BY customer_id;`,
+  expectedColumns:["customer_id","average_gap_days"],
+  solutionQuery:`WITH OrderGap AS(
+SELECT
+customer_id,
+julianday(order_date)-
+julianday(
+LAG(order_date) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+)
+) AS gap_days
+FROM orders
+)
+SELECT
+customer_id,
+ROUND(AVG(gap_days),2) AS average_gap_days
+FROM OrderGap
+GROUP BY customer_id;`,
+},
+{
+  id: 85,
+  title: "Revenue Contribution by Country",
+  difficulty: "Advanced",
+  slug: "sql-country-revenue-contribution",
+  seoTitle: "SQL Country Revenue Contribution",
+  metaDescription: "Learn how to calculate revenue contribution by country using SQL CTEs and window functions.",
+  tags: ["SQL", "CTE", "JOIN", "SUM OVER"],
+  description: "Calculate each country's contribution to total company revenue.",
+  explanation: "Aggregate revenue by country, then divide by the grand total using SUM() OVER().",
+  scenario: "Leadership wants to understand which countries generate the most revenue.",
+  useCases: ["Executive Dashboard", "Regional Analysis", "Business Intelligence"],
+  hint: "Aggregate first, then calculate the revenue percentage.",
+  starterQuery: `WITH CountryRevenue AS(
+SELECT
+c.country,
+SUM(o.total_amount) AS revenue
+FROM customers c
+JOIN orders o
+ON c.customer_id=o.customer_id
+GROUP BY c.country
+)
+SELECT
+country,
+revenue,
+ROUND(
+revenue*100.0/
+SUM(revenue) OVER(),
+2
+) AS revenue_percentage
+FROM CountryRevenue
+ORDER BY revenue DESC;`,
+  expectedColumns:["country","revenue","revenue_percentage"],
+  solutionQuery:`WITH CountryRevenue AS(
+SELECT
+c.country,
+SUM(o.total_amount) AS revenue
+FROM customers c
+JOIN orders o
+ON c.customer_id=o.customer_id
+GROUP BY c.country
+)
+SELECT
+country,
+revenue,
+ROUND(
+revenue*100.0/
+SUM(revenue) OVER(),
+2
+) AS revenue_percentage
+FROM CountryRevenue
+ORDER BY revenue DESC;`,
+},
+{
+  id: 86,
+  title: "Monthly Top Customer",
+  difficulty: "Advanced",
+  slug: "sql-monthly-top-customer",
+  seoTitle: "SQL Monthly Top Customer by Revenue",
+  metaDescription: "Learn how to identify the highest revenue customer for each month using CTEs and window functions.",
+  tags: ["SQL", "CTE", "ROW_NUMBER", "SUM", "Window Functions"],
+  description: "Find the highest revenue generating customer in every month.",
+  explanation: "Aggregate revenue by customer and month, then rank customers within each month using ROW_NUMBER().",
+  scenario: "Finance prepares a monthly recognition report for top customers.",
+  useCases: ["Monthly Reporting", "Revenue Analysis", "Executive Dashboard"],
+  hint: "Group by month and customer, then use ROW_NUMBER().",
+  starterQuery: `WITH MonthlyRevenue AS (
+SELECT
+strftime('%Y-%m', o.order_date) AS month,
+o.customer_id,
+c.customer_name,
+SUM(o.total_amount) AS revenue
+FROM orders o
+JOIN customers c
+ON o.customer_id = c.customer_id
+GROUP BY
+month,
+o.customer_id,
+c.customer_name
+)
+SELECT
+month,
+customer_name,
+revenue
+FROM(
+SELECT *,
+ROW_NUMBER() OVER(
+PARTITION BY month
+ORDER BY revenue DESC
+) AS rn
+FROM MonthlyRevenue
+)t
+WHERE rn = 1;`,
+  expectedColumns:["month","customer_name","revenue"],
+  solutionQuery:`WITH MonthlyRevenue AS (
+SELECT
+strftime('%Y-%m', o.order_date) AS month,
+o.customer_id,
+c.customer_name,
+SUM(o.total_amount) AS revenue
+FROM orders o
+JOIN customers c
+ON o.customer_id = c.customer_id
+GROUP BY
+month,
+o.customer_id,
+c.customer_name
+)
+SELECT
+month,
+customer_name,
+revenue
+FROM(
+SELECT *,
+ROW_NUMBER() OVER(
+PARTITION BY month
+ORDER BY revenue DESC
+) AS rn
+FROM MonthlyRevenue
+)t
+WHERE rn = 1;`,
+},
+{
+  id: 87,
+  title: "Product Revenue by Brand",
+  difficulty: "Advanced",
+  slug: "sql-product-brand-revenue",
+  seoTitle: "SQL Product Revenue by Brand",
+  metaDescription: "Learn how to calculate product revenue contribution within each brand using SQL window functions.",
+  tags: ["SQL", "JOIN", "CTE", "SUM OVER"],
+  description: "Calculate each product's revenue percentage within its brand.",
+  explanation: "Aggregate revenue by product, then divide by the brand's total revenue using SUM() OVER(PARTITION BY brand).",
+  scenario: "Product managers want to understand which products drive revenue within each brand.",
+  useCases: ["Product Analytics", "Revenue Reporting", "Business Intelligence"],
+  hint: "Use SUM(revenue) OVER(PARTITION BY brand).",
+  starterQuery: `WITH ProductRevenue AS (
+SELECT
+p.brand,
+p.product_name,
+SUM(oi.total_price) AS revenue
+FROM products p
+JOIN order_items oi
+ON p.product_id = oi.product_id
+GROUP BY
+p.brand,
+p.product_name
+)
+SELECT
+brand,
+product_name,
+revenue,
+ROUND(
+revenue * 100.0 /
+SUM(revenue) OVER(PARTITION BY brand),
+2
+) AS revenue_share
+FROM ProductRevenue;`,
+  expectedColumns:["brand","product_name","revenue","revenue_share"],
+  solutionQuery:`WITH ProductRevenue AS (
+SELECT
+p.brand,
+p.product_name,
+SUM(oi.total_price) AS revenue
+FROM products p
+JOIN order_items oi
+ON p.product_id = oi.product_id
+GROUP BY
+p.brand,
+p.product_name
+)
+SELECT
+brand,
+product_name,
+revenue,
+ROUND(
+revenue * 100.0 /
+SUM(revenue) OVER(PARTITION BY brand),
+2
+) AS revenue_share
+FROM ProductRevenue;`,
+},
+{
+  id: 88,
+  title: "Customer Order Status Dashboard",
+  difficulty: "Advanced",
+  slug: "sql-order-status-dashboard",
+  seoTitle: "SQL Customer Order Status Dashboard",
+  metaDescription: "Learn how to build a customer order status dashboard using conditional aggregation.",
+  tags: ["SQL", "CASE WHEN", "GROUP BY", "COUNT"],
+  description: "Display the number of delivered, pending and cancelled orders for every customer.",
+  explanation: "Use conditional aggregation with CASE expressions to calculate multiple metrics in one query.",
+  scenario: "Operations needs a customer-level order status report.",
+  useCases: ["Operations Dashboard", "Reporting", "Customer Analytics"],
+  hint: "Use COUNT(CASE WHEN...) or SUM(CASE WHEN...).",
+  starterQuery: `SELECT
+customer_id,
+SUM(CASE WHEN order_status='Delivered' THEN 1 ELSE 0 END) AS delivered_orders,
+SUM(CASE WHEN order_status='Pending' THEN 1 ELSE 0 END) AS pending_orders,
+SUM(CASE WHEN order_status='Cancelled' THEN 1 ELSE 0 END) AS cancelled_orders
+FROM orders
+GROUP BY customer_id;`,
+  expectedColumns:["customer_id","delivered_orders","pending_orders","cancelled_orders"],
+  solutionQuery:`SELECT
+customer_id,
+SUM(CASE WHEN order_status='Delivered' THEN 1 ELSE 0 END) AS delivered_orders,
+SUM(CASE WHEN order_status='Pending' THEN 1 ELSE 0 END) AS pending_orders,
+SUM(CASE WHEN order_status='Cancelled' THEN 1 ELSE 0 END) AS cancelled_orders
+FROM orders
+GROUP BY customer_id;`,
+},
+{
+  id: 89,
+  title: "Customer Revenue Growth Report",
+  difficulty: "Advanced",
+  slug: "sql-revenue-growth-report",
+  seoTitle: "SQL Customer Revenue Growth Report",
+  metaDescription: "Learn how to compare consecutive customer purchases using running totals and LAG().",
+  tags: ["SQL", "CTE", "SUM OVER", "LAG"],
+  description: "Show cumulative customer revenue and the increase after every purchase.",
+  explanation: "Build cumulative revenue using SUM() OVER() and compare consecutive values using LAG().",
+  scenario: "Finance wants to measure how each purchase increases customer lifetime value.",
+  useCases: ["Customer Lifetime Value", "Finance", "Analytics"],
+  hint: "Calculate cumulative revenue first using a CTE.",
+  starterQuery: `WITH RevenueHistory AS (
+SELECT
+customer_id,
+order_id,
+order_date,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS cumulative_revenue
+FROM orders
+)
+SELECT
+customer_id,
+order_id,
+cumulative_revenue,
+cumulative_revenue -
+LAG(cumulative_revenue) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS revenue_growth
+FROM RevenueHistory;`,
+  expectedColumns:["customer_id","order_id","cumulative_revenue","revenue_growth"],
+  solutionQuery:`WITH RevenueHistory AS (
+SELECT
+customer_id,
+order_id,
+order_date,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS cumulative_revenue
+FROM orders
+)
+SELECT
+customer_id,
+order_id,
+cumulative_revenue,
+cumulative_revenue -
+LAG(cumulative_revenue) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS revenue_growth
+FROM RevenueHistory;`,
+},
+{
+  id: 90,
+  title: "Executive Sales Dashboard",
+  difficulty: "Advanced",
+  slug: "sql-executive-sales-dashboard",
+  seoTitle: "SQL Executive Sales Dashboard",
+  metaDescription: "Learn how to combine multiple CTEs and window functions to build a complete executive sales dashboard.",
+  tags: ["SQL", "CTE", "JOIN", "ROW_NUMBER", "SUM OVER", "AVG OVER"],
+  description: "Generate a dashboard showing customer revenue, average order value, total orders and customer revenue rank.",
+  explanation: "This report combines multiple CTEs with window functions to produce an executive-level sales dashboard.",
+  scenario: "Leadership reviews customer performance every quarter.",
+  useCases: ["Executive Dashboard", "Sales Analytics", "Business Intelligence"],
+  hint: "Create customer metrics first, then apply ROW_NUMBER().",
+  starterQuery: `WITH CustomerMetrics AS (
+SELECT
+customer_id,
+SUM(total_amount) AS revenue,
+AVG(total_amount) AS average_order,
+COUNT(*) AS total_orders
+FROM orders
+GROUP BY customer_id
+)
+SELECT
+customer_id,
+revenue,
+average_order,
+total_orders,
+ROW_NUMBER() OVER(
+ORDER BY revenue DESC
+) AS revenue_rank
+FROM CustomerMetrics;`,
+  expectedColumns:[
+"customer_id",
+"revenue",
+"average_order",
+"total_orders",
+"revenue_rank"
+],
+  solutionQuery:`WITH CustomerMetrics AS (
+SELECT
+customer_id,
+SUM(total_amount) AS revenue,
+AVG(total_amount) AS average_order,
+COUNT(*) AS total_orders
+FROM orders
+GROUP BY customer_id
+)
+SELECT
+customer_id,
+revenue,
+average_order,
+total_orders,
+ROW_NUMBER() OVER(
+ORDER BY revenue DESC
+) AS revenue_rank
+FROM CustomerMetrics;`,
+},
+{
+  id: 91,
+  title: "Customer Revenue and Order Status Dashboard",
+  difficulty: "Advanced",
+  slug: "sql-customer-revenue-status-dashboard",
+  seoTitle: "SQL Customer Revenue and Order Status Dashboard",
+  metaDescription: "Build a customer dashboard combining revenue, order counts and status metrics using SQL.",
+  tags: ["SQL","CTE","CASE WHEN","GROUP BY","JOIN"],
+  description: "Generate a report showing total revenue, total orders, delivered orders and cancelled orders for every customer.",
+  explanation: "Combine aggregation and conditional aggregation to create multiple business KPIs in a single report.",
+  scenario: "Customer Success managers review customer performance every week.",
+  useCases: ["Customer Dashboard","Executive Reporting","Business Intelligence"],
+  hint: "Use SUM(CASE...) and COUNT().",
+  starterQuery:`SELECT
+c.customer_id,
+c.customer_name,
+SUM(o.total_amount) AS total_revenue,
+COUNT(o.order_id) AS total_orders,
+SUM(CASE WHEN o.order_status='Delivered' THEN 1 ELSE 0 END) AS delivered_orders,
+SUM(CASE WHEN o.order_status='Cancelled' THEN 1 ELSE 0 END) AS cancelled_orders
+FROM customers c
+JOIN orders o
+ON c.customer_id=o.customer_id
+GROUP BY
+c.customer_id,
+c.customer_name;`,
+  expectedColumns:["customer_id","customer_name","total_revenue","total_orders","delivered_orders","cancelled_orders"],
+  solutionQuery:`SELECT
+c.customer_id,
+c.customer_name,
+SUM(o.total_amount) AS total_revenue,
+COUNT(o.order_id) AS total_orders,
+SUM(CASE WHEN o.order_status='Delivered' THEN 1 ELSE 0 END) AS delivered_orders,
+SUM(CASE WHEN o.order_status='Cancelled' THEN 1 ELSE 0 END) AS cancelled_orders
+FROM customers c
+JOIN orders o
+ON c.customer_id=o.customer_id
+GROUP BY
+c.customer_id,
+c.customer_name;`,
+},
+{
+  id:92,
+  title:"Customer Lifetime Value Ranking",
+  difficulty:"Advanced",
+  slug:"sql-customer-ltv-ranking",
+  seoTitle:"SQL Customer Lifetime Value Ranking",
+  metaDescription:"Rank customers by lifetime revenue while calculating their revenue contribution.",
+  tags:["SQL","CTE","ROW_NUMBER","SUM OVER"],
+  description:"Rank customers by lifetime revenue and calculate each customer's contribution to total revenue.",
+  explanation:"Aggregate customer revenue first, then use ROW_NUMBER() and SUM() OVER().",
+  scenario:"Leadership wants to identify VIP customers.",
+  useCases:["Customer Segmentation","Revenue Analysis","Executive Dashboard"],
+  hint:"Aggregate revenue first.",
+  starterQuery:`WITH Revenue AS(
+SELECT
+customer_id,
+SUM(total_amount) AS revenue
+FROM orders
+GROUP BY customer_id
+)
+SELECT
+customer_id,
+revenue,
+ROW_NUMBER() OVER(
+ORDER BY revenue DESC
+) AS revenue_rank,
+ROUND(
+revenue*100.0/
+SUM(revenue) OVER(),
+2
+) AS revenue_share
+FROM Revenue;`,
+  expectedColumns:["customer_id","revenue","revenue_rank","revenue_share"],
+  solutionQuery:`WITH Revenue AS(
+SELECT
+customer_id,
+SUM(total_amount) AS revenue
+FROM orders
+GROUP BY customer_id
+)
+SELECT
+customer_id,
+revenue,
+ROW_NUMBER() OVER(
+ORDER BY revenue DESC
+) AS revenue_rank,
+ROUND(
+revenue*100.0/
+SUM(revenue) OVER(),
+2
+) AS revenue_share
+FROM Revenue;`,
+},
+{
+  id:93,
+  title:"Monthly Customer Leaderboard",
+  difficulty:"Advanced",
+  slug:"sql-monthly-customer-leaderboard",
+  seoTitle:"SQL Monthly Customer Revenue Leaderboard",
+  metaDescription:"Create a monthly customer leaderboard using SQL window functions.",
+  tags:["SQL","CTE","DENSE_RANK","SUM"],
+  description:"Rank customers by revenue within every month.",
+  explanation:"Aggregate monthly revenue first, then rank customers inside each month.",
+  scenario:"Regional sales teams review monthly top performers.",
+  useCases:["Monthly Reporting","Revenue Dashboard","Sales Analytics"],
+  hint:"Partition ranking by month.",
+  starterQuery:`WITH MonthlyRevenue AS(
+SELECT
+strftime('%Y-%m',order_date) AS month,
+customer_id,
+SUM(total_amount) AS revenue
+FROM orders
+GROUP BY
+month,
+customer_id
+)
+SELECT
+month,
+customer_id,
+revenue,
+DENSE_RANK() OVER(
+PARTITION BY month
+ORDER BY revenue DESC
+) AS revenue_rank
+FROM MonthlyRevenue;`,
+  expectedColumns:["month","customer_id","revenue","revenue_rank"],
+  solutionQuery:`WITH MonthlyRevenue AS(
+SELECT
+strftime('%Y-%m',order_date) AS month,
+customer_id,
+SUM(total_amount) AS revenue
+FROM orders
+GROUP BY
+month,
+customer_id
+)
+SELECT
+month,
+customer_id,
+revenue,
+DENSE_RANK() OVER(
+PARTITION BY month
+ORDER BY revenue DESC
+) AS revenue_rank
+FROM MonthlyRevenue;`,
+},
+{
+  id:94,
+  title:"Customer Purchase Summary Report",
+  difficulty:"Advanced",
+  slug:"sql-customer-summary-report",
+  seoTitle:"SQL Customer Purchase Summary Report",
+  metaDescription:"Build a customer summary report using multiple SQL window functions.",
+  tags:["SQL","ROW_NUMBER","FIRST_VALUE","LAST_VALUE","AVG OVER"],
+  description:"Display purchase number, first purchase amount, latest purchase amount and average order value for every order.",
+  explanation:"Combine multiple window functions to create a customer purchase summary.",
+  scenario:"CRM teams want a complete customer purchase history.",
+  useCases:["Customer Analytics","Business Reporting","Executive Dashboard"],
+  hint:"Use ROW_NUMBER(), FIRST_VALUE(), LAST_VALUE() and AVG().",
+  starterQuery:`SELECT
+customer_id,
+order_id,
+total_amount,
+ROW_NUMBER() OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS purchase_number,
+FIRST_VALUE(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS first_purchase,
+LAST_VALUE(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+ROWS BETWEEN UNBOUNDED PRECEDING
+AND UNBOUNDED FOLLOWING
+) AS latest_purchase,
+AVG(total_amount) OVER(
+PARTITION BY customer_id
+) AS average_order
+FROM orders;`,
+  expectedColumns:["customer_id","order_id","total_amount","purchase_number","first_purchase","latest_purchase","average_order"],
+  solutionQuery:`SELECT
+customer_id,
+order_id,
+total_amount,
+ROW_NUMBER() OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS purchase_number,
+FIRST_VALUE(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS first_purchase,
+LAST_VALUE(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+ROWS BETWEEN UNBOUNDED PRECEDING
+AND UNBOUNDED FOLLOWING
+) AS latest_purchase,
+AVG(total_amount) OVER(
+PARTITION BY customer_id
+) AS average_order
+FROM orders;`,
+},
+{
+  id:95,
+  title:"Executive Customer Performance Dashboard",
+  difficulty:"Advanced",
+  slug:"sql-executive-customer-dashboard",
+  seoTitle:"SQL Executive Customer Performance Dashboard",
+  metaDescription:"Build a complete customer performance dashboard using SQL CTEs, joins and window functions.",
+  tags:["SQL","CTE","JOIN","ROW_NUMBER","SUM OVER","AVG OVER","CASE WHEN"],
+  description:"Generate a customer dashboard containing revenue, average order value, delivered orders, purchase rank and lifetime revenue.",
+  explanation:"This capstone combines aggregation, conditional aggregation and multiple window functions into a production-ready report.",
+  scenario:"Executives review customer performance every month.",
+  useCases:["Executive Dashboard","Business Intelligence","Customer Analytics"],
+  hint:"Create customer metrics in a CTE, then apply ROW_NUMBER().",
+  starterQuery:`WITH CustomerMetrics AS(
+SELECT
+customer_id,
+SUM(total_amount) AS revenue,
+AVG(total_amount) AS average_order,
+SUM(CASE WHEN order_status='Delivered' THEN 1 ELSE 0 END) AS delivered_orders
+FROM orders
+GROUP BY customer_id
+)
+SELECT
+customer_id,
+revenue,
+average_order,
+delivered_orders,
+ROW_NUMBER() OVER(
+ORDER BY revenue DESC
+) AS customer_rank
+FROM CustomerMetrics;`,
+  expectedColumns:[
+"customer_id",
+"revenue",
+"average_order",
+"delivered_orders",
+"customer_rank"
+],
+  solutionQuery:`WITH CustomerMetrics AS(
+SELECT
+customer_id,
+SUM(total_amount) AS revenue,
+AVG(total_amount) AS average_order,
+SUM(CASE WHEN order_status='Delivered' THEN 1 ELSE 0 END) AS delivered_orders
+FROM orders
+GROUP BY customer_id
+)
+SELECT
+customer_id,
+revenue,
+average_order,
+delivered_orders,
+ROW_NUMBER() OVER(
+ORDER BY revenue DESC
+) AS customer_rank
+FROM CustomerMetrics;`,
+},
+{
+  id: 96,
+  title: "Country Revenue Leaderboard",
+  difficulty: "Advanced",
+  slug: "sql-country-revenue-leaderboard",
+  seoTitle: "SQL Country Revenue Leaderboard",
+  metaDescription: "Build a country revenue leaderboard using SQL CTEs and window functions.",
+  tags: ["SQL", "CTE", "JOIN", "DENSE_RANK", "SUM OVER"],
+  description: "Calculate total revenue for each country, rank countries by revenue and display each country's percentage contribution.",
+  explanation: "Aggregate revenue by country, then combine DENSE_RANK() with SUM() OVER() to calculate rankings and contribution percentages.",
+  scenario: "The executive team reviews country-wise business performance every quarter.",
+  useCases: ["Executive Dashboard", "Regional Analytics", "Revenue Reporting"],
+  hint: "Aggregate first, then use DENSE_RANK() and SUM() OVER().",
+  starterQuery: `WITH CountryRevenue AS (
+SELECT
+c.country,
+SUM(o.total_amount) AS revenue
+FROM customers c
+JOIN orders o
+ON c.customer_id=o.customer_id
+GROUP BY c.country
+)
+SELECT
+country,
+revenue,
+DENSE_RANK() OVER(
+ORDER BY revenue DESC
+) AS revenue_rank,
+ROUND(
+revenue*100.0/
+SUM(revenue) OVER(),
+2
+) AS revenue_share
+FROM CountryRevenue;`,
+  expectedColumns:["country","revenue","revenue_rank","revenue_share"],
+  solutionQuery:`WITH CountryRevenue AS (
+SELECT
+c.country,
+SUM(o.total_amount) AS revenue
+FROM customers c
+JOIN orders o
+ON c.customer_id=o.customer_id
+GROUP BY c.country
+)
+SELECT
+country,
+revenue,
+DENSE_RANK() OVER(
+ORDER BY revenue DESC
+) AS revenue_rank,
+ROUND(
+revenue*100.0/
+SUM(revenue) OVER(),
+2
+) AS revenue_share
+FROM CountryRevenue;`,
+},
+{
+  id: 97,
+  title: "Monthly Revenue Dashboard",
+  difficulty: "Advanced",
+  slug: "sql-monthly-revenue-dashboard",
+  seoTitle: "SQL Monthly Revenue Dashboard",
+  metaDescription: "Build a monthly revenue dashboard using SQL CTEs and window functions.",
+  tags: ["SQL", "CTE", "LAG", "SUM", "AVG"],
+  description: "Display monthly revenue, previous month's revenue and average monthly revenue.",
+  explanation: "Aggregate monthly revenue first, then combine LAG() and AVG() OVER() to create a trend report.",
+  scenario: "Finance prepares a monthly business review presentation.",
+  useCases: ["Revenue Trends", "Finance Dashboard", "Business Intelligence"],
+  hint: "Use LAG() after aggregating monthly revenue.",
+  starterQuery:`WITH MonthlyRevenue AS(
+SELECT
+strftime('%Y-%m',order_date) AS month,
+SUM(total_amount) AS revenue
+FROM orders
+GROUP BY month
+)
+SELECT
+month,
+revenue,
+LAG(revenue) OVER(
+ORDER BY month
+) AS previous_month,
+AVG(revenue) OVER() AS average_monthly_revenue
+FROM MonthlyRevenue;`,
+  expectedColumns:["month","revenue","previous_month","average_monthly_revenue"],
+  solutionQuery:`WITH MonthlyRevenue AS(
+SELECT
+strftime('%Y-%m',order_date) AS month,
+SUM(total_amount) AS revenue
+FROM orders
+GROUP BY month
+)
+SELECT
+month,
+revenue,
+LAG(revenue) OVER(
+ORDER BY month
+) AS previous_month,
+AVG(revenue) OVER() AS average_monthly_revenue
+FROM MonthlyRevenue;`,
+},
+{
+  id: 98,
+  title: "Product Performance Dashboard",
+  difficulty: "Advanced",
+  slug: "sql-product-performance-dashboard",
+  seoTitle: "SQL Product Performance Dashboard",
+  metaDescription: "Build a product performance dashboard using joins, CTEs and window functions.",
+  tags: ["SQL", "JOIN", "CTE", "ROW_NUMBER", "SUM"],
+  description: "Display each product's revenue, quantity sold and revenue rank within its category.",
+  explanation: "Aggregate product metrics first, then rank products within each category using ROW_NUMBER().",
+  scenario: "Product managers review top-performing products every month.",
+  useCases: ["Product Analytics", "Revenue Dashboard", "Inventory Planning"],
+  hint: "Aggregate first, then partition ranking by category.",
+  starterQuery:`WITH ProductStats AS(
+SELECT
+p.category,
+p.product_name,
+SUM(oi.quantity) AS units_sold,
+SUM(oi.total_price) AS revenue
+FROM products p
+JOIN order_items oi
+ON p.product_id=oi.product_id
+GROUP BY
+p.category,
+p.product_name
+)
+SELECT
+category,
+product_name,
+units_sold,
+revenue,
+ROW_NUMBER() OVER(
+PARTITION BY category
+ORDER BY revenue DESC
+) AS revenue_rank
+FROM ProductStats;`,
+  expectedColumns:["category","product_name","units_sold","revenue","revenue_rank"],
+  solutionQuery:`WITH ProductStats AS(
+SELECT
+p.category,
+p.product_name,
+SUM(oi.quantity) AS units_sold,
+SUM(oi.total_price) AS revenue
+FROM products p
+JOIN order_items oi
+ON p.product_id=oi.product_id
+GROUP BY
+p.category,
+p.product_name
+)
+SELECT
+category,
+product_name,
+units_sold,
+revenue,
+ROW_NUMBER() OVER(
+PARTITION BY category
+ORDER BY revenue DESC
+) AS revenue_rank
+FROM ProductStats;`,
+},
+{
+  id: 99,
+  title: "Customer Lifetime Revenue Report",
+  difficulty: "Advanced",
+  slug: "sql-customer-lifetime-report",
+  seoTitle: "SQL Customer Lifetime Revenue Report",
+  metaDescription: "Build a customer lifetime revenue report using SQL window functions.",
+  tags: ["SQL", "ROW_NUMBER", "SUM OVER", "AVG OVER", "FIRST_VALUE", "LAST_VALUE"],
+  description: "Generate a report showing purchase sequence, first purchase, latest purchase, cumulative revenue and lifetime revenue for every order.",
+  explanation: "This report combines several window functions to produce a complete customer lifetime history.",
+  scenario: "Customer Success reviews customer growth and lifetime value.",
+  useCases: ["Customer Analytics", "Executive Dashboard", "Business Intelligence"],
+  hint: "Combine multiple window functions in a single query.",
+  starterQuery:`SELECT
+customer_id,
+order_id,
+total_amount,
+ROW_NUMBER() OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS purchase_number,
+FIRST_VALUE(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS first_purchase,
+LAST_VALUE(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+ROWS BETWEEN UNBOUNDED PRECEDING
+AND UNBOUNDED FOLLOWING
+) AS latest_purchase,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS cumulative_revenue,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+) AS lifetime_revenue
+FROM orders;`,
+  expectedColumns:["customer_id","order_id","total_amount","purchase_number","first_purchase","latest_purchase","cumulative_revenue","lifetime_revenue"],
+  solutionQuery:`SELECT
+customer_id,
+order_id,
+total_amount,
+ROW_NUMBER() OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS purchase_number,
+FIRST_VALUE(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS first_purchase,
+LAST_VALUE(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+ROWS BETWEEN UNBOUNDED PRECEDING
+AND UNBOUNDED FOLLOWING
+) AS latest_purchase,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+ORDER BY order_date
+) AS cumulative_revenue,
+SUM(total_amount) OVER(
+PARTITION BY customer_id
+) AS lifetime_revenue
+FROM orders;`,
+},
+{
+  id: 100,
+  title: "Executive Business Performance Dashboard",
+  difficulty: "Advanced",
+  slug: "sql-executive-business-performance-dashboard",
+  seoTitle: "SQL Executive Business Performance Dashboard",
+  metaDescription: "Create a complete executive business dashboard using SQL CTEs, joins, aggregation and window functions.",
+  tags: ["SQL", "CTE", "JOIN", "ROW_NUMBER", "CASE WHEN", "SUM", "AVG"],
+  description: "Build a customer performance report showing total revenue, average order value, delivered orders, cancelled orders and customer revenue ranking.",
+  explanation: "This capstone combines joins, conditional aggregation, CTEs and window functions into a production-style business report.",
+  scenario: "The CEO reviews this dashboard during the monthly business review meeting.",
+  useCases: ["Executive Dashboard", "Business Intelligence", "Customer Performance"],
+  hint: "Create customer metrics first, then rank customers by revenue.",
+  starterQuery:`WITH CustomerMetrics AS(
+SELECT
+customer_id,
+SUM(total_amount) AS revenue,
+AVG(total_amount) AS average_order,
+SUM(CASE WHEN order_status='Delivered' THEN 1 ELSE 0 END) AS delivered_orders,
+SUM(CASE WHEN order_status='Cancelled' THEN 1 ELSE 0 END) AS cancelled_orders
+FROM orders
+GROUP BY customer_id
+)
+SELECT
+customer_id,
+revenue,
+average_order,
+delivered_orders,
+cancelled_orders,
+ROW_NUMBER() OVER(
+ORDER BY revenue DESC
+) AS revenue_rank
+FROM CustomerMetrics;`,
+  expectedColumns:[
+"customer_id",
+"revenue",
+"average_order",
+"delivered_orders",
+"cancelled_orders",
+"revenue_rank"
+],
+  solutionQuery:`WITH CustomerMetrics AS(
+SELECT
+customer_id,
+SUM(total_amount) AS revenue,
+AVG(total_amount) AS average_order,
+SUM(CASE WHEN order_status='Delivered' THEN 1 ELSE 0 END) AS delivered_orders,
+SUM(CASE WHEN order_status='Cancelled' THEN 1 ELSE 0 END) AS cancelled_orders
+FROM orders
+GROUP BY customer_id
+)
+SELECT
+customer_id,
+revenue,
+average_order,
+delivered_orders,
+cancelled_orders,
+ROW_NUMBER() OVER(
+ORDER BY revenue DESC
+) AS revenue_rank
+FROM CustomerMetrics;`,
+},
           
     
   ];

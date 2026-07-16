@@ -6,17 +6,34 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
     difficulty: "Intermediate",
     slug: "sql-group-by-having-clause",
     seoTitle: "SQL GROUP BY and HAVING Clause",
-    metaDescription: "Learn how to use SQL GROUP BY and HAVING clauses to filter aggregated data and find records with multiple occurrences.",
-    tags: ["SQL", "GROUP BY", "HAVING"],
-    description: "Find customers who have placed more than one order.",
-    explanation: "To filter based on an aggregate (like COUNT), you must use GROUP BY followed by HAVING. WHERE filters individual rows, but HAVING filters the groups you've created.",
-    scenario: "Marketing wants to send a 'Loyalty' discount code, but only to people who have proven they are repeat buyers.",
-    useCases: ["CRM segmentation", "Loyalty programs", "Identifying power users"],
-    hint: "JOIN customers and orders, GROUP BY customer_name, and use HAVING COUNT(order_id) > 1",
-    starterQuery: "SELECT c.customer_name, COUNT(o.order_id) as order_count \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.customer_name \nHAVING order_count > 1;",
+    metaDescription: "Learn how to use SQL GROUP BY and HAVING to identify customers who have placed multiple orders.",
+    tags: ["SQL", "GROUP BY", "HAVING", "COUNT"],
+    description: "Find all customers who have placed more than one order.",
+    explanation: "Use GROUP BY to create one group per customer and COUNT() to calculate the number of orders. Since COUNT() is an aggregate function, use HAVING instead of WHERE to return only customers whose order count is greater than one.",
+    scenario: "The marketing team wants to reward loyal customers by sending a special discount to everyone who has placed multiple orders.",
+    useCases: [
+      "Customer loyalty analysis",
+      "CRM segmentation",
+      "Repeat customer identification"
+    ],
+    hint: "Join the customers and orders tables, group by each customer, count their orders, and filter using HAVING COUNT(order_id) > 1.",
+    starterQuery: `SELECT
+      c.customer_name,
+      COUNT(o.order_id) AS order_count
+  FROM customers c
+  JOIN orders o
+      ON c.customer_id = o.customer_id
+  GROUP BY c.customer_name
+  HAVING COUNT(o.order_id) > 1;`,
     expectedColumns: ["customer_name", "order_count"],
-    expectedRowCount: 1,
-    solutionQuery: "SELECT c.customer_name, COUNT(o.order_id) AS order_count FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id, c.customer_name HAVING COUNT(o.order_id) > 1;",
+    solutionQuery: `SELECT
+      c.customer_name,
+      COUNT(o.order_id) AS order_count
+  FROM customers c
+  JOIN orders o
+      ON c.customer_id = o.customer_id
+  GROUP BY c.customer_id, c.customer_name
+  HAVING COUNT(o.order_id) > 1;`,
   },
   {
     id: 2,
@@ -24,35 +41,100 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
     difficulty: "Intermediate",
     slug: "sql-running-total-window-function",
     seoTitle: "SQL Running Total Using Window Functions",
-    metaDescription: "Learn how to calculate a cumulative running total in SQL using the SUM() OVER() window function syntax.",
-    tags: ["SQL", "Window Functions", "SUM OVER"],
-    description: "Calculate a running total of order amounts, ordered by the order_date.",
-    explanation: "Window functions (using the OVER clause) allow you to look across rows. SUM(amount) OVER (ORDER BY order_date) calculates a cumulative sum as it moves down the table.",
-    scenario: "You need to build a line chart for the CFO showing how total revenue has grown day-by-day since launch.",
-    useCases: ["Cumulative growth charts", "Burn-down charts", "Financial trendlines"],
-    hint: "Use the window function: SUM(amount) OVER (ORDER BY order_date)",
-    starterQuery: "SELECT order_date, amount, \nSUM(amount) OVER (ORDER BY order_date) as running_total \nFROM orders;",
-    expectedColumns: ["order_date", "amount", "running_total"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT order_date, total_amount, SUM(total_amount) OVER (ORDER BY order_date) AS running_total FROM orders;",
+    metaDescription: "Learn how to calculate a cumulative running total using SQL window functions.",
+  
+    tags: ["SQL", "Window Functions", "SUM OVER", "Running Total"],
+  
+    description:
+      "Calculate a running total of the total order amount, ordered by order_date.",
+  
+    explanation:
+      "Window functions allow calculations across multiple rows without grouping them. Use SUM(total_amount) OVER (ORDER BY order_date) to calculate the cumulative revenue after each order.",
+  
+    scenario:
+      "The finance team wants to track how total revenue has grown over time by calculating a cumulative running total for every order.",
+  
+    useCases: [
+      "Revenue growth analysis",
+      "Financial dashboards",
+      "Cumulative sales reporting"
+    ],
+  
+    hint:
+      "Use SUM(total_amount) OVER (ORDER BY order_date) to calculate the running total.",
+  
+    starterQuery:
+  `SELECT
+      order_date,
+      total_amount,
+      SUM(total_amount) OVER (ORDER BY order_date) AS running_total
+  FROM orders;`,
+  
+    expectedColumns: [
+      "order_date",
+      "total_amount",
+      "running_total"
+    ],
+  
+    solutionQuery:
+  `SELECT
+      order_date,
+      total_amount,
+      SUM(total_amount) OVER (ORDER BY order_date) AS running_total
+  FROM orders;`,
   },
   {
     id: 3,
-    title: "Highest Spent per Customer",
+    title: "Highest Order Amount per Customer",
     difficulty: "Intermediate",
     slug: "sql-max-with-group-by",
     seoTitle: "SQL MAX Function with GROUP BY",
-    metaDescription: "Learn how to find the maximum value within grouped datasets using the SQL MAX aggregate function.",
-    tags: ["SQL", "MAX", "GROUP BY"],
-    description: "Find the single largest order amount for each customer. Show the customer_name and the max_amount.",
-    explanation: "When you need a single value from a group (like the biggest number), MAX() combined with GROUP BY is the most efficient approach.",
-    scenario: "You're profiling customers to see their 'Whale' potential—who is willing to drop the most money in a single go?",
-    useCases: ["VIP Tiering", "Outlier detection", "Sales profiling"],
-    hint: "JOIN customers and orders, then use MAX(amount) grouped by name.",
-    starterQuery: "SELECT c.customer_name, MAX(o.amount) as max_spent \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.customer_name;",
-    expectedColumns: ["customer_name", "max_spent"],
-    expectedRowCount: 4,
-    solutionQuery: "SELECT c.customer_name, MAX(o.total_amount) AS max_spent FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id, c.customer_name;",
+    metaDescription: "Learn how to find the highest order amount for each customer using SQL MAX() and GROUP BY.",
+  
+    tags: ["SQL", "MAX", "GROUP BY", "Aggregate Functions"],
+  
+    description:
+      "Find the highest order amount placed by each customer. Return the customer's name and their maximum order amount.",
+  
+    explanation:
+      "Use the MAX() aggregate function to find the largest total_amount within each customer's orders. GROUP BY creates one group per customer, and MAX() returns the highest order value from each group.",
+  
+    scenario:
+      "The sales team wants to identify each customer's largest purchase to better understand spending behavior and identify high-value customers.",
+  
+    useCases: [
+      "Customer spending analysis",
+      "VIP customer identification",
+      "Sales reporting"
+    ],
+  
+    hint:
+      "Join the customers and orders tables, group by each customer, and use MAX(total_amount) to find their largest order.",
+  
+    starterQuery: `SELECT
+      c.customer_name,
+      MAX(o.total_amount) AS max_spent
+  FROM customers c
+  JOIN orders o
+      ON c.customer_id = o.customer_id
+  GROUP BY
+      c.customer_id,
+      c.customer_name;`,
+  
+    expectedColumns: [
+      "customer_name",
+      "max_spent"
+    ],
+  
+    solutionQuery: `SELECT
+      c.customer_name,
+      MAX(o.total_amount) AS max_spent
+  FROM customers c
+  JOIN orders o
+      ON c.customer_id = o.customer_id
+  GROUP BY
+      c.customer_id,
+      c.customer_name;`,
   },
   {
     id: 4,
@@ -60,17 +142,56 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
     difficulty: "Intermediate",
     slug: "sql-scalar-subquery",
     seoTitle: "SQL Scalar Subquery Tutorial",
-    metaDescription: "Learn how to filter database records dynamically by comparing columns against a scalar subquery value.",
-    tags: ["SQL", "Subquery", "AVG"],
-    description: "Find all orders that have an amount greater than the average of all orders.",
-    explanation: "This requires a 'Scalar Subquery'. You first calculate the overall average in parentheses, then use that result to filter the main table.",
-    scenario: "Management wants to review 'High-Value' transactions. Instead of a random number like $100, they want everything above the current business average.",
-    useCases: ["Performance auditing", "Dynamic filtering", "Benchmarking"],
-    hint: "WHERE amount > (SELECT AVG(amount) FROM orders)",
-    starterQuery: "SELECT * FROM orders \nWHERE amount > (SELECT AVG(amount) FROM orders);",
-    expectedColumns: ["order_id", "customer_id", "order_date", "amount"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT order_id, customer_id, order_date, total_amount FROM orders WHERE total_amount > (SELECT AVG(total_amount) FROM orders);",
+    metaDescription: "Learn how to use a scalar subquery to find orders with a total amount greater than the average order value.",
+  
+    tags: ["SQL", "Subquery", "AVG", "Scalar Subquery"],
+  
+    description:
+      "Find all orders whose total amount is greater than the average total amount of all orders.",
+  
+    explanation:
+      "A scalar subquery returns a single value. First calculate the average order amount using AVG(total_amount), then compare each order's total_amount against that value in the WHERE clause.",
+  
+    scenario:
+      "The finance team wants to identify high-value orders by comparing each order against the average order value across the business.",
+  
+    useCases: [
+      "High-value order identification",
+      "Dynamic filtering",
+      "Revenue analysis"
+    ],
+  
+    hint:
+      "Use a scalar subquery: WHERE total_amount > (SELECT AVG(total_amount) FROM orders).",
+  
+    starterQuery: `SELECT
+      order_id,
+      customer_id,
+      order_date,
+      total_amount
+  FROM orders
+  WHERE total_amount > (
+      SELECT AVG(total_amount)
+      FROM orders
+  );`,
+  
+    expectedColumns: [
+      "order_id",
+      "customer_id",
+      "order_date",
+      "total_amount"
+    ],
+  
+    solutionQuery: `SELECT
+      order_id,
+      customer_id,
+      order_date,
+      total_amount
+  FROM orders
+  WHERE total_amount > (
+      SELECT AVG(total_amount)
+      FROM orders
+  );`,
   },
   {
     id: 5,
@@ -78,17 +199,54 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
     difficulty: "Intermediate",
     slug: "sql-join-with-sum-aggregation",
     seoTitle: "SQL JOIN with SUM Aggregation",
-    metaDescription: "Learn how to join multiple relational tables and use the SUM function to aggregate values by category.",
-    tags: ["SQL", "JOIN", "SUM"],
-    description: "Calculate total revenue per product category. Sort from highest revenue to lowest.",
-    explanation: "This join connects transactions (orders) to product metadata (category). It's the core of 'Departmental Reporting'.",
-    scenario: "The product team needs to know which category—Subscriptions, Services, or Add-ons—is actually driving the bottom line.",
-    useCases: ["Product mix analysis", "Departmental KPIs", "Inventory strategy"],
-    hint: "You'll need to JOIN orders and products (here joined on ID for logic) and SUM the amount.",
-    starterQuery: "SELECT p.category, SUM(o.amount) as revenue \nFROM orders o \nJOIN products p ON o.order_id = p.product_id \nGROUP BY p.category \nORDER BY revenue DESC;",
-    expectedColumns: ["category", "revenue"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT p.category, SUM(oi.total_price) AS revenue FROM order_items oi JOIN products p ON oi.product_id = p.product_id GROUP BY p.category ORDER BY revenue DESC;",
+    metaDescription: "Learn how to join order_items and products to calculate total revenue by product category using SQL SUM().",
+  
+    tags: ["SQL", "JOIN", "SUM", "GROUP BY"],
+  
+    description:
+      "Calculate the total revenue generated by each product category. Display the categories with the highest revenue first.",
+  
+    explanation:
+      "Each order item belongs to a product, and each product belongs to a category. Join the order_items and products tables, group by category, and use SUM(total_price) to calculate the total revenue for each category.",
+  
+    scenario:
+      "The business wants to understand which product categories generate the most revenue so they can prioritize marketing and inventory decisions.",
+  
+    useCases: [
+      "Category revenue analysis",
+      "Product performance reporting",
+      "Business intelligence dashboards"
+    ],
+  
+    hint:
+      "Join order_items with products using product_id, group by category, and calculate SUM(total_price).",
+  
+    starterQuery: `SELECT
+      p.category,
+      SUM(oi.total_price) AS revenue
+  FROM order_items oi
+  JOIN products p
+      ON oi.product_id = p.product_id
+  GROUP BY
+      p.category
+  ORDER BY
+      revenue DESC;`,
+  
+    expectedColumns: [
+      "category",
+      "revenue"
+    ],
+  
+    solutionQuery: `SELECT
+      p.category,
+      SUM(oi.total_price) AS revenue
+  FROM order_items oi
+  JOIN products p
+      ON oi.product_id = p.product_id
+  GROUP BY
+      p.category
+  ORDER BY
+      revenue DESC;`,
   },
   {
     id: 6,
@@ -110,21 +268,62 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   },
   {
     id: 7,
-    title: "Month-over-Month Revenue",
+    title: "Monthly Revenue Report",
     difficulty: "Intermediate",
     slug: "sql-cte-common-table-expressions",
     seoTitle: "SQL CTE (Common Table Expressions) Tutorial",
-    metaDescription: "Learn how to write clean, reusable query blocks using SQL Common Table Expressions (WITH clauses).",
-    tags: ["SQL", "CTE", "WITH Clause"],
-    description: "Use a CTE to calculate total revenue per month.",
-    explanation: "Common Table Expressions (WITH clauses) make queries readable by creating 'temporary result sets' that you can query from immediately after.",
-    scenario: "Financial auditors need a clean breakdown of sales month-by-month to look for seasonal trends.",
-    useCases: ["Monthly financial closings", "Seasonal trend analysis", "Clean code architecture"],
-    hint: "Use WITH MonthlyRevenue AS (...) SELECT * FROM MonthlyRevenue",
-    starterQuery: "WITH MonthlyRev AS ( \n  SELECT strftime('%m', order_date) as month, SUM(amount) as total \n  FROM orders \n  GROUP BY month \n) \nSELECT * FROM MonthlyRev;",
-    expectedColumns: ["month", "total"],
-    expectedRowCount: 4,
-    solutionQuery: "WITH MonthlyRevenue AS ( SELECT strftime('%m', order_date) AS month, SUM(total_amount) AS total_revenue FROM orders GROUP BY strftime('%m', order_date) ) SELECT * FROM MonthlyRevenue;",
+    metaDescription: "Learn how to use SQL Common Table Expressions (CTEs) to calculate monthly revenue.",
+  
+    tags: ["SQL", "CTE", "WITH Clause", "GROUP BY"],
+  
+    description:
+      "Use a Common Table Expression (CTE) to calculate the total revenue for each month.",
+  
+    explanation:
+      "A Common Table Expression (CTE) created with the WITH clause allows you to define a temporary result set that can be referenced immediately in the main query. Here, the CTE calculates the total revenue for each month before returning the results.",
+  
+    scenario:
+      "The finance team needs a monthly revenue report to monitor business performance and identify seasonal trends.",
+  
+    useCases: [
+      "Monthly revenue reporting",
+      "Financial dashboards",
+      "Seasonal sales analysis"
+    ],
+  
+    hint:
+      "Create a CTE that groups orders by month using strftime('%m', order_date), then query the CTE.",
+  
+    starterQuery: `WITH MonthlyRevenue AS (
+      SELECT
+          strftime('%m', order_date) AS month,
+          SUM(total_amount) AS total_revenue
+      FROM orders
+      GROUP BY strftime('%m', order_date)
+  )
+  SELECT
+      month,
+      total_revenue
+  FROM MonthlyRevenue
+  ORDER BY month;`,
+  
+    expectedColumns: [
+      "month",
+      "total_revenue"
+    ],
+  
+    solutionQuery: `WITH MonthlyRevenue AS (
+      SELECT
+          strftime('%m', order_date) AS month,
+          SUM(total_amount) AS total_revenue
+      FROM orders
+      GROUP BY strftime('%m', order_date)
+  )
+  SELECT
+      month,
+      total_revenue
+  FROM MonthlyRevenue
+  ORDER BY month;`,
   },
   {
     id: 8,
@@ -150,17 +349,45 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
     difficulty: "Intermediate",
     slug: "sql-percentage-of-total-calculation",
     seoTitle: "SQL Percentage of Total Calculation",
-    metaDescription: "Learn how to compute row-level percentages against a grand total using the SUM() OVER() window function constraint.",
-    tags: ["SQL", "Window Functions", "SUM OVER"],
-    description: "For each order, show its amount and what percentage it contributes to the overall total revenue.",
-    explanation: "By dividing the current row's amount by the SUM() OVER(), you get a proportional value for every row in the dataset.",
-    scenario: "Risk assessment: Do we rely too much on one or two massive orders, or is our revenue spread out safely across many small ones?",
-    useCases: ["Concentration risk", "Sales share analysis", "Pareto (80/20) reporting"],
-    hint: "amount * 100.0 / SUM(amount) OVER()",
-    starterQuery: "SELECT order_id, amount, \n(amount * 100.0 / SUM(amount) OVER()) as pct_of_total \nFROM orders;",
-    expectedColumns: ["order_id", "amount", "pct_of_total"],
-    expectedRowCount: 5,
-    solutionQuery: "SELECT order_id, total_amount, (total_amount * 100.0 / SUM(total_amount) OVER()) AS pct_of_total FROM orders;",
+    metaDescription: "Learn how to calculate each order's percentage contribution to the total revenue using SQL window functions.",
+  
+    tags: ["SQL", "Window Functions", "SUM OVER", "Percentage"],
+  
+    description:
+      "For each order, display its total amount and the percentage it contributes to the overall revenue.",
+  
+    explanation:
+      "Window functions can calculate values across all rows without grouping them. Divide each order's total_amount by the overall SUM(total_amount) OVER() to calculate its percentage contribution to the total revenue.",
+  
+    scenario:
+      "The finance team wants to identify how much each order contributes to the company's overall revenue and determine whether revenue is concentrated in a few large orders.",
+  
+    useCases: [
+      "Revenue contribution analysis",
+      "Sales distribution",
+      "Pareto (80/20) analysis"
+    ],
+  
+    hint:
+      "Calculate (total_amount * 100.0) / SUM(total_amount) OVER() to find the percentage contribution of each order.",
+  
+    starterQuery: `SELECT
+      order_id,
+      total_amount,
+      (total_amount * 100.0 / SUM(total_amount) OVER()) AS pct_of_total
+  FROM orders;`,
+  
+    expectedColumns: [
+      "order_id",
+      "total_amount",
+      "pct_of_total"
+    ],
+  
+    solutionQuery: `SELECT
+      order_id,
+      total_amount,
+      (total_amount * 100.0 / SUM(total_amount) OVER()) AS pct_of_total
+  FROM orders;`,
   },
   {
     id: 10,
@@ -168,35 +395,106 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
     difficulty: "Intermediate",
     slug: "sql-date-difference-julianday",
     seoTitle: "SQL Date Difference Calculation",
-    metaDescription: "Learn how to evaluate differences between sequential database timestamps using basic chronological operators.",
-    tags: ["SQL", "Date Functions", "julianday"],
-    description: "Calculate the time gap between a customer's signup_date and their first order_date.",
-    explanation: "Intermediate analysts often calculate 'Time-to-Event' metrics. In SQLite, julianday() helps calculate the difference between two date strings.",
-    scenario: "The onboarding team wants to know: 'How many days does it take for a new signup to become a paying customer?'",
-    useCases: ["Onboarding velocity", "Conversion bottlenecks", "User behavior analysis"],
-    hint: "Use MIN(order_date) and julianday(order_date) - julianday(signup_date)",
-    starterQuery: "SELECT c.customer_name, \nMIN(julianday(o.order_date) - julianday(c.signup_date)) as days_to_convert \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nGROUP BY c.customer_id;",
-    expectedColumns: ["customer_name", "days_to_convert"],
-    expectedRowCount: 4,
-    solutionQuery: "SELECT c.customer_name, MIN(julianday(o.order_date) - julianday(c.created_date)) AS days_to_convert FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id, c.customer_name;",
+    metaDescription: "Learn how to calculate the number of days between customer signup and their first order using SQLite date functions.",
+  
+    tags: ["SQL", "Date Functions", "julianday", "MIN"],
+  
+    description:
+      "Calculate the number of days between a customer's account creation date and their first order date.",
+  
+    explanation:
+      "Use the MIN() function to find each customer's first order date. Then use julianday() to calculate the difference in days between the customer's created_date and their first order.",
+  
+    scenario:
+      "The marketing team wants to measure how quickly new customers place their first order after creating an account.",
+  
+    useCases: [
+      "Customer onboarding analysis",
+      "Conversion funnel reporting",
+      "User behavior analytics"
+    ],
+  
+    hint:
+      "Join customers and orders, use MIN(order_date), and calculate julianday(MIN(order_date)) - julianday(created_date).",
+  
+    starterQuery: `SELECT
+      c.customer_name,
+      julianday(MIN(o.order_date)) - julianday(c.created_date) AS days_to_convert
+  FROM customers c
+  JOIN orders o
+      ON c.customer_id = o.customer_id
+  GROUP BY
+      c.customer_id,
+      c.customer_name,
+      c.created_date;`,
+  
+    expectedColumns: [
+      "customer_name",
+      "days_to_convert"
+    ],
+  
+    solutionQuery: `SELECT
+      c.customer_name,
+      julianday(MIN(o.order_date)) - julianday(c.created_date) AS days_to_convert
+  FROM customers c
+  JOIN orders o
+      ON c.customer_id = o.customer_id
+  GROUP BY
+      c.customer_id,
+      c.customer_name,
+      c.created_date;`,
   },
   {
     id: 11,
-    title: "Customers with Recent Orders Only",
+    title: "Delivered Orders from Verified Customers",
     difficulty: "Intermediate",
-    slug: "sql-compound-date-filtering",
-    seoTitle: "SQL Compound Date Range Filtering",
-    metaDescription: "Learn how to structure database record filters across multiple timeline parameters using standard date manipulation functions.",
-    tags: ["SQL", "DATE Function", "WHERE Clause"],
-    description: "Find customers who placed orders in the last 30 days but were created more than 1 year ago.",
-    explanation: "This combines filtering on both customer lifecycle and transactional activity. It helps identify re-engaged users.",
-    scenario: "Retention team wants to identify long-time users who recently became active again.",
-    useCases: ["Re-engagement campaigns", "User lifecycle tracking"],
-    hint: "Filter customers.created_date and orders.order_date with date conditions",
-    starterQuery: "SELECT DISTINCT c.customer_name \nFROM customers c \nJOIN orders o ON c.customer_id = o.customer_id \nWHERE o.order_date >= DATE('now','-30 days') \nAND c.created_date <= DATE('now','-365 days');",
-    expectedColumns: ["customer_name"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT DISTINCT c.customer_name FROM customers c JOIN orders o ON c.customer_id = o.customer_id WHERE o.order_date >= DATE('now','-30 days') AND c.created_date <= DATE('now','-365 days');",
+    slug: "sql-multiple-where-conditions",
+    seoTitle: "SQL Multiple WHERE Conditions",
+    metaDescription: "Learn how to filter data using multiple conditions with the SQL WHERE clause.",
+  
+    tags: ["SQL", "WHERE Clause", "Filtering", "AND"],
+  
+    description: "Find all delivered orders placed by verified customers.",
+  
+    explanation: "Multiple conditions can be combined using the AND operator. Join the customers and orders tables, then filter for verified customers whose orders have been delivered.",
+  
+    scenario: "The customer success team wants to review completed purchases made only by verified customers.",
+  
+    useCases: [
+      "Customer verification",
+      "Order auditing",
+      "Business reporting"
+    ],
+  
+    hint: "Join customers and orders, then filter using is_verified and order_status.",
+  
+    starterQuery: `SELECT
+      c.customer_name,
+      o.order_id,
+      o.order_date
+  FROM customers c
+  JOIN orders o
+      ON c.customer_id = o.customer_id
+  WHERE
+      c.is_verified = 'true'
+      AND o.order_status = 'delivered';`,
+  
+    expectedColumns: [
+      "customer_name",
+      "order_id",
+      "order_date"
+    ],
+  
+    solutionQuery: `SELECT
+      c.customer_name,
+      o.order_id,
+      o.order_date
+  FROM customers c
+  JOIN orders o
+      ON c.customer_id = o.customer_id
+  WHERE
+      c.is_verified = 'true'
+      AND o.order_status = 'delivered';`,
   },
   {
     id: 12,
@@ -242,15 +540,15 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
     seoTitle: "SQL COUNT Function with HAVING Clause",
     metaDescription: "Learn how to apply conditional size boundaries onto structural data categories using target HAVING setups.",
     tags: ["SQL", "COUNT", "HAVING"],
-    description: "Find orders that contain more than 3 items.",
+    description: "Find orders that contain more than 1 item.",
     explanation: "Aggregation on order_items helps identify complex orders.",
     scenario: "Operations team wants to identify bulk orders for special handling.",
     useCases: ["Logistics optimization", "Bulk order detection"],
     hint: "GROUP BY order_id and COUNT(order_item_id)",
-    starterQuery: "SELECT order_id, COUNT(order_item_id) as item_count \nFROM order_items \nGROUP BY order_id \nHAVING item_count > 3;",
+    starterQuery: "SELECT order_id, COUNT(item_id) as item_count \nFROM order_items \nGROUP BY order_id \nHAVING item_count > 1;",
     expectedColumns: ["order_id", "item_count"],
     expectedRowCount: 4,
-    solutionQuery: "SELECT order_id, COUNT(order_item_id) AS item_count FROM order_items GROUP BY order_id HAVING COUNT(order_item_id) > 3;",
+    solutionQuery: "SELECT order_id, COUNT(item_id) AS item_count FROM order_items GROUP BY order_id HAVING COUNT(item_id) > 1;",
   },
   {
     id: 15,
@@ -557,10 +855,10 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
     scenario: "Operations team tracks delivery partner performance.",
     useCases: ["Performance tracking", "Logistics optimization"],
     hint: "WHERE order_status = 'Delivered'",
-    starterQuery: "SELECT delivery_partner_id, COUNT(*) as delivered_orders \nFROM orders \nWHERE order_status = 'Delivered' \nGROUP BY delivery_partner_id;",
+    starterQuery: "SELECT delivery_partner_id, COUNT(*) as delivered_orders \nFROM orders \nWHERE order_status = 'delivered' \nGROUP BY delivery_partner_id;",
     expectedColumns: ["delivery_partner_id", "delivered_orders"],
     expectedRowCount: 4,
-    solutionQuery: "SELECT delivery_partner_id, COUNT(*) AS delivered_orders FROM orders WHERE order_status = 'Delivered' GROUP BY delivery_partner_id;",
+    solutionQuery: "SELECT delivery_partner_id, COUNT(*) AS delivered_orders FROM orders WHERE order_status = 'delivered' GROUP BY delivery_partner_id;",
   },
   {
     id: 32,
@@ -600,21 +898,47 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   },
   {
     id: 34,
-    title: "Orders with High Tax",
+    title: "High Value Orders",
     difficulty: "Intermediate",
-    slug: "sql-where-mathematical-percentage-filter",
-    seoTitle: "SQL Mathematical Percentage Filters in WHERE Clause",
-    metaDescription: "Learn how to execute numeric ratio math evaluations inside a standard relational WHERE filtering parameter.",
-    tags: ["SQL", "WHERE Filter", "Math Operators"],
-    description: "Find orders where tax_amount exceeds 15% of subtotal.",
-    explanation: "Ratio filtering helps identify abnormal tax values.",
-    scenario: "Finance team audits tax anomalies.",
-    useCases: ["Financial auditing", "Tax validation"],
-    hint: "tax_amount / subtotal_amount > 0.15",
-    starterQuery: "SELECT order_id \nFROM orders \nWHERE tax_amount * 1.0 / subtotal_amount > 0.15;",
-    expectedColumns: ["order_id"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT order_id FROM orders WHERE tax_amount * 1.0 / subtotal_amount > 0.15;",
+    slug: "sql-where-mathematical-filter",
+    seoTitle: "SQL Mathematical Filters in WHERE Clause",
+    metaDescription: "Learn how to filter rows using mathematical expressions in the SQL WHERE clause.",
+  
+    tags: ["SQL", "WHERE", "Math Operators"],
+  
+    description: "Find orders where the tax amount is greater than 40.",
+  
+    explanation: "The WHERE clause can filter rows using mathematical comparisons. This query returns only orders whose tax amount exceeds 40.",
+  
+    scenario: "The finance team wants to review high-tax transactions for auditing purposes.",
+  
+    useCases: [
+      "Financial auditing",
+      "Tax analysis",
+      "Exception reporting"
+    ],
+  
+    hint: "Filter rows using WHERE tax_amount > 40.",
+  
+    starterQuery: `SELECT
+      order_id,
+      subtotal_amount,
+      tax_amount
+  FROM orders
+  WHERE tax_amount > 40;`,
+  
+    expectedColumns: [
+      "order_id",
+      "subtotal_amount",
+      "tax_amount"
+    ],
+  
+    solutionQuery: `SELECT
+      order_id,
+      subtotal_amount,
+      tax_amount
+  FROM orders
+  WHERE tax_amount > 40;`,
   },
   {
     id: 35,
@@ -773,10 +1097,10 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
     scenario: "Tech team monitors payment gateway failures.",
     useCases: ["Gateway analysis", "Reliability tracking"],
     hint: "WHERE payment_status = 'Failed'",
-    starterQuery: "SELECT payment_provider, COUNT(*) as failures \nFROM payments \nWHERE payment_status = 'Failed' \nGROUP BY payment_provider;",
+    starterQuery: "SELECT payment_provider, COUNT(*) as failures \nFROM payments \nWHERE payment_status = 'failed' \nGROUP BY payment_provider;",
     expectedColumns: ["payment_provider", "failures"],
     expectedRowCount: 3,
-    solutionQuery: "SELECT payment_provider, COUNT(*) AS failures FROM payments WHERE payment_status = 'Failed' GROUP BY payment_provider;",
+    solutionQuery: "SELECT payment_provider, COUNT(*) AS failures FROM payments WHERE payment_status = 'failed' GROUP BY payment_provider;",
   },
   {
     id: 44,
@@ -899,29 +1223,28 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
     scenario: "Security team wants only trusted users.",
     useCases: ["User filtering", "Security checks"],
     hint: "is_verified = true AND status = 'Active'",
-    starterQuery: "SELECT customer_name \nFROM customers \nWHERE is_verified = 1 AND status = 'Active';",
+    starterQuery: "SELECT customer_name \nFROM customers \nWHERE is_verified = 'true' AND status = 'active';",
     expectedColumns: ["customer_name"],
     expectedRowCount: 4,
-    solutionQuery: "SELECT customer_name FROM customers WHERE is_verified = 1 AND status = 'Active';",
+    solutionQuery: "SELECT customer_name FROM customers WHERE is_verified = 'true' AND status = 'active';",
   },
   {
     id: 51,
-    title: "Orders with Partial Payments",
+    title: "Total Payments by Payment Method",
     difficulty: "Intermediate",
-    slug: "sql-join-group-by-having-sum-comparison",
-    seoTitle: "SQL JOIN and GROUP BY with HAVING SUM Comparison",
-    metaDescription: "Learn how to resolve separate balance sheets and check metrics using an explicit row HAVING aggregate inequality condition.",
-    tags: ["SQL", "JOIN", "HAVING SUM"],
-    description: "Find orders where total payment amount is less than order total_amount.",
-    explanation: "Comparing aggregated payments with order totals helps detect incomplete transactions.",
-    scenario: "Finance team wants to identify unpaid or partially paid orders.",
-    useCases: ["Revenue leakage detection", "Payment reconciliation"],
-    hint: "SUM(payments.amount) < orders.total_amount",
-    starterQuery: "SELECT o.order_id, SUM(p.amount) as paid_amount, o.total_amount \nFROM orders o \nJOIN payments p ON o.order_id = p.order_id \nGROUP BY o.order_id \nHAVING paid_amount < o.total_amount;",
-    expectedColumns: ["order_id", "paid_amount", "total_amount"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT o.order_id, SUM(p.amount) AS paid_amount, o.total_amount FROM orders o JOIN payments p ON o.order_id = p.order_id GROUP BY o.order_id HAVING paid_amount < o.total_amount;",
-  },
+    slug: "sql-group-by-sum-payments",
+    seoTitle: "SQL GROUP BY with SUM Function",
+    metaDescription: "Learn how to group payment records and calculate total payment amount for each payment method using SQL SUM().",
+    tags: ["SQL", "GROUP BY", "SUM"],
+    description: "Calculate the total payment amount collected for each payment method.",
+    explanation: "GROUP BY creates one group for each payment method, while SUM() calculates the total payment amount collected for that method.",
+    scenario: "The finance team wants to know which payment methods contribute the most revenue.",
+    useCases: ["Revenue reporting", "Payment analytics", "Business dashboards"],
+    hint: "GROUP BY payment_method and use SUM(amount).",
+    starterQuery: "SELECT payment_method, SUM(amount) AS total_amount \nFROM payments \nGROUP BY payment_method \nORDER BY total_amount DESC;",
+    expectedColumns: ["payment_method", "total_amount"],
+    solutionQuery: "SELECT payment_method, SUM(amount) AS total_amount FROM payments GROUP BY payment_method ORDER BY total_amount DESC;",
+},
   {
     id: 52,
     title: "Customers with Orders in Multiple Cities",
@@ -1302,22 +1625,21 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   },
   {
     id: 73,
-    title: "Orders Delivered Late per Partner",
+    title: "Orders Delivered by Each Partner",
     difficulty: "Intermediate",
-    slug: "sql-where-clause-timestamp-comparison-filtering",
-    seoTitle: "SQL WHERE Clause Timestamp Column Comparison",
-    metaDescription: "Learn how to isolate late system indicators by running relational column inequalities across two date vectors.",
-    tags: ["SQL", "Timestamp Filter", "GROUP BY"],
-    description: "Count delayed deliveries per delivery partner.",
-    explanation: "Compare delivery times and group by partner.",
-    scenario: "Operations tracks partner delays.",
-    useCases: ["SLA monitoring", "Performance tracking"],
-    hint: "delivered_date > estimated_delivery_time",
-    starterQuery: "SELECT delivery_partner_id, COUNT(*) as delayed \nFROM orders \nWHERE delivered_date > estimated_delivery_time \nGROUP BY delivery_partner_id;",
-    expectedColumns: ["delivery_partner_id", "delayed"],
-    expectedRowCount: 4,
-    solutionQuery: "SELECT delivery_partner_id, COUNT(*) AS delayed FROM orders WHERE delivered_date > estimated_delivery_time GROUP BY delivery_partner_id;",
-  },
+    slug: "sql-group-by-delivery-partner",
+    seoTitle: "SQL GROUP BY Delivery Partner",
+    metaDescription: "Learn how to use GROUP BY and COUNT() to calculate the number of orders handled by each delivery partner.",
+    tags: ["SQL", "GROUP BY", "COUNT", "JOIN"],
+    description: "Count the total number of orders handled by each delivery partner.",
+    explanation: "Use GROUP BY to create one group for each delivery partner and COUNT() to calculate how many orders they have delivered.",
+    scenario: "Operations wants to measure each delivery partner's workload.",
+    useCases: ["Delivery analytics", "Partner performance", "Operations reporting"],
+    hint: "Join orders and delivery_partners using delivery_partner_id, then GROUP BY partner_name.",
+    starterQuery: "SELECT dp.partner_name, COUNT(o.order_id) AS total_orders \nFROM delivery_partners dp \nJOIN orders o ON dp.delivery_partner_id = o.delivery_partner_id \nGROUP BY dp.partner_name \nORDER BY total_orders DESC;",
+    expectedColumns: ["partner_name", "total_orders"],
+    solutionQuery: "SELECT dp.partner_name, COUNT(o.order_id) AS total_orders FROM delivery_partners dp JOIN orders o ON dp.delivery_partner_id = o.delivery_partner_id GROUP BY dp.partner_name ORDER BY total_orders DESC;",
+},
   {
     id: 74,
     title: "Customers with High Feedback Volume",
@@ -1446,22 +1768,21 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   },
   {
     id: 81,
-    title: "Customers with Orders in Consecutive Days",
+    title: "Previous Order Date for Each Customer",
     difficulty: "Intermediate",
-    slug: "sql-julianday-chronological-comparison-lag-window",
-    seoTitle: "SQL julianday Chronological Comparison via LAG Window Functions",
-    metaDescription: "Learn how to isolate sequence gaps in system transaction streams by parsing day differences between successive LAG records.",
-    tags: ["SQL", "julianday", "LAG Function"],
-    description: "Find customers who placed orders on consecutive days.",
-    explanation: "Use LAG to compare previous order_date.",
-    scenario: "Identify highly engaged customers.",
-    useCases: ["Behavior tracking", "Engagement analysis"],
-    hint: "julianday difference = 1",
-    starterQuery: "SELECT customer_id \nFROM (SELECT customer_id, order_date, LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date) as prev_date FROM orders) t \nWHERE julianday(order_date) - julianday(prev_date) = 1;",
-    expectedColumns: ["customer_id"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT customer_id FROM (SELECT customer_id, order_date, LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date) AS prev_date FROM orders) t WHERE julianday(order_date) - julianday(prev_date) = 1;",
-  },
+    slug: "sql-lag-window-function",
+    seoTitle: "SQL LAG Window Function Tutorial",
+    metaDescription: "Learn how to use the SQL LAG() window function to access values from the previous row within each customer partition.",
+    tags: ["SQL", "LAG", "Window Functions"],
+    description: "Display each customer's orders along with the date of their previous order.",
+    explanation: "The LAG() window function returns the value from the previous row within the same partition. Partition the data by customer_id and order the rows by order_date to retrieve each customer's previous order date.",
+    scenario: "The analytics team wants to analyze the time between consecutive purchases for every customer.",
+    useCases: ["Customer purchase analysis", "Behavior tracking", "Window function practice"],
+    hint: "Use LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date).",
+    starterQuery: "SELECT customer_id, order_date, LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date) AS previous_order_date \nFROM orders;",
+    expectedColumns: ["customer_id", "order_date", "previous_order_date"],
+    solutionQuery: "SELECT customer_id, order_date, LAG(order_date) OVER (PARTITION BY customer_id ORDER BY order_date) AS previous_order_date FROM orders;",
+},
   {
     id: 82,
     title: "Orders with Highest Tax Percentage",
@@ -1482,22 +1803,21 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   },
   {
     id: 83,
-    title: "Customers with More Refunds Than Payments",
+    title: "Customers with Total Payments Above 100",
     difficulty: "Intermediate",
-    slug: "sql-having-clause-sum-inequality-comparison",
-    seoTitle: "SQL HAVING Clause SUM Columnar Inequality Validation",
-    metaDescription: "Learn how to catch dynamic profile exceptions by matching one aggregated column sum against another within group statements.",
-    tags: ["SQL", "JOIN", "HAVING SUM"],
-    description: "Find customers where total refund exceeds total payment.",
-    explanation: "Aggregate refund_amount and compare with amount.",
-    scenario: "Finance flags potential fraud.",
-    useCases: ["Fraud detection", "Financial monitoring"],
-    hint: "SUM(refund_amount) > SUM(amount)",
-    starterQuery: "SELECT o.customer_id \nFROM orders o \nJOIN payments p ON o.order_id = p.order_id \nGROUP BY o.customer_id \nHAVING SUM(p.refund_amount) > SUM(p.amount);",
-    expectedColumns: ["customer_id"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT o.customer_id FROM orders o JOIN payments p ON o.order_id = p.order_id GROUP BY o.customer_id HAVING SUM(p.refund_amount) > SUM(p.amount);",
-  },
+    slug: "sql-group-by-having-sum",
+    seoTitle: "SQL GROUP BY and HAVING with SUM",
+    metaDescription: "Learn how to use GROUP BY, SUM(), and HAVING to filter customers based on their total payment amount.",
+    tags: ["SQL", "JOIN", "GROUP BY", "HAVING", "SUM"],
+    description: "Find customers whose total payment amount exceeds 1000.",
+    explanation: "Join the orders and payments tables, group the results by customer, calculate the total payment amount using SUM(), and use HAVING to return only customers whose total payments exceed 1000.",
+    scenario: "The finance team wants to identify high-value customers based on their total payments.",
+    useCases: ["Customer segmentation", "Revenue analysis", "High-value customer identification"],
+    hint: "Join orders and payments, GROUP BY customer_id, and use HAVING SUM(amount) > 100.",
+    starterQuery: "SELECT o.customer_id, SUM(p.amount) AS total_paid \nFROM orders o \nJOIN payments p ON o.order_id = p.order_id \nGROUP BY o.customer_id \nHAVING SUM(p.amount) > 100;",
+    expectedColumns: ["customer_id", "total_paid"],
+    solutionQuery: "SELECT o.customer_id, SUM(p.amount) AS total_paid FROM orders o JOIN payments p ON o.order_id = p.order_id GROUP BY o.customer_id HAVING SUM(p.amount) > 100;",
+},
   {
     id: 84,
     title: "Orders per Customer per Month",
@@ -1536,22 +1856,21 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   },
   {
     id: 86,
-    title: "Products Ordered by More Than 3 Customers",
+    title: "Number of Customers per Product",
     difficulty: "Intermediate",
-    slug: "sql-having-count-distinct-user-bounds",
-    seoTitle: "SQL HAVING COUNT DISTINCT User Identity Boundaries",
-    metaDescription: "Learn how to isolate catalog trends by applying quantitative size constraints to clear count distinct variables.",
-    tags: ["SQL", "COUNT DISTINCT", "HAVING Clause"],
-    description: "Find products purchased by more than 3 distinct customers.",
-    explanation: "COUNT DISTINCT customer_id per product.",
-    scenario: "Product team identifies popular items.",
-    useCases: ["Popularity analysis", "Inventory planning"],
-    hint: "COUNT(DISTINCT customer_id)",
-    starterQuery: "SELECT oi.product_id \nFROM order_items oi \nJOIN orders o ON oi.order_id = o.order_id \nGROUP BY oi.product_id \nHAVING COUNT(DISTINCT o.customer_id) > 3;",
-    expectedColumns: ["product_id"],
-    expectedRowCount: 3,
-    solutionQuery: "SELECT oi.product_id FROM order_items oi JOIN orders o ON oi.order_id = o.order_id GROUP BY oi.product_id HAVING COUNT(DISTINCT o.customer_id) > 3;",
-  },
+    slug: "sql-count-distinct-group-by",
+    seoTitle: "SQL COUNT DISTINCT with GROUP BY",
+    metaDescription: "Learn how to count the number of unique customers who purchased each product using COUNT(DISTINCT).",
+    tags: ["SQL", "COUNT DISTINCT", "GROUP BY"],
+    description: "For each product, count the number of distinct customers who purchased it.",
+    explanation: "Use COUNT(DISTINCT) to count unique customers for each product. GROUP BY creates one group per product, allowing you to calculate customer reach for every product.",
+    scenario: "The product team wants to measure how many unique customers have purchased each product.",
+    useCases: ["Product popularity analysis", "Customer reach reporting", "Inventory planning"],
+    hint: "Join order_items with orders, GROUP BY product_id, and use COUNT(DISTINCT customer_id).",
+    starterQuery: "SELECT oi.product_id, COUNT(DISTINCT o.customer_id) AS customer_count \nFROM order_items oi \nJOIN orders o ON oi.order_id = o.order_id \nGROUP BY oi.product_id \nORDER BY customer_count DESC;",
+    expectedColumns: ["product_id", "customer_count"],
+    solutionQuery: "SELECT oi.product_id, COUNT(DISTINCT o.customer_id) AS customer_count FROM order_items oi JOIN orders o ON oi.order_id = o.order_id GROUP BY oi.product_id ORDER BY customer_count DESC;",
+},
   {
     id: 87,
     title: "Customers with Only Failed Orders",
@@ -1565,10 +1884,10 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
     scenario: "Support team targets problematic users.",
     useCases: ["Issue tracking", "Customer support"],
     hint: "HAVING SUM(CASE WHEN order_status != 'Cancelled' THEN 1 END)=0",
-    starterQuery: "SELECT customer_id \nFROM orders \nGROUP BY customer_id \nHAVING SUM(CASE WHEN order_status != 'Cancelled' THEN 1 ELSE 0 END) = 0;",
+    starterQuery: "SELECT customer_id \nFROM orders \nGROUP BY customer_id \nHAVING SUM(CASE WHEN order_status != 'cancelled' THEN 1 ELSE 0 END) = 0;",
     expectedColumns: ["customer_id"],
     expectedRowCount: 2,
-    solutionQuery: "SELECT customer_id FROM orders GROUP BY customer_id HAVING SUM(CASE WHEN order_status != 'Cancelled' THEN 1 ELSE 0 END) = 0;",
+    solutionQuery: "SELECT customer_id FROM orders GROUP BY customer_id HAVING SUM(CASE WHEN order_status != 'cancelled' THEN 1 ELSE 0 END) = 0;",
   },
   {
     id: 88,
@@ -1626,22 +1945,21 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   },
   {
     id: 91,
-    title: "Customers with Orders in Different States",
+    title: "Number of Customers by State",
     difficulty: "Intermediate",
-    slug: "sql-join-with-having-count-distinct-states",
-    seoTitle: "SQL JOIN with HAVING COUNT DISTINCT Field Values",
-    metaDescription: "Learn how to detect multi-region activity by combining relation keys and defining inequalities on count distinct properties.",
-    tags: ["SQL", "JOIN", "COUNT DISTINCT", "HAVING"],
-    description: "Find customers ordering from multiple states.",
-    explanation: "COUNT DISTINCT state via join.",
-    scenario: "Geo expansion insights.",
-    useCases: ["Location analysis", "User behavior"],
-    hint: "COUNT(DISTINCT state)",
-    starterQuery: "SELECT o.customer_id \nFROM orders o \nJOIN customers c ON o.customer_id = c.customer_id \nGROUP BY o.customer_id \nHAVING COUNT(DISTINCT c.state) > 1;",
-    expectedColumns: ["customer_id"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT o.customer_id FROM orders o JOIN customers c ON o.customer_id = c.customer_id GROUP BY o.customer_id HAVING COUNT(DISTINCT c.state) > 1;",
-  },
+    slug: "sql-group-by-count-customers-state",
+    seoTitle: "SQL GROUP BY and COUNT by State",
+    metaDescription: "Learn how to group customers by state and count the number of customers in each state using SQL GROUP BY and COUNT().",
+    tags: ["SQL", "GROUP BY", "COUNT"],
+    description: "Count the number of customers in each state.",
+    explanation: "GROUP BY creates one group for each state, and COUNT() returns the number of customers in each group.",
+    scenario: "The business wants to understand its customer distribution across different states.",
+    useCases: ["Customer distribution", "Regional analysis", "Business reporting"],
+    hint: "GROUP BY state and use COUNT(customer_id).",
+    starterQuery: "SELECT state, COUNT(customer_id) AS customer_count \nFROM customers \nGROUP BY state \nORDER BY customer_count DESC;",
+    expectedColumns: ["state", "customer_count"],
+    solutionQuery: "SELECT state, COUNT(customer_id) AS customer_count FROM customers GROUP BY state ORDER BY customer_count DESC;",
+},
   {
     id: 92,
     title: "Orders with Maximum Items per Customer",
@@ -1655,10 +1973,10 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
     scenario: "Operations analyzes heavy orders.",
     useCases: ["Bulk analysis", "Logistics"],
     hint: "COUNT(order_item_id)",
-    starterQuery: "SELECT o.customer_id, o.order_id, COUNT(oi.order_item_id) as item_count \nFROM orders o \nJOIN order_items oi ON o.order_id = oi.order_id \nGROUP BY o.customer_id, o.order_id;",
+    starterQuery: "SELECT o.customer_id, o.order_id, COUNT(oi.item_id) as item_count \nFROM orders o \nJOIN order_items oi ON o.order_id = oi.order_id \nGROUP BY o.customer_id, o.order_id;",
     expectedColumns: ["customer_id", "order_id", "item_count"],
     expectedRowCount: 6,
-    solutionQuery: "SELECT o.customer_id, o.order_id, COUNT(oi.order_item_id) AS item_count FROM orders o JOIN order_items oi ON o.order_id = oi.order_id GROUP BY o.customer_id, o.order_id;",
+    solutionQuery: "SELECT o.customer_id, o.order_id, COUNT(oi.item_id) AS item_count FROM orders o JOIN order_items oi ON o.order_id = oi.order_id GROUP BY o.customer_id, o.order_id;",
   },
   {
     id: 93,
@@ -1788,21 +2106,20 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   },
   {
     id: 100,
-    title: "Customers with High Refund Ratio",
+    title: "Average Payment Amount by Payment Method",
     difficulty: "Intermediate",
-    slug: "sql-having-clause-floating-point-ratio-comparison",
-    seoTitle: "SQL HAVING Clause Floating Point Ratio Constraint Checking",
-    metaDescription: "Learn how to validate ledger exceptions by dividing aggregated columns using floating multiplier modifiers inside your criteria blocks.",
-    tags: ["SQL", "JOIN", "HAVING", "Mathematical Ratio"],
-    description: "Find customers where refund ratio exceeds 30%.",
-    explanation: "Compare SUM(refund) with SUM(amount).",
-    scenario: "Finance flags risky customers.",
-    useCases: ["Fraud detection", "Risk analysis"],
-    hint: "refund / amount > 0.3",
-    starterQuery: "SELECT o.customer_id \nFROM orders o \nJOIN payments p ON o.order_id = p.order_id \nGROUP BY o.customer_id \nHAVING SUM(p.refund_amount) * 1.0 / SUM(p.amount) > 0.3;",
-    expectedColumns: ["customer_id"],
-    expectedRowCount: 2,
-    solutionQuery: "SELECT o.customer_id FROM orders o JOIN payments p ON o.order_id = p.order_id GROUP BY o.customer_id HAVING SUM(p.refund_amount) * 1.0 / SUM(p.amount) > 0.3;",
-  }
+    slug: "sql-group-by-avg-payment-method",
+    seoTitle: "SQL GROUP BY with AVG Function",
+    metaDescription: "Learn how to use SQL GROUP BY and AVG() to calculate the average payment amount for each payment method.",
+    tags: ["SQL", "GROUP BY", "AVG", "JOIN"],
+    description: "Calculate the average payment amount for each payment method.",
+    explanation: "Use GROUP BY to create one group for each payment method, then apply AVG() to calculate the average payment amount collected for that method.",
+    scenario: "The finance team wants to compare the average transaction value across different payment methods.",
+    useCases: ["Payment analysis", "Financial reporting", "Business intelligence"],
+    hint: "GROUP BY payment_method and use AVG(amount).",
+    starterQuery: "SELECT payment_method, AVG(amount) AS average_payment \nFROM payments \nGROUP BY payment_method \nORDER BY average_payment DESC;",
+    expectedColumns: ["payment_method", "average_payment"],
+    solutionQuery: "SELECT payment_method, AVG(amount) AS average_payment FROM payments GROUP BY payment_method ORDER BY average_payment DESC;",
+}
                    
 ];
