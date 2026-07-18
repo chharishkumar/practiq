@@ -1,490 +1,547 @@
 export const SQL_PROBLEMS = [
   {
     id: 1,
-    title: "Select all customers",
+    title: "Display All Customers",
     difficulty: "Easy",
-    slug: "select-all-customers-sql-basic",
-    seoTitle: "SQL Tutorial: How to Select All Columns and Rows from a Table",
-    metaDescription: "Master the foundational SELECT * query pattern in SQL. Learn how wildcards work, retrieve database data, and understand syntax execution structures.",
-    tags: ["SQL Basics", "Select Statement", "Query Foundations"],
-    description: "Return all columns and all rows from the customers table.",
-    explanation: "SELECT * is the most fundamental SQL statement. The asterisk (*) is a wildcard that means 'all columns'. FROM tells SQL which table to pull from.",
-    scenario: "Your manager asks: 'Can you pull up the full customers table so I can review it?' This is exactly the query you'd write.",
-    useCases: ["Quick data inspection", "Verifying a table's structure and contents", "Starting point before writing complex queries"],
-    hint: "Use SELECT * FROM customers",
-    starterQuery: "SELECT * FROM customers LIMIT 5;",
-    expectedColumns: ["customer_id", "customer_name", "email", "signup_date"],
-    expectedRowCount: 5,
-    validateBy: "row_count",
-    solutionQuery: "SELECT * FROM customers LIMIT 5;"
+    slug: "sql-display-all-customers",
+    seoTitle: "SQL Basics | Display All Customers",
+    metaDescription: "Learn how to retrieve all records from a table using the SELECT statement.",
+    tags: ["SQL", "Basics", "SELECT"],
+    description: "Retrieve all columns from the customers table.",
+    explanation: "The SELECT * statement returns every column and every row from a table.",
+    scenario: "You have joined an e-commerce company and want to view all customer records.",
+    useCases: [
+      "Learning SQL",
+      "Viewing table data",
+      "Database exploration"
+    ],
+    hint: "Use SELECT *.",
+    starterQuery: `SELECT * FROM customers;`,
+    expectedColumns: [
+      "*"
+    ],
+    solutionQuery: `SELECT * FROM customers;`
   },
   {
     id: 2,
-    title: "Select specific columns",
+    title: "Display Customer Names",
     difficulty: "Easy",
-    slug: "select-specific-columns-sql",
-    seoTitle: "How to Project Specific Columns in SQL: Query Optimization",
-    metaDescription: "Learn how to filter out unnecessary database columns in SQL using clean projection structures. Improve memory footprint and execution query scale.",
-    tags: ["SQL Basics", "Column Projection", "Data Isolation"],
-    description: "Return only the customer_name and email columns from the customers table.",
-    explanation: "Instead of selecting all columns, you can name specific ones separated by commas. This improves performance and keeps results clean.",
-    scenario: "The marketing team only needs customer names and emails for an email campaign export.",
+    slug: "sql-display-customer-names",
+    seoTitle: "SQL Basics | Select Specific Columns",
+    metaDescription: "Learn how to retrieve specific columns from a table.",
+    tags: ["SQL", "Basics", "SELECT"],
+    description: "Retrieve only the customer_id and customer_name columns from the customers table.",
+    explanation: "Instead of selecting all columns, specify only the columns you need.",
+    scenario: "The support team only needs customer IDs and names.",
     useCases: [
-      "Exporting marketing lists",
-      "Reducing unnecessary data retrieval",
-      "Creating cleaner reports"
+      "Column selection",
+      "Reporting",
+      "Learning SQL"
     ],
-    hint: "Select customer_name and email from customers",
-    starterQuery: "SELECT * FROM customers LIMIT 5;",
-    expectedColumns: ["customer_name", "email"],
-    expectedRowCount: 5,
-    validateBy: "exact",
-    solutionQuery: "SELECT customer_name, email FROM customers LIMIT 5;"
+    hint: "Specify column names after SELECT.",
+    starterQuery: `SELECT customer_id, customer_name
+  FROM customers;`,
+    expectedColumns: [
+      "customer_id",
+      "customer_name"
+    ],
+    solutionQuery: `SELECT
+  customer_id,
+  customer_name
+  FROM customers;`
   },
   {
     id: 3,
-    title: "Filter customers by created date",
+    title: "Find All Delivered Orders",
     difficulty: "Easy",
-    slug: "filter-records-by-date-sql-where",
-    seoTitle: "SQL Date Filtering: How to Use WHERE Clause with Date Types",
-    metaDescription: "Master standard database date manipulation filters in SQL using the WHERE clause. Learn chronological data isolation methods for analytics reporting.",
-    tags: ["WHERE Clause", "Date Filtering", "Data Segmentation"],
-    description: "Return the customer_id of all customers created after \"2023-03-01\".",
-    explanation: "WHERE filters rows based on conditions. Date comparisons work naturally in SQL when dates are stored in standard formats.",
-    scenario: "Your team wants to analyze customers acquired after a new product launch.",
+    slug: "sql-find-delivered-orders",
+    seoTitle: "SQL Basics | WHERE Clause",
+    metaDescription: "Learn how to filter rows using the WHERE clause.",
+    tags: ["SQL", "Basics", "WHERE"],
+    description: "Retrieve all orders where the order status is 'delivered'.",
+    explanation: "The WHERE clause filters rows based on a condition.",
+    scenario: "Operations wants to view only delivered orders.",
     useCases: [
-      "Customer acquisition analysis",
-      "Filtering recent users",
-      "Date-based segmentation"
+      "Filtering data",
+      "Order tracking",
+      "Learning SQL"
     ],
-    hint: "Use WHERE created_date > \"2023-03-01\"",
-    starterQuery: "SELECT * FROM customers LIMIT 5;",
+    hint: "Use WHERE order_status='Delivered'.",
+    starterQuery: `SELECT *
+  FROM orders
+  WHERE order_status='delivered';`,
     expectedColumns: [
-      "customer_id",
-      "customer_name",
-      "email",
-      "created_date"
+      "*"
     ],
-    expectedRowCount: 3,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT customer_id FROM customers WHERE created_date > '2023-03-01';"
+    solutionQuery: `SELECT *
+  FROM orders
+  WHERE order_status='delivered';`
   },
   {
     id: 4,
-    title: "Sort customers by latest signup",
+    title: "Sort Products by Price",
     difficulty: "Easy",
-    slug: "sql-order-by-descending-limit-sort",
-    seoTitle: "SQL Sorting Guide: Master ORDER BY and LIMIT Clause Patterns",
-    metaDescription: "Learn how to sort relational rows chronologically or numerically with ORDER BY DESC. Isolate top records using efficient LIMIT statements.",
-    tags: ["ORDER BY", "LIMIT Clause", "Data Sorting"],
-    description: "Return the customer_id of the 5 most recently created customers.",
-    explanation: "ORDER BY sorts results. DESC shows the newest records first.",
-    scenario: "Customer success teams prioritize onboarding recently created customers.",
+    slug: "sql-sort-products-by-price",
+    seoTitle: "SQL Basics | ORDER BY",
+    metaDescription: "Learn how to sort query results using ORDER BY.",
+    tags: ["SQL", "Basics", "ORDER BY"],
+    description: "Display all products sorted by price from highest to lowest.",
+    explanation: "ORDER BY sorts query results in ascending or descending order.",
+    scenario: "The merchandising team wants to see the most expensive products first.",
     useCases: [
-      "Viewing latest customers",
-      "Building activity feeds",
-      "Prioritizing outreach"
+      "Sorting data",
+      "Product analysis",
+      "Learning SQL"
     ],
-    hint: "Use ORDER BY created_date DESC and LIMIT 5",
-    starterQuery: "SELECT * FROM customers LIMIT 5;",
+    hint: "Use ORDER BY price DESC.",
+    starterQuery: `SELECT *
+  FROM products
+  ORDER BY price DESC;`,
     expectedColumns: [
-      "customer_id",
-      "customer_name",
-      "email",
-      "created_date"
+      "*"
     ],
-    expectedRowCount: 5,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT customer_id FROM customers ORDER BY created_date DESC LIMIT 5;"
+    solutionQuery: `SELECT *
+  FROM products
+  ORDER BY price DESC;`
   },
   {
     id: 5,
-    title: "Count total customers",
+    title: "Show First 10 Customers",
     difficulty: "Easy",
-    slug: "sql-count-aggregate-function",
-    seoTitle: "How to Use COUNT(*) Aggregate Function in SQL Queries",
-    metaDescription: "Calculate overall table record metrics instantly using the COUNT aggregate formula. Learn aliasing strategies for clear business executive report columns.",
-    tags: ["Aggregate Functions", "COUNT Operator", "KPI Reporting"],
-    description: "Return the total number of customers in the customers table as total_customers.",
-    explanation: "COUNT(*) counts every row in the table.",
-    scenario: "Your weekly KPI dashboard needs the total customer count.",
+    slug: "sql-show-first-10-customers",
+    seoTitle: "SQL Basics | LIMIT Clause",
+    metaDescription: "Learn how to limit the number of rows returned by a SQL query.",
+    tags: ["SQL", "Basics", "LIMIT"],
+    description: "Retrieve the first 10 customers from the customers table.",
+    explanation: "LIMIT restricts the number of rows returned by a query.",
+    scenario: "You only want to preview a small sample of customer records.",
     useCases: [
-      "Executive reporting",
-      "Dashboard KPIs",
-      "Database monitoring"
+      "Previewing data",
+      "Testing queries",
+      "Learning SQL"
     ],
-    hint: "Use COUNT(*) and alias it as total_customers",
-    starterQuery: "SELECT * FROM customers LIMIT 5;",
-    expectedColumns: ["total_customers"],
-    expectedRowCount: 1,
-    validateBy: "exact",
-    solutionQuery: "SELECT COUNT(*) AS total_customers FROM customers;"
+    hint: "Use LIMIT 10.",
+    starterQuery: `SELECT *
+  FROM customers
+  LIMIT 10;`,
+    expectedColumns: [
+      "*"
+    ],
+    solutionQuery: `SELECT *
+  FROM customers
+  LIMIT 10;`
   },
   {
     id: 6,
-    title: "Limit query results",
+    title: "Find Customers From India",
     difficulty: "Easy",
-    slug: "sql-limit-clause-preview-records",
-    seoTitle: "SQL LIMIT Clause Tutorial: Restricting Output Rows Efficiently",
-    metaDescription: "Optimize performance tracking by isolating specific dataset previews. Master the LIMIT clause logic to stop heavy full table scans.",
-    tags: ["LIMIT Clause", "Query Optimization", "Data Preview"],
-    description: "Return customer_id, customer_name, and email for only the first 3 customers.",
-    explanation: "LIMIT restricts how many rows are returned.",
-    scenario: "You want to preview a few records before running a large export.",
+    slug: "sql-find-customers-from-india",
+    seoTitle: "SQL Basics | Filter Rows Using WHERE",
+    metaDescription: "Learn how to filter rows using the WHERE clause.",
+    tags: ["SQL", "Basics", "WHERE"],
+    description: "Retrieve all customers who are from India.",
+    explanation: "Use the WHERE clause to filter rows based on the country column.",
+    scenario: "The marketing team wants to target customers from India.",
     useCases: [
-      "Previewing tables",
-      "Testing queries",
-      "Reducing query output"
+      "Filtering data",
+      "Marketing",
+      "Learning SQL"
     ],
-    hint: "Select the required columns and use LIMIT 3",
-    starterQuery: "SELECT * FROM customers;",
+    hint: "Filter rows where country equals 'India'.",
+    starterQuery: `SELECT *
+  FROM customers
+  WHERE country='India';`,
     expectedColumns: [
-      "customer_id",
-      "customer_name",
-      "email"
+      "*"
     ],
-    expectedRowCount: 3,
-    validateBy: "row_count",
-    solutionQuery: "SELECT customer_id, customer_name, email FROM customers LIMIT 3;"
+    solutionQuery: `SELECT *
+  FROM customers
+  WHERE country='India';`
   },
   {
     id: 7,
-    title: "Filter with AND",
+    title: "Find Premium Customers",
     difficulty: "Easy",
-    slug: "sql-where-and-multiple-conditions",
-    seoTitle: "Combining Filter Constraints in SQL Using the AND Operator",
-    metaDescription: "Learn how to build stricter multi-conditional criteria statements. Chain relational evaluations effectively inside a single WHERE clause.",
-    tags: ["WHERE Clause", "AND Operator", "Multi-Condition Filtering"],
-    description: "Return the customer_id of verified customers from India.",
-    explanation: "AND combines multiple conditions. Both conditions must be true.",
-    scenario: "Your compliance team needs all verified customers located in India.",
+    slug: "sql-find-premium-customers",
+    seoTitle: "SQL Basics | Filter by Customer Type",
+    metaDescription: "Retrieve customers based on a specific customer type.",
+    tags: ["SQL", "Basics", "WHERE"],
+    description: "Display all customers whose customer_type is 'Premium'.",
+    explanation: "The WHERE clause can be used to filter text values.",
+    scenario: "The loyalty team wants to view all premium customers.",
     useCases: [
       "Customer segmentation",
-      "Compliance filtering",
-      "Multi-condition searches"
+      "Marketing",
+      "Learning SQL"
     ],
-    hint: "Use WHERE country = \"India\" AND is_verified = true",
-    starterQuery: "SELECT * FROM customers LIMIT 5;",
+    hint: "Filter using customer_type.",
+    starterQuery: `SELECT *
+  FROM customers
+  WHERE customer_type='Premium';`,
     expectedColumns: [
-      "customer_id",
-      "customer_name",
-      "country",
-      "is_verified"
+      "*"
     ],
-    expectedRowCount: 2,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT customer_id FROM customers WHERE country = 'India' AND is_verified = true;"
+    solutionQuery: `SELECT *
+  FROM customers
+  WHERE customer_type='Premium';`
   },
   {
     id: 8,
-    title: "Filter with OR",
+    title: "Find Products Costing More Than ₹1000",
     difficulty: "Easy",
-    slug: "sql-where-or-conditional-logic",
-    seoTitle: "Expanding SQL Filter Logic Blocks with the OR Operator",
-    metaDescription: "Broaden query filters using the relational OR operator context. Isolate record sets where at least one condition tracks as true.",
-    tags: ["WHERE Clause", "OR Operator", "Logical Disjunction"],
-    description: "Return the customer_id of customers located in either India or USA.",
-    explanation: "OR returns rows where at least one condition is true.",
-    scenario: "Regional sales managers want customers from two target countries.",
+    slug: "sql-products-price-greater-than-1000",
+    seoTitle: "SQL Basics | Greater Than Operator",
+    metaDescription: "Learn how to use comparison operators in SQL.",
+    tags: ["SQL", "Basics", "WHERE", "Comparison"],
+    description: "Retrieve all products whose price is greater than 1000.",
+    explanation: "Comparison operators like >, <, >= and <= help filter numeric values.",
+    scenario: "The sales team wants to identify premium products.",
     useCases: [
-      "Regional analysis",
-      "Multi-value filtering",
-      "Geographic segmentation"
+      "Product filtering",
+      "Pricing analysis",
+      "Learning SQL"
     ],
-    hint: "Use country = \"India\" OR country = \"USA\"",
-    starterQuery: "SELECT * FROM customers LIMIT 5;",
+    hint: "Use WHERE price > 1000.",
+    starterQuery: `SELECT *
+  FROM products
+  WHERE price > 1000;`,
     expectedColumns: [
-      "customer_id",
-      "customer_name",
-      "country"
+      "*"
     ],
-    expectedRowCount: 5,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT customer_id FROM customers WHERE country = 'India' OR country = 'USA';"
+    solutionQuery: `SELECT *
+  FROM products
+  WHERE price > 1000;`
   },
   {
     id: 9,
-    title: "Use IN for multiple values",
+    title: "Display Orders Newest First",
     difficulty: "Easy",
-    slug: "sql-in-operator-set-filtering",
-    seoTitle: "SQL IN Operator Guide: Optimizing Multiple OR Conditions",
-    metaDescription: "Clean up unoptimized query structures using the SQL IN set matching function. Group status metrics or strings cleanly inside lookups.",
-    tags: ["IN Operator", "Set Matching", "Clean Syntax"],
-    description: "Return the order_id of orders whose status is Delivered, Cancelled, or Pending.",
-    explanation: "IN is cleaner than multiple OR conditions.",
-    scenario: "Operations teams want to monitor key order states in one query.",
+    slug: "sql-display-orders-newest-first",
+    seoTitle: "SQL Basics | ORDER BY DESC",
+    metaDescription: "Learn how to sort rows in descending order using ORDER BY.",
+    tags: ["SQL", "Basics", "ORDER BY"],
+    description: "Retrieve all orders sorted by order_date from newest to oldest.",
+    explanation: "ORDER BY with DESC sorts values from highest to lowest.",
+    scenario: "Operations wants to see the latest orders first.",
     useCases: [
       "Order tracking",
-      "Status monitoring",
-      "Cleaner filtering syntax"
+      "Reporting",
+      "Learning SQL"
     ],
-    hint: "Use WHERE order_status IN (\"Delivered\", \"Cancelled\", \"Pending\")",
-    starterQuery: "SELECT * FROM orders LIMIT 5;",
+    hint: "Sort using ORDER BY order_date DESC.",
+    starterQuery: `SELECT *
+  FROM orders
+  ORDER BY order_date DESC;`,
     expectedColumns: [
-      "order_id",
-      "customer_id",
-      "order_status"
+      "*"
     ],
-    expectedRowCount: 5,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT order_id FROM orders WHERE order_status IN ('Delivered', 'Cancelled', 'Pending');"
+    solutionQuery: `SELECT *
+  FROM orders
+  ORDER BY order_date DESC;`
   },
   {
     id: 10,
-    title: "Use LIKE for pattern matching",
+    title: "Show Top 5 Most Expensive Products",
     difficulty: "Easy",
-    slug: "sql-like-operator-wildcard-matching",
-    seoTitle: "SQL LIKE Operator Tutorial: String Wildcard Pattern Matching",
-    metaDescription: "Master string pattern isolation techniques using the SQL LIKE evaluation model. Discover how to execute suffix and prefix wildcards.",
-    tags: ["LIKE Operator", "Wildcards", "String Manipulation"],
-    description: "Return the customer_id of customers whose email ends with \"@gmail.com\".",
-    explanation: "LIKE with % allows flexible pattern matching.",
-    scenario: "The marketing team wants customers using Gmail accounts for a campaign analysis.",
+    slug: "sql-top-5-most-expensive-products",
+    seoTitle: "SQL Basics | ORDER BY and LIMIT",
+    metaDescription: "Learn how to combine ORDER BY and LIMIT to retrieve top records.",
+    tags: ["SQL", "Basics", "ORDER BY", "LIMIT"],
+    description: "Retrieve the five most expensive products.",
+    explanation: "Combine ORDER BY with LIMIT to return the top N rows.",
+    scenario: "The merchandising team wants to review its highest-priced products.",
     useCases: [
-      "Email domain analysis",
-      "Pattern searches",
-      "Customer segmentation"
+      "Top N queries",
+      "Product analysis",
+      "Learning SQL"
     ],
-    hint: "Use LIKE \"%@gmail.com\"",
-    starterQuery: "SELECT * FROM customers LIMIT 5;",
+    hint: "Sort by price descending and use LIMIT 5.",
+    starterQuery: `SELECT *
+  FROM products
+  ORDER BY price DESC
+  LIMIT 5;`,
     expectedColumns: [
-      "customer_id",
-      "customer_name",
-      "email"
+      "*"
     ],
-    expectedRowCount: 5,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT customer_id FROM customers WHERE email LIKE '%@gmail.com';"
+    solutionQuery: `SELECT *
+  FROM products
+  ORDER BY price DESC
+  LIMIT 5;`
   },
   {
     id: 11,
-    title: "Count orders per customer",
+    title: "Find Unique Customer Countries",
     difficulty: "Easy",
-    slug: "sql-group-by-count-aggregation",
-    seoTitle: "SQL GROUP BY Explained: Counting Operational Row Partitions",
-    metaDescription: "Learn how to segment transaction lines into relational cohorts using the GROUP BY statement alongside aggregate counting workflows.",
-    tags: ["GROUP BY", "Aggregate Functions", "Frequency Tracking"],
-    description: "Count how many orders each customer has placed.",
-    explanation: "GROUP BY groups rows with the same customer_id together, while COUNT(*) counts the number of orders in each group.",
-    scenario: "The customer success team wants to identify how frequently customers place orders.",
+    slug: "sql-find-unique-customer-countries",
+    seoTitle: "SQL Basics | DISTINCT Keyword",
+    metaDescription: "Learn how to remove duplicate values using DISTINCT.",
+    tags: ["SQL", "Basics", "DISTINCT"],
+    description: "Retrieve the list of unique countries where customers are located.",
+    explanation: "DISTINCT removes duplicate values from the result set.",
+    scenario: "The marketing team wants to know which countries have customers.",
     useCases: [
-      "Customer engagement analysis",
-      "Order frequency tracking",
-      "Repeat customer reporting"
+      "Removing duplicates",
+      "Reporting",
+      "Learning SQL"
     ],
-    hint: "Use COUNT(*) AS order_count and GROUP BY customer_id",
-    starterQuery: "SELECT customer_id, COUNT(*) AS order_count FROM orders GROUP BY customer_id;",
-    expectedColumns: ["customer_id", "order_count"],
-    expectedRowCount: 4,
-    validateBy: "exact",
-    solutionQuery: "SELECT customer_id, COUNT(*) AS order_count FROM orders GROUP BY customer_id;"
+    hint: "Use DISTINCT before the column name.",
+    starterQuery: `SELECT DISTINCT country
+  FROM customers;`,
+    expectedColumns: [
+      "country"
+    ],
+    solutionQuery: `SELECT DISTINCT
+  country
+  FROM customers;`
   },
   {
     id: 12,
-    title: "Calculate total revenue",
+    title: "Find Customers Whose Name Starts With 'A'",
     difficulty: "Easy",
-    slug: "sql-sum-revenue-aggregation-metric",
-    seoTitle: "Financial KPI Modeling: Using SQL SUM() for Revenue Reports",
-    metaDescription: "Master total mathematical metric calculation via the SUM aggregate pattern. Aggregate pricing dimensions cleanly across transactional datasets.",
-    tags: ["SUM Function", "Aggregate Functions", "Financial Modeling"],
-    description: "Calculate the total revenue from all completed orders.",
-    explanation: "SUM() adds all numeric values together. Revenue calculations typically use total_amount from the orders table.",
-    scenario: "Finance teams use this query to track total business revenue.",
+    slug: "sql-customers-name-starts-with-a",
+    seoTitle: "SQL Basics | LIKE Operator",
+    metaDescription: "Learn how to search text using the LIKE operator.",
+    tags: ["SQL", "Basics", "LIKE"],
+    description: "Retrieve all customers whose names start with the letter 'A'.",
+    explanation: "The LIKE operator searches for patterns. 'A%' means the text starts with A.",
+    scenario: "The support team wants to locate customers whose names begin with A.",
     useCases: [
-      "Revenue reporting",
-      "Business KPI tracking",
-      "Executive dashboards"
+      "Pattern matching",
+      "Searching",
+      "Learning SQL"
     ],
-    hint: "Use SUM(total_amount) AS total_revenue",
-    starterQuery: "SELECT SUM(total_amount) AS total_revenue FROM orders;",
-    expectedColumns: ["total_revenue"],
-    expectedRowCount: 1,
-    validateBy: "exact",
-    solutionQuery: "SELECT SUM(total_amount) AS total_revenue FROM orders;"
+    hint: "Use LIKE 'A%'.",
+    starterQuery: `SELECT *
+  FROM customers
+  WHERE customer_name LIKE 'A%';`,
+    expectedColumns: [
+      "*"
+    ],
+    solutionQuery: `SELECT *
+  FROM customers
+  WHERE customer_name LIKE 'A%';`
   },
   {
     id: 13,
-    title: "Find average order value",
+    title: "Find Customers From India or USA",
     difficulty: "Easy",
-    slug: "sql-avg-average-order-value-kpi",
-    seoTitle: "E-Commerce Engineering: Calculating AOV via SQL AVG()",
-    metaDescription: "Isolate transactional arithmetic means easily using the SQL AVG aggregate keyword. Learn clean conversion reporting metrics rules.",
-    tags: ["AVG Function", "Aggregate Functions", "Business Metrics"],
-    description: "Calculate the average order value across all orders.",
-    explanation: "AVG() calculates the arithmetic mean of a numeric column.",
-    scenario: "E-commerce teams monitor Average Order Value (AOV) as a key performance metric.",
+    slug: "sql-customers-from-india-or-usa",
+    seoTitle: "SQL Basics | IN Operator",
+    metaDescription: "Learn how to filter multiple values using the IN operator.",
+    tags: ["SQL", "Basics", "IN"],
+    description: "Retrieve customers who are from either India or the USA.",
+    explanation: "The IN operator is a cleaner alternative to multiple OR conditions.",
+    scenario: "The sales team is running campaigns in India and the USA.",
     useCases: [
-      "AOV analysis",
-      "Pricing optimization",
-      "Revenue analysis"
+      "Multiple filtering",
+      "Reporting",
+      "Learning SQL"
     ],
-    hint: "Use AVG(total_amount) AS avg_order_value",
-    starterQuery: "SELECT AVG(total_amount) AS avg_order_value FROM orders;",
-    expectedColumns: ["avg_order_value"],
-    expectedRowCount: 1,
-    validateBy: "exact",
-    solutionQuery: "SELECT AVG(total_amount) AS avg_order_value FROM orders;"
+    hint: "Use WHERE country IN (...).",
+    starterQuery: `SELECT *
+  FROM customers
+  WHERE country IN ('India','USA');`,
+    expectedColumns: [
+      "*"
+    ],
+    solutionQuery: `SELECT *
+  FROM customers
+  WHERE country IN ('India','USA');`
   },
   {
     id: 14,
-    title: "Find highest and lowest order value",
+    title: "Find Products Priced Between ₹100 and ₹500",
     difficulty: "Easy",
-    slug: "sql-max-min-outlier-analysis",
-    seoTitle: "SQL Boundary Calculations: Using MAX() and MIN() Functions",
-    metaDescription: "Discover how to track absolute operational dataset ceiling and floor margins instantly using relational MAX and MIN syntax layers.",
-    tags: ["MAX Operator", "MIN Operator", "Outlier Detection"],
-    description: "Return the maximum and minimum total_amount from the orders table.",
-    explanation: "MAX() returns the largest value and MIN() returns the smallest value.",
-    scenario: "Operations teams use this to identify unusually large or small orders.",
+    slug: "sql-products-price-between-100-and-500",
+    seoTitle: "SQL Basics | BETWEEN Operator",
+    metaDescription: "Learn how to filter values within a range using BETWEEN.",
+    tags: ["SQL", "Basics", "BETWEEN"],
+    description: "Retrieve all products whose price is between 100 and 500.",
+    explanation: "BETWEEN filters values within an inclusive range.",
+    scenario: "The merchandising team wants to review mid-range products.",
     useCases: [
-      "Outlier analysis",
-      "Revenue range analysis",
-      "Data validation"
+      "Range filtering",
+      "Pricing analysis",
+      "Learning SQL"
     ],
-    hint: "Use MAX(total_amount) and MIN(total_amount)",
-    starterQuery: "SELECT MAX(total_amount) AS max_order_value, MIN(total_amount) AS min_order_value FROM orders;",
-    expectedColumns: ["max_order_value", "min_order_value"],
-    expectedRowCount: 1,
-    validateBy: "exact",
-    solutionQuery: "SELECT MAX(total_amount) AS max_order_value, MIN(total_amount) AS min_order_value FROM orders;"
+    hint: "Use BETWEEN 100 AND 500.",
+    starterQuery: `SELECT *
+  FROM products
+  WHERE price BETWEEN 100 AND 500;`,
+    expectedColumns: [
+      "*"
+    ],
+    solutionQuery: `SELECT *
+  FROM products
+  WHERE price BETWEEN 100 AND 500;`
   },
   {
     id: 15,
-    title: "Find repeat customers",
+    title: "Find Customers Without an Email Address",
     difficulty: "Easy",
-    slug: "sql-having-clause-post-aggregation-filtering",
-    seoTitle: "Filtering Aggregated Cohorts: Mastering the SQL HAVING Clause",
-    metaDescription: "Understand the execution divergence between WHERE and HAVING statements. Filter group counts post-aggregation loops.",
-    tags: ["HAVING Clause", "GROUP BY", "Retention Analytics"],
-    description: "Return customer_id and order_count for customers who have placed more than 1 order.",
-    explanation: "HAVING filters grouped results after aggregation.",
-    scenario: "The retention team wants to identify repeat customers for loyalty campaigns.",
+    slug: "sql-customers-without-email",
+    seoTitle: "SQL Basics | IS NULL",
+    metaDescription: "Learn how to identify NULL values using IS NULL.",
+    tags: ["SQL", "Basics", "NULL"],
+    description: "Retrieve all customers whose email address is missing.",
+    explanation: "NULL represents missing data. Use IS NULL instead of = NULL.",
+    scenario: "The CRM team wants to identify customers missing email addresses.",
     useCases: [
-      "Repeat purchase analysis",
-      "Customer retention",
-      "Loyalty program targeting"
+      "Data quality",
+      "Customer management",
+      "Learning SQL"
     ],
-    hint: "Use COUNT(*) AS order_count, GROUP BY customer_id, and HAVING COUNT(*) > 1",
-    starterQuery: "SELECT customer_id, COUNT(*) AS order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > 1;",
-    expectedColumns: ["customer_id", "order_count"],
-    expectedRowCount: 1,
-    validateBy: "exact",
-    solutionQuery: "SELECT customer_id, COUNT(*) AS order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > 1;"
+    hint: "Use IS NULL.",
+    starterQuery: `SELECT *
+  FROM customers
+  WHERE email IS NULL;`,
+    expectedColumns: [
+      "*"
+    ],
+    solutionQuery: `SELECT *
+  FROM customers
+  WHERE email IS NULL;`
   },
   {
     id: 16,
-    title: "Find unique ordering customers",
+    title: "Find Customers With an Email Address",
     difficulty: "Easy",
-    slug: "sql-distinct-keyword-deduplication",
-    seoTitle: "Relational Data Deduplication: Using the SQL DISTINCT Statement",
-    metaDescription: "Learn how to safely strip out row duplication anomalies from raw transactional query streams using deterministic DISTINCT functions.",
-    tags: ["DISTINCT Keyword", "Deduplication", "Data Integrity"],
-    description: "Return a unique list of customer_ids from the orders table.",
-    explanation: "DISTINCT removes duplicate values from query results.",
-    scenario: "You want to know how many unique customers placed at least one order.",
+    slug: "sql-customers-with-email",
+    seoTitle: "SQL Basics | IS NOT NULL",
+    metaDescription: "Learn how to filter rows that contain non-NULL values.",
+    tags: ["SQL", "Basics", "IS NOT NULL"],
+    description: "Retrieve all customers who have an email address.",
+    explanation: "IS NOT NULL returns rows where a column contains a value.",
+    scenario: "The marketing team wants to email all customers.",
     useCases: [
-      "Unique customer analysis",
-      "De-duplication",
-      "Customer activity reporting"
+      "Data quality",
+      "Email campaigns",
+      "Learning SQL"
     ],
-    hint: "Use SELECT DISTINCT customer_id",
-    starterQuery: "SELECT DISTINCT customer_id FROM orders;",
-    expectedColumns: ["customer_id"],
-    expectedRowCount: 4,
-    validateBy: "exact",
-    solutionQuery: "SELECT DISTINCT customer_id FROM orders;"
+    hint: "Use IS NOT NULL.",
+    starterQuery: `SELECT *
+  FROM customers
+  WHERE email IS NOT NULL;`,
+    expectedColumns: [
+      "*"
+    ],
+    solutionQuery: `SELECT *
+  FROM customers
+  WHERE email IS NOT NULL;`
   },
   {
     id: 17,
-    title: "Join customers with orders",
+    title: "Find Premium Customers From India",
     difficulty: "Easy",
-    slug: "sql-inner-join-relational-mapping",
-    seoTitle: "SQL Joins Tutorial: Combining Multi-Table Primary Key Links",
-    metaDescription: "Connect structural cross-table entities cleanly using the INNER JOIN pattern. Map primary keys to foreign key vectors without data leaking.",
-    tags: ["INNER JOIN", "Multi-Table Queries", "Key Mapping"],
-    description: "Show customer_name along with their order_id and total_amount.",
-    explanation: "INNER JOIN combines matching records from customers and orders tables.",
-    scenario: "Support teams want customer names alongside order details for easier troubleshooting.",
+    slug: "sql-premium-customers-from-india",
+    seoTitle: "SQL Basics | AND Operator",
+    metaDescription: "Learn how to combine multiple conditions using the AND operator.",
+    tags: ["SQL", "Basics", "AND"],
+    description: "Retrieve customers who are Premium customers and belong to India.",
+    explanation: "The AND operator returns rows only when both conditions are true.",
+    scenario: "The marketing team is running a campaign for premium customers in India.",
     useCases: [
-      "Customer order history",
-      "Business reporting",
-      "Combining related tables"
+      "Multiple conditions",
+      "Customer filtering",
+      "Learning SQL"
     ],
-    hint: "Join customers and orders using customer_id and return customer_name, order_id, and total_amount",
-    starterQuery: "SELECT c.customer_name, o.order_id, o.total_amount FROM customers c JOIN orders o ON c.customer_id = o.customer_id;",
-    expectedColumns: ["customer_name", "order_id", "total_amount"],
-    expectedRowCount: 5,
-    validateBy: "exact",
-    solutionQuery: "SELECT c.customer_name, o.order_id, o.total_amount FROM customers c JOIN orders o ON c.customer_id = o.customer_id;"
+    hint: "Combine two WHERE conditions using AND.",
+    starterQuery: `SELECT *
+  FROM customers
+  WHERE country='India'
+  AND customer_type='Premium';`,
+    expectedColumns: [
+      "*"
+    ],
+    solutionQuery: `SELECT *
+  FROM customers
+  WHERE country='India'
+  AND customer_type='Premium';`
   },
   {
     id: 18,
-    title: "Find customers with no orders",
+    title: "Find Customers From India or Premium Members",
     difficulty: "Easy",
-    slug: "sql-left-join-null-filtering-is-null",
-    seoTitle: "SQL LEFT JOIN Guide: Detecting Orphan Records via IS NULL",
-    metaDescription: "Master non-matching dataset detection logic with standard LEFT JOIN structures. Isolate unengaged user segments via strict NULL mapping filters.",
-    tags: ["LEFT JOIN", "NULL Constraints", "Churn Analysis"],
-    description: "Return customer_name and email for customers who have never placed an order.",
-    explanation: "LEFT JOIN keeps all customers and returns NULL for unmatched orders.",
-    scenario: "Marketing teams want to target inactive customers with promotions.",
+    slug: "sql-india-or-premium-customers",
+    seoTitle: "SQL Basics | OR Operator",
+    metaDescription: "Learn how to use the OR operator to match multiple conditions.",
+    tags: ["SQL", "Basics", "OR"],
+    description: "Retrieve customers who are either from India or are Premium customers.",
+    explanation: "The OR operator returns rows when at least one condition is true.",
+    scenario: "The business team wants to include both Premium members and Indian customers in a campaign.",
     useCases: [
-      "Inactive customer analysis",
-      "Customer re-engagement",
-      "Missing relationship detection"
+      "Customer segmentation",
+      "Filtering",
+      "Learning SQL"
     ],
-    hint: "Use LEFT JOIN and filter WHERE o.order_id IS NULL",
-    starterQuery: "SELECT c.customer_name, c.email FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id WHERE o.order_id IS NULL;",
-    expectedColumns: ["customer_name", "email"],
-    expectedRowCount: 1,
-    validateBy: "exact",
-    solutionQuery: "SELECT c.customer_name, c.email FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id WHERE o.order_id IS NULL;"
+    hint: "Use OR between both conditions.",
+    starterQuery: `SELECT *
+  FROM customers
+  WHERE country='India'
+  OR customer_type='Premium';`,
+    expectedColumns: [
+      "*"
+    ],
+    solutionQuery: `SELECT *
+  FROM customers
+  WHERE country='India'
+  OR customer_type='Premium';`
   },
   {
     id: 19,
-    title: "Alias columns for reporting",
+    title: "Find Products Not in the Electronics Category",
     difficulty: "Easy",
-    slug: "sql-as-alias-column-renaming",
-    seoTitle: "Formatting Clean SQL Reports: Mastering the AS Column Alias",
-    metaDescription: "Learn structural output row string renaming strategies using semantic SQL space aliases for highly legible analytics delivery engines.",
-    tags: ["AS Keyword", "Aliasing", "Report Formatting"],
-    description: "Display customer_name as 'Customer Name' and email as 'Email Address'.",
-    explanation: "Aliases improve readability in reports and exports.",
-    scenario: "Business users want cleaner spreadsheet column names.",
+    slug: "sql-products-not-electronics",
+    seoTitle: "SQL Basics | NOT Operator",
+    metaDescription: "Learn how to exclude rows using the NOT operator.",
+    tags: ["SQL", "Basics", "NOT"],
+    description: "Retrieve all products that do not belong to the Electronics category.",
+    explanation: "The NOT operator reverses a condition and excludes matching rows.",
+    scenario: "The merchandising team wants to review products outside the Electronics category.",
     useCases: [
-      "Report formatting",
-      "Dashboard readability",
-      "Export preparation"
+      "Filtering",
+      "Inventory management",
+      "Learning SQL"
     ],
-    hint: "Use AS \"Customer Name\" and AS \"Email Address\"",
-    starterQuery: "SELECT customer_name AS \"Customer Name\", email AS \"Email Address\" FROM customers;",
-    expectedColumns: ["Customer Name", "Email Address"],
-    expectedRowCount: 5,
-    validateBy: "exact",
-    solutionQuery: "SELECT customer_name AS \"Customer_Name\", email AS \"Email_Address\" FROM customers;"
+    hint: "Use NOT before the condition.",
+    starterQuery: `SELECT *
+  FROM products
+  WHERE NOT category='Electronics';`,
+    expectedColumns: [
+      "*"
+    ],
+    solutionQuery: `SELECT *
+  FROM products
+  WHERE NOT category='Electronics';`
   },
   {
     id: 20,
-    title: "Filter non-null order totals",
+    title: "Sort Customers by Country and Name",
     difficulty: "Easy",
-    slug: "sql-is-not-null-data-cleansing",
-    seoTitle: "Handling Missing Table Dimensions: SQL IS NOT NULL Syntax",
-    metaDescription: "Filter out dirty or incomplete execution metrics using strict IS NOT NULL conditional layers. Clean production pipelines systematically.",
-    tags: ["NULL Values", "IS NOT NULL", "Data Auditing"],
-    description: "Return the order_id of orders where total_amount is not NULL.",
-    explanation: "IS NOT NULL filters out rows with missing values.",
-    scenario: "Finance teams only want valid completed orders for reporting.",
+    slug: "sql-sort-customers-by-country-and-name",
+    seoTitle: "SQL Basics | ORDER BY Multiple Columns",
+    metaDescription: "Learn how to sort data using multiple columns.",
+    tags: ["SQL", "Basics", "ORDER BY"],
+    description: "Retrieve all customers sorted by country in ascending order and then by customer name in ascending order.",
+    explanation: "ORDER BY can sort data using multiple columns. If the first column has duplicate values, SQL uses the next column to determine the order.",
+    scenario: "The customer support team wants an alphabetically sorted customer list within each country.",
     useCases: [
-      "Data cleaning",
-      "Revenue reporting",
-      "Removing incomplete records"
+      "Reporting",
+      "Sorting",
+      "Learning SQL"
     ],
-    hint: "Use WHERE total_amount IS NOT NULL. Return only order_id.",
-    starterQuery: "SELECT * FROM orders WHERE total_amount IS NOT NULL;",
-    expectedColumns: ["order_id", "customer_id", "order_date", "total_amount"],
-    expectedRowCount: 5,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT order_id FROM orders WHERE total_amount IS NOT NULL;"
+    hint: "Separate multiple columns using commas in ORDER BY.",
+    starterQuery: `SELECT *
+  FROM customers
+  ORDER BY country ASC,
+  customer_name ASC;`,
+    expectedColumns: [
+      "*"
+    ],
+    solutionQuery: `SELECT *
+  FROM customers
+  ORDER BY country ASC,
+  customer_name ASC;`
   },
   {
     id: 21,
@@ -603,119 +660,157 @@ export const SQL_PROBLEMS = [
   },
   {
     id: 26,
-    title: "Find high-value orders",
+    title: "Calculate Total Revenue",
     difficulty: "Easy",
-    slug: "sql-where-filtering-order-by-sorting",
-    seoTitle: "High-Value Audit Filtering: SQL Conditional Sorting Methods",
-    metaDescription: "Isolate structural margin tiers by combining operational threshold clauses directly with multi-column sorting operations.",
-    tags: ["WHERE Filters", "ORDER BY DESC", "Audit Protocols"],
-    description: "Return all columns for orders with total_amount greater than 200, sorted by highest total_amount first.",
-    explanation: "WHERE filters rows and ORDER BY sorts the results.",
-    scenario: "Risk teams review large orders for fraud detection.",
+    slug: "sql-calculate-total-revenue",
+    seoTitle: "SQL Basics | SUM Function",
+    metaDescription: "Learn how to calculate the total revenue using the SUM function.",
+    tags: ["SQL", "Basics", "SUM"],
+    description: "Calculate the total revenue generated from all orders.",
+    explanation: "SUM() adds together all the values in a numeric column.",
+    scenario: "The finance team wants to know the total revenue generated by the business.",
     useCases: [
-      "Fraud monitoring",
-      "High-value order analysis",
-      "Transaction reviews"
+      "Revenue reporting",
+      "Finance dashboards",
+      "Learning SQL"
     ],
-    hint: "Use WHERE total_amount > 200 ORDER BY total_amount DESC.",
-    starterQuery: "SELECT * FROM orders WHERE total_amount > 200 ORDER BY total_amount DESC;",
-    expectedColumns: ["order_id", "customer_id", "order_date", "total_amount"],
-    expectedRowCount: 3,
-    validateBy: "exact",
-    solutionQuery: "SELECT * FROM orders WHERE total_amount > 200 ORDER BY total_amount DESC;"
+    hint: "Use SUM(total_amount).",
+    starterQuery: `SELECT ROUND(SUM(total_amount),2) AS total_revenue
+  FROM orders;`,
+    expectedColumns: [
+      "total_revenue"
+    ],
+    solutionQuery: `SELECT ROUND(SUM(total_amount),2) AS total_revenue
+  FROM orders;`
   },
   {
     id: 27,
-    title: "Use table aliases",
+    title: "Count Orders by Status",
     difficulty: "Easy",
-    slug: "sql-table-aliases-namespace-shortening",
-    seoTitle: "Relational Namespacing: Optimizing with SQL Table Aliases",
-    metaDescription: "Write scalable analytics systems by modularizing data footprints using micro table syntax namespace characters.",
-    tags: ["Table Aliasing", "Query Cleanliness", "Scale Frameworks"],
-    description: "Select all columns from orders using table alias 'o'.",
-    explanation: "Table aliases make queries shorter and easier to read.",
-    scenario: "Complex production queries commonly use aliases for readability.",
+    slug: "sql-count-orders-by-status",
+    seoTitle: "SQL Basics | GROUP BY",
+    metaDescription: "Learn how to group records using GROUP BY.",
+    tags: ["SQL", "Basics", "GROUP BY", "COUNT"],
+    description: "Count how many orders exist for each order status.",
+    explanation: "GROUP BY creates one row for each unique value and COUNT() counts the rows in each group.",
+    scenario: "Operations wants to understand the distribution of order statuses.",
     useCases: [
-      "Shorter SQL syntax",
-      "Complex joins",
-      "Readable queries"
+      "Business reporting",
+      "Order analysis",
+      "Learning SQL"
     ],
-    hint: "Use FROM orders o.",
-    starterQuery: "SELECT o.* FROM orders o;",
-    expectedColumns: ["order_id", "customer_id", "order_date", "total_amount"],
-    expectedRowCount: 5,
-    validateBy: "row_count",
-    solutionQuery: "SELECT o.* FROM orders o;"
+    hint: "Group by order_status.",
+    starterQuery: `SELECT
+  order_status,
+  COUNT(*) AS total_orders
+  FROM orders
+  GROUP BY order_status;`,
+    expectedColumns: [
+      "order_status",
+      "total_orders"
+    ],
+    solutionQuery: `SELECT
+  order_status,
+  COUNT(*) AS total_orders
+  FROM orders
+  GROUP BY order_status;`
   },
   {
     id: 28,
-    title: "Count orders with valid totals",
+    title: "Count Customers by Country",
     difficulty: "Easy",
-    slug: "sql-count-column-null-evaluation",
-    seoTitle: "Data Profiling Basics: Column Specific COUNT Evaluations",
-    metaDescription: "Understand why COUNT(column) ignores structural NULL entities natively while COUNT(*) aggregates global array frames automatically.",
-    tags: ["COUNT Mechanics", "Null Auditing", "Data Profiling"],
-    description: "Count how many orders have a non-null total_amount.",
-    explanation: "COUNT(column_name) ignores NULL values.",
-    scenario: "Data engineering teams validate data completeness before reporting.",
+    slug: "sql-count-customers-by-country",
+    seoTitle: "SQL Basics | GROUP BY Country",
+    metaDescription: "Learn how to group customer records by country.",
+    tags: ["SQL", "Basics", "GROUP BY", "COUNT"],
+    description: "Find the total number of customers in each country.",
+    explanation: "GROUP BY combines customers from the same country into one group.",
+    scenario: "The marketing team wants to know how customers are distributed across countries.",
     useCases: [
-      "Data quality validation",
-      "Completeness checks",
-      "Audit reporting"
+      "Customer analytics",
+      "Regional reporting",
+      "Learning SQL"
     ],
-    hint: "Use COUNT(total_amount) AS valid_orders.",
-    starterQuery: "SELECT COUNT(total_amount) AS valid_orders FROM orders;",
-    expectedColumns: ["valid_orders"],
-    expectedRowCount: 1,
-    validateBy: "exact",
-    solutionQuery: "SELECT COUNT(total_amount) AS valid_orders FROM orders;"
+    hint: "Group by country.",
+    starterQuery: `SELECT
+  country,
+  COUNT(*) AS total_customers
+  FROM customers
+  GROUP BY country;`,
+    expectedColumns: [
+      "country",
+      "total_customers"
+    ],
+    solutionQuery: `SELECT
+  country,
+  COUNT(*) AS total_customers
+  FROM customers
+  GROUP BY country;`
   },
   {
     id: 29,
-    title: "Find orders from January 2024",
+    title: "Count Products by Category",
     difficulty: "Easy",
-    slug: "sql-date-wildcard-like-string-matching",
-    seoTitle: "Isolating Monthly Subsets: SQL LIKE Date String Scans",
-    metaDescription: "Leverage simple text wildcard string search functions over time-series string elements to isolate target fiscal cycles effortlessly.",
-    tags: ["LIKE Search", "Date Extraction", "String Conversion"],
-    description: "Return all columns for orders placed in January 2024.",
-    explanation: "LIKE can filter dates using partial matching.",
-    scenario: "Monthly finance reports often isolate a single month's transactions.",
+    slug: "sql-count-products-by-category",
+    seoTitle: "SQL Basics | GROUP BY Category",
+    metaDescription: "Learn how to group products by category using SQL.",
+    tags: ["SQL", "Basics", "GROUP BY", "COUNT"],
+    description: "Find the total number of products available in each category.",
+    explanation: "GROUP BY creates one row for every product category.",
+    scenario: "The inventory team wants to know how many products belong to each category.",
     useCases: [
-      "Monthly reporting",
-      "Period analysis",
-      "Revenue tracking"
+      "Inventory reporting",
+      "Product analysis",
+      "Learning SQL"
     ],
-    hint: "Use WHERE order_date LIKE \"2024-01%\".",
-    starterQuery: "SELECT * FROM orders WHERE order_date LIKE \"2024-01%\";",
-    expectedColumns: ["order_id", "customer_id", "order_date", "total_amount"],
-    expectedRowCount: 2,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT * FROM orders WHERE order_date LIKE '2024-01%';"
+    hint: "Group by category.",
+    starterQuery: `SELECT
+  category,
+  COUNT(*) AS total_products
+  FROM products
+  GROUP BY category;`,
+    expectedColumns: [
+      "category",
+      "total_products"
+    ],
+    solutionQuery: `SELECT
+  category,
+  COUNT(*) AS total_products
+  FROM products
+  GROUP BY category;`
   },
   {
     id: 30,
-    title: "Customer total spending report",
+    title: "Average Product Price by Category",
     difficulty: "Easy",
-    slug: "sql-left-join-coalesce-spend-reporting",
-    seoTitle: "Financial Matrix Models: SQL LEFT JOIN with COALESCE Formulas",
-    metaDescription: "Learn how to retain zero-spend inactive account records within aggregated executive financial summaries using standard mapping wrappers.",
-    tags: ["LEFT JOIN", "COALESCE Operator", "Financial Matrices"],
-    description: "Show each customer's name and their total spending, including customers with no orders.",
-    explanation: "LEFT JOIN ensures all customers appear, while COALESCE replaces NULL totals with 0.",
-    scenario: "Executives want a complete customer spending report including inactive customers.",
+    slug: "sql-average-product-price-by-category",
+    seoTitle: "SQL Basics | GROUP BY with AVG",
+    metaDescription: "Learn how to calculate average values for each group using SQL.",
+    tags: ["SQL", "Basics", "GROUP BY", "AVG"],
+    description: "Calculate the average product price for each category.",
+    explanation: "Combine AVG() with GROUP BY to calculate the average value for each category.",
+    scenario: "The merchandising team wants to compare average prices across categories.",
     useCases: [
-      "Lifetime value reporting",
-      "Customer analytics",
-      "Executive dashboards"
+      "Pricing analysis",
+      "Business reporting",
+      "Learning SQL"
     ],
-    hint: "Use LEFT JOIN, COALESCE(SUM(total_amount), 0), and GROUP BY customer_id.",
-    starterQuery: "SELECT c.customer_name, COALESCE(SUM(o.total_amount), 0) AS total_spent FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id, c.customer_name ORDER BY total_spent DESC;",
-    expectedColumns: ["customer_name", "total_spent"],
-    expectedRowCount: 5,
-    validateBy: "exact",
-    solutionQuery: "SELECT c.customer_name, COALESCE(SUM(o.total_amount), 0) AS total_spent FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_id, c.customer_name ORDER BY total_spent DESC;"
-  },   
+    hint: "Use AVG(price) and GROUP BY category.",
+    starterQuery: `SELECT
+  category,
+  ROUND(AVG(price),2) AS average_price
+  FROM products
+  GROUP BY category;`,
+    expectedColumns: [
+      "category",
+      "average_price"
+    ],
+    solutionQuery: `SELECT
+  category,
+  ROUND(AVG(price),2) AS average_price
+  FROM products
+  GROUP BY category;`
+  },
   {
     id: 31,
     title: "Select product names and prices",
@@ -1063,26 +1158,30 @@ export const SQL_PROBLEMS = [
   },
   {
     id: 46,
-    title: "Find customers with missing emails",
+    title: "Find Customers With a Gmail Account",
     difficulty: "Easy",
-    slug: "sql-is-null-missing-value-audits",
-    seoTitle: "Database Integrity Controls: Mastering SQL IS NULL Logic",
-    metaDescription: "Identify incomplete system fields or blank matrix nodes cleanly using standard relational database verification filters.",
-    tags: ["NULL Evaluation", "Data Cleansing", "Data Integrity"],
-    description: "Return customer_id, customer_name, and email for customers where email is NULL.",
-    explanation: "IS NULL checks for missing values.",
-    scenario: "CRM teams are identifying incomplete customer profiles.",
+    slug: "sql-find-customers-with-gmail-account",
+    seoTitle: "SQL Basics | Find Customers Using Gmail",
+    metaDescription: "Learn how to use the LIKE operator to filter email addresses ending with @gmail.com.",
+    tags: ["SQL", "Basics", "LIKE", "WHERE"],
+    description: "Return the customer_id, customer_name, and email for customers whose email address ends with '@gmail.com'.",
+    explanation: "The LIKE operator can be used with '%' as a wildcard. '%@gmail.com' matches all email addresses ending with '@gmail.com'.",
+    scenario: "The marketing team wants to send a promotional email only to Gmail users.",
     useCases: [
-      "Data quality checks",
-      "Profile completion",
-      "Customer audits"
+      "Email campaigns",
+      "Customer segmentation",
+      "Learning SQL"
     ],
-    hint: "Use WHERE email IS NULL.",
-    starterQuery: "SELECT customer_id, customer_name, email FROM customers WHERE email IS NULL;",
-    expectedColumns: ["customer_id", "customer_name", "email"],
+    hint: "Use WHERE email LIKE '%@gmail.com'.",
+    starterQuery: "SELECT customer_id, customer_name, email FROM customers WHERE email LIKE '%@gmail.com';",
+    expectedColumns: [
+      "customer_id",
+      "customer_name",
+      "email"
+    ],
     expectedRowCount: 0,
     validateBy: "exact",
-    solutionQuery: "SELECT customer_id, customer_name, email FROM customers WHERE email IS NULL;"
+    solutionQuery: "SELECT customer_id, customer_name, email FROM customers WHERE email LIKE '%@gmail.com';"
   },
   {
     id: 47,
@@ -1201,49 +1300,58 @@ export const SQL_PROBLEMS = [
   },
   {
     id: 52,
-    title: "Find products by exact prices",
+    title: "Find Orders Using Cash on Delivery",
     difficulty: "Easy",
-    slug: "sql-in-operator-price-tier-auditing",
-    seoTitle: "Retail Catalog Controls: Auditing Set Price Tiers in SQL",
-    metaDescription: "Filter exact price parameters inside inventory catalogs using clean multi-value verification array architectures.",
-    tags: ["IN Operator", "Catalog Controls", "Price Matrix"],
-    description: "Return product_id, product_name, category, and price for products priced exactly at 29, 99, or 199.",
-    explanation: "IN is cleaner than multiple OR conditions for exact matches.",
-    scenario: "Finance teams are auditing specific pricing tiers.",
+    slug: "sql-orders-using-cash-on-delivery",
+    seoTitle: "SQL Basics | IN Operator",
+    metaDescription: "Learn how to filter multiple values using the IN operator.",
+    tags: ["SQL", "Basics", "IN"],
+    description: "Return the payment_id, order_id, payment_method, and amount for payments made using either 'cod' or 'cash on delivery'.",
+    explanation: "The IN operator is used to match one of several possible values without writing multiple OR conditions.",
+    scenario: "The finance team wants to review all cash-on-delivery payments.",
     useCases: [
-      "Price audits",
-      "Catalog filtering",
-      "Pricing analysis"
+      "Payment reporting",
+      "Order analysis",
+      "Learning SQL"
     ],
-    hint: "Use WHERE price IN (29, 99, 199).",
-    starterQuery: "SELECT product_id, product_name, category, price FROM products WHERE price IN (29, 99, 199);",
-    expectedColumns: ["product_id", "product_name", "category", "price"],
-    expectedRowCount: 3,
+    hint: "Use WHERE payment_method IN (...).",
+    starterQuery: "SELECT payment_id, order_id, payment_method, amount FROM payments WHERE payment_method IN ('cod','cash on delivery');",
+    expectedColumns: [
+      "payment_id",
+      "order_id",
+      "payment_method",
+      "amount"
+    ],
+    expectedRowCount: 0,
     validateBy: "exact",
-    solutionQuery: "SELECT product_id, product_name, category, price FROM products WHERE price IN (29, 99, 199);"
+    solutionQuery: "SELECT payment_id, order_id, payment_method, amount FROM payments WHERE payment_method IN ('cod','cash on delivery');"
   },
   {
     id: 53,
-    title: "Find customers by partial name",
+    title: "Find Customers Whose Name Starts With 'A'",
     difficulty: "Easy",
-    slug: "sql-like-operator-infix-substring-matching",
-    seoTitle: "CRM Search Algorithm Architecture: SQL Infix Text Searches",
-    metaDescription: "Search for strings containing specific text fragments anywhere inside your variables using double-sided string wildcards.",
-    tags: ["LIKE Search", "Substring Matching", "CRM Lookup"],
-    description: "Return the customer_id of customers whose name contains \"son\".",
-    explanation: "LIKE with wildcards searches text patterns anywhere in a string.",
-    scenario: "Support teams only remember part of a customer's name.",
+    slug: "sql-customers-name-starts-with-a",
+    seoTitle: "SQL Basics | LIKE Operator",
+    metaDescription: "Learn how to search text using the LIKE operator.",
+    tags: ["SQL", "Basics", "LIKE"],
+    description: "Return the customer_id, customer_name, and email for customers whose name starts with the letter 'A'.",
+    explanation: "The LIKE operator supports pattern matching. 'A%' returns all values that begin with the letter A.",
+    scenario: "The support team wants to quickly locate customers whose names start with A.",
     useCases: [
       "Customer search",
-      "Partial matching",
-      "CRM lookup"
+      "Pattern matching",
+      "Learning SQL"
     ],
-    hint: "Use LIKE \"%son%\". Return only customer_id.",
-    starterQuery: "SELECT customer_id FROM customers WHERE customer_name LIKE \"son\";",
-    expectedColumns: ["customer_id"],
-    expectedRowCount: 2,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT customer_id FROM customers WHERE customer_name LIKE '%son%';"
+    hint: "Use LIKE 'A%'.",
+    starterQuery: "SELECT customer_id, customer_name, email FROM customers WHERE customer_name LIKE 'A%';",
+    expectedColumns: [
+      "customer_id",
+      "customer_name",
+      "email"
+    ],
+    expectedRowCount: 0,
+    validateBy: "exact",
+    solutionQuery: "SELECT customer_id, customer_name, email FROM customers WHERE customer_name LIKE 'A%';"
   },
   {
     id: 54,
@@ -1270,95 +1378,109 @@ export const SQL_PROBLEMS = [
   },
   {
     id: 55,
-    title: "Find orders from a specific date",
+    title: "Find Orders Placed This Year",
     difficulty: "Easy",
-    slug: "sql-exact-date-matching-incident-response",
-    seoTitle: "System Incident Forensics: Extracting Targeted SQL Date Logs",
-    metaDescription: "Filter timeline entries precisely during operational disruptions using strict singular date constraint definitions.",
-    tags: ["Date Filtering", "Incident Reviews", "Operational Control"],
-    description: "Return the order_id of orders placed on \"2024-01-25\".",
-    explanation: "Date filtering is commonly used in operational reporting.",
-    scenario: "Engineering teams are reviewing orders from a system outage day.",
+    slug: "sql-find-orders-this-year",
+    seoTitle: "SQL Basics | Filter by Year",
+    metaDescription: "Learn how to filter dates using the strftime() function in SQLite.",
+    tags: ["SQL", "Basics", "Date Functions", "WHERE"],
+    description: "Return the order_id and order_date for all orders placed in 2024.",
+    explanation: "The strftime() function extracts parts of a date. It is commonly used in SQLite to filter by year.",
+    scenario: "The finance team wants to review all orders placed during 2024.",
     useCases: [
-      "Daily audits",
-      "Issue investigation",
-      "Operational analysis"
+      "Date filtering",
+      "Sales reporting",
+      "Learning SQL"
     ],
-    hint: "Use WHERE order_date = \"2024-01-25\". Return only order_id.",
-    starterQuery: "SELECT order_id FROM orders WHERE order_date = \"2024-01-25\";",
-    expectedColumns: ["order_id"],
-    expectedRowCount: 1,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT order_id FROM orders WHERE order_date = '2024-01-25';"
-  },    
+    hint: "Use strftime('%Y', order_date).",
+    starterQuery: "SELECT order_id, order_date FROM orders WHERE strftime('%Y', order_date) = '2024';",
+    expectedColumns: [
+      "order_id",
+      "order_date"
+    ],
+    expectedRowCount: 0,
+    validateBy: "exact",
+    solutionQuery: "SELECT order_id, order_date FROM orders WHERE strftime('%Y', order_date) = '2024';"
+  },
   {
     id: 56,
-    title: "Find longest product name",
+    title: "Find the Product With the Longest Name",
     difficulty: "Easy",
-    slug: "sql-length-function-string-dimension-profiling",
-    seoTitle: "UI/UX Schema Testing: Profiling Text Bounds via SQL LENGTH",
-    metaDescription: "Measure string variables to isolate spatial edge-cases using the LENGTH method alongside strict ranking and limit thresholds.",
-    tags: ["LENGTH Operator", "Text Profiling", "Interface Testing"],
-    description: "Return the longest product_name and its character length.",
-    explanation: "LENGTH() measures text size and ORDER BY helps rank results.",
-    scenario: "UI teams need to identify overly long product names.",
+    slug: "sql-find-product-with-longest-name",
+    seoTitle: "SQL Basics | LENGTH Function",
+    metaDescription: "Learn how to use the LENGTH function to measure text.",
+    tags: ["SQL", "Basics", "LENGTH", "ORDER BY"],
+    description: "Return the product_id, product_name, and the number of characters in the product name.",
+    explanation: "LENGTH() returns the number of characters in a string. Combine it with ORDER BY and LIMIT to find the longest value.",
+    scenario: "The UI team wants to identify products with very long names.",
     useCases: [
+      "Data profiling",
       "UI testing",
-      "Catalog cleanup",
-      "Data profiling"
+      "Learning SQL"
     ],
-    hint: "Use LENGTH(product_name) and ORDER BY DESC",
-    starterQuery: "SELECT product_name, LENGTH(product_name) AS name_length FROM products ORDER BY name_length DESC LIMIT 1;",
-    expectedColumns: ["product_name", "name_length"],
+    hint: "Use LENGTH(product_name) and ORDER BY DESC.",
+    starterQuery: "SELECT product_id, product_name, LENGTH(product_name) AS name_length FROM products ORDER BY name_length DESC LIMIT 1;",
+    expectedColumns: [
+      "product_id",
+      "product_name",
+      "name_length"
+    ],
     expectedRowCount: 1,
     validateBy: "exact",
-    solutionQuery: "SELECT product_name, LENGTH(product_name) AS name_length FROM products ORDER BY name_length DESC LIMIT 1;"
+    solutionQuery: "SELECT product_id, product_name, LENGTH(product_name) AS name_length FROM products ORDER BY name_length DESC LIMIT 1;"
   },
   {
     id: 57,
-    title: "Calculate revenue for selected customers",
+    title: "Calculate Revenue by Customer",
     difficulty: "Easy",
-    slug: "sql-where-pre-aggregation-filtering-sum",
-    seoTitle: "VIP Portfolio Analysis: SQL Pre-Aggregation Slicing Methods",
-    metaDescription: "Optimize performance tracking by isolating specific relational lines before initiating structural grouping workflows.",
-    tags: ["SUM Aggregates", "WHERE Slicing", "Portfolio Reporting"],
-    description: "Calculate total revenue for customer_id 1 and 2.",
-    explanation: "WHERE filters rows before aggregation occurs.",
-    scenario: "Account managers are reviewing revenue from VIP customers.",
+    slug: "sql-calculate-revenue-by-customer",
+    seoTitle: "SQL Basics | SUM with GROUP BY",
+    metaDescription: "Learn how to calculate revenue for each customer using SUM and GROUP BY.",
+    tags: ["SQL", "Basics", "SUM", "GROUP BY"],
+    description: "Calculate the total revenue generated by each customer.",
+    explanation: "SUM() calculates the total value, while GROUP BY creates one result for each customer.",
+    scenario: "The sales team wants to know how much revenue each customer has generated.",
     useCases: [
-      "Customer revenue analysis",
-      "VIP reporting",
-      "Revenue segmentation"
+      "Revenue reporting",
+      "Customer analytics",
+      "Learning SQL"
     ],
-    hint: "Use SUM(total_amount) with GROUP BY",
-    starterQuery: "SELECT customer_id, SUM(total_amount) AS total_revenue FROM orders WHERE customer_id IN (1, 2) GROUP BY customer_id;",
-    expectedColumns: ["customer_id", "total_revenue"],
-    expectedRowCount: 2,
+    hint: "Group by customer_id.",
+    starterQuery: "SELECT customer_id, ROUND(SUM(total_amount),2) AS total_revenue FROM orders GROUP BY customer_id;",
+    expectedColumns: [
+      "customer_id",
+      "total_revenue"
+    ],
+    expectedRowCount: 0,
     validateBy: "exact",
-    solutionQuery: "SELECT customer_id, SUM(total_amount) AS total_revenue FROM orders WHERE customer_id IN (1, 2) GROUP BY customer_id;"
+    solutionQuery: "SELECT customer_id, ROUND(SUM(total_amount),2) AS total_revenue FROM orders GROUP BY customer_id;"
   },
   {
     id: 58,
-    title: "Find products with decimal prices",
+    title: "Find Products Costing More Than the Average Price",
     difficulty: "Easy",
-    slug: "sql-modulo-operator-pricing-consistency-audits",
-    seoTitle: "Financial Pipeline Auditing: SQL Modulo (%) Precision Checks",
-    metaDescription: "Isolate precise fractional fields by tracking numerical variances using native mathematical modulo operations.",
-    tags: ["Modulo Operator", "Pipeline Audits", "Precision Checks"],
-    description: "Find products where the price contains decimal values.",
-    explanation: "Modulo operations can identify non-whole numbers.",
-    scenario: "Finance teams want products with non-rounded pricing.",
+    slug: "sql-products-above-average-price",
+    seoTitle: "SQL Basics | Subquery with AVG",
+    metaDescription: "Learn how to compare values against the average using a subquery.",
+    tags: ["SQL", "Basics", "AVG", "Subquery"],
+    description: "Return the product_id, product_name, and price for products priced above the average product price.",
+    explanation: "A subquery can calculate the average price first, then the outer query filters products above that value.",
+    scenario: "The merchandising team wants to identify premium-priced products.",
     useCases: [
-      "Pricing audits",
-      "Data consistency",
-      "Financial validation"
+      "Price analysis",
+      "Business reporting",
+      "Learning SQL"
     ],
-    hint: "Use price % 1 <> 0",
-    starterQuery: "SELECT * FROM products WHERE price % 1 <> 0;",
-    expectedColumns: ["product_id", "product_name", "category", "price"],
+    hint: "Compare price against AVG(price) in a subquery.",
+    starterQuery: "SELECT product_id, product_name, price FROM products WHERE price > (SELECT AVG(price) FROM products);",
+    expectedColumns: [
+      "product_id",
+      "product_name",
+      "price"
+    ],
     expectedRowCount: 0,
-    validateBy: "row_count",
-    solutionQuery: "SELECT product_id, product_name, category, price FROM products WHERE price % 1 <> 0;"
+    validateBy: "exact",
+    solutionQuery: "SELECT product_id, product_name, price FROM products WHERE price > (SELECT AVG(price) FROM products);"
   },
   {
     id: 59,
@@ -1523,118 +1645,137 @@ export const SQL_PROBLEMS = [
   },
   {
     id: 66,
-    title: "Skip first customer records",
+    title: "Show the Next 5 Customers",
     difficulty: "Easy",
-    slug: "sql-limit-offset-pagination-controls",
-    seoTitle: "Dataset Window Pagination: Designing SQL LIMIT and OFFSET Logic",
-    metaDescription: "Master the fundamentals of cursor boundaries. Skip specific row indexes while capturing structured data windows for frontend pagination elements.",
-    tags: ["Pagination", "LIMIT Clause", "OFFSET Clause"],
-    description: "Return 2 customers while skipping the first row.",
-    explanation: "OFFSET skips rows before returning results.",
-    scenario: "Pagination systems load records in batches.",
+    slug: "sql-limit-offset-next-five-customers",
+    seoTitle: "SQL Basics | LIMIT and OFFSET",
+    metaDescription: "Learn how to use LIMIT and OFFSET together to paginate query results.",
+    tags: ["SQL", "Basics", "LIMIT", "OFFSET"],
+    description: "Display five customers after skipping the first five customers.",
+    explanation: "OFFSET skips a specified number of rows before LIMIT returns the requested number of rows.",
+    scenario: "Your application loads customers page by page.",
     useCases: [
       "Pagination",
-      "Data sampling",
-      "UI navigation"
+      "Data browsing",
+      "Learning SQL"
     ],
-    hint: "Use LIMIT 2 OFFSET 1.",
-    starterQuery: "SELECT * FROM customers LIMIT 2 OFFSET 1;",
-    expectedColumns: ["customer_id", "customer_name", "email", "created_date"],
-    expectedRowCount: 2,
-    validateBy: "row_count",
-    solutionQuery: "SELECT customer_id, customer_name, email, created_date FROM customers LIMIT 2 OFFSET 1;"
+    hint: "Use LIMIT 5 OFFSET 5.",
+    starterQuery: "SELECT customer_id, customer_name, email FROM customers LIMIT 5 OFFSET 5;",
+    expectedColumns: [
+      "customer_id",
+      "customer_name",
+      "email"
+    ],
+    expectedRowCount: 5,
+    validateBy: "exact",
+    solutionQuery: "SELECT customer_id, customer_name, email FROM customers LIMIT 5 OFFSET 5;"
   },
   {
     id: 67,
-    title: "Find average price by category",
+    title: "Find the Average Price of Each Category",
     difficulty: "Easy",
-    slug: "sql-group-by-average-price-per-category",
-    seoTitle: "Segmented Catalog Metrics: Using SQL GROUP BY and AVG Formulas",
-    metaDescription: "Partition structural elements into distinct categorical entities and apply concurrent arithmetic average summaries effortlessly.",
-    tags: ["GROUP BY Clause", "AVG Function", "Categorical Analysis"],
-    description: "Calculate average product price for each category.",
-    explanation: "GROUP BY creates separate averages per category.",
-    scenario: "Pricing teams compare average pricing across departments.",
+    slug: "sql-average-price-each-category",
+    seoTitle: "SQL Basics | GROUP BY and AVG",
+    metaDescription: "Calculate the average product price for each category using GROUP BY.",
+    tags: ["SQL", "Basics", "GROUP BY", "AVG"],
+    description: "Return each category along with its average product price.",
+    explanation: "GROUP BY divides rows into groups and AVG() calculates the average value for each group.",
+    scenario: "The merchandising team wants to compare pricing across categories.",
     useCases: [
-      "Category analysis",
-      "Pricing strategy",
-      "Benchmarking"
+      "Category reporting",
+      "Pricing analysis",
+      "Learning SQL"
     ],
-    hint: "Use GROUP BY category.",
-    starterQuery: "SELECT category, AVG(price) AS avg_price FROM products GROUP BY category;",
-    expectedColumns: ["category", "avg_price"],
-    expectedRowCount: 3,
+    hint: "Group by category.",
+    starterQuery: "SELECT category, ROUND(AVG(price),2) AS average_price FROM products GROUP BY category;",
+    expectedColumns: [
+      "category",
+      "average_price"
+    ],
+    expectedRowCount: 0,
     validateBy: "exact",
-    solutionQuery: "SELECT category, AVG(price) AS avg_price FROM products GROUP BY category;"
+    solutionQuery: "SELECT category, ROUND(AVG(price),2) AS average_price FROM products GROUP BY category;"
   },
   {
     id: 68,
-    title: "Find customers with empty emails",
+    title: "Find Customers With Yahoo Email Addresses",
     difficulty: "Easy",
-    slug: "sql-empty-string-vs-null-verification",
-    seoTitle: "Data Quality Assessments: Identifying SQL Empty Strings vs NULL",
-    metaDescription: "Evaluate zero-length string allocations in customer communication fields to run structured database sanity audits.",
-    tags: ["Data Auditing", "String Constants", "Data Validation"],
-    description: "Return customer_id, customer_name, and email for customers where email is an empty string.",
-    explanation: "Empty strings are different from NULL values.",
-    scenario: "Data quality teams audit incomplete customer records.",
+    slug: "sql-customers-with-yahoo-email",
+    seoTitle: "SQL Basics | LIKE Wildcard Search",
+    metaDescription: "Use the LIKE operator to search for email addresses ending with @yahoo.com.",
+    tags: ["SQL", "Basics", "LIKE"],
+    description: "Return the customer ID, customer name, and email for customers using Yahoo email addresses.",
+    explanation: "LIKE supports wildcard matching using the % symbol.",
+    scenario: "The marketing team wants to segment Yahoo users.",
     useCases: [
-      "Data cleanup",
-      "Validation checks",
-      "CRM audits"
+      "Customer segmentation",
+      "Email campaigns",
+      "Learning SQL"
     ],
-    hint: "Use WHERE email = \"\".",
-    starterQuery: "SELECT customer_id, customer_name, email FROM customers WHERE email = \"\";",
-    expectedColumns: ["customer_id", "customer_name", "email"],
+    hint: "Use LIKE '%@yahoo.com'.",
+    starterQuery: "SELECT customer_id, customer_name, email FROM customers WHERE email LIKE '%@yahoo.com';",
+    expectedColumns: [
+      "customer_id",
+      "customer_name",
+      "email"
+    ],
     expectedRowCount: 0,
     validateBy: "exact",
-    solutionQuery: "SELECT customer_id, customer_name, email FROM customers WHERE email = '';"
+    solutionQuery: "SELECT customer_id, customer_name, email FROM customers WHERE email LIKE '%@yahoo.com';"
   },
   {
     id: 69,
-    title: "Calculate bulk product pricing",
+    title: "Calculate Total Cost for Five Products",
     difficulty: "Easy",
-    slug: "sql-multiplication-operator-bulk-pricing",
-    seoTitle: "Dynamic Quotation Modeling: Generating SQL Arithmetic Modifiers",
-    metaDescription: "Project item acquisition costs dynamically across inventory lines by executing inline multiplication algorithms inside select fields.",
-    tags: ["Arithmetic Fields", "Dynamic Calculations", "Bulk Projections"],
-    description: "Return product_name and the cost of buying 10 units.",
-    explanation: "Mathematical operations can create projected pricing.",
-    scenario: "Sales teams prepare bulk purchase quotes.",
+    slug: "sql-calculate-total-cost-five-products",
+    seoTitle: "SQL Basics | Arithmetic Expressions",
+    metaDescription: "Learn how to perform arithmetic calculations in SQL queries.",
+    tags: ["SQL", "Basics", "Arithmetic"],
+    description: "Return the product name along with the total cost of buying five units.",
+    explanation: "SQL allows arithmetic expressions directly inside the SELECT statement.",
+    scenario: "The sales team wants to prepare quotations for customers purchasing five units.",
     useCases: [
-      "Bulk pricing",
-      "Sales forecasting",
-      "Revenue estimation"
+      "Sales quotations",
+      "Price calculations",
+      "Learning SQL"
     ],
-    hint: "Use price * 10.",
-    starterQuery: "SELECT product_name, price * 10 AS bulk_price FROM products;",
-    expectedColumns: ["product_name", "bulk_price"],
-    expectedRowCount: 5,
+    hint: "Multiply price by 5.",
+    starterQuery: "SELECT product_name, price * 5 AS total_cost FROM products;",
+    expectedColumns: [
+      "product_name",
+      "total_cost"
+    ],
+    expectedRowCount: 0,
     validateBy: "exact",
-    solutionQuery: "SELECT product_name, price * 10 AS bulk_price FROM products;"
+    solutionQuery: "SELECT product_name, price * 5 AS total_cost FROM products;"
   },
   {
     id: 70,
-    title: "Find orders from multiple dates",
+    title: "Find Orders With Total Amount Greater Than 1000",
     difficulty: "Easy",
-    slug: "sql-in-operator-date-list-filtering",
-    seoTitle: "Campaign Event Analysis: Filtering Arbitrary Dates via SQL IN",
-    metaDescription: "Map matching records over a discrete collection of date variables instantly without using excessive compound conditions.",
-    tags: ["IN Operator", "Date Matching", "Campaign Analysis"],
-    description: "Return order_id, customer_id, order_date, and total_amount for orders placed on \"2024-01-10\" or \"2024-02-15\".",
-    explanation: "IN simplifies filtering multiple exact values.",
-    scenario: "Marketing teams compare campaign event days.",
+    slug: "sql-orders-total-amount-greater-than-1000",
+    seoTitle: "SQL Basics | Numeric Filtering",
+    metaDescription: "Filter orders based on their total amount using comparison operators.",
+    tags: ["SQL", "Basics", "WHERE", "Comparison"],
+    description: "Return the order ID, customer ID, order date, and total amount for orders where the total amount is greater than 1000.",
+    explanation: "Comparison operators allow filtering numeric values based on a condition.",
+    scenario: "The finance team wants to review high-value orders.",
     useCases: [
-      "Event tracking",
-      "Campaign comparison",
-      "Date filtering"
+      "Revenue analysis",
+      "Order reporting",
+      "Learning SQL"
     ],
-    hint: "Use IN with the two dates.",
-    starterQuery: "SELECT order_id, customer_id, order_date, total_amount FROM orders WHERE order_date IN (\"2024-01-10\", \"2024-02-15\");",
-    expectedColumns: ["order_id", "customer_id", "order_date", "total_amount"],
-    expectedRowCount: 2,
+    hint: "Use WHERE total_amount > 1000.",
+    starterQuery: "SELECT order_id, customer_id, order_date, total_amount FROM orders WHERE total_amount > 1000;",
+    expectedColumns: [
+      "order_id",
+      "customer_id",
+      "order_date",
+      "total_amount"
+    ],
+    expectedRowCount: 0,
     validateBy: "exact",
-    solutionQuery: "SELECT order_id, customer_id, order_date, total_amount FROM orders WHERE order_date IN ('2024-01-10', '2024-02-15');"
+    solutionQuery: "SELECT order_id, customer_id, order_date, total_amount FROM orders WHERE total_amount > 1000;"
   },
   {
     id: 71,
@@ -1707,26 +1848,31 @@ export const SQL_PROBLEMS = [
   },
   {
     id: 74,
-    title: "Find uncategorized products",
+    title: "Find Products in the Electronics Category",
     difficulty: "Easy",
-    slug: "sql-is-null-catalog-classification-audits",
-    seoTitle: "Data Architecture Hygiene: Detecting Unassigned States via IS NULL",
-    metaDescription: "Isolate metadata omissions or unlinked product classifications systematically using relational database null validations.",
-    tags: ["NULL Verification", "Catalog Auditing", "Data Hygiene"],
-    description: "Return product_id, product_name, category, and price for products where category is NULL.",
-    explanation: "IS NULL helps identify missing data values.",
-    scenario: "Operations teams want to fix products missing categories.",
+    slug: "sql-find-products-in-electronics-category",
+    seoTitle: "SQL Basics | Filter Products by Category",
+    metaDescription: "Learn how to filter rows using the WHERE clause with text values.",
+    tags: ["SQL", "Basics", "WHERE"],
+    description: "Return the product ID, product name, category, and price for all products in the 'Electronics' category.",
+    explanation: "The WHERE clause filters rows that match a specific text value.",
+    scenario: "The inventory team wants to review all electronic products currently available.",
     useCases: [
-      "Data cleanup",
-      "Catalog auditing",
-      "Inventory management"
+      "Inventory management",
+      "Category reporting",
+      "Learning SQL"
     ],
-    hint: "Use WHERE category IS NULL.",
-    starterQuery: "SELECT product_id, product_name, category, price FROM products WHERE category IS NULL;",
-    expectedColumns: ["product_id", "product_name", "category", "price"],
+    hint: "Use WHERE category = 'Electronics'.",
+    starterQuery: "SELECT product_id, product_name, category, price FROM products WHERE category = 'Electronics';",
+    expectedColumns: [
+      "product_id",
+      "product_name",
+      "category",
+      "price"
+    ],
     expectedRowCount: 0,
     validateBy: "exact",
-    solutionQuery: "SELECT product_id, product_name, category, price FROM products WHERE category IS NULL;"
+    solutionQuery: "SELECT product_id, product_name, category, price FROM products WHERE category = 'Electronics';"
   },
   {
     id: 75,
@@ -1776,49 +1922,57 @@ export const SQL_PROBLEMS = [
   },
   {
     id: 77,
-    title: "Find customers by exact names",
+    title: "Find Customers From India or USA",
     difficulty: "Easy",
-    slug: "sql-in-operator-discrete-text-matching",
-    seoTitle: "Targeted Audience Lookups: Using SQL IN Over Text Lists",
-    metaDescription: "Filter multiple complete identities concurrently without messy compound chains using precise literal match arrays.",
-    tags: ["IN Clause", "Exact Matching", "Targeted Audits"],
-    description: "Return the customer_id of customers named \"Alice Johnson\" or \"Charlie Davis\".",
-    explanation: "IN simplifies filtering multiple exact values.",
-    scenario: "Marketing teams are preparing a winner announcement.",
+    slug: "sql-customers-from-india-or-usa",
+    seoTitle: "SQL Basics | IN Operator with Text Values",
+    metaDescription: "Learn how to filter multiple text values using the IN operator.",
+    tags: ["SQL", "Basics", "IN"],
+    description: "Return the customer ID, customer name, and country for customers who are from either India or the USA.",
+    explanation: "The IN operator matches rows where a column equals any value in a list.",
+    scenario: "The marketing team is launching a campaign targeting customers in India and the USA.",
     useCases: [
-      "Customer lookup",
-      "Targeted retrieval",
-      "CRM searches"
+      "Customer segmentation",
+      "Regional reporting",
+      "Learning SQL"
     ],
-    hint: "Use IN (\"Alice Johnson\", \"Charlie Davis\"). Return only customer_id.",
-    starterQuery: "SELECT customer_id FROM customers WHERE customer_name IN (\"Alice Johnson\", \"Charlie Davis\");",
-    expectedColumns: ["customer_id"],
-    expectedRowCount: 2,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT customer_id FROM customers WHERE customer_name IN ('Alice Johnson', 'Charlie Davis');"
+    hint: "Use WHERE country IN ('India', 'USA').",
+    starterQuery: "SELECT customer_id, customer_name, country FROM customers WHERE country IN ('India', 'USA');",
+    expectedColumns: [
+      "customer_id",
+      "customer_name",
+      "country"
+    ],
+    expectedRowCount: 0,
+    validateBy: "exact",
+    solutionQuery: "SELECT customer_id, customer_name, country FROM customers WHERE country IN ('India', 'USA');"
   },
   {
     id: 78,
-    title: "Find mid-range orders",
+    title: "Find Mid-Value Orders",
     difficulty: "Easy",
-    slug: "sql-between-operator-inclusive-numeric-ranges",
-    seoTitle: "Transactional Cohort Evaluation: SQL BETWEEN Numerical Blocks",
-    metaDescription: "Isolate transaction values residing inside defined mid-tier parameters utilizing inclusive boundary verification strategies.",
-    tags: ["BETWEEN Range", "Cohort Segmentation", "Value Filters"],
-    description: "Return the order_id of orders with total_amount between 50 and 150.",
-    explanation: "BETWEEN filters values within a range inclusively.",
-    scenario: "Finance teams analyze mid-tier customer purchases.",
+    slug: "sql-find-mid-value-orders",
+    seoTitle: "SQL Basics | BETWEEN Operator",
+    metaDescription: "Learn how to filter rows within a range using the BETWEEN operator.",
+    tags: ["SQL", "Basics", "BETWEEN", "WHERE"],
+    description: "Return the order ID, customer ID, and total amount for orders whose total amount is between 100 and 200.",
+    explanation: "The BETWEEN operator filters values within a specified range, including both the lower and upper limits.",
+    scenario: "The finance team wants to analyze medium-value customer orders.",
     useCases: [
-      "Revenue segmentation",
-      "Price analysis",
-      "Order filtering"
+      "Revenue analysis",
+      "Order filtering",
+      "Learning SQL"
     ],
-    hint: "Use BETWEEN 50 AND 150. Return only order_id.",
-    starterQuery: "SELECT order_id FROM orders WHERE total_amount BETWEEN 50 AND 150;",
-    expectedColumns: ["order_id"],
-    expectedRowCount: 1,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT order_id FROM orders WHERE total_amount BETWEEN 50 AND 150;"
+    hint: "Use WHERE total_amount BETWEEN 100 AND 200.",
+    starterQuery: "SELECT order_id, customer_id, total_amount FROM orders WHERE total_amount BETWEEN 100 AND 200;",
+    expectedColumns: [
+      "order_id",
+      "customer_id",
+      "total_amount"
+    ],
+    expectedRowCount: 16,
+    validateBy: "exact",
+    solutionQuery: "SELECT order_id, customer_id, total_amount FROM orders WHERE total_amount BETWEEN 100 AND 200;"
   },
   {
     id: 79,
@@ -1914,26 +2068,30 @@ export const SQL_PROBLEMS = [
   },
   {
     id: 83,
-    title: "Find products with short names",
+    title: "Display Product Name Length",
     difficulty: "Easy",
-    slug: "sql-length-function-less-than-threshold",
-    seoTitle: "String Dimension Constraints: Filtering with SQL LENGTH Operators",
-    metaDescription: "Filter out long character allocations cleanly by evaluating string dimensional constraints inside database filtering clauses.",
-    tags: ["LENGTH Function", "Text Validation", "UI Optimization"],
-    description: "Return the product_id of products where product_name has 10 or fewer characters.",
-    explanation: "LENGTH() helps filter text values by size.",
-    scenario: "Mobile app designers want products with short display names.",
+    slug: "sql-display-product-name-length",
+    seoTitle: "SQL Basics | LENGTH Function",
+    metaDescription: "Learn how to use the LENGTH function to calculate the number of characters in a string.",
+    tags: ["SQL", "Basics", "LENGTH"],
+    description: "Return the product ID, product name, and the number of characters in each product name.",
+    explanation: "The LENGTH() function returns the number of characters in a string.",
+    scenario: "The UI team wants to understand the length of product names before designing the product listing page.",
     useCases: [
+      "Data profiling",
       "UI optimization",
-      "Catalog cleanup",
-      "Data validation"
+      "Learning SQL"
     ],
-    hint: "Use LENGTH(product_name) <= 10. Return only product_id.",
-    starterQuery: "SELECT product_id FROM products WHERE LENGTH(product_name) <= 10;",
-    expectedColumns: ["product_id"],
-    expectedRowCount: 2,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT product_id FROM products WHERE LENGTH(product_name) <= 10;"
+    hint: "Use LENGTH(product_name).",
+    starterQuery: "SELECT product_id, product_name, LENGTH(product_name) AS name_length FROM products;",
+    expectedColumns: [
+      "product_id",
+      "product_name",
+      "name_length"
+    ],
+    expectedRowCount: 0,
+    validateBy: "exact",
+    solutionQuery: "SELECT product_id, product_name, LENGTH(product_name) AS name_length FROM products;"
   },
   {
     id: 84,
@@ -2075,27 +2233,31 @@ export const SQL_PROBLEMS = [
   },
   {
     id: 90,
-    title: "Find service-related categories",
+    title: "Find Electronics Products",
     difficulty: "Easy",
-    slug: "sql-like-infix-substring-category-filtering",
-    seoTitle: "Metadata Content Audits: Tracking SQL Substring Categories via LIKE",
-    metaDescription: "Isolate complex inventory tags by running fuzzy substring checks over classification text nodes with double-sided operators.",
-    tags: ["LIKE Search", "Fuzzy Matching", "Inventory Audits"],
-    description: "Return the product_id of products where category contains \"Service\".",
-    explanation: "LIKE searches for partial text matches.",
-    scenario: "Inventory teams are auditing service-related offerings.",
+    slug: "sql-find-electronics-products-like",
+    seoTitle: "SQL Basics | LIKE Operator with Categories",
+    metaDescription: "Learn how to use the LIKE operator to filter text values in SQL.",
+    tags: ["SQL", "Basics", "LIKE"],
+    description: "Return the product ID, product name, and category for products whose category contains the word 'Electronics'.",
+    explanation: "The LIKE operator searches for text patterns using wildcard characters (%).",
+    scenario: "The inventory team wants to list all products that belong to the Electronics category.",
     useCases: [
-      "Category analysis",
-      "Inventory audits",
-      "Search filtering"
+      "Category filtering",
+      "Inventory reporting",
+      "Learning SQL"
     ],
-    hint: "Use category LIKE \"%Service%\". Return only product_id.",
-    starterQuery: "SELECT product_id FROM products WHERE category LIKE \"%Service%\";",
-    expectedColumns: ["product_id"],
-    expectedRowCount: 2,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT product_id FROM products WHERE category LIKE '%Service%';"
-  },        
+    hint: "Use WHERE category LIKE '%Electronics%'.",
+    starterQuery: "SELECT product_id, product_name, category FROM products WHERE category LIKE '%Electronics%';",
+    expectedColumns: [
+      "product_id",
+      "product_name",
+      "category"
+    ],
+    expectedRowCount: 0,
+    validateBy: "exact",
+    solutionQuery: "SELECT product_id, product_name, category FROM products WHERE category LIKE '%Electronics%';"
+  },      
   {
     id: 91,
     title: "Find extremely large or small orders",
@@ -2190,26 +2352,30 @@ export const SQL_PROBLEMS = [
   },
   {
     id: 95,
-    title: "Combine multiple status codes",
+    title: "Find Delivered Orders",
     difficulty: "Easy",
-    slug: "sql-in-operator-status-string-lists",
-    seoTitle: "Reverse Logistics Control: Filtering Status Lists via SQL IN",
-    metaDescription: "Group operational transaction tags together cleanly by running list validation array evaluations over status fields.",
-    tags: ["IN Operator", "Status Inclusions", "Logistics Controls"],
-    description: "Return order_id, customer_id, and order_status for orders with status \"Returned\" or \"Refunded\".",
-    explanation: "IN handles multiple matching values cleanly.",
-    scenario: "Reverse logistics teams review returned and refunded orders.",
+    slug: "sql-find-shipped-orders",
+    seoTitle: "SQL Basics | IN Operator with Multiple Values",
+    metaDescription: "Learn how to filter multiple values using the SQL IN operator.",
+    tags: ["SQL", "Basics", "IN", "WHERE"],
+    description: "Return the order ID, customer ID, and order status for orders that are either 'delivered'.",
+    explanation: "The IN operator checks whether a value matches any value in a list, making queries shorter and easier to read than multiple OR conditions.",
+    scenario: "The operations team wants to review orders that have already been shipped or successfully delivered.",
     useCases: [
-      "Dispute tracing",
-      "Return audits",
-      "Status segmentation"
+      "Order tracking",
+      "Operations reporting",
+      "Learning SQL"
     ],
-    hint: "Use WHERE order_status IN (\"Returned\", \"Refunded\").",
-    starterQuery: "SELECT order_id, customer_id, order_status FROM orders WHERE order_status IN (\"Returned\", \"Refunded\");",
-    expectedColumns: ["order_id", "customer_id", "order_status"],
+    hint: "Use WHERE order_status IN ('delivered').",
+    starterQuery: "SELECT order_id, customer_id, order_status FROM orders WHERE order_status IN ('delivered');",
+    expectedColumns: [
+      "order_id",
+      "customer_id",
+      "order_status"
+    ],
     expectedRowCount: 0,
     validateBy: "exact",
-    solutionQuery: "SELECT order_id, customer_id, order_status FROM orders WHERE order_status IN ('Returned', 'Refunded');"
+    solutionQuery: "SELECT order_id, customer_id, order_status FROM orders WHERE order_status IN ('delivered');"
   },
   {
     id: 96,
@@ -2259,26 +2425,30 @@ export const SQL_PROBLEMS = [
   },
   {
     id: 98,
-    title: "Find customers using secure mail accounts",
+    title: "Find Customers With .com Email Addresses",
     difficulty: "Easy",
-    slug: "sql-like-infix-email-provider-auditing",
-    seoTitle: "Privacy Metric Profiling: Tracking Mid-String Domains in SQL",
-    metaDescription: "Monitor technical identity parameters across user profiles by verifying embedded domain variables using comprehensive text filters.",
-    tags: ["LIKE Search", "Domain Extraction", "Identity Profiling"],
-    description: "Return the customer_id of customers whose email contains \"proton\".",
-    explanation: "LIKE searches for matching text patterns anywhere in a string.",
-    scenario: "Security teams audit customers using privacy-focused email providers.",
+    slug: "sql-find-customers-with-com-email",
+    seoTitle: "SQL Basics | LIKE with Email Domains",
+    metaDescription: "Learn how to use the LIKE operator to filter email addresses ending with .com.",
+    tags: ["SQL", "Basics", "LIKE"],
+    description: "Return the customer ID, customer name, and email for customers whose email address ends with '.com'.",
+    explanation: "The LIKE operator with '% .com' matches all email addresses ending with '.com'.",
+    scenario: "The marketing team wants to target customers using .com email addresses.",
     useCases: [
-      "Privacy metrics",
-      "Email audits",
-      "Pattern extraction"
+      "Email filtering",
+      "Customer segmentation",
+      "Learning SQL"
     ],
-    hint: "Use LIKE \"%proton%\". Return only customer_id.",
-    starterQuery: "SELECT customer_id FROM customers WHERE email LIKE \"%proton%\";",
-    expectedColumns: ["customer_id"],
+    hint: "Use WHERE email LIKE '%.com'.",
+    starterQuery: "SELECT customer_id, customer_name, email FROM customers WHERE email LIKE '%.com';",
+    expectedColumns: [
+      "customer_id",
+      "customer_name",
+      "email"
+    ],
     expectedRowCount: 0,
-    validateBy: "row_ids",
-    solutionQuery: "SELECT customer_id FROM customers WHERE email LIKE '%proton%';"
+    validateBy: "exact",
+    solutionQuery: "SELECT customer_id, customer_name, email FROM customers WHERE email LIKE '%.com';"
   },
   {
     id: 99,

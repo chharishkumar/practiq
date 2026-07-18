@@ -143,7 +143,7 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
           {p.title}
         </span>
         <span style={{ fontSize: "0.62rem", padding: "2px 7px", borderRadius: "10px", background: diffStyle.Easy.bg, color: diffStyle.Easy.color, border: `1px solid ${diffStyle.Easy.border}`, fontWeight: 600, whiteSpace: "nowrap" }}>
-          Medium
+          Basics
         </span>
         <span style={{ fontSize: "0.7rem", color: isExpanded ? "#2563eb" : "#94a3b8", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", lineHeight: 1 }}>▾</span>
       </div>
@@ -307,8 +307,8 @@ export default function SQLIntermediatePage() {
       : "Practice SQL Intermediate interview questions.",
   
     canonical: selectedProblem
-      ? `https://www.repractiq.com/sql/basic/${selectedProblem.id}-${selectedProblem.slug}`
-      : "https://www.repractiq.com/sql/basic"
+      ? `https://www.repractiq.com/sql/basics/${selectedProblem.id}-${selectedProblem.slug}`
+      : "https://www.repractiq.com/sql/basics"
   });
 
   const queryRef = useRef(query);
@@ -514,7 +514,7 @@ else setExpandedMilestone("gold");
           .select("id, status")
           .eq("user_id", userId)
           .eq("problem_id", currentProblem.id)
-          .eq("category", "sql_basic")
+          .eq("category", "sql_basics")
           .maybeSingle();
     
         // Never overwrite correct with worse
@@ -536,7 +536,7 @@ else setExpandedMilestone("gold");
           await supabase.from("submissions").insert({
             user_id: userId,
             problem_id: currentProblem.id,
-            category: "sql_basic",
+            category: "sql_basics",
             problem_title: currentProblem.title,
             query: currentQuery,
             status,
@@ -562,7 +562,7 @@ else setExpandedMilestone("gold");
     setResults(null);
     setError(null);
     setValidationStatus(null);
-    navigate(`/sql/basic/${p.id}-${p.slug}`);
+    navigate(`/sql/basics/${p.id}-${p.slug}`);
   }, [navigate]);
 
   const handleToggleExpand = (id) => {
@@ -615,7 +615,7 @@ else setExpandedMilestone("gold");
       await supabase.from("submissions").upsert({
         user_id: userId,
         problem_id: selectedProblem.id,
-        category: "sql_basic",
+        category: "sql_basics",
         problem_title: selectedProblem.title,
         query: query,
         status: "attempted",
@@ -628,7 +628,7 @@ else setExpandedMilestone("gold");
     setCommunityFeed((prev) => [{
       user: "You",
       problem: selectedProblem.title,
-      category: "sql_basic",
+      category: "sql_basics",
       query: query,
       comment: modalComment,
       time: "Just now",
@@ -647,7 +647,7 @@ else setExpandedMilestone("gold");
   }, [searchTerm]);
 
   const crossCategoryMatches = useMemo(
-    () => searchSqlProblems(searchTerm).filter((m) => m.categoryKey !== "basic").slice(0, 10),
+    () => searchSqlProblems(searchTerm).filter((m) => m.categoryKey !== "basics").slice(0, 10),
     [searchTerm]
   );
 
@@ -774,7 +774,7 @@ ShareModalComponent={ShareModal}
     <div style={{ background: "#ffffff", height: "100vh", display: "flex", flexDirection: "column", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a", overflow: "hidden" }}>
          <StructuredData
       problem={selectedProblem}
-      category="basic"
+      category="basics"
     />
       {/* NAV */}
       <nav style={{ padding: "0.85rem 2rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.97)", flexShrink: 0 }}>
