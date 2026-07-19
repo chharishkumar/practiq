@@ -49,6 +49,133 @@ const MILESTONES = [
   },
 ];
 
+const DB_SCHEMAS = {
+  customers: [
+    { name: "customer_id", type: "int64" },
+    { name: "customer_name", type: "string" },
+    { name: "email", type: "string" },
+    { name: "phone", type: "string" },
+    { name: "city", type: "string" },
+    { name: "state", type: "string" },
+    { name: "country", type: "string" },
+    { name: "postal_code", type: "string" },
+    { name: "created_date", type: "datetime" },
+    { name: "activated_date", type: "datetime" },
+    { name: "last_login_date", type: "datetime" },
+    { name: "last_order_date", type: "datetime" },
+    { name: "status", type: "string" },
+    { name: "customer_type", type: "string" },
+    { name: "acquisition_channel", type: "string" },
+    { name: "lifetime_value", type: "decimal" },
+    { name: "is_verified", type: "boolean" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  delivery_partners: [
+    { name: "delivery_partner_id", type: "int64" },
+    { name: "partner_name", type: "string" },
+    { name: "phone", type: "string" },
+    { name: "vehicle_type", type: "string" },
+    { name: "vehicle_number", type: "string" },
+    { name: "city", type: "string" },
+    { name: "status", type: "string" },
+    { name: "joining_date", type: "datetime" },
+    { name: "last_active_date", type: "datetime" },
+    { name: "rating", type: "decimal" },
+    { name: "total_deliveries", type: "int64" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  feedback: [
+    { name: "feedback_id", type: "int64" },
+    { name: "customer_id", type: "int64" },
+    { name: "order_id", type: "int64" },
+    { name: "rating", type: "decimal" },
+    { name: "review_text", type: "string" },
+    { name: "feedback_channel", type: "string" },
+    { name: "issue_category", type: "string" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  order_items: [
+    { name: "item_id", type: "int64" },
+    { name: "order_id", type: "int64" },
+    { name: "product_id", type: "int64" },
+    { name: "quantity", type: "int64" },
+    { name: "unit_price", type: "decimal" },
+    { name: "discount_amount", type: "decimal" },
+    { name: "tax_amount", type: "decimal" },
+    { name: "total_price", type: "decimal" },
+    { name: "item_status", type: "string" },
+    { name: "currency", type: "string" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  orders: [
+    { name: "order_id", type: "int64" },
+    { name: "customer_id", type: "int64" },
+    { name: "order_date", type: "datetime" },
+    { name: "order_status", type: "string" },
+    { name: "payment_status", type: "string" },
+    { name: "delivery_partner_id", type: "int64" },
+    { name: "subtotal_amount", type: "decimal" },
+    { name: "tax_amount", type: "decimal" },
+    { name: "discount_amount", type: "decimal" },
+    { name: "delivery_fee", type: "decimal" },
+    { name: "total_amount", type: "decimal" },
+    { name: "currency", type: "string" },
+    { name: "estimated_delivery_time", type: "datetime" },
+    { name: "out_for_delivery_time", type: "datetime" },
+    { name: "delivered_date", type: "datetime" },
+    { name: "cancelled_date", type: "datetime" },
+    { name: "cancellation_reason", type: "string" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  payments: [
+    { name: "payment_id", type: "int64" },
+    { name: "order_id", type: "int64" },
+    { name: "payment_method", type: "string" },
+    { name: "payment_provider", type: "string" },
+    { name: "transaction_reference", type: "string" },
+    { name: "payment_status", type: "string" },
+    { name: "amount", type: "decimal" },
+    { name: "currency", type: "string" },
+    { name: "refund_amount", type: "decimal" },
+    { name: "refund_date", type: "datetime" },
+    { name: "failure_reason", type: "string" },
+    { name: "payment_date", type: "datetime" },
+    { name: "attempt_number", type: "int64" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  products: [
+    { name: "product_id", type: "int64" },
+    { name: "product_name", type: "string" },
+    { name: "product_description", type: "string" },
+    { name: "category", type: "string" },
+    { name: "subcategory", type: "string" },
+    { name: "brand", type: "string" },
+    { name: "sku", type: "string" },
+    { name: "price", type: "decimal" },
+    { name: "cost_price", type: "decimal" },
+    { name: "currency", type: "string" },
+    { name: "is_active", type: "boolean" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ]
+};
+
+const getTypeBadgeStyle = (type) => {
+  switch (type) {
+    case "int64": return { color: "#0ea5e9", bg: "#f0f9ff" };     // Sky blue
+    case "boolean": return { color: "#16a34a", bg: "#f0fdf4" };   // Emerald green
+    case "string": return { color: "#a855f7", bg: "#f3e8ff" };    // Purple text badge
+    case "decimal": return { color: "#06b6d4", bg: "#ecfeff" };   // Teal decimal badge
+    case "datetime": return { color: "#ea580c", bg: "#fff7ed" };  // Orange timestamp badge
+    default: return { color: "#64748b", bg: "#f1f5f9" };         // Fallback slate
+  }
+};
 
 function validateResults(userResult, referenceResult) {
   if (!userResult || !referenceResult) return null;
@@ -116,6 +243,51 @@ function validateResults(userResult, referenceResult) {
 
   return "almost";
 }
+function TableStructure({ tables }) {
+  const [openTable, setOpenTable] = useState(null);
+
+  return (
+    <div style={{ marginTop: "0.75rem" }}>
+      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "6px" }}>
+        📋 Table Structure
+      </div>
+      {tables.map(table => (
+        <div key={table} style={{ marginBottom: "4px", border: "1px solid #e2e8f0", borderRadius: "6px", overflow: "hidden" }}>
+          <div
+            onClick={() => setOpenTable(openTable === table ? null : table)}
+            style={{ padding: "6px 10px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", background: openTable === table ? "#eff6ff" : "#f8fafc" }}
+          >
+            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: openTable === table ? "#2563eb" : "#0f172a", fontFamily: "monospace" }}>
+              {table}
+            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <span style={{ fontSize: "0.65rem", color: "#94a3b8" }}>{DB_SCHEMAS[table]?.length || 0} cols</span>
+              <span style={{ fontSize: "0.65rem", color: "#94a3b8", transform: openTable === table ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▾</span>
+            </div>
+          </div>
+          {openTable === table && (
+            <div style={{ background: "#ffffff", borderTop: "1px solid #e2e8f0" }}>
+              {(DB_SCHEMAS[table] || []).map((col, i) => {
+                const style = getTypeBadgeStyle(col.type);
+                return (
+                  <div
+                    key={col.name}
+                    style={{ padding: "5px 10px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: i < DB_SCHEMAS[table].length - 1 ? "1px solid #f1f5f9" : "none" }}
+                  >
+                    <span style={{ fontSize: "0.72rem", fontFamily: "monospace", color: "#0f172a" }}>{col.name}</span>
+                    <span style={{ fontSize: "0.62rem", fontWeight: 600, padding: "1px 6px", borderRadius: "4px", background: style.bg, color: style.color }}>
+                      {col.type}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedItemRef, diffStyle, onSelect, nested = false }) {
   return (
@@ -142,9 +314,9 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
         <span style={{ fontSize: "0.83rem", fontWeight: isSelected ? 700 : 500, color: isSelected ? "#0f172a" : "#334155", flex: 1, lineHeight: 1.35 }}>
           {p.title}
         </span>
-        <span style={{ fontSize: "0.62rem", padding: "2px 7px", borderRadius: "10px", background: diffStyle.Easy.bg, color: diffStyle.Easy.color, border: `1px solid ${diffStyle.Easy.border}`, fontWeight: 600, whiteSpace: "nowrap" }}>
-          Basics
-        </span>
+        <span style={{ fontSize: "0.62rem", padding: "2px 7px", borderRadius: "10px", background: (diffStyle[p.difficulty] || diffStyle.Easy).bg, color: (diffStyle[p.difficulty] || diffStyle.Easy).color, border: `1px solid ${(diffStyle[p.difficulty] || diffStyle.Easy).border}`, fontWeight: 600, whiteSpace: "nowrap" }}>
+  {p.difficulty || "Easy"}
+</span>
         <span style={{ fontSize: "0.7rem", color: isExpanded ? "#2563eb" : "#94a3b8", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", lineHeight: 1 }}>▾</span>
       </div>
 
@@ -255,13 +427,38 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
               {p.hint}
             </div>
           </details>
+          {/* Table Structure — only show tables used in this problem */}
+{/* {p.expectedColumns && (() => { */}
+{(() => {
+  // Detect which tables this problem uses based on solutionQuery or description
+  const query = (p.solutionQuery || p.starterQuery || "").toLowerCase();
+  const desc = (p.description || "").toLowerCase();
+  const combined = query + " " + desc;
+
+  const TABLE_SCHEMAS = {
+    customers: ["customer_id","customer_name","email","phone","city","state","country","status","customer_type","lifetime_value"],
+    orders: ["order_id","customer_id","order_date","order_status","payment_status","total_amount","currency","delivered_date"],
+    order_items: ["order_item_id","order_id","product_id","quantity","unit_price","total_price","item_status"],
+    products: ["product_id","product_name","category","subcategory","brand","price","cost_price"],
+    payments: ["payment_id","order_id","payment_method","payment_status","amount","currency"],
+    delivery_partners: ["delivery_partner_id","partner_name","vehicle_type","city","status","rating"],
+    feedback: ["feedback_id","customer_id","order_id","rating","issue_category"],
+  };
+
+  const usedTables = Object.keys(TABLE_SCHEMAS).filter(t => combined.includes(t));
+  if (usedTables.length === 0) return null;
+
+  return (
+    <TableStructure tables={usedTables} />
+  );
+})()}
         </div>
       )}
     </div>
   );
 }
 
-export default function SQLIntermediatePage() {
+export default function SQLBasicsPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { problemSlug } = useParams();
@@ -304,7 +501,7 @@ export default function SQLIntermediatePage() {
   
     description: selectedProblem
       ? selectedProblem.metaDescription
-      : "Practice SQL Intermediate interview questions.",
+      : "Practice SQL Basic interview questions.",
   
     canonical: selectedProblem
       ? `https://www.repractiq.com/sql/basics/${selectedProblem.id}-${selectedProblem.slug}`
@@ -558,7 +755,7 @@ else setExpandedMilestone("gold");
     runCountRef.current = 0;
     setRunCountDisplay(0);
     setSelectedProblem(p);
-    setQuery("-- Explore the data first, then write your solution below\nSELECT * FROM customers LIMIT 5;");
+    setQuery("-- Explore the data first, then write your solution below");
     setResults(null);
     setError(null);
     setValidationStatus(null);
@@ -638,8 +835,28 @@ else setExpandedMilestone("gold");
   };
 
   const diffStyle = {
-    Easy: { color: "#16a34a", bg: "#f0fdf4", border: "#bbf7d0" },
+    Easy: {
+      color: "#16a34a",
+      bg: "#f0fdf4",
+      border: "#bbf7d0",
+    },
+    Medium: {
+      color: "#d97706",
+      bg: "#fffbeb",
+      border: "#fde68a",
+    },
+  "Medium+": {
+      color: "#ea580c",   // orange-600
+      bg: "#fff7ed",      // orange-50
+      border: "#fdba74",  // orange-300
+    },
+    Hard: {
+      color: "#dc2626",
+      bg: "#fef2f2",
+      border: "#fecaca",
+    },
   };
+ 
 
   const filteredProblems = useMemo(() => {
     if (!searchTerm.trim()) return SQL_PROBLEMS;
@@ -754,7 +971,7 @@ else setExpandedMilestone("gold");
         onNavigateSignup={() => navigate("/signup")}
         onNavigateLogin={() => navigate("/login")}
         onNavigatePricing={() => navigate("/pricing")}
-        pageTitle="SQL Intermediate"
+        pageTitle="SQL Basics"
         totalProblems={SQL_PROBLEMS.length}
         runCountDisplay={runCountDisplay}
         onPostCommunity={handlePostCommunity}
@@ -791,7 +1008,7 @@ ShareModalComponent={ShareModal}
 
       {/* PAGE TITLE */}
       <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: "0.875rem 2rem", display: "flex", alignItems: "center", gap: "16px", flexShrink: 0 }}>
-        <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>SQL Intermediate</h2>
+        <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>SQL Basics</h2>
       </div>
 
       {/* MAIN SPLIT */}
@@ -821,7 +1038,7 @@ ShareModalComponent={ShareModal}
           {!!searchTerm && (
             <div style={{ margin: "0 0.75rem 0.5rem", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "10px", padding: "0.625rem 0.75rem" }}>
               <div style={{ fontSize: "0.72rem", color: "#1d4ed8", fontWeight: 700, marginBottom: "4px" }}>
-                Results: {filteredProblems.length} in Intermediate
+                Results: {filteredProblems.length} in Basics
               </div>
               {crossCategoryMatches.length > 0 && (
                 <div style={{ fontSize: "0.72rem", color: "#475569" }}>
@@ -964,7 +1181,7 @@ ShareModalComponent={ShareModal}
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
                   <div>
                     <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "6px" }}>
-                      <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", fontWeight: 600 }}>Intermediate</span>
+                      <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", fontWeight: 600 }}>Basics</span>
                       <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>#{selectedProblem.id}</span>
                       {solvedIds.has(selectedProblem.id) && (
                         <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", fontWeight: 600 }}>✓ Attempted</span>
@@ -972,12 +1189,6 @@ ShareModalComponent={ShareModal}
                     </div>
                     <h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>{selectedProblem.title}</h1>
                   </div>
-                  <button
-                    onClick={handlePostCommunity}
-                    style={{ padding: "8px 16px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.8rem", border: "1.5px solid #bfdbfe", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}
-                  >
-                    🌐 Post to Community
-                  </button>
                 </div>
                 <div style={{ marginTop: "0.875rem", background: "#f8fafc", border: "1px solid #e2e8f0", borderLeft: "3px solid #2563eb", borderRadius: "0 8px 8px 0", padding: "0.625rem 0.875rem" }}>
                   <span style={{ fontSize: "0.67rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "3px" }}>Task</span>
@@ -997,12 +1208,18 @@ ShareModalComponent={ShareModal}
                       <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>Ctrl+Enter to run</span>
                     </div>
                     <div style={{ display: "flex", gap: "8px" }}>
-                      <button
-                        onClick={() => { setQuery(selectedProblem.starterQuery); setResults(null); setError(null); }}
-                        style={{ fontSize: "0.75rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 10px", cursor: "pointer" }}
-                      >
-                        Reset
-                      </button>
+                    <button
+  onClick={() => { setQuery("-- Explore the data first, then write your solution below"); setResults(null); setError(null); setValidationStatus(null); }}
+  style={{ fontSize: "0.75rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 10px", cursor: "pointer" }}
+>
+  Reset
+</button>
+<button
+  onClick={() => { setQuery(selectedProblem.solutionQuery); setResults(null); setValidationStatus(null); }}
+  style={{ fontSize: "0.75rem", color: "#d97706", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "6px", padding: "4px 10px", cursor: "pointer", fontWeight: 600 }}
+>
+  💡 Solution
+</button>
                       <button
                         onClick={runQuery}
                         disabled={!dbReady}
@@ -1141,7 +1358,7 @@ ShareModalComponent={ShareModal}
       <ShareModal
   isOpen={shareOpen}
   onClose={() => setShareOpen(false)}
-  problem={{ ...selectedProblem, category: "Intermediate" }}
+  problem={{ ...selectedProblem, category: "Basics" }}
   user={{
     fullName: userFullName,
     username: userFullName || userEmail?.split("@")[0] || "user",

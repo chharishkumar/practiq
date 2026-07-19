@@ -3,7 +3,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 1,
     title: "Customers with Multiple Orders",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-group-by-having-clause",
     seoTitle: "SQL GROUP BY and HAVING Clause",
     metaDescription: "Learn how to use SQL GROUP BY and HAVING to identify customers who have placed multiple orders.",
@@ -38,7 +38,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 2,
     title: "Running Total of Revenue",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-running-total-window-function",
     seoTitle: "SQL Running Total Using Window Functions",
     metaDescription: "Learn how to calculate a cumulative running total using SQL window functions.",
@@ -86,7 +86,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 3,
     title: "Highest Order Amount per Customer",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-max-with-group-by",
     seoTitle: "SQL MAX Function with GROUP BY",
     metaDescription: "Learn how to find the highest order amount for each customer using SQL MAX() and GROUP BY.",
@@ -139,7 +139,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 4,
     title: "Orders Above Average",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-scalar-subquery",
     seoTitle: "SQL Scalar Subquery Tutorial",
     metaDescription: "Learn how to use a scalar subquery to find orders with a total amount greater than the average order value.",
@@ -196,7 +196,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 5,
     title: "Category Revenue Contribution",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-join-with-sum-aggregation",
     seoTitle: "SQL JOIN with SUM Aggregation",
     metaDescription: "Learn how to join order_items and products to calculate total revenue by product category using SQL SUM().",
@@ -251,7 +251,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 6,
     title: "Ranking Products by Price",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-rank-partition-by",
     seoTitle: "SQL RANK Window Function with PARTITION BY",
     metaDescription: "Learn how to use the RANK() OVER window function with PARTITION BY to rank items within discrete groups.",
@@ -269,7 +269,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 7,
     title: "Monthly Revenue Report",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-cte-common-table-expressions",
     seoTitle: "SQL CTE (Common Table Expressions) Tutorial",
     metaDescription: "Learn how to use SQL Common Table Expressions (CTEs) to calculate monthly revenue.",
@@ -328,7 +328,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 8,
     title: "The 'Never-Ordered' Customers",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-where-not-in-subquery",
     seoTitle: "SQL WHERE NOT IN Subquery",
     metaDescription: "Learn how to exclude specific record sets by deploying an operational SQL WHERE NOT IN subquery architecture.",
@@ -346,7 +346,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 9,
     title: "Percent of Total Revenue",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-percentage-of-total-calculation",
     seoTitle: "SQL Percentage of Total Calculation",
     metaDescription: "Learn how to calculate each order's percentage contribution to the total revenue using SQL window functions.",
@@ -392,7 +392,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 10,
     title: "Customer Signup to First Order (Days)",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-date-difference-julianday",
     seoTitle: "SQL Date Difference Calculation",
     metaDescription: "Learn how to calculate the number of days between customer signup and their first order using SQLite date functions.",
@@ -447,7 +447,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 11,
     title: "Delivered Orders from Verified Customers",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-multiple-where-conditions",
     seoTitle: "SQL Multiple WHERE Conditions",
     metaDescription: "Learn how to filter data using multiple conditions with the SQL WHERE clause.",
@@ -499,7 +499,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 12,
     title: "Average Order Value per Customer",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-avg-group-by",
     seoTitle: "SQL AVG Aggregate Function with GROUP BY",
     metaDescription: "Learn how to compute group-level numeric averages by passing target key declarations into SQL AVG configurations.",
@@ -517,7 +517,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 13,
     title: "Top Selling Category by Revenue",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-sum-join-order-by-limit",
     seoTitle: "SQL JOIN with SUM, ORDER BY, and LIMIT",
     metaDescription: "Learn how to combine SQL JOIN, SUM accumulation, sorting arrays, and row boundaries to isolate top records.",
@@ -535,7 +535,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 14,
     title: "Orders with Multiple Items",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-count-group-by-having",
     seoTitle: "SQL COUNT Function with HAVING Clause",
     metaDescription: "Learn how to apply conditional size boundaries onto structural data categories using target HAVING setups.",
@@ -553,7 +553,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 15,
     title: "Payment Success Rate",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-conditional-aggregation-case-when",
     seoTitle: "SQL Conditional Aggregation Using CASE WHEN",
     metaDescription: "Learn how to build ratio calculations directly inside query statements using conditional CASE WHEN frameworks.",
@@ -571,7 +571,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 16,
     title: "Customers with Highest Refund Amount",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-multiple-table-joins-aggregation",
     seoTitle: "SQL Multiple Table Joins and Aggregation",
     metaDescription: "Learn how to resolve deep entity schemas by joining three or more transactional dataset tables in SQL.",
@@ -589,7 +589,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 17,
     title: "Inactive Delivery Partners",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-date-comparison-operators",
     seoTitle: "SQL Date Comparison Operators",
     metaDescription: "Learn how to isolate non-active asset groups by comparing dynamic historical date thresholds inside WHERE filters.",
@@ -607,7 +607,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 18,
     title: "Customer Order Frequency Ranking",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-rank-over-aggregate-function",
     seoTitle: "SQL RANK() OVER Window Function with Aggregation",
     metaDescription: "Learn how to execute the analytic RANK window function directly over grouped data parameters.",
@@ -625,7 +625,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 19,
     title: "Delayed Deliveries Count",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-timestamp-column-comparison",
     seoTitle: "SQL Timestamp Column Comparison",
     metaDescription: "Learn how to compare two distinct timestamp column values inside a basic SQL WHERE filter expression.",
@@ -643,7 +643,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 20,
     title: "Most Used Payment Method",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-group-by-count-order-by-limit",
     seoTitle: "SQL GROUP BY, COUNT, ORDER BY, and LIMIT",
     metaDescription: "Learn how to combine classification groups with row sorting and volume bounds to locate top distinct modes.",
@@ -661,7 +661,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 21,
     title: "Customers with Negative Feedback",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-inner-join-with-where-clause",
     seoTitle: "SQL INNER JOIN with WHERE Clause",
     metaDescription: "Learn how to relate separate table components together and pass direct alphanumeric matching conditions.",
@@ -683,7 +683,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 22,
     title: "Average Delivery Time",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-avg-with-date-subtraction",
     seoTitle: "SQL AVG with Date Subtraction Functions",
     metaDescription: "Learn how to average out time intervals by combining mean computations with underlying date subtraction syntax.",
@@ -701,7 +701,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 23,
     title: "Products Never Ordered",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-left-join-is-null",
     seoTitle: "SQL LEFT JOIN with IS NULL Filter",
     metaDescription: "Learn how to identify isolated or unmatched structural table indexes using left-side joins and target null conditions.",
@@ -719,7 +719,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 24,
     title: "Repeat Purchase Gap",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-lag-window-function",
     seoTitle: "SQL LAG() OVER Window Function Tutorial",
     metaDescription: "Learn how to query row states chronologically using the analytic window LAG function parameters.",
@@ -737,7 +737,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 25,
     title: "High Discount Orders",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-mathematical-operators-in-where",
     seoTitle: "SQL Mathematical Operators in WHERE Clause",
     metaDescription: "Learn how to execute numeric ratio math conditions inside relational query data filters.",
@@ -755,7 +755,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 26,
     title: "Orders Without Items",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-outer-join-data-integrity-validation",
     seoTitle: "SQL LEFT JOIN Data Integrity Validation",
     metaDescription: "Learn how to locate orphaned tracking indexes across systems using unlinked outer-join procedures.",
@@ -773,7 +773,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 27,
     title: "Total Items Sold per Product",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-sum-group-by-product-id",
     seoTitle: "SQL SUM with GROUP BY Product ID",
     metaDescription: "Learn how to aggregate item totals by product identities using basic SQL grouping statements.",
@@ -791,7 +791,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 28,
     title: "Customer Lifetime Orders Value",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-sum-aggregation-customer-id",
     seoTitle: "SQL SUM Aggregation with Customer ID Grouping",
     metaDescription: "Learn how to summarize continuous ledger entries per customer profile via localized sum grouping.",
@@ -809,7 +809,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 29,
     title: "Orders with Multiple Payment Attempts",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-having-count-validation",
     seoTitle: "SQL HAVING COUNT Validation Queries",
     metaDescription: "Learn how to surface system transaction retry cycles using HAVING COUNT data evaluation logic.",
@@ -827,7 +827,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 30,
     title: "Average Rating per Customer",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-avg-group-by-customer-id",
     seoTitle: "SQL AVG with GROUP BY Customer ID",
     metaDescription: "Learn how to compute historical score trends by grouping numeric metrics under distinct user accounts.",
@@ -845,7 +845,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 31,
     title: "Orders Delivered Per Partner",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-count-group-by-where-clause",
     seoTitle: "SQL COUNT Function with WHERE and GROUP BY",
     metaDescription: "Learn how to use the SQL COUNT function alongside WHERE filters and GROUP BY clauses to aggregate filtered datasets.",
@@ -863,7 +863,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 32,
     title: "Revenue by City",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-join-with-sum-group-by",
     seoTitle: "SQL JOIN with SUM and GROUP BY Clauses",
     metaDescription: "Learn how to combine relational tables using an INNER JOIN and calculate totals using SUM and GROUP BY statement properties.",
@@ -881,7 +881,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 33,
     title: "Active vs Inactive Products",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-group-by-boolean-field",
     seoTitle: "SQL GROUP BY Boolean Column Condition",
     metaDescription: "Learn how to cluster data rows and compute operational counts using boolean true or false flag columns.",
@@ -899,7 +899,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 34,
     title: "High Value Orders",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-where-mathematical-filter",
     seoTitle: "SQL Mathematical Filters in WHERE Clause",
     metaDescription: "Learn how to filter rows using mathematical expressions in the SQL WHERE clause.",
@@ -943,7 +943,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 35,
     title: "Customers with Only One Order",
-    difficulty: "Intermediate",
+    difficulty: "Easy",
     slug: "sql-having-count-equals-one",
     seoTitle: "SQL HAVING COUNT Equals Match Conditions",
     metaDescription: "Learn how to apply precise volumetric matching boundaries onto grouped identifiers using HAVING COUNT logic constraints.",
@@ -961,7 +961,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 36,
     title: "Top Rated Delivery Partners",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-where-greater-than-subquery",
     seoTitle: "SQL WHERE Greater Than Subquery Selection",
     metaDescription: "Learn how to evaluate row-level field quantities against a dynamic nested scalar average calculation subquery block.",
@@ -979,7 +979,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 37,
     title: "Orders Cancelled per Reason",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-group-by-is-not-null",
     seoTitle: "SQL GROUP BY with IS NOT NULL Filter",
     metaDescription: "Learn how to drop null entries using target row filters prior to aggregating and grouping categorical data elements.",
@@ -997,7 +997,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 38,
     title: "Revenue Contribution per Customer",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-window-sum-over-nested-aggregation",
     seoTitle: "SQL Window SUM OVER Function with Nested Aggregation",
     metaDescription: "Learn how to compute relational ratios by dividing standard column sums against an overarching window grand total metric.",
@@ -1015,7 +1015,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 39,
     title: "Products Above Average Price",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-scalar-subquery-with-where",
     seoTitle: "SQL Scalar Subquery Configuration within WHERE Filters",
     metaDescription: "Learn how to pull a structural baseline index value from a nested select and execute comparison query checks.",
@@ -1033,7 +1033,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 40,
     title: "Orders per Day",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-group-by-date-column",
     seoTitle: "SQL GROUP BY Date Statement Formatting",
     metaDescription: "Learn how to execute quantitative metrics sorting over specific chronology limits using simple GROUP BY date column operations.",
@@ -1051,7 +1051,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 41,
     title: "Customers Without Feedback",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-left-join-identity-is-null",
     seoTitle: "SQL LEFT JOIN with Identifier IS NULL Constraint",
     metaDescription: "Learn how to parse unmatched key fields across related data spaces using left-sided joins and terminal null validation parameters.",
@@ -1069,7 +1069,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 42,
     title: "Highest Order per Day",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-max-aggregate-with-group-by-date",
     seoTitle: "SQL MAX Aggregation with GROUP BY Date",
     metaDescription: "Learn how to output topmost column metrics inside discrete chronological buckets by merging MAX queries with date groupings.",
@@ -1087,7 +1087,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 43,
     title: "Payment Failures per Provider",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-count-where-string-match",
     seoTitle: "SQL COUNT with WHERE String Character Matching",
     metaDescription: "Learn how to isolate target status strings using specific where checks and summarize total volumes per system provider.",
@@ -1105,7 +1105,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 44,
     title: "Orders with No Discount",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-where-equals-zero-numeric-filter",
     seoTitle: "SQL WHERE Equals Zero Numeric Filters",
     metaDescription: "Learn how to execute literal numeric evaluations inside a baseline filter statement to map rows with zeroed properties.",
@@ -1123,7 +1123,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 45,
     title: "Top Customers by Order Count",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-group-by-order-by-count-limit",
     seoTitle: "SQL GROUP BY and ORDER BY COUNT with LIMIT Bounds",
     metaDescription: "Learn how to cluster category keys, rank them sorted by cumulative volume, and bound row counts using LIMIT syntax expressions.",
@@ -1141,7 +1141,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 46,
     title: "Revenue per Product",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-inner-join-sum-group-by-string",
     seoTitle: "SQL INNER JOIN with SUM and GROUP BY String Keys",
     metaDescription: "Learn how to compile revenue metrics across separate entity systems by mapping key indexes and grouping data strings.",
@@ -1159,7 +1159,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 47,
     title: "Customers with High Lifetime Value",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-subquery-with-avg-comparison",
     seoTitle: "SQL Subquery with AVG Function Comparisons",
     metaDescription: "Learn how to contrast table metrics against an isolated column-wide average calculated inside a nested subquery parameter.",
@@ -1177,7 +1177,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 48,
     title: "Orders by Payment Status",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-count-group-by-status-string",
     seoTitle: "SQL COUNT with GROUP BY Category Status String",
     metaDescription: "Learn how to separate system datasets into structural buckets and count entries using string category parameters.",
@@ -1195,7 +1195,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 49,
     title: "Products per Category Count",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-group-by-categorical-column",
     seoTitle: "SQL GROUP BY Categorical Column Fields",
     metaDescription: "Learn how to parse an asset catalog space and aggregate volume distributions across primary database item categories.",
@@ -1213,7 +1213,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 50,
     title: "Customers with Verified Accounts Only",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-where-clause-multiple-and-conditions",
     seoTitle: "SQL WHERE Clause Multiple AND Conditions",
     metaDescription: "Learn how to refine record lookups by joining separate evaluation terms using string and boolean AND operator checks.",
@@ -1231,7 +1231,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 51,
     title: "Total Payments by Payment Method",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-group-by-sum-payments",
     seoTitle: "SQL GROUP BY with SUM Function",
     metaDescription: "Learn how to group payment records and calculate total payment amount for each payment method using SQL SUM().",
@@ -1248,7 +1248,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 52,
     title: "Customers with Orders in Multiple Cities",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-having-count-distinct-condition",
     seoTitle: "SQL HAVING COUNT DISTINCT Evaluation Queries",
     metaDescription: "Learn how to check for broad geo-spatial coverage by evaluating distinct item variety values within a HAVING statement.",
@@ -1266,7 +1266,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 53,
     title: "Average Items per Order",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-avg-from-nested-subquery-count",
     seoTitle: "SQL AVG Aggregate from Nested Subquery Count",
     metaDescription: "Learn how to derive overarching system averages by nesting a quantitative count query block inside a main select statement.",
@@ -1284,7 +1284,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 54,
     title: "Customers with Declining Order Value",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-lag-window-function-subquery-comparison",
     seoTitle: "SQL LAG Window Function with Derived Subquery Comparison",
     metaDescription: "Learn how to leverage individual timeline row evaluations by embedding analytical LAG functions inside subquery components.",
@@ -1302,7 +1302,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 55,
     title: "Orders with Highest Item Value",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-max-group-by-order-id",
     seoTitle: "SQL MAX Function with Order ID Grouping",
     metaDescription: "Learn how to isolate peak values within discrete purchase records by combining MAX tools with explicit order item keys.",
@@ -1320,7 +1320,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 56,
     title: "Delivery Partner Workload Share",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-window-count-percentage-ratio",
     seoTitle: "SQL Window COUNT Partition and Percentage Ratio Calculations",
     metaDescription: "Learn how to compute group-level distribution weight metrics by dividing active category counts against window grand totals.",
@@ -1338,7 +1338,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 57,
     title: "Products with Low Sales Volume",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-having-sum-less-than-subquery-avg",
     seoTitle: "SQL HAVING SUM Less Than Subquery AVG Bounds",
     metaDescription: "Learn how to drop poor performers by evaluating group metrics against a global mean derived inside a nested subquery.",
@@ -1356,7 +1356,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 58,
     title: "Customers Ordering After Long Gap",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-julianday-date-difference-lag-window",
     seoTitle: "SQL julianday Date Difference with LAG Window Function",
     metaDescription: "Learn how to parse chronological distance markers by executing julianday date arithmetic on structural LAG column indexes.",
@@ -1374,7 +1374,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 59,
     title: "Revenue by Acquisition Channel",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-inner-join-with-sum-categorical-grouping",
     seoTitle: "SQL INNER JOIN with SUM and Categorical Channel Grouping",
     metaDescription: "Learn how to pull performance financial numbers by mapping cross-table user tags and running total calculations.",
@@ -1392,7 +1392,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 60,
     title: "Orders with Multiple Product Categories",
-    difficulty: "Intermediate",
+    difficulty: "Medium",
     slug: "sql-having-count-distinct-category-keys",
     seoTitle: "SQL HAVING COUNT DISTINCT Category Keys",
     metaDescription: "Learn how to parse relational shopping carts and look up multi-class transactions using HAVING COUNT DISTINCT queries.",
@@ -1410,7 +1410,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 61,
     title: "Average Refund per Order",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-avg-function-with-group-by-order-id",
     seoTitle: "SQL AVG Function with GROUP BY Order ID",
     metaDescription: "Learn how to compute numeric dataset means within distinct tracking records by merging the SQL AVG function with GROUP BY.",
@@ -1428,7 +1428,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 62,
     title: "Orders with High Delivery Fee",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-scalar-subquery-where-clause-filtering",
     seoTitle: "SQL Scalar Subquery Configuration within WHERE Filters",
     metaDescription: "Learn how to build comparative row filters against a dynamically resolved mathematical mean inside a nested scalar subquery block.",
@@ -1446,7 +1446,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 63,
     title: "Customers with No Successful Payments",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-having-sum-case-when-conditional-logic",
     seoTitle: "SQL HAVING SUM with CASE WHEN Conditional Logic",
     metaDescription: "Learn how to flag structural status voids by nesting a conditional case expression inside an aggregate HAVING constraint statement.",
@@ -1464,7 +1464,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 64,
     title: "Product Profit per Item",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-derived-column-subtraction-arithmetic",
     seoTitle: "SQL Derived Column Columnar Subtraction Arithmetic",
     metaDescription: "Learn how to create computed result aliases at runtime by deploying subtraction arithmetic between separate financial schema keys.",
@@ -1482,7 +1482,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 65,
     title: "Orders by Customer Type",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-inner-join-with-count-group-by-string",
     seoTitle: "SQL INNER JOIN with COUNT and GROUP BY String Categories",
     metaDescription: "Learn how to relate operational ledgers to customer attributes via an INNER JOIN and separate volumes by type tags.",
@@ -1500,7 +1500,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 66,
     title: "Top Rated Products",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-multiple-table-joins-with-avg-order-by",
     seoTitle: "SQL Multiple Table Joins with AVG and ORDER BY Sorting",
     metaDescription: "Learn how to pipe structural paths across four normalized system tables to establish sorting by average metric scales.",
@@ -1518,7 +1518,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 67,
     title: "Orders per Currency",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-count-group-by-currency-string",
     seoTitle: "SQL COUNT Function with GROUP BY Currency String",
     metaDescription: "Learn how to partition accounting ledgers and tally record allocations across explicit transaction currency codes.",
@@ -1536,7 +1536,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 68,
     title: "Customers with High Avg Order Value",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-having-avg-greater-than-scalar-subquery",
     seoTitle: "SQL HAVING AVG Greater Than Scalar Subquery Baseline",
     metaDescription: "Learn how to build group summaries and drop indexes below a dynamic mean using a nested subquery comparison inside a HAVING block.",
@@ -1554,7 +1554,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 69,
     title: "Orders with Maximum Discount Item",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-max-aggregate-with-group-by-order-id",
     seoTitle: "SQL MAX Aggregate Function with GROUP BY Order ID",
     metaDescription: "Learn how to identify peak individual transaction line items by passing key indexes inside a localized MAX statement.",
@@ -1572,7 +1572,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 70,
     title: "Customers by Signup Month",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-strftime-date-extraction-group-by",
     seoTitle: "SQL strftime Date Month Extraction and Grouping",
     metaDescription: "Learn how to break down date strings into month integers using strftime tools and group volume logs accordingly.",
@@ -1590,7 +1590,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 71,
     title: "Orders with High Item Count",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-having-count-greater-than-nested-subquery-avg",
     seoTitle: "SQL HAVING COUNT Greater Than Nested Subquery Average",
     metaDescription: "Learn how to evaluate complex matrix structures by contrasting localized counts against secondary subquery arrays.",
@@ -1608,7 +1608,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 72,
     title: "Revenue Trend by State",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-join-with-sum-regional-group-by",
     seoTitle: "SQL JOIN with SUM and Regional String Grouping",
     metaDescription: "Learn how to combine geographic tracking structures with purchase ledgers using clean index matching properties and sum macros.",
@@ -1626,7 +1626,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 73,
     title: "Orders Delivered by Each Partner",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-group-by-delivery-partner",
     seoTitle: "SQL GROUP BY Delivery Partner",
     metaDescription: "Learn how to use GROUP BY and COUNT() to calculate the number of orders handled by each delivery partner.",
@@ -1643,7 +1643,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 74,
     title: "Customers with High Feedback Volume",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-having-count-greater-than-subquery-mean",
     seoTitle: "SQL HAVING COUNT Greater Than Subquery Mean Baseline",
     metaDescription: "Learn how to target top user accounts by verifying category frequencies exceed the baseline produced from deep scalar nested calculations.",
@@ -1661,7 +1661,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 75,
     title: "Orders with Tax Higher Than Discount",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-where-columnar-inequality-operator",
     seoTitle: "SQL WHERE Columnar Inequality Operator Filters",
     metaDescription: "Learn how to filter data grids by asserting mathematical greater-than operations between two separate numeric column keys.",
@@ -1679,7 +1679,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 76,
     title: "Orders Without Successful Payment",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-left-join-multiple-conditions-is-null",
     seoTitle: "SQL LEFT JOIN with Multiple Conditions and IS NULL Filter",
     metaDescription: "Learn how to locate system exceptions by tracking join criteria changes and filtering unmatched logs via terminal null statements.",
@@ -1697,7 +1697,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 77,
     title: "Average Order Value by City",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-inner-join-with-avg-string-grouping",
     seoTitle: "SQL INNER JOIN with AVG and Location String Grouping",
     metaDescription: "Learn how to generate area benchmark summaries by merging customer profiles with cash ledgers and computing category means.",
@@ -1715,7 +1715,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 78,
     title: "Products with Highest Profit Margin",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-order-by-mathematical-ratio-expression",
     seoTitle: "SQL ORDER BY Mathematical Ratio Expressions",
     metaDescription: "Learn how to build advanced analytical rankings by executing proportional floating-point margin math inside sorting blocks.",
@@ -1733,7 +1733,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 79,
     title: "Customers with Multiple Payment Methods",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-having-count-distinct-payment-methods",
     seoTitle: "SQL HAVING COUNT DISTINCT Payment Method Field Matching",
     metaDescription: "Learn how to pinpoint systemic operational diversity flags by comparing count distinct tracking entries against numerical rules.",
@@ -1751,7 +1751,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 80,
     title: "Orders with More Than Average Value",
-    difficulty: "Intermediate",
+    difficulty: "Medium+",
     slug: "sql-where-greater-than-nested-scalar-subquery",
     seoTitle: "SQL WHERE Greater Than Nested Scalar Subquery Operations",
     metaDescription: "Learn how to pull a single continuous variable from a system-wide average calculation to filter high-value rows dynamically.",
@@ -1769,7 +1769,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 81,
     title: "Previous Order Date for Each Customer",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-lag-window-function",
     seoTitle: "SQL LAG Window Function Tutorial",
     metaDescription: "Learn how to use the SQL LAG() window function to access values from the previous row within each customer partition.",
@@ -1786,7 +1786,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 82,
     title: "Orders with Highest Tax Percentage",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-order-by-ratio-expression-with-limit",
     seoTitle: "SQL ORDER BY Columnar Percentage Ratio with LIMIT Constraints",
     metaDescription: "Learn how to prioritize top structural values by sorting tables across derived floating ratios and declaring strict row ceilings.",
@@ -1804,7 +1804,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 83,
     title: "Customers with Total Payments Above 100",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-group-by-having-sum",
     seoTitle: "SQL GROUP BY and HAVING with SUM",
     metaDescription: "Learn how to use GROUP BY, SUM(), and HAVING to filter customers based on their total payment amount.",
@@ -1821,7 +1821,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 84,
     title: "Orders per Customer per Month",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-composite-group-by-identifier-and-month-string",
     seoTitle: "SQL Composite GROUP BY Identifier and Month String Configurations",
     metaDescription: "Learn how to configure multi-field matrix logs by clustering data across profile keys and formatted strftime month outputs.",
@@ -1839,7 +1839,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 85,
     title: "Orders with Highest Delivery Fee per City",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-inner-join-with-max-regional-string-grouping",
     seoTitle: "SQL INNER JOIN with MAX and Regional String Grouping Constraints",
     metaDescription: "Learn how to query maximum pricing limits inside categorical area tags by linking tables and configuring MAX summaries.",
@@ -1857,7 +1857,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 86,
     title: "Number of Customers per Product",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-count-distinct-group-by",
     seoTitle: "SQL COUNT DISTINCT with GROUP BY",
     metaDescription: "Learn how to count the number of unique customers who purchased each product using COUNT(DISTINCT).",
@@ -1874,7 +1874,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 87,
     title: "Customers with Only Failed Orders",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-having-sum-case-when-status-inequality",
     seoTitle: "SQL HAVING SUM with CASE WHEN Status String Inequality Expressions",
     metaDescription: "Learn how to parse operational pipelines and exclude accounts using specific aggregate condition counters inside a HAVING statement.",
@@ -1892,7 +1892,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 88,
     title: "Revenue from Verified vs Non-Verified Customers",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-join-with-sum-and-boolean-flag-grouping",
     seoTitle: "SQL JOIN with SUM and Boolean Status Flag Grouping",
     metaDescription: "Learn how to evaluate user demographic impacts by summing purchase metrics across clean boolean verification indices.",
@@ -1910,7 +1910,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 89,
     title: "Orders with More Than One Category",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-having-count-distinct-product-category-validation",
     seoTitle: "SQL HAVING COUNT DISTINCT Product Category Validation",
     metaDescription: "Learn how to inspect individual shopping metrics and identify multi-category baskets using standard HAVING COUNT DISTINCT syntax.",
@@ -1928,7 +1928,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 90,
     title: "Average Rating per Order",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-avg-aggregate-with-group-by-order-key",
     seoTitle: "SQL AVG Aggregate Function with GROUP BY Order Key Reference",
     metaDescription: "Learn how to determine specific row quality averages by routing data markers through an operational query statement bucketed by order IDs.",
@@ -1946,7 +1946,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 91,
     title: "Number of Customers by State",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-group-by-count-customers-state",
     seoTitle: "SQL GROUP BY and COUNT by State",
     metaDescription: "Learn how to group customers by state and count the number of customers in each state using SQL GROUP BY and COUNT().",
@@ -1963,7 +1963,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 92,
     title: "Orders with Maximum Items per Customer",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-composite-group-by-customer-and-order",
     seoTitle: "SQL Composite GROUP BY Customer and Order Key Relationships",
     metaDescription: "Learn how to break down dataset line distributions by running multiple keys into your database grouping statements.",
@@ -1981,7 +1981,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 93,
     title: "Revenue by Payment Method",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-sum-aggregation-grouped-by-payment-string",
     seoTitle: "SQL SUM Aggregation Grouped by Payment Method String",
     metaDescription: "Learn how to total absolute metric volumes using standard column summation linked to matching payment interface types.",
@@ -1999,7 +1999,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 94,
     title: "Customers with Orders Above Their Average",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-correlated-subquery-where-clause-inequality",
     seoTitle: "SQL Correlated Subquery WHERE Clause Inequality Validations",
     metaDescription: "Learn how to benchmark individual record indexes by nesting a dynamic self-referencing subquery loop within your filters.",
@@ -2017,7 +2017,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 95,
     title: "Products Never Reviewed",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-multiple-left-joins-with-is-null-filter",
     seoTitle: "SQL Multiple LEFT JOINS with IS NULL Filter Exclusions",
     metaDescription: "Learn how to isolate systemic transactional gaps across three schemas using sequential left joins and null pointer checks.",
@@ -2035,7 +2035,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 96,
     title: "Orders with Above Average Items Value",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-having-sum-greater-than-scalar-subquery",
     seoTitle: "SQL HAVING SUM Greater Than Scalar Subquery Mean Baseline",
     metaDescription: "Learn how to isolate aggregate transaction profiles by checking totals against global baseline averages using subqueries.",
@@ -2053,7 +2053,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 97,
     title: "Customers with Frequent Orders",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-having-count-greater-than-nested-derived-average",
     seoTitle: "SQL HAVING COUNT Greater Than Nested Derived Table Average",
     metaDescription: "Learn how to separate top user frequency metrics by validating row aggregations against a calculated subquery table score.",
@@ -2071,7 +2071,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 98,
     title: "Orders with Multiple Feedback Entries",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-group-by-order-id-having-count-greater-than-one",
     seoTitle: "SQL GROUP BY Order ID with HAVING COUNT Greater Than One",
     metaDescription: "Learn how to catch target duplicates or multiple event relations inside an isolated tracking index via conditional counting properties.",
@@ -2089,7 +2089,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 99,
     title: "Revenue by Product Brand",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-inner-join-with-sum-grouped-by-brand-string",
     seoTitle: "SQL INNER JOIN with SUM Grouped by Brand String Type",
     metaDescription: "Learn how to construct clean commercial line summaries by mapping inventory files to transactions and executing standard groupings.",
@@ -2107,7 +2107,7 @@ export const SQL_INTERMEDIATE_PROBLEMS = [
   {
     id: 100,
     title: "Average Payment Amount by Payment Method",
-    difficulty: "Intermediate",
+    difficulty: "Hard",
     slug: "sql-group-by-avg-payment-method",
     seoTitle: "SQL GROUP BY with AVG Function",
     metaDescription: "Learn how to use SQL GROUP BY and AVG() to calculate the average payment amount for each payment method.",

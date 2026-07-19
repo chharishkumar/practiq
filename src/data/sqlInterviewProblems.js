@@ -2762,7 +2762,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 61,
     title: "Top 3 Customers by Revenue in Each State",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-top-3-customers-by-revenue-each-state",
     seoTitle: "SQL Hard Interview Question | Top 3 Customers by Revenue in Each State",
     metaDescription: "Find the top three customers by revenue in each state using SQL window functions.",
@@ -2825,7 +2825,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 62,
     title: "Longest Gap Between Customer Orders",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-longest-gap-between-customer-orders",
     seoTitle: "SQL Hard Interview Question | Longest Gap Between Customer Orders",
     metaDescription: "Find the longest gap between consecutive customer orders.",
@@ -2879,7 +2879,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 63,
     title: "Top Revenue Category in Each Month",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-top-revenue-category-each-month",
     seoTitle: "SQL Hard Interview Question | Top Revenue Category in Each Month",
     metaDescription: "Find the highest revenue-generating product category for every month.",
@@ -2946,7 +2946,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 64,
     title: "Customers Whose Latest Order Is Their Largest",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-customers-latest-order-largest",
     seoTitle: "SQL Hard Interview Question | Customers Whose Latest Order Is Their Largest",
     metaDescription: "Find customers whose latest order is also their highest-value order.",
@@ -3018,7 +3018,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 65,
     title: "Customers With Highest Revenue Growth Between Consecutive Orders",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-customers-highest-revenue-growth-between-orders",
     seoTitle: "SQL Hard Interview Question | Customers With Highest Revenue Growth Between Consecutive Orders",
     metaDescription: "Find customers whose order amount increased the most between consecutive orders.",
@@ -3076,7 +3076,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 66,
     title: "Customers With Consecutive Increasing Order Values",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-customers-consecutive-increasing-order-values",
     seoTitle: "SQL Hard Interview Question | Customers With Consecutive Increasing Order Values",
     metaDescription: "Find customers whose order value increased compared to their previous order.",
@@ -3141,7 +3141,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 67,
     title: "Customers With Highest Cancelled Order Rate",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-customers-highest-cancelled-order-rate",
     seoTitle: "SQL Hard Interview Question | Highest Cancelled Order Rate",
     metaDescription: "Find customers having the highest percentage of cancelled orders.",
@@ -3181,7 +3181,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 68,
     title: "Highest Revenue Order for Every Customer",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-highest-revenue-order-per-customer",
     seoTitle: "SQL Hard Interview Question | Highest Revenue Order Per Customer",
     metaDescription: "Find each customer's highest revenue order.",
@@ -3238,7 +3238,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 69,
     title: "Customers Whose Latest Order Was Cancelled",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-customers-latest-order-cancelled",
     seoTitle: "SQL Hard Interview Question | Latest Order Cancelled",
     metaDescription: "Find customers whose most recent order was cancelled.",
@@ -3294,7 +3294,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 70,
     title: "Top Revenue Customer in Each Customer Type",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-top-revenue-customer-each-customer-type",
     seoTitle: "SQL Hard Interview Question | Top Revenue Customer in Each Customer Type",
     metaDescription: "Find the highest revenue customer within every customer type.",
@@ -3357,7 +3357,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 71,
     title: "Monthly Revenue Difference From Previous Month",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-monthly-revenue-difference-previous-month",
     seoTitle: "SQL Hard Interview Question | Monthly Revenue Difference From Previous Month",
     metaDescription: "Calculate the month-over-month revenue difference using SQL window functions.",
@@ -3404,7 +3404,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 72,
     title: "Longest Order Streak Per Customer",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-longest-order-streak-per-customer",
     seoTitle: "SQL Hard Interview Question | Longest Order Streak Per Customer",
     metaDescription: "Find customers with the highest number of consecutive ordering days.",
@@ -3472,7 +3472,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 73,
     title: "Top Revenue Brand in Each Category",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-top-revenue-brand-each-category",
     seoTitle: "SQL Hard Interview Question | Top Revenue Brand in Each Category",
     metaDescription: "Find the highest revenue brand within every product category.",
@@ -3535,7 +3535,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 74,
     title: "Customers Spending Above Their Own Average",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-customers-spending-above-own-average",
     seoTitle: "SQL Hard Interview Question | Orders Above Customer Average",
     metaDescription: "Find orders where the customer spent more than their own average order value.",
@@ -3591,7 +3591,7 @@ export const SQL_INTERVIEW_PROBLEMS = [
   {
     id: 75,
     title: "Top 2 Products by Quantity Sold in Each Category",
-    difficulty: "Hard",
+    difficulty: "Medium+",
     slug: "sql-top-2-products-by-quantity-each-category",
     seoTitle: "SQL Hard Interview Question | Top 2 Products by Quantity Sold",
     metaDescription: "Find the top two selling products by quantity in each category.",

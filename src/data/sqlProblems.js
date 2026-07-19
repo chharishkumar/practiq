@@ -661,7 +661,7 @@ export const SQL_PROBLEMS = [
   {
     id: 26,
     title: "Calculate Total Revenue",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-calculate-total-revenue",
     seoTitle: "SQL Basics | SUM Function",
     metaDescription: "Learn how to calculate the total revenue using the SUM function.",
@@ -686,7 +686,7 @@ export const SQL_PROBLEMS = [
   {
     id: 27,
     title: "Count Orders by Status",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-count-orders-by-status",
     seoTitle: "SQL Basics | GROUP BY",
     metaDescription: "Learn how to group records using GROUP BY.",
@@ -718,7 +718,7 @@ export const SQL_PROBLEMS = [
   {
     id: 28,
     title: "Count Customers by Country",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-count-customers-by-country",
     seoTitle: "SQL Basics | GROUP BY Country",
     metaDescription: "Learn how to group customer records by country.",
@@ -750,7 +750,7 @@ export const SQL_PROBLEMS = [
   {
     id: 29,
     title: "Count Products by Category",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-count-products-by-category",
     seoTitle: "SQL Basics | GROUP BY Category",
     metaDescription: "Learn how to group products by category using SQL.",
@@ -782,7 +782,7 @@ export const SQL_PROBLEMS = [
   {
     id: 30,
     title: "Average Product Price by Category",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-average-product-price-by-category",
     seoTitle: "SQL Basics | GROUP BY with AVG",
     metaDescription: "Learn how to calculate average values for each group using SQL.",
@@ -814,7 +814,7 @@ export const SQL_PROBLEMS = [
   {
     id: 31,
     title: "Select product names and prices",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-product-column-projection-pricing",
     seoTitle: "Catalog Matrix Design: Selecting Named Product Pricing Columns",
     metaDescription: "Examine isolated pricing dimensions across active retail catalogs by projecting precise alphanumeric column nodes.",
@@ -837,7 +837,7 @@ export const SQL_PROBLEMS = [
   {
     id: 32,
     title: "Filter products by category",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-where-string-filtering-category",
     seoTitle: "Inventory Taxonomy Audits: SQL Category String Segments",
     metaDescription: "Filter global relational tables based on targeted text categorization arrays using strict exact value evaluation patterns.",
@@ -860,7 +860,7 @@ export const SQL_PROBLEMS = [
   {
     id: 33,
     title: "Find expensive products",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-numeric-comparison-operators-pricing",
     seoTitle: "Premium Inventory Audits: SQL Mathematical Comparisons",
     metaDescription: "Isolate luxury products from database systems using greater-than-or-equal-to (>=) mathematical filter strategies.",
@@ -883,7 +883,7 @@ export const SQL_PROBLEMS = [
   {
     id: 34,
     title: "Sort products by price",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-order-by-ascending-sorting-default",
     seoTitle: "Storefront UI Optimization: SQL ORDER BY Ascending Guide",
     metaDescription: "Learn how to build clear storefront price sort mechanisms from low to high using SQL default explicit ordering models.",
@@ -906,7 +906,7 @@ export const SQL_PROBLEMS = [
   {
     id: 35,
     title: "Find products by keyword",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-like-wildcard-substring-searches",
     seoTitle: "Internal Catalog Engine Logic: SQL Substring Search Syntax",
     metaDescription: "Implement inline e-commerce search algorithms using robust double-sided string wildcard parsing matrices.",
@@ -929,7 +929,7 @@ export const SQL_PROBLEMS = [
   {
     id: 36,
     title: "Count total products",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-count-global-catalog-records",
     seoTitle: "Inventory Operations KPI Modeling: SQL Master COUNT Guides",
     metaDescription: "Verify system dataset framework volumes seamlessly using continuous full database row scanning commands.",
@@ -952,7 +952,7 @@ export const SQL_PROBLEMS = [
   {
     id: 37,
     title: "Find unique product categories",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-distinct-category-extraction",
     seoTitle: "Navigation Menu Modeling: Extracting Distinct SQL Frameworks",
     metaDescription: "Generate navigation hierarchies for web architectures by evaluating structural unique column vectors.",
@@ -975,7 +975,7 @@ export const SQL_PROBLEMS = [
   {
     id: 38,
     title: "Filter products from multiple categories",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-where-or-disjunction-multi-category",
     seoTitle: "Cross Department Merchandising: SQL Multi Condition Or Loops",
     metaDescription: "Extract targeted inventory dimensions across disparate internal sectors with optimized row expansion query logic.",
@@ -998,7 +998,7 @@ export const SQL_PROBLEMS = [
   {
     id: 39,
     title: "Find products by ID range",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-between-operator-product-id-range",
     seoTitle: "SQL Range Queries: Filtering Primary Key IDs via BETWEEN",
     metaDescription: "Learn how to capture precise, inclusive sequential numerical chunks inside structural databases using standard SQL BETWEEN logic.",
@@ -1021,7 +1021,7 @@ export const SQL_PROBLEMS = [
   {
     id: 40,
     title: "Find highest and lowest product prices",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-min-max-product-pricing-bounds",
     seoTitle: "Catalog Boundary Auditing: SQL MIN and MAX Pricing Functions",
     metaDescription: "Master pricing floor and ceiling evaluation techniques over continuous e-commerce catalog variables using fast SQL min/max aggregate syntax.",
@@ -1044,7 +1044,7 @@ export const SQL_PROBLEMS = [
   {
     id: 41,
     title: "Find customer by exact name",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-exact-string-matching-where-equals",
     seoTitle: "Database Record Lookup: SQL Exact Text Matching Guide",
     metaDescription: "Examine single quote exact literal matching patterns over text string vectors inside database components using the standard equals operator.",
@@ -1067,7 +1067,7 @@ export const SQL_PROBLEMS = [
   {
     id: 42,
     title: "View customer orders and totals",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-order-by-sorting-customer-ids",
     seoTitle: "Relational Result Set Sorting: SQL ORDER BY Key Patterns",
     metaDescription: "Organize output lines by sorting columns. Learn how to arrange multiple foreign keys systematically across your analytics matrix layouts.",
@@ -1090,7 +1090,7 @@ export const SQL_PROBLEMS = [
   {
     id: 43,
     title: "Find low-value orders",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-less-than-operator-numeric-threshold",
     seoTitle: "Segmenting Datasets: Using SQL Less Than Operator",
     metaDescription: "Filter elements falling below specific economic boundaries instantly. Use mathematical operators inside conditional blocks.",
@@ -1113,7 +1113,7 @@ export const SQL_PROBLEMS = [
   {
     id: 44,
     title: "Calculate total catalog value",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-sum-total-catalog-valuation",
     seoTitle: "Inventory Financial Metric Audits: SQL SUM Function Formulas",
     metaDescription: "Calculate immediate mathematical evaluations across all dataset components using standard database column accumulation layers.",
@@ -1136,7 +1136,7 @@ export const SQL_PROBLEMS = [
   {
     id: 45,
     title: "Find average price by category",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-avg-conditional-category-benchmarks",
     seoTitle: "E-Commerce Market Intelligence: SQL AVG with Filter Syntax",
     metaDescription: "Isolate specific arithmetic means within structural tables by combining standard AVG operations with exact value text evaluations.",
@@ -1159,7 +1159,7 @@ export const SQL_PROBLEMS = [
   {
     id: 46,
     title: "Find Customers With a Gmail Account",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-find-customers-with-gmail-account",
     seoTitle: "SQL Basics | Find Customers Using Gmail",
     metaDescription: "Learn how to use the LIKE operator to filter email addresses ending with @gmail.com.",
@@ -1186,7 +1186,7 @@ export const SQL_PROBLEMS = [
   {
     id: 47,
     title: "Count orders by date",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-count-daily-order-volume",
     seoTitle: "Time-Series Performance Diagnostics: SQL COUNT Over Dates",
     metaDescription: "Monitor operational volumes on explicit fiscal points by running global aggregate structures over narrow timestamp constraints.",
@@ -1209,7 +1209,7 @@ export const SQL_PROBLEMS = [
   {
     id: 48,
     title: "Sort customer names alphabetically",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-order-by-alphabetical-text-sorting",
     seoTitle: "Directory Modeling Architecture: SQL Alphabetical Sorting Guide",
     metaDescription: "Arrange text string variables cleanly from A to Z using natural database lexical order frameworks.",
@@ -1232,7 +1232,7 @@ export const SQL_PROBLEMS = [
   {
     id: 49,
     title: "Find orders by specific IDs",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-in-operator-primary-key-lookup",
     seoTitle: "Targeted Row Extraction: Mastering SQL Primary Key IN Filters",
     metaDescription: "Extract specific relational entities without nested OR chains. Learn how to map lookup records inside array lists.",
@@ -1255,7 +1255,7 @@ export const SQL_PROBLEMS = [
   {
     id: 50,
     title: "Calculate projected tax per product",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-dynamic-arithmetic-calculated-columns",
     seoTitle: "Financial Engineering Basics: Generating Calculated SQL Columns",
     metaDescription: "Generate inline mathematical attributes across variable fields natively without restructuring baseline database designs.",
@@ -1278,7 +1278,7 @@ export const SQL_PROBLEMS = [
   {
     id: 51,
     title: "Find customer email domains",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-substr-instr-email-domain-extraction",
     seoTitle: "Advanced String Parsing: SQL SUBSTR and INSTR Guide",
     metaDescription: "Isolate string subsections by locating exact index characters natively. Extract email domains from database tables easily.",
@@ -1301,7 +1301,7 @@ export const SQL_PROBLEMS = [
   {
     id: 52,
     title: "Find Orders Using Cash on Delivery",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-orders-using-cash-on-delivery",
     seoTitle: "SQL Basics | IN Operator",
     metaDescription: "Learn how to filter multiple values using the IN operator.",
@@ -1329,7 +1329,7 @@ export const SQL_PROBLEMS = [
   {
     id: 53,
     title: "Find Customers Whose Name Starts With 'A'",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-customers-name-starts-with-a",
     seoTitle: "SQL Basics | LIKE Operator",
     metaDescription: "Learn how to search text using the LIKE operator.",
@@ -1356,7 +1356,7 @@ export const SQL_PROBLEMS = [
   {
     id: 54,
     title: "Sort products by category and price",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-multi-column-order-by-asc-desc",
     seoTitle: "Complex Report Organization: SQL Multi-Column Sorting Rules",
     metaDescription: "Nest logical sorting components systematically. Order classifications in ascending order while ranking inner financial metrics descending.",
@@ -1379,7 +1379,7 @@ export const SQL_PROBLEMS = [
   {
     id: 55,
     title: "Find Orders Placed This Year",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-find-orders-this-year",
     seoTitle: "SQL Basics | Filter by Year",
     metaDescription: "Learn how to filter dates using the strftime() function in SQLite.",
@@ -1405,7 +1405,7 @@ export const SQL_PROBLEMS = [
   {
     id: 56,
     title: "Find the Product With the Longest Name",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-find-product-with-longest-name",
     seoTitle: "SQL Basics | LENGTH Function",
     metaDescription: "Learn how to use the LENGTH function to measure text.",
@@ -1432,7 +1432,7 @@ export const SQL_PROBLEMS = [
   {
     id: 57,
     title: "Calculate Revenue by Customer",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-calculate-revenue-by-customer",
     seoTitle: "SQL Basics | SUM with GROUP BY",
     metaDescription: "Learn how to calculate revenue for each customer using SUM and GROUP BY.",
@@ -1458,7 +1458,7 @@ export const SQL_PROBLEMS = [
   {
     id: 58,
     title: "Find Products Costing More Than the Average Price",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-products-above-average-price",
     seoTitle: "SQL Basics | Subquery with AVG",
     metaDescription: "Learn how to compare values against the average using a subquery.",
@@ -1485,7 +1485,7 @@ export const SQL_PROBLEMS = [
   {
     id: 59,
     title: "Find customers starting with Alice",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-like-operator-prefix-wildcard-matching",
     seoTitle: "Identity Lookup Controls: SQL Prefix Wildcard Search Logic",
     metaDescription: "Execute rapid string classification lookups over name fields using clean single-sided string wildcards.",
@@ -1508,7 +1508,7 @@ export const SQL_PROBLEMS = [
   {
     id: 60,
     title: "Calculate tax-inclusive prices",
-    difficulty: "Easy",
+    difficulty: "Medium",
     slug: "sql-dynamic-multiplication-tax-estimation",
     seoTitle: "Checkout Systems Logic: Generating Real-Time Dynamic SQL Multipliers",
     metaDescription: "Compute real-time transactional pricing states inside output queries by deploying inline mathematical factor operations.",
@@ -1531,7 +1531,7 @@ export const SQL_PROBLEMS = [
   {
     id: 61,
     title: "Find orders above average value",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-greater-than-operator-above-average-orders",
     seoTitle: "Identifying Outliers: Using SQL Greater Than Operator for Order Tracking",
     metaDescription: "Isolate transactions that pass a benchmark floor. Learn how to construct basic conditional logic over relational numeric vectors.",
@@ -1554,7 +1554,7 @@ export const SQL_PROBLEMS = [
   {
     id: 62,
     title: "Find customers without email.com",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-not-like-operator-domain-exclusion",
     seoTitle: "Database Record Segmentation: Mastering SQL NOT LIKE String Exclusions",
     metaDescription: "Exclude primary communication vectors or specific domains cleanly by utilizing standard negative text pattern search structures.",
@@ -1577,7 +1577,7 @@ export const SQL_PROBLEMS = [
   {
     id: 63,
     title: "Count unique product categories",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-count-distinct-unique-categories",
     seoTitle: "Catalog Diversity Diagnostics: SQL COUNT DISTINCT Aggregations",
     metaDescription: "Calculate exact unique categorical instances within single relational arrays while ignoring duplicate item instances.",
@@ -1600,7 +1600,7 @@ export const SQL_PROBLEMS = [
   {
     id: 64,
     title: "Find orders from 2024",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-like-date-prefix-year-filtering",
     seoTitle: "Time-Series Query Methods: Filtering ISO Dates Using SQL LIKE",
     metaDescription: "Extract chronological ranges efficiently from ISO standard fields using prefix wildcards inside text evaluation filters.",
@@ -1623,7 +1623,7 @@ export const SQL_PROBLEMS = [
   {
     id: 65,
     title: "Calculate customer total spend",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-sum-single-customer-spend",
     seoTitle: "Customer Account Analytics: Running Selective SQL SUM Metrics",
     metaDescription: "Amass a complete transactional summation across single user identities by combining aggregation with focused key qualifiers.",
@@ -1646,7 +1646,7 @@ export const SQL_PROBLEMS = [
   {
     id: 66,
     title: "Show the Next 5 Customers",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-limit-offset-next-five-customers",
     seoTitle: "SQL Basics | LIMIT and OFFSET",
     metaDescription: "Learn how to use LIMIT and OFFSET together to paginate query results.",
@@ -1673,7 +1673,7 @@ export const SQL_PROBLEMS = [
   {
     id: 67,
     title: "Find the Average Price of Each Category",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-average-price-each-category",
     seoTitle: "SQL Basics | GROUP BY and AVG",
     metaDescription: "Calculate the average product price for each category using GROUP BY.",
@@ -1699,7 +1699,7 @@ export const SQL_PROBLEMS = [
   {
     id: 68,
     title: "Find Customers With Yahoo Email Addresses",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-customers-with-yahoo-email",
     seoTitle: "SQL Basics | LIKE Wildcard Search",
     metaDescription: "Use the LIKE operator to search for email addresses ending with @yahoo.com.",
@@ -1726,7 +1726,7 @@ export const SQL_PROBLEMS = [
   {
     id: 69,
     title: "Calculate Total Cost for Five Products",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-calculate-total-cost-five-products",
     seoTitle: "SQL Basics | Arithmetic Expressions",
     metaDescription: "Learn how to perform arithmetic calculations in SQL queries.",
@@ -1752,7 +1752,7 @@ export const SQL_PROBLEMS = [
   {
     id: 70,
     title: "Find Orders With Total Amount Greater Than 1000",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-orders-total-amount-greater-than-1000",
     seoTitle: "SQL Basics | Numeric Filtering",
     metaDescription: "Filter orders based on their total amount using comparison operators.",
@@ -1780,7 +1780,7 @@ export const SQL_PROBLEMS = [
   {
     id: 71,
     title: "Find customers with 'John' in email",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-like-wildcard-anywhere-substring-match",
     seoTitle: "Account Recovery Operations: Utilizing SQL Mid-String Wildcards",
     metaDescription: "Search text variables efficiently by tracking specific internal substrings using dual percentage wildcard parameters.",
@@ -1803,7 +1803,7 @@ export const SQL_PROBLEMS = [
   {
     id: 72,
     title: "Calculate total revenue for 2024",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-sum-annual-revenue-wildcard-dates",
     seoTitle: "Fiscal Close Tracking: Combining SQL SUM with Year Wildcards",
     metaDescription: "Aggregate cumulative transaction volumes for complete yearly boundaries by matching string prefixes on date types.",
@@ -1826,7 +1826,7 @@ export const SQL_PROBLEMS = [
   {
     id: 73,
     title: "Sort products by category descending",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-order-by-descending-alphabetical-sorting",
     seoTitle: "Reverse Index Organization: SQL ORDER BY DESC Lexical Logic",
     metaDescription: "Reorder output sequences from Z to A by appending descending indicators onto textual classification columns.",
@@ -1849,7 +1849,7 @@ export const SQL_PROBLEMS = [
   {
     id: 74,
     title: "Find Products in the Electronics Category",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-find-products-in-electronics-category",
     seoTitle: "SQL Basics | Filter Products by Category",
     metaDescription: "Learn how to filter rows using the WHERE clause with text values.",
@@ -1877,7 +1877,7 @@ export const SQL_PROBLEMS = [
   {
     id: 75,
     title: "Calculate average order value",
-    difficulty: "Easy",
+    difficulty: "Medium+",
     slug: "sql-avg-global-average-order-value",
     seoTitle: "E-Commerce Operational KPIs: Using SQL AVG for AOV Calculations",
     metaDescription: "Determine fundamental purchase behaviors instantly by finding the true arithmetic center across global sales records.",
@@ -1900,7 +1900,7 @@ export const SQL_PROBLEMS = [
   {
     id: 76,
     title: "Find top 2 expensive products",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-order-by-desc-limit-ranking-bounds",
     seoTitle: "High-Tier Merchandising: SQL Sorting and Limit Row Restraints",
     metaDescription: "Extract the highest-ranking records securely by combining descending parameters with strict structural array size constraints.",
@@ -1923,7 +1923,7 @@ export const SQL_PROBLEMS = [
   {
     id: 77,
     title: "Find Customers From India or USA",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-customers-from-india-or-usa",
     seoTitle: "SQL Basics | IN Operator with Text Values",
     metaDescription: "Learn how to filter multiple text values using the IN operator.",
@@ -1950,7 +1950,7 @@ export const SQL_PROBLEMS = [
   {
     id: 78,
     title: "Find Mid-Value Orders",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-find-mid-value-orders",
     seoTitle: "SQL Basics | BETWEEN Operator",
     metaDescription: "Learn how to filter rows within a range using the BETWEEN operator.",
@@ -1977,7 +1977,7 @@ export const SQL_PROBLEMS = [
   {
     id: 79,
     title: "Rename aggregate column",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-as-alias-column-renaming",
     seoTitle: "Schema Output Standardization: Implementing SQL AS Column Aliases",
     metaDescription: "Create developer-friendly semantic naming keys over calculations using explicit projection remapping methods.",
@@ -2000,7 +2000,7 @@ export const SQL_PROBLEMS = [
   {
     id: 80,
     title: "Find customers with long names",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-length-function-conditional-text-filtering",
     seoTitle: "Database Content Profiling: Filtering via SQL LENGTH Thresholds",
     metaDescription: "Isolate character vector boundaries inside user tables by checking dynamic length indicators inside conditional blocks.",
@@ -2023,7 +2023,7 @@ export const SQL_PROBLEMS = [
   {
     id: 81,
     title: "Exclude a product category",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-not-equal-operator-category-exclusion",
     seoTitle: "Negative Value Filtering: Mastering the SQL Not Equal (<>) Operator",
     metaDescription: "Learn how to filter out specific categorical metrics from your result sets using standard SQL exclusion operators.",
@@ -2046,7 +2046,7 @@ export const SQL_PROBLEMS = [
   {
     id: 82,
     title: "Calculate remaining customer budget",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-subtraction-arithmetic-calculated-fields",
     seoTitle: "Dynamic Ledger Calculations: Using Subtraction in SQL SELECT Statements",
     metaDescription: "Generate live customer balances directly inside your dataset projections by performing basic mathematical evaluations over variable parameters.",
@@ -2069,7 +2069,7 @@ export const SQL_PROBLEMS = [
   {
     id: 83,
     title: "Display Product Name Length",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-display-product-name-length",
     seoTitle: "SQL Basics | LENGTH Function",
     metaDescription: "Learn how to use the LENGTH function to calculate the number of characters in a string.",
@@ -2096,7 +2096,7 @@ export const SQL_PROBLEMS = [
   {
     id: 84,
     title: "Count orders for one customer",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-count-rows-targeted-where-filter",
     seoTitle: "Account Frequency Metrics: SQL COUNT Combined with Singular ID Filters",
     metaDescription: "Calculate row frequencies for explicit primary identifiers by executing rapid aggregate functions on conditional criteria.",
@@ -2119,7 +2119,7 @@ export const SQL_PROBLEMS = [
   {
     id: 85,
     title: "Find orders with whole-number totals",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-modulo-operator-whole-number-filtering",
     seoTitle: "Data Type Precision Controls: Using SQL Modulo (%) for Rounding Audits",
     metaDescription: "Identify clean, rounded numerical records easily without complex data parsing by applying baseline math modulo rules.",
@@ -2142,7 +2142,7 @@ export const SQL_PROBLEMS = [
   {
     id: 86,
     title: "Select static values",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-select-static-literals-without-table",
     seoTitle: "Dynamic Report Metadata: Projecting Static Labels and Dates in SQL",
     metaDescription: "Generate inline literal string rows and date indicators directly without querying structural table architectures.",
@@ -2165,7 +2165,7 @@ export const SQL_PROBLEMS = [
   {
     id: 87,
     title: "Find names ending with y",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-like-operator-suffix-character-matching",
     seoTitle: "Text Search Optimization: Using SQL LIKE Suffix Wildcards",
     metaDescription: "Locate matching text vectors by isolating variable ending structures using single-sided percentage string wildcards.",
@@ -2188,7 +2188,7 @@ export const SQL_PROBLEMS = [
   {
     id: 88,
     title: "Find latest order date",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-max-function-chronological-dates",
     seoTitle: "System Activity Audits: Using SQL MAX over Date Coordinates",
     metaDescription: "Find the newest time metrics inside chronological fields using high-performance relational database aggregation utilities.",
@@ -2211,7 +2211,7 @@ export const SQL_PROBLEMS = [
   {
     id: 89,
     title: "Convert prices to cents",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-price-unit-conversion-multiplication",
     seoTitle: "Payment Gateway Architecture: Converting Float Metrics into Integer Cents",
     metaDescription: "Re-index floating point valuations into flat integer arrays cleanly inside query parameters using inline multiplication strategies.",
@@ -2234,7 +2234,7 @@ export const SQL_PROBLEMS = [
   {
     id: 90,
     title: "Find Electronics Products",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-find-electronics-products-like",
     seoTitle: "SQL Basics | LIKE Operator with Categories",
     metaDescription: "Learn how to use the LIKE operator to filter text values in SQL.",
@@ -2261,7 +2261,7 @@ export const SQL_PROBLEMS = [
   {
     id: 91,
     title: "Find extremely large or small orders",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-or-operator-compound-outlier-filtering",
     seoTitle: "Fraud Profiling Basics: Combining Multi-Threshold Bounds via SQL OR",
     metaDescription: "Evaluate separated numerical risk states simultaneously across transaction models using structured query conditional connectors.",
@@ -2284,7 +2284,7 @@ export const SQL_PROBLEMS = [
   {
     id: 92,
     title: "Sort orders by date and amount",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-order-by-chronological-and-financial-metrics",
     seoTitle: "Logistics Dashboard Design: Sorting Multi-Type SQL Vectors",
     metaDescription: "Arrange output fields sequentially across separate data types, organizing dates forward while ranking transactional costs backward.",
@@ -2307,7 +2307,7 @@ export const SQL_PROBLEMS = [
   {
     id: 93,
     title: "Calculate dynamic inventory discounts",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-fractional-multiplication-markdown-pricing",
     seoTitle: "E-Commerce Promotional Systems: Dynamic Fractional Pricing in SQL",
     metaDescription: "Project structural warehouse catalog markdown strategies easily by implementing inline mathematical decimal multipliers.",
@@ -2330,7 +2330,7 @@ export const SQL_PROBLEMS = [
   {
     id: 94,
     title: "Find customers registered after specific time",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-date-comparison-greater-than-equals",
     seoTitle: "Cohort Acquisition Metrics: Comparing Date Constants in SQL",
     metaDescription: "Track marketing user milestones cleanly by evaluating timestamp constraints using logical comparison operators.",
@@ -2353,7 +2353,7 @@ export const SQL_PROBLEMS = [
   {
     id: 95,
     title: "Find Delivered Orders",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-find-shipped-orders",
     seoTitle: "SQL Basics | IN Operator with Multiple Values",
     metaDescription: "Learn how to filter multiple values using the SQL IN operator.",
@@ -2380,7 +2380,7 @@ export const SQL_PROBLEMS = [
   {
     id: 96,
     title: "Find products with short category strings",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-length-function-less-than-bound",
     seoTitle: "Database Integrity Mapping: Evaluating String Length Filters",
     metaDescription: "Audit presentation formatting metrics or metadata bounds directly by deploying explicit string length comparison filters.",
@@ -2403,7 +2403,7 @@ export const SQL_PROBLEMS = [
   {
     id: 97,
     title: "Calculate cumulative orders sum",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-sum-global-processed-revenue",
     seoTitle: "Executive Reporting Systems: Calculating Global SUM Revenue Cards",
     metaDescription: "Consolidate absolute transaction data tracks into a single unified financial indicator using standard column accumulation layers.",
@@ -2426,7 +2426,7 @@ export const SQL_PROBLEMS = [
   {
     id: 98,
     title: "Find Customers With .com Email Addresses",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-find-customers-with-com-email",
     seoTitle: "SQL Basics | LIKE with Email Domains",
     metaDescription: "Learn how to use the LIKE operator to filter email addresses ending with .com.",
@@ -2453,7 +2453,7 @@ export const SQL_PROBLEMS = [
   {
     id: 99,
     title: "Verify valid customer references",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-greater-than-operator-foreign-key-validation",
     seoTitle: "Relational Architecture Maintenance: Validating Positive Integer Keys",
     metaDescription: "Enforce standard data relationship checks over table connectors by filtering out unassigned or negative identity indexes.",
@@ -2476,7 +2476,7 @@ export const SQL_PROBLEMS = [
   {
     id: 100,
     title: "Find average pricing for selected products",
-    difficulty: "Easy",
+    difficulty: "Hard",
     slug: "sql-avg-combined-with-in-list-filtering",
     seoTitle: "Product Bundle Diagnostics: Running SQL AVG Rules over Target Lists",
     metaDescription: "Isolate structural value metrics across narrow structural array definitions by combining list selection logic with aggregate math tools.",

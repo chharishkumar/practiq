@@ -5,19 +5,18 @@ import { SQL_ADVANCED_PROBLEMS } from "./sqlAdvancedProblems";
 import { matchesProblem, searchSqlProblems } from "./sqlSearch";
 import Editor from "@monaco-editor/react";
 import ShareModal from "../ShareModel";
-import { useProStatus } from "../hooks/useProStatus";
 import { useMobile } from "../hooks/useMobile";
 import MobileSQLLayout from "../components/MobileSQLLayout";
+
 import { checkAndSaveBadges } from "../badges/useBadges";
 import BadgeUnlockModal from "../badges/BadgeUnlockModal";
-
 import { usePageMeta } from "../hooks/usePageMeta"; 
 import StructuredData from "../components/StructuredData";
 
 const MILESTONES = [
   {
     id: "bronze",
-    label: "Window Warrior",
+    label: "Query Builder",
     icon: "🥉",
     tier: "bronze",
     color: "#CD7F32",
@@ -28,7 +27,7 @@ const MILESTONES = [
   },
   {
     id: "silver",
-    label: "Query Optimizer",
+    label: "Data Analyst",
     icon: "🥈",
     tier: "silver",
     color: "#9BA8B0",
@@ -39,7 +38,7 @@ const MILESTONES = [
   },
   {
     id: "gold",
-    label: "SQL Architect",
+    label: "SQL Professional",
     icon: "🥇",
     tier: "gold",
     color: "#D4A017",
@@ -49,6 +48,134 @@ const MILESTONES = [
     badge: "advanced_gold",
   },
 ];
+
+const DB_SCHEMAS = {
+  customers: [
+    { name: "customer_id", type: "int64" },
+    { name: "customer_name", type: "string" },
+    { name: "email", type: "string" },
+    { name: "phone", type: "string" },
+    { name: "city", type: "string" },
+    { name: "state", type: "string" },
+    { name: "country", type: "string" },
+    { name: "postal_code", type: "string" },
+    { name: "created_date", type: "datetime" },
+    { name: "activated_date", type: "datetime" },
+    { name: "last_login_date", type: "datetime" },
+    { name: "last_order_date", type: "datetime" },
+    { name: "status", type: "string" },
+    { name: "customer_type", type: "string" },
+    { name: "acquisition_channel", type: "string" },
+    { name: "lifetime_value", type: "decimal" },
+    { name: "is_verified", type: "boolean" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  delivery_partners: [
+    { name: "delivery_partner_id", type: "int64" },
+    { name: "partner_name", type: "string" },
+    { name: "phone", type: "string" },
+    { name: "vehicle_type", type: "string" },
+    { name: "vehicle_number", type: "string" },
+    { name: "city", type: "string" },
+    { name: "status", type: "string" },
+    { name: "joining_date", type: "datetime" },
+    { name: "last_active_date", type: "datetime" },
+    { name: "rating", type: "decimal" },
+    { name: "total_deliveries", type: "int64" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  feedback: [
+    { name: "feedback_id", type: "int64" },
+    { name: "customer_id", type: "int64" },
+    { name: "order_id", type: "int64" },
+    { name: "rating", type: "decimal" },
+    { name: "review_text", type: "string" },
+    { name: "feedback_channel", type: "string" },
+    { name: "issue_category", type: "string" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  order_items: [
+    { name: "item_id", type: "int64" },
+    { name: "order_id", type: "int64" },
+    { name: "product_id", type: "int64" },
+    { name: "quantity", type: "int64" },
+    { name: "unit_price", type: "decimal" },
+    { name: "discount_amount", type: "decimal" },
+    { name: "tax_amount", type: "decimal" },
+    { name: "total_price", type: "decimal" },
+    { name: "item_status", type: "string" },
+    { name: "currency", type: "string" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  orders: [
+    { name: "order_id", type: "int64" },
+    { name: "customer_id", type: "int64" },
+    { name: "order_date", type: "datetime" },
+    { name: "order_status", type: "string" },
+    { name: "payment_status", type: "string" },
+    { name: "delivery_partner_id", type: "int64" },
+    { name: "subtotal_amount", type: "decimal" },
+    { name: "tax_amount", type: "decimal" },
+    { name: "discount_amount", type: "decimal" },
+    { name: "delivery_fee", type: "decimal" },
+    { name: "total_amount", type: "decimal" },
+    { name: "currency", type: "string" },
+    { name: "estimated_delivery_time", type: "datetime" },
+    { name: "out_for_delivery_time", type: "datetime" },
+    { name: "delivered_date", type: "datetime" },
+    { name: "cancelled_date", type: "datetime" },
+    { name: "cancellation_reason", type: "string" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  payments: [
+    { name: "payment_id", type: "int64" },
+    { name: "order_id", type: "int64" },
+    { name: "payment_method", type: "string" },
+    { name: "payment_provider", type: "string" },
+    { name: "transaction_reference", type: "string" },
+    { name: "payment_status", type: "string" },
+    { name: "amount", type: "decimal" },
+    { name: "currency", type: "string" },
+    { name: "refund_amount", type: "decimal" },
+    { name: "refund_date", type: "datetime" },
+    { name: "failure_reason", type: "string" },
+    { name: "payment_date", type: "datetime" },
+    { name: "attempt_number", type: "int64" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  products: [
+    { name: "product_id", type: "int64" },
+    { name: "product_name", type: "string" },
+    { name: "product_description", type: "string" },
+    { name: "category", type: "string" },
+    { name: "subcategory", type: "string" },
+    { name: "brand", type: "string" },
+    { name: "sku", type: "string" },
+    { name: "price", type: "decimal" },
+    { name: "cost_price", type: "decimal" },
+    { name: "currency", type: "string" },
+    { name: "is_active", type: "boolean" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ]
+};
+
+const getTypeBadgeStyle = (type) => {
+  switch (type) {
+    case "int64": return { color: "#0ea5e9", bg: "#f0f9ff" };     // Sky blue
+    case "boolean": return { color: "#16a34a", bg: "#f0fdf4" };   // Emerald green
+    case "string": return { color: "#a855f7", bg: "#f3e8ff" };    // Purple text badge
+    case "decimal": return { color: "#06b6d4", bg: "#ecfeff" };   // Teal decimal badge
+    case "datetime": return { color: "#ea580c", bg: "#fff7ed" };  // Orange timestamp badge
+    default: return { color: "#64748b", bg: "#f1f5f9" };         // Fallback slate
+  }
+};
 
 function validateResults(userResult, referenceResult) {
   if (!userResult || !referenceResult) return null;
@@ -72,7 +199,6 @@ function validateResults(userResult, referenceResult) {
   ) {
     return "missing_columns";
   }
-
 
   // Normalize column names
   const normalizeColumn = (col) =>
@@ -117,6 +243,51 @@ function validateResults(userResult, referenceResult) {
 
   return "almost";
 }
+function TableStructure({ tables }) {
+  const [openTable, setOpenTable] = useState(null);
+
+  return (
+    <div style={{ marginTop: "0.75rem" }}>
+      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "6px" }}>
+        📋 Table Structure
+      </div>
+      {tables.map(table => (
+        <div key={table} style={{ marginBottom: "4px", border: "1px solid #e2e8f0", borderRadius: "6px", overflow: "hidden" }}>
+          <div
+            onClick={() => setOpenTable(openTable === table ? null : table)}
+            style={{ padding: "6px 10px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", background: openTable === table ? "#eff6ff" : "#f8fafc" }}
+          >
+            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: openTable === table ? "#2563eb" : "#0f172a", fontFamily: "monospace" }}>
+              {table}
+            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <span style={{ fontSize: "0.65rem", color: "#94a3b8" }}>{DB_SCHEMAS[table]?.length || 0} cols</span>
+              <span style={{ fontSize: "0.65rem", color: "#94a3b8", transform: openTable === table ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▾</span>
+            </div>
+          </div>
+          {openTable === table && (
+            <div style={{ background: "#ffffff", borderTop: "1px solid #e2e8f0" }}>
+              {(DB_SCHEMAS[table] || []).map((col, i) => {
+                const style = getTypeBadgeStyle(col.type);
+                return (
+                  <div
+                    key={col.name}
+                    style={{ padding: "5px 10px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: i < DB_SCHEMAS[table].length - 1 ? "1px solid #f1f5f9" : "none" }}
+                  >
+                    <span style={{ fontSize: "0.72rem", fontFamily: "monospace", color: "#0f172a" }}>{col.name}</span>
+                    <span style={{ fontSize: "0.62rem", fontWeight: 600, padding: "1px 6px", borderRadius: "4px", background: style.bg, color: style.color }}>
+                      {col.type}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedItemRef, diffStyle, onSelect, nested = false }) {
   return (
@@ -143,9 +314,9 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
         <span style={{ fontSize: "0.83rem", fontWeight: isSelected ? 700 : 500, color: isSelected ? "#0f172a" : "#334155", flex: 1, lineHeight: 1.35 }}>
           {p.title}
         </span>
-        <span style={{ fontSize: "0.62rem", padding: "2px 7px", borderRadius: "10px", background: diffStyle.Easy.bg, color: diffStyle.Easy.color, border: `1px solid ${diffStyle.Easy.border}`, fontWeight: 600, whiteSpace: "nowrap" }}>
-          Hard
-        </span>
+        <span style={{ fontSize: "0.62rem", padding: "2px 7px", borderRadius: "10px", background: (diffStyle[p.difficulty] || diffStyle.Easy).bg, color: (diffStyle[p.difficulty] || diffStyle.Easy).color, border: `1px solid ${(diffStyle[p.difficulty] || diffStyle.Easy).border}`, fontWeight: 600, whiteSpace: "nowrap" }}>
+  {p.difficulty || "Easy"}
+</span>
         <span style={{ fontSize: "0.7rem", color: isExpanded ? "#2563eb" : "#94a3b8", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", lineHeight: 1 }}>▾</span>
       </div>
 
@@ -231,6 +402,7 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
     </div>
   </div>
 )}
+          
           </div>
           <div style={{ marginBottom: "0.875rem" }}>
             <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Explanation</div>
@@ -238,7 +410,7 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
           </div>
           <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "8px", padding: "0.625rem 0.75rem", marginBottom: "0.875rem" }}>
             <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "3px" }}>Real-world scenario</div>
-            <p style={{ margin: 0, fontSize: "0.78rem", color: "#1e40af", lineHeight: 1.6 }}>{p.basics}</p>
+            <p style={{ margin: 0, fontSize: "0.78rem", color: "#1e40af", lineHeight: 1.6 }}>{p.advanced}</p>
           </div>
           <div style={{ marginBottom: "0.875rem" }}>
             <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "5px" }}>Common use cases</div>
@@ -255,6 +427,31 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
               {p.hint}
             </div>
           </details>
+          {/* Table Structure — only show tables used in this problem */}
+{/* {p.expectedColumns && (() => { */}
+{(() => {
+  // Detect which tables this problem uses based on solutionQuery or description
+  const query = (p.solutionQuery || p.starterQuery || "").toLowerCase();
+  const desc = (p.description || "").toLowerCase();
+  const combined = query + " " + desc;
+
+  const TABLE_SCHEMAS = {
+    customers: ["customer_id","customer_name","email","phone","city","state","country","status","customer_type","lifetime_value"],
+    orders: ["order_id","customer_id","order_date","order_status","payment_status","total_amount","currency","delivered_date"],
+    order_items: ["order_item_id","order_id","product_id","quantity","unit_price","total_price","item_status"],
+    products: ["product_id","product_name","category","subcategory","brand","price","cost_price"],
+    payments: ["payment_id","order_id","payment_method","payment_status","amount","currency"],
+    delivery_partners: ["delivery_partner_id","partner_name","vehicle_type","city","status","rating"],
+    feedback: ["feedback_id","customer_id","order_id","rating","issue_category"],
+  };
+
+  const usedTables = Object.keys(TABLE_SCHEMAS).filter(t => combined.includes(t));
+  if (usedTables.length === 0) return null;
+
+  return (
+    <TableStructure tables={usedTables} />
+  );
+})()}
         </div>
       )}
     </div>
@@ -269,6 +466,7 @@ export default function SQLAdvancedPage() {
   const startTimeRef = useRef(Date.now());
   const selectedItemRef = useRef(null);
 
+
   const runCountRef = useRef(0);
   const [runCountDisplay, setRunCountDisplay] = useState(0);
   const [, setCommunityFeed] = useState([]);
@@ -281,6 +479,7 @@ export default function SQLAdvancedPage() {
   const [db, setDb] = useState(null);
   const [dbReady, setDbReady] = useState(false);
   const [solvedIds, setSolvedIds] = useState(new Set());
+  const [isGuest, setIsGuest] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -288,26 +487,26 @@ export default function SQLAdvancedPage() {
   const [postSuccess, setPostSuccess] = useState(false);
   const [validationStatus, setValidationStatus] = useState(null);
   const [shareOpen, setShareOpen] = useState(false);
-const [elapsed, setElapsed] = useState(null);
-const [userStreak, setUserStreak] = useState(0);
-const [unlockedBadges, setUnlockedBadges] = useState([]);
-const { isGuest, isPro, userEmail, userName: userFullName } = useProStatus();
-const isMobile = useMobile();
+  const [elapsed, setElapsed] = useState(null);
+  const [userFullName, setUserFullName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userStreak, setUserStreak] = useState(0);
+  const [unlockedBadges, setUnlockedBadges] = useState([]);
+  const isMobile = useMobile();
 
-usePageMeta({
-  title: selectedProblem
-    ? `${selectedProblem.seoTitle} | Repractiq`
-    : "SQL Advanced Practice | Repractiq",
-
-  description: selectedProblem
-    ? selectedProblem.metaDescription
-    : "Practice SQL Advanced interview questions.",
-
-  canonical: selectedProblem
-    ? `https://www.repractiq.com/sql/advanced/${selectedProblem.id}-${selectedProblem.slug}`
-    : "https://www.repractiq.com/sql/advanced"
-});
-
+  usePageMeta({
+    title: selectedProblem
+      ? `${selectedProblem.seoTitle} | Repractiq`
+      : "SQL Advanced Practice | Repractiq",
+  
+    description: selectedProblem
+      ? selectedProblem.metaDescription
+      : "Practice SQL Advanced interview questions.",
+  
+    canonical: selectedProblem
+      ? `https://www.repractiq.com/sql/advanced/${selectedProblem.id}-${selectedProblem.slug}`
+      : "https://www.repractiq.com/sql/advanced"
+  });
 
   const queryRef = useRef(query);
   useEffect(() => { queryRef.current = query; }, [query]);
@@ -341,7 +540,8 @@ usePageMeta({
           const { data, error } = await supabase
             .from(table.name)
             .select(table.columns.join(","))
-            .limit(500);
+            .limit(1000);
+            
 
           if (error || !data || data.length === 0) continue;
 
@@ -380,9 +580,18 @@ usePageMeta({
   useEffect(() => {
     const fetchSolvedProblems = async () => {
       const { data: sessionData } = await supabase.auth.getSession();
-      const session = sessionData?.session;
-      if (!session) return;
-      const userId = session.user.id;
+      if (!sessionData?.session) {
+        setIsGuest(true);
+        return;
+      }
+      const userId = sessionData.session.user.id;
+      setUserEmail(sessionData.session.user.email || "");
+      const { data: prof } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", userId)
+    .maybeSingle();
+  setUserFullName(prof?.full_name || sessionData.session.user.email?.split("@")[0] || "User");  
 
   const { data: streakRow } = await supabase
   .from("user_streaks")
@@ -546,7 +755,7 @@ else setExpandedMilestone("gold");
     runCountRef.current = 0;
     setRunCountDisplay(0);
     setSelectedProblem(p);
-    setQuery("-- Explore the data first, then write your solution below\nSELECT * FROM customers LIMIT 5;");
+    setQuery("-- Explore the data first, then write your solution below");
     setResults(null);
     setError(null);
     setValidationStatus(null);
@@ -626,8 +835,28 @@ else setExpandedMilestone("gold");
   };
 
   const diffStyle = {
-    Easy: { color: "#16a34a", bg: "#f0fdf4", border: "#bbf7d0" },
+    Easy: {
+      color: "#16a34a",
+      bg: "#f0fdf4",
+      border: "#bbf7d0",
+    },
+    Medium: {
+      color: "#d97706",
+      bg: "#fffbeb",
+      border: "#fde68a",
+    },
+  "Medium+": {
+      color: "#ea580c",   // orange-600
+      bg: "#fff7ed",      // orange-50
+      border: "#fdba74",  // orange-300
+    },
+    Hard: {
+      color: "#dc2626",
+      bg: "#fef2f2",
+      border: "#fecaca",
+    },
   };
+ 
 
   const filteredProblems = useMemo(() => {
     if (!searchTerm.trim()) return SQL_ADVANCED_PROBLEMS;
@@ -687,9 +916,9 @@ else setExpandedMilestone("gold");
       },
     };
     const c = configs[validationStatus];
-    
     return (
       <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: "10px", padding: "0.875rem 1rem", marginBottom: "1rem", display: "flex", gap: "10px", alignItems: "flex-start" }}>
+
         <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: c.iconColor, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 700, flexShrink: 0 }}>
           {c.icon}
         </div>
@@ -719,6 +948,7 @@ else setExpandedMilestone("gold");
       </div>
     );
   };
+
   if (isMobile) {
     return (
       <MobileSQLLayout
@@ -735,9 +965,9 @@ else setExpandedMilestone("gold");
         validationStatus={validationStatus}
         solvedIds={solvedIds}
         isGuest={isGuest}
-        isPro={isPro}
-        paywallThreshold={30}
-        guestThreshold={10}
+        isPro={false}
+        paywallThreshold={9999}
+        guestThreshold={9999}
         onNavigateSignup={() => navigate("/signup")}
         onNavigateLogin={() => navigate("/login")}
         onNavigatePricing={() => navigate("/pricing")}
@@ -745,7 +975,8 @@ else setExpandedMilestone("gold");
         totalProblems={SQL_ADVANCED_PROBLEMS.length}
         runCountDisplay={runCountDisplay}
         onPostCommunity={handlePostCommunity}
-        setShareOpen={setShareOpen}
+        shareOpen={shareOpen}
+setShareOpen={setShareOpen}
 user={{ fullName: userFullName, username: userFullName || userEmail?.split("@")[0] || "user" }}
 solvedCount={solvedIds.size}
 streak={userStreak}
@@ -754,7 +985,8 @@ elapsed={elapsed}
 ShareModalComponent={ShareModal}
       />
     );
-  };
+  }
+
   return (
     <div style={{ background: "#ffffff", height: "100vh", display: "flex", flexDirection: "column", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a", overflow: "hidden" }}>
          <StructuredData
@@ -926,54 +1158,30 @@ ShareModalComponent={ShareModal}
 
         {/* RIGHT PANEL */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "#ffffff" }}>
-        {selectedProblem.id > 30 && !isGuest && !isPro ? (
-  <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
-    <div style={{ textAlign: "center", maxWidth: "380px" }}>
-      <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🔒</div>
-      <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.5rem" }}>
-        Pro problem
-      </h3>
-      <p style={{ fontSize: "0.88rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>
-        You've completed the free tier. Upgrade to Pro to unlock all {SQL_ADVANCED_PROBLEMS.length} SQL Advanced problems.
-      </p>
-      <button
-        onClick={() => navigate("/pricing")}
-        style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer", marginBottom: "8px" }}
-      >
-        View Pro Plans →
-      </button>
-      <button
-        onClick={() => navigate("/pricing")}
-        style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#ffffff", color: "#64748b", fontWeight: 600, fontSize: "0.88rem", border: "1.5px solid #e2e8f0", cursor: "pointer" }}
-      >
-        See what's included
-      </button>
-    </div>
-  </div>
-) : selectedProblem.id > 10 && isGuest ? (
-  <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
-    <div style={{ textAlign: "center", maxWidth: "360px" }}>
-      <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🔒</div>
-      <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.5rem" }}>Sign in to unlock this problem</h3>
-      <p style={{ fontSize: "0.88rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>
-        You've explored the first 10 problems. Sign up free to access all {SQL_ADVANCED_PROBLEMS.length} SQL Advanced problems and save your progress.
-      </p>
-      <button onClick={() => navigate("/signup")} style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer", marginBottom: "8px" }}>
-        Sign Up Free →
-      </button>
-      <button onClick={() => navigate("/login")} style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.88rem", border: "1.5px solid #bfdbfe", cursor: "pointer" }}>
-        Already have an account? Sign in
-      </button>
-    </div>
-  </div>
-) : (
+          {selectedProblem.id > 10 && isGuest ? (
+            <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
+              <div style={{ textAlign: "center", maxWidth: "360px" }}>
+                <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🔒</div>
+                <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.5rem" }}>Sign in to unlock this problem</h3>
+                <p style={{ fontSize: "0.88rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>
+                  You've explored the first 10 problems. Sign up free to access all {SQL_ADVANCED_PROBLEMS.length} SQL problems and save your progress.
+                </p>
+                <button onClick={() => navigate("/signup")} style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer", marginBottom: "8px" }}>
+                  Sign Up Free →
+                </button>
+                <button onClick={() => navigate("/login")} style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.88rem", border: "1.5px solid #bfdbfe", cursor: "pointer" }}>
+                  Already have an account? Sign in
+                </button>
+              </div>
+            </div>
+          ) : (
             <>
               {/* Problem Header */}
               <div style={{ padding: "1.25rem 1.75rem 1rem", borderBottom: "1px solid #f1f5f9", flexShrink: 0 }}>
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
                   <div>
                     <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "6px" }}>
-                      <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", fontWeight: 600 }}>Hard</span>
+                      <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", fontWeight: 600 }}>Advanced</span>
                       <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>#{selectedProblem.id}</span>
                       {solvedIds.has(selectedProblem.id) && (
                         <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", fontWeight: 600 }}>✓ Attempted</span>
@@ -981,12 +1189,6 @@ ShareModalComponent={ShareModal}
                     </div>
                     <h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>{selectedProblem.title}</h1>
                   </div>
-                  <button
-                    onClick={handlePostCommunity}
-                    style={{ padding: "8px 16px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.8rem", border: "1.5px solid #bfdbfe", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}
-                  >
-                    🌐 Post to Community
-                  </button>
                 </div>
                 <div style={{ marginTop: "0.875rem", background: "#f8fafc", border: "1px solid #e2e8f0", borderLeft: "3px solid #2563eb", borderRadius: "0 8px 8px 0", padding: "0.625rem 0.875rem" }}>
                   <span style={{ fontSize: "0.67rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "3px" }}>Task</span>
@@ -1006,12 +1208,18 @@ ShareModalComponent={ShareModal}
                       <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>Ctrl+Enter to run</span>
                     </div>
                     <div style={{ display: "flex", gap: "8px" }}>
-                      <button
-                        onClick={() => { setQuery(selectedProblem.starterQuery); setResults(null); setError(null); }}
-                        style={{ fontSize: "0.75rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 10px", cursor: "pointer" }}
-                      >
-                        Reset
-                      </button>
+                    <button
+  onClick={() => { setQuery("-- Explore the data first, then write your solution below"); setResults(null); setError(null); setValidationStatus(null); }}
+  style={{ fontSize: "0.75rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 10px", cursor: "pointer" }}
+>
+  Reset
+</button>
+<button
+  onClick={() => { setQuery(selectedProblem.solutionQuery); setResults(null); setValidationStatus(null); }}
+  style={{ fontSize: "0.75rem", color: "#d97706", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "6px", padding: "4px 10px", cursor: "pointer", fontWeight: 600 }}
+>
+  💡 Solution
+</button>
                       <button
                         onClick={runQuery}
                         disabled={!dbReady}
@@ -1147,7 +1355,7 @@ ShareModalComponent={ShareModal}
           </div>
         </div>
       )}
-<ShareModal
+      <ShareModal
   isOpen={shareOpen}
   onClose={() => setShareOpen(false)}
   problem={{ ...selectedProblem, category: "Advanced" }}
@@ -1168,5 +1376,6 @@ ShareModalComponent={ShareModal}
   isMobile={isMobile}
 />
     </div>
+  
   );
 }
