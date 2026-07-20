@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../supabase";
-import { SQL_SCENARIOS_PROBLEMS } from "./sqlScenariosProblems";
+import { SQL_INTERVIEW_PROBLEMS } from "./sqlInterviewProblems";
 import { matchesProblem, searchSqlProblems } from "./sqlSearch";
 import Editor from "@monaco-editor/react";
 import ShareModal from "../ShareModel";
@@ -16,14 +16,14 @@ import StructuredData from "../components/StructuredData";
 const MILESTONES = [
   {
     id: "bronze",
-    label: "Scenario Ready",
+    label: "Interview Ready",
     icon: "🥉",
     tier: "bronze",
     color: "#CD7F32",
     bg: "#fdf3e7",
     border: "#e8c49a",
     range: [1, 25],
-    badge: "scenarios_bronze",
+    badge: "interview_bronze",
   },
   {
     id: "silver",
@@ -34,195 +34,20 @@ const MILESTONES = [
     bg: "#f4f6f7",
     border: "#c8d0d4",
     range: [26, 50],
-    badge: "scenarios_silver",
+    badge: "interview_silver",
   },
   {
     id: "gold",
-    label: "Scenario Cracker",
+    label: "Interview Cracker",
     icon: "🥇",
     tier: "gold",
     color: "#D4A017",
     bg: "#fffbeb",
     border: "#fde68a",
     range: [51, 100],
-    badge: "scenarios_gold",
+    badge: "interview_gold",
   },
 ];
-
-
-const DB_SCHEMAS = {
-  customers: [
-    { name: "customer_id", type: "int64" },
-    { name: "customer_name", type: "string" },
-    { name: "email", type: "string" },
-    { name: "phone", type: "string" },
-    { name: "city", type: "string" },
-    { name: "state", type: "string" },
-    { name: "country", type: "string" },
-    { name: "postal_code", type: "string" },
-    { name: "created_date", type: "datetime" },
-    { name: "activated_date", type: "datetime" },
-    { name: "last_login_date", type: "datetime" },
-    { name: "last_order_date", type: "datetime" },
-    { name: "status", type: "string" },
-    { name: "customer_type", type: "string" },
-    { name: "acquisition_channel", type: "string" },
-    { name: "lifetime_value", type: "decimal" },
-    { name: "is_verified", type: "boolean" },
-    { name: "created_at", type: "datetime" },
-    { name: "updated_at", type: "datetime" }
-  ],
-  delivery_partners: [
-    { name: "delivery_partner_id", type: "int64" },
-    { name: "partner_name", type: "string" },
-    { name: "phone", type: "string" },
-    { name: "vehicle_type", type: "string" },
-    { name: "vehicle_number", type: "string" },
-    { name: "city", type: "string" },
-    { name: "status", type: "string" },
-    { name: "joining_date", type: "datetime" },
-    { name: "last_active_date", type: "datetime" },
-    { name: "rating", type: "decimal" },
-    { name: "total_deliveries", type: "int64" },
-    { name: "created_at", type: "datetime" },
-    { name: "updated_at", type: "datetime" }
-  ],
-  feedback: [
-    { name: "feedback_id", type: "int64" },
-    { name: "customer_id", type: "int64" },
-    { name: "order_id", type: "int64" },
-    { name: "rating", type: "decimal" },
-    { name: "review_text", type: "string" },
-    { name: "feedback_channel", type: "string" },
-    { name: "issue_category", type: "string" },
-    { name: "created_at", type: "datetime" },
-    { name: "updated_at", type: "datetime" }
-  ],
-  order_items: [
-    { name: "item_id", type: "int64" },
-    { name: "order_id", type: "int64" },
-    { name: "product_id", type: "int64" },
-    { name: "quantity", type: "int64" },
-    { name: "unit_price", type: "decimal" },
-    { name: "discount_amount", type: "decimal" },
-    { name: "tax_amount", type: "decimal" },
-    { name: "total_price", type: "decimal" },
-    { name: "item_status", type: "string" },
-    { name: "currency", type: "string" },
-    { name: "created_at", type: "datetime" },
-    { name: "updated_at", type: "datetime" }
-  ],
-  orders: [
-    { name: "order_id", type: "int64" },
-    { name: "customer_id", type: "int64" },
-    { name: "order_date", type: "datetime" },
-    { name: "order_status", type: "string" },
-    { name: "payment_status", type: "string" },
-    { name: "delivery_partner_id", type: "int64" },
-    { name: "subtotal_amount", type: "decimal" },
-    { name: "tax_amount", type: "decimal" },
-    { name: "discount_amount", type: "decimal" },
-    { name: "delivery_fee", type: "decimal" },
-    { name: "total_amount", type: "decimal" },
-    { name: "currency", type: "string" },
-    { name: "estimated_delivery_time", type: "datetime" },
-    { name: "out_for_delivery_time", type: "datetime" },
-    { name: "delivered_date", type: "datetime" },
-    { name: "cancelled_date", type: "datetime" },
-    { name: "cancellation_reason", type: "string" },
-    { name: "created_at", type: "datetime" },
-    { name: "updated_at", type: "datetime" }
-  ],
-  payments: [
-    { name: "payment_id", type: "int64" },
-    { name: "order_id", type: "int64" },
-    { name: "payment_method", type: "string" },
-    { name: "payment_provider", type: "string" },
-    { name: "transaction_reference", type: "string" },
-    { name: "payment_status", type: "string" },
-    { name: "amount", type: "decimal" },
-    { name: "currency", type: "string" },
-    { name: "refund_amount", type: "decimal" },
-    { name: "refund_date", type: "datetime" },
-    { name: "failure_reason", type: "string" },
-    { name: "payment_date", type: "datetime" },
-    { name: "attempt_number", type: "int64" },
-    { name: "created_at", type: "datetime" },
-    { name: "updated_at", type: "datetime" }
-  ],
-  products: [
-    { name: "product_id", type: "int64" },
-    { name: "product_name", type: "string" },
-    { name: "product_description", type: "string" },
-    { name: "category", type: "string" },
-    { name: "subcategory", type: "string" },
-    { name: "brand", type: "string" },
-    { name: "sku", type: "string" },
-    { name: "price", type: "decimal" },
-    { name: "cost_price", type: "decimal" },
-    { name: "currency", type: "string" },
-    { name: "is_active", type: "boolean" },
-    { name: "created_at", type: "datetime" },
-    { name: "updated_at", type: "datetime" }
-  ]
-};
-
-const getTypeBadgeStyle = (type) => {
-  switch (type) {
-    case "int64": return { color: "#0ea5e9", bg: "#f0f9ff" };     // Sky blue
-    case "boolean": return { color: "#16a34a", bg: "#f0fdf4" };   // Emerald green
-    case "string": return { color: "#a855f7", bg: "#f3e8ff" };    // Purple text badge
-    case "decimal": return { color: "#06b6d4", bg: "#ecfeff" };   // Teal decimal badge
-    case "datetime": return { color: "#ea580c", bg: "#fff7ed" };  // Orange timestamp badge
-    default: return { color: "#64748b", bg: "#f1f5f9" };         // Fallback slate
-  }
-};
-
-function TableStructure({ tables }) {
-  const [openTable, setOpenTable] = useState(null);
-
-  return (
-    <div style={{ marginTop: "0.75rem" }}>
-      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "6px" }}>
-        📋 Table Structure
-      </div>
-      {tables.map(table => (
-        <div key={table} style={{ marginBottom: "4px", border: "1px solid #e2e8f0", borderRadius: "6px", overflow: "hidden" }}>
-          <div
-            onClick={() => setOpenTable(openTable === table ? null : table)}
-            style={{ padding: "6px 10px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", background: openTable === table ? "#eff6ff" : "#f8fafc" }}
-          >
-            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: openTable === table ? "#2563eb" : "#0f172a", fontFamily: "monospace" }}>
-              {table}
-            </span>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <span style={{ fontSize: "0.65rem", color: "#94a3b8" }}>{DB_SCHEMAS[table]?.length || 0} cols</span>
-              <span style={{ fontSize: "0.65rem", color: "#94a3b8", transform: openTable === table ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▾</span>
-            </div>
-          </div>
-          {openTable === table && (
-            <div style={{ background: "#ffffff", borderTop: "1px solid #e2e8f0" }}>
-              {(DB_SCHEMAS[table] || []).map((col, i) => {
-                const style = getTypeBadgeStyle(col.type);
-                return (
-                  <div
-                    key={col.name}
-                    style={{ padding: "5px 10px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: i < DB_SCHEMAS[table].length - 1 ? "1px solid #f1f5f9" : "none" }}
-                  >
-                    <span style={{ fontSize: "0.72rem", fontFamily: "monospace", color: "#0f172a" }}>{col.name}</span>
-                    <span style={{ fontSize: "0.62rem", fontWeight: 600, padding: "1px 6px", borderRadius: "4px", background: style.bg, color: style.color }}>
-                      {col.type}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedItemRef, diffStyle, onSelect, nested = false }) {
   return (
@@ -249,9 +74,9 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
         <span style={{ fontSize: "0.83rem", fontWeight: isSelected ? 700 : 500, color: isSelected ? "#0f172a" : "#334155", flex: 1, lineHeight: 1.35 }}>
           {p.title}
         </span>
-        <span style={{ fontSize: "0.62rem", padding: "2px 7px", borderRadius: "10px", background: (diffStyle[p.difficulty] || diffStyle.Easy).bg, color: (diffStyle[p.difficulty] || diffStyle.Easy).color, border: `1px solid ${(diffStyle[p.difficulty] || diffStyle.Easy).border}`, fontWeight: 600, whiteSpace: "nowrap" }}>
-  {p.difficulty || "Easy"}
-</span>
+        <span style={{ fontSize: "0.62rem", padding: "2px 7px", borderRadius: "10px", background: diffStyle.Easy.bg, color: diffStyle.Easy.color, border: `1px solid ${diffStyle.Easy.border}`, fontWeight: 600, whiteSpace: "nowrap" }}>
+          Interview
+        </span>
         <span style={{ fontSize: "0.7rem", color: isExpanded ? "#2563eb" : "#94a3b8", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", lineHeight: 1 }}>▾</span>
       </div>
 
@@ -361,31 +186,6 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
               {p.hint}
             </div>
           </details>
-           {/* Table Structure — only show tables used in this problem */}
-{/* {p.expectedColumns && (() => { */}
-{(() => {
-  // Detect which tables this problem uses based on solutionQuery or description
-  const query = (p.solutionQuery || p.starterQuery || "").toLowerCase();
-  const desc = (p.description || "").toLowerCase();
-  const combined = query + " " + desc;
-
-  const TABLE_SCHEMAS = {
-    customers: ["customer_id","customer_name","email","phone","city","state","country","status","customer_type","lifetime_value"],
-    orders: ["order_id","customer_id","order_date","order_status","payment_status","total_amount","currency","delivered_date"],
-    order_items: ["order_item_id","order_id","product_id","quantity","unit_price","total_price","item_status"],
-    products: ["product_id","product_name","category","subcategory","brand","price","cost_price"],
-    payments: ["payment_id","order_id","payment_method","payment_status","amount","currency"],
-    delivery_partners: ["delivery_partner_id","partner_name","vehicle_type","city","status","rating"],
-    feedback: ["feedback_id","customer_id","order_id","rating","issue_category"],
-  };
-
-  const usedTables = Object.keys(TABLE_SCHEMAS).filter(t => combined.includes(t));
-  if (usedTables.length === 0) return null;
-
-  return (
-    <TableStructure tables={usedTables} />
-  );
-})()}
         </div>
       )}
     </div>
@@ -472,8 +272,8 @@ export default function SQLBasicsPage() {
   const [, setCommunityFeed] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
   const [expandedMilestone, setExpandedMilestone] = useState(null);
-  const [selectedProblem, setSelectedProblem] = useState(SQL_SCENARIOS_PROBLEMS[0]);
-  const [query, setQuery] = useState(SQL_SCENARIOS_PROBLEMS[0].starterQuery);
+  const [selectedProblem, setSelectedProblem] = useState(SQL_INTERVIEW_PROBLEMS[0]);
+  const [query, setQuery] = useState(SQL_INTERVIEW_PROBLEMS[0].starterQuery);
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
   const [db, setDb] = useState(null);
@@ -492,20 +292,18 @@ export default function SQLBasicsPage() {
   const { isGuest, isPro, userEmail, userName: userFullName } = useProStatus();
   const isMobile = useMobile();
 
-  
-
   usePageMeta({
     title: selectedProblem
       ? `${selectedProblem.seoTitle} | Repractiq`
-      : "SQL Scenarios Practice | Repractiq",
+      : "SQL Interview Practice | Repractiq",
   
     description: selectedProblem
       ? selectedProblem.metaDescription
-      : "Practice SQL Easy to Hard scenarios questions.",
+      : "Practice SQL Easy to Hard interview questions.",
   
     canonical: selectedProblem
-      ? `https://www.repractiq.com/sql/scenarios/${selectedProblem.id}-${selectedProblem.slug}`
-      : "https://www.repractiq.com/sql/scenarios"
+      ? `https://www.repractiq.com/sql/interview/${selectedProblem.id}-${selectedProblem.slug}`
+      : "https://www.repractiq.com/sql/interview"
   });
 
   const queryRef = useRef(query);
@@ -540,7 +338,7 @@ export default function SQLBasicsPage() {
           const { data, error } = await supabase
             .from(table.name)
             .select(table.columns.join(","))
-            .limit(1000);
+            .limit(500);
 
           if (error || !data || data.length === 0) continue;
 
@@ -701,7 +499,7 @@ else setExpandedMilestone("gold");
           .select("id, status")
           .eq("user_id", userId)
           .eq("problem_id", currentProblem.id)
-          .eq("category", "sql_scenarios")
+          .eq("category", "sql_interview")
           .maybeSingle();
     
         // Never overwrite correct with worse
@@ -723,7 +521,7 @@ else setExpandedMilestone("gold");
           await supabase.from("submissions").insert({
             user_id: userId,
             problem_id: currentProblem.id,
-            category: "sql_scenarios",
+            category: "sql_interview",
             problem_title: currentProblem.title,
             query: currentQuery,
             status,
@@ -749,7 +547,7 @@ else setExpandedMilestone("gold");
     setResults(null);
     setError(null);
     setValidationStatus(null);
-    navigate(`/sql/scenarios/${p.id}-${p.slug}`);
+    navigate(`/sql/interview/${p.id}-${p.slug}`);
   }, [navigate]);
 
   const handleToggleExpand = (id) => {
@@ -763,7 +561,7 @@ else setExpandedMilestone("gold");
       setSearchTerm(incoming.searchQuery);
     }
     if (incoming.focusProblemId !== undefined) {
-      const targetProblem = SQL_SCENARIOS_PROBLEMS.find((p) => p.id === incoming.focusProblemId);
+      const targetProblem = SQL_INTERVIEW_PROBLEMS.find((p) => p.id === incoming.focusProblemId);
       if (targetProblem) {
         handleSelectProblem(targetProblem);
         setExpandedId(targetProblem.id);
@@ -771,7 +569,7 @@ else setExpandedMilestone("gold");
     } else {
       const idFromUrl = Number((problemSlug || "").split("-")[0]);
       if (!isNaN(idFromUrl)) {
-        const target = SQL_SCENARIOS_PROBLEMS.find((p) => p.id === idFromUrl);
+        const target = SQL_INTERVIEW_PROBLEMS.find((p) => p.id === idFromUrl);
         if (target) {
           handleSelectProblem(target);
           setExpandedId(target.id);
@@ -802,7 +600,7 @@ else setExpandedMilestone("gold");
       await supabase.from("submissions").upsert({
         user_id: userId,
         problem_id: selectedProblem.id,
-        category: "sql_scenarios",
+        category: "sql_interview",
         problem_title: selectedProblem.title,
         query: query,
         status: "attempted",
@@ -815,7 +613,7 @@ else setExpandedMilestone("gold");
     setCommunityFeed((prev) => [{
       user: "You",
       problem: selectedProblem.title,
-      category: "sql_scenarios",
+      category: "sql_interview",
       query: query,
       comment: modalComment,
       time: "Just now",
@@ -825,63 +623,16 @@ else setExpandedMilestone("gold");
   };
 
   const diffStyle = {
-    Easy: {
-      color: "#16a34a",   // Green 600
-      bg: "#f0fdf4",      // Green 50
-      border: "#bbf7d0",  // Green 200
-    },
-  
-    Intermediate: {
-      color: "#d97706",   // Amber 600
-      bg: "#fffbeb",      // Amber 50
-      border: "#fde68a",  // Amber 200
-    },
-  
-    "Intermediate+": {
-      color: "#ea580c",   // Orange 600
-      bg: "#fff7ed",      // Orange 50
-      border: "#fdba74",  // Orange 300
-    },
-  
-    Advanced: {
-      color: "#dc2626",   // Red 600
-      bg: "#fef2f2",      // Red 50
-      border: "#fecaca",  // Red 200
-    },
-  
-    "Advanced+": {
-      color: "#c026d3",   // Fuchsia 600
-      bg: "#fdf4ff",      // Fuchsia 50
-      border: "#f0abfc",  // Fuchsia 300
-    },
-  
-    "Very Advanced": {
-      color: "#7c3aed",   // Violet 600
-      bg: "#f5f3ff",      // Violet 50
-      border: "#c4b5fd",  // Violet 300
-    },
-  
-    Elite: {
-      color: "#4338ca",   // Indigo 700
-      bg: "#eef2ff",      // Indigo 50
-      border: "#a5b4fc",  // Indigo 300
-    },
-  
-    "Elite+": {
-      color: "#1f2937",   // Gray 800
-      bg: "#f9fafb",      // Gray 50
-      border: "#d1d5db",  // Gray 300
-    },
+    Easy: { color: "#16a34a", bg: "#f0fdf4", border: "#bbf7d0" },
   };
- 
- 
+
   const filteredProblems = useMemo(() => {
-    if (!searchTerm.trim()) return SQL_SCENARIOS_PROBLEMS;
-    return SQL_SCENARIOS_PROBLEMS.filter((p) => matchesProblem(p, searchTerm));
+    if (!searchTerm.trim()) return SQL_INTERVIEW_PROBLEMS;
+    return SQL_INTERVIEW_PROBLEMS.filter((p) => matchesProblem(p, searchTerm));
   }, [searchTerm]);
 
   const crossCategoryMatches = useMemo(
-    () => searchSqlProblems(searchTerm).filter((m) => m.categoryKey !== "Scenarios").slice(0, 10),
+    () => searchSqlProblems(searchTerm).filter((m) => m.categoryKey !== "Interview").slice(0, 10),
     [searchTerm]
   );
 
@@ -968,7 +719,7 @@ else setExpandedMilestone("gold");
   if (isMobile) {
     return (
       <MobileSQLLayout
-        problems={SQL_SCENARIOS_PROBLEMS}
+        problems={SQL_INTERVIEW_PROBLEMS}
         selectedProblem={selectedProblem}
         onSelectProblem={handleSelectProblem}
         query={query}
@@ -987,8 +738,8 @@ else setExpandedMilestone("gold");
         onNavigateSignup={() => navigate("/signup")}
         onNavigateLogin={() => navigate("/login")}
         onNavigatePricing={() => navigate("/pricing")}
-        pageTitle="SQL Scenarios"
-        totalProblems={SQL_SCENARIOS_PROBLEMS.length}
+        pageTitle="SQL Interview"
+        totalProblems={SQL_INTERVIEW_PROBLEMS.length}
         runCountDisplay={runCountDisplay}
         onPostCommunity={handlePostCommunity}
         setShareOpen={setShareOpen}
@@ -1006,7 +757,7 @@ else setExpandedMilestone("gold");
     <div style={{ background: "#ffffff", height: "100vh", display: "flex", flexDirection: "column", fontFamily: "Inter, -apple-system, sans-serif", color: "#0f172a", overflow: "hidden" }}>
          <StructuredData
       problem={selectedProblem}
-      category="scenarios"
+      category="interview"
       />
       {/* NAV */}
       <nav style={{ padding: "0.85rem 2rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.97)", flexShrink: 0 }}>
@@ -1015,7 +766,7 @@ else setExpandedMilestone("gold");
           <span onClick={() => navigate("/home")} style={{ cursor: "pointer", color: "#64748b", fontSize: "0.85rem", fontWeight: 500 }}>Home</span>
           <span onClick={() => navigate("/profile")} style={{ cursor: "pointer", color: "#64748b", fontSize: "0.85rem", fontWeight: 500 }}>Profile</span>
           <div style={{ fontSize: "0.78rem", color: "#16a34a", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "20px", padding: "4px 12px", fontWeight: 600 }}>
-            ✓ {solvedIds.size} / {SQL_SCENARIOS_PROBLEMS.length} attempted
+            ✓ {solvedIds.size} / {SQL_INTERVIEW_PROBLEMS.length} attempted
           </div>
           <span onClick={() => navigate("/sql")} style={{ cursor: "pointer", color: "#2563eb", fontSize: "0.85rem", fontWeight: 600 }}>← Back to Practice</span>
         </div>
@@ -1023,7 +774,7 @@ else setExpandedMilestone("gold");
 
       {/* PAGE TITLE */}
       <div style={{ background: "linear-gradient(180deg, #eff6ff 0%, #ffffff 100%)", borderBottom: "1px solid #e2e8f0", padding: "0.875rem 2rem", display: "flex", alignItems: "center", gap: "16px", flexShrink: 0 }}>
-        <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>SQL Scenarios</h2>
+        <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>SQL Interview</h2>
       </div>
 
       {/* MAIN SPLIT */}
@@ -1053,7 +804,7 @@ else setExpandedMilestone("gold");
           {!!searchTerm && (
             <div style={{ margin: "0 0.75rem 0.5rem", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "10px", padding: "0.625rem 0.75rem" }}>
               <div style={{ fontSize: "0.72rem", color: "#1d4ed8", fontWeight: 700, marginBottom: "4px" }}>
-                Results: {filteredProblems.length} in Scenarios
+                Results: {filteredProblems.length} in Interview
               </div>
               {crossCategoryMatches.length > 0 && (
                 <div style={{ fontSize: "0.72rem", color: "#475569" }}>
@@ -1096,7 +847,7 @@ else setExpandedMilestone("gold");
 ) : (
   <>
     {MILESTONES.map((milestone) => {
-      const milestoneProblems = SQL_SCENARIOS_PROBLEMS.filter(
+      const milestoneProblems = SQL_INTERVIEW_PROBLEMS.filter(
         (p) => p.id >= milestone.range[0] && p.id <= milestone.range[1]
       );
       const solvedInMilestone = milestoneProblems.filter((p) => solvedIds.has(p.id)).length;
@@ -1181,7 +932,7 @@ else setExpandedMilestone("gold");
                   Pro problem
                 </h3>
                 <p style={{ fontSize: "0.88rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>
-                  You've completed the free tier. Upgrade to Pro to unlock all {SQL_SCENARIOS_PROBLEMS.length} SQL Scenarios problems.
+                  You've completed the free tier. Upgrade to Pro to unlock all {SQL_INTERVIEW_PROBLEMS.length} SQL Interview problems.
                 </p>
                 <button
                   onClick={() => navigate("/pricing")}
@@ -1203,7 +954,7 @@ else setExpandedMilestone("gold");
                 <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🔒</div>
                 <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.5rem" }}>Sign in to unlock this problem</h3>
                 <p style={{ fontSize: "0.88rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>
-                  You've explored the first 10 problems. Sign up free to access all {SQL_SCENARIOS_PROBLEMS.length} SQL problems and save your progress.
+                  You've explored the first 10 problems. Sign up free to access all {SQL_INTERVIEW_PROBLEMS.length} SQL problems and save your progress.
                 </p>
                 <button onClick={() => navigate("/signup")} style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer", marginBottom: "8px" }}>
                   Sign Up Free →
@@ -1228,12 +979,12 @@ else setExpandedMilestone("gold");
                     </div>
                     <h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>{selectedProblem.title}</h1>
                   </div>
-                  {/* <button
+                  <button
                     onClick={handlePostCommunity}
                     style={{ padding: "8px 16px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.8rem", border: "1.5px solid #bfdbfe", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}
                   >
                     🌐 Post to Community
-                  </button> */}
+                  </button>
                 </div>
                 <div style={{ marginTop: "0.875rem", background: "#f8fafc", border: "1px solid #e2e8f0", borderLeft: "3px solid #2563eb", borderRadius: "0 8px 8px 0", padding: "0.625rem 0.875rem" }}>
                   <span style={{ fontSize: "0.67rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "3px" }}>Task</span>
@@ -1253,18 +1004,12 @@ else setExpandedMilestone("gold");
                       <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>Ctrl+Enter to run</span>
                     </div>
                     <div style={{ display: "flex", gap: "8px" }}>
-                    <button
-  onClick={() => { setQuery("-- Explore the data first, then write your solution below\nSELECT * FROM customers LIMIT 5;"); setResults(null); setError(null); setValidationStatus(null); }}
-  style={{ fontSize: "0.75rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 10px", cursor: "pointer" }}
->
-  Reset
-</button>
-<button
-  onClick={() => { setQuery(selectedProblem.solutionQuery); setResults(null); setValidationStatus(null); }}
-  style={{ fontSize: "0.75rem", color: "#d97706", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "6px", padding: "4px 10px", cursor: "pointer", fontWeight: 600 }}
->
-  💡 Solution
-</button>
+                      <button
+                        onClick={() => { setQuery(selectedProblem.starterQuery); setResults(null); setError(null); }}
+                        style={{ fontSize: "0.75rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 10px", cursor: "pointer" }}
+                      >
+                        Reset
+                      </button>
                       <button
                         onClick={runQuery}
                         disabled={!dbReady}
@@ -1403,7 +1148,7 @@ else setExpandedMilestone("gold");
       <ShareModal
   isOpen={shareOpen}
   onClose={() => setShareOpen(false)}
-  problem={{ ...selectedProblem, category: "Scenarios" }}
+  problem={{ ...selectedProblem, category: "Interview" }}
   user={{
     fullName: userFullName,
     username: userFullName || userEmail?.split("@")[0] || "user",

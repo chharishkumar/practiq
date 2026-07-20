@@ -5,9 +5,9 @@ import { SQL_ADVANCED_PROBLEMS } from "./sqlAdvancedProblems";
 import { matchesProblem, searchSqlProblems } from "./sqlSearch";
 import Editor from "@monaco-editor/react";
 import ShareModal from "../ShareModel";
+import { useProStatus } from "../hooks/useProStatus";
 import { useMobile } from "../hooks/useMobile";
 import MobileSQLLayout from "../components/MobileSQLLayout";
-
 import { checkAndSaveBadges } from "../badges/useBadges";
 import BadgeUnlockModal from "../badges/BadgeUnlockModal";
 import { usePageMeta } from "../hooks/usePageMeta"; 
@@ -16,7 +16,7 @@ import StructuredData from "../components/StructuredData";
 const MILESTONES = [
   {
     id: "bronze",
-    label: "Query Builder",
+    label: "Advanced Ready",
     icon: "🥉",
     tier: "bronze",
     color: "#CD7F32",
@@ -27,7 +27,7 @@ const MILESTONES = [
   },
   {
     id: "silver",
-    label: "Data Analyst",
+    label: "Hiring Manager's Pick",
     icon: "🥈",
     tier: "silver",
     color: "#9BA8B0",
@@ -38,7 +38,7 @@ const MILESTONES = [
   },
   {
     id: "gold",
-    label: "SQL Professional",
+    label: "Advanced Cracker",
     icon: "🥇",
     tier: "gold",
     color: "#D4A017",
@@ -48,6 +48,7 @@ const MILESTONES = [
     badge: "advanced_gold",
   },
 ];
+
 
 const DB_SCHEMAS = {
   customers: [
@@ -177,72 +178,6 @@ const getTypeBadgeStyle = (type) => {
   }
 };
 
-function validateResults(userResult, referenceResult) {
-  if (!userResult || !referenceResult) return null;
-
-  // Row count check
-  if (userResult.values.length !== referenceResult.values.length) {
-    return "almost";
-  }
-
-  // Column count check
-  if (
-    userResult.columns.length >
-    referenceResult.columns.length
-  ) {
-    return "extra_columns";
-  }
-  
-  if (
-    userResult.columns.length <
-    referenceResult.columns.length
-  ) {
-    return "missing_columns";
-  }
-
-  // Normalize column names
-  const normalizeColumn = (col) =>
-    String(col).trim().toLowerCase();
-
-  const userCols = userResult.columns.map(normalizeColumn).sort();
-  const refCols = referenceResult.columns.map(normalizeColumn).sort();
-
-  // Column names mismatch
-  if (JSON.stringify(userCols) !== JSON.stringify(refCols)) {
-    return "wrong_columns";
-  }
-
-  // Normalize values
-  const normalizeValue = (v) => {
-    if (v === null || v === undefined) return "null";
-
-    // Handle numbers
-    if (!isNaN(v) && v !== "") {
-      return Number(v).toFixed(2);
-    }
-
-    return String(v).trim().toLowerCase();
-  };
-
-  // Normalize rows independent of column order
-  const normalizeRows = (result) => {
-    return result.values
-      .map((row) =>
-        row.map(normalizeValue).sort().join("|")
-      )
-      .sort()
-      .join("\n");
-  };
-
-  const userNormalized = normalizeRows(userResult);
-  const refNormalized = normalizeRows(referenceResult);
-
-  if (userNormalized === refNormalized) {
-    return "correct";
-  }
-
-  return "almost";
-}
 function TableStructure({ tables }) {
   const [openTable, setOpenTable] = useState(null);
 
@@ -402,7 +337,6 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
     </div>
   </div>
 )}
-          
           </div>
           <div style={{ marginBottom: "0.875rem" }}>
             <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>Explanation</div>
@@ -410,7 +344,7 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
           </div>
           <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "8px", padding: "0.625rem 0.75rem", marginBottom: "0.875rem" }}>
             <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "3px" }}>Real-world scenario</div>
-            <p style={{ margin: 0, fontSize: "0.78rem", color: "#1e40af", lineHeight: 1.6 }}>{p.advanced}</p>
+            <p style={{ margin: 0, fontSize: "0.78rem", color: "#1e40af", lineHeight: 1.6 }}>{p.basics}</p>
           </div>
           <div style={{ marginBottom: "0.875rem" }}>
             <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "5px" }}>Common use cases</div>
@@ -427,7 +361,7 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
               {p.hint}
             </div>
           </details>
-          {/* Table Structure — only show tables used in this problem */}
+           {/* Table Structure — only show tables used in this problem */}
 {/* {p.expectedColumns && (() => { */}
 {(() => {
   // Detect which tables this problem uses based on solutionQuery or description
@@ -458,14 +392,80 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
   );
 }
 
-export default function SQLAdvancedPage() {
+function validateResults(userResult, referenceResult) {
+  if (!userResult || !referenceResult) return null;
+
+  // Row count check
+  if (userResult.values.length !== referenceResult.values.length) {
+    return "almost";
+  }
+
+  // Column count check
+  if (
+    userResult.columns.length >
+    referenceResult.columns.length
+  ) {
+    return "extra_columns";
+  }
+  
+  if (
+    userResult.columns.length <
+    referenceResult.columns.length
+  ) {
+    return "missing_columns";
+  }
+
+  // Normalize column names
+  const normalizeColumn = (col) =>
+    String(col).trim().toLowerCase();
+
+  const userCols = userResult.columns.map(normalizeColumn).sort();
+  const refCols = referenceResult.columns.map(normalizeColumn).sort();
+
+  // Column names mismatch
+  if (JSON.stringify(userCols) !== JSON.stringify(refCols)) {
+    return "wrong_columns";
+  }
+
+  // Normalize values
+  const normalizeValue = (v) => {
+    if (v === null || v === undefined) return "null";
+
+    // Handle numbers
+    if (!isNaN(v) && v !== "") {
+      return Number(v).toFixed(2);
+    }
+
+    return String(v).trim().toLowerCase();
+  };
+
+  // Normalize rows independent of column order
+  const normalizeRows = (result) => {
+    return result.values
+      .map((row) =>
+        row.map(normalizeValue).sort().join("|")
+      )
+      .sort()
+      .join("\n");
+  };
+
+  const userNormalized = normalizeRows(userResult);
+  const refNormalized = normalizeRows(referenceResult);
+
+  if (userNormalized === refNormalized) {
+    return "correct";
+  }
+
+  return "almost";
+}
+
+export default function SQLBasicsPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { problemSlug } = useParams();
   const editorRef = useRef(null);
   const startTimeRef = useRef(Date.now());
   const selectedItemRef = useRef(null);
-
 
   const runCountRef = useRef(0);
   const [runCountDisplay, setRunCountDisplay] = useState(0);
@@ -479,7 +479,6 @@ export default function SQLAdvancedPage() {
   const [db, setDb] = useState(null);
   const [dbReady, setDbReady] = useState(false);
   const [solvedIds, setSolvedIds] = useState(new Set());
-  const [isGuest, setIsGuest] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -487,12 +486,13 @@ export default function SQLAdvancedPage() {
   const [postSuccess, setPostSuccess] = useState(false);
   const [validationStatus, setValidationStatus] = useState(null);
   const [shareOpen, setShareOpen] = useState(false);
-  const [elapsed, setElapsed] = useState(null);
-  const [userFullName, setUserFullName] = useState("");
-  const [userEmail, setUserEmail] = useState("");
+  const [elapsed, setElapsed] = useState(null); 
   const [userStreak, setUserStreak] = useState(0);
   const [unlockedBadges, setUnlockedBadges] = useState([]);
+  const { isGuest, isPro, userEmail, userName: userFullName } = useProStatus();
   const isMobile = useMobile();
+
+  
 
   usePageMeta({
     title: selectedProblem
@@ -501,7 +501,7 @@ export default function SQLAdvancedPage() {
   
     description: selectedProblem
       ? selectedProblem.metaDescription
-      : "Practice SQL Advanced interview questions.",
+      : "Practice SQL Easy to Hard advanced questions.",
   
     canonical: selectedProblem
       ? `https://www.repractiq.com/sql/advanced/${selectedProblem.id}-${selectedProblem.slug}`
@@ -529,7 +529,7 @@ export default function SQLAdvancedPage() {
         const tables = [
           { name: "customers", columns: ["customer_id","customer_name","email","phone","city","state","country","postal_code","created_date","activated_date","last_login_date","last_order_date","status","customer_type","acquisition_channel","lifetime_value","is_verified"] },
           { name: "orders", columns: ["order_id","customer_id","order_date","order_status","payment_status","delivery_partner_id","subtotal_amount","tax_amount","discount_amount","delivery_fee","total_amount","currency","estimated_delivery_time","delivered_date","cancelled_date","cancellation_reason"] },
-          { name: "order_items", columns: ["item_id","order_id","product_id","quantity","unit_price","discount_amount","tax_amount","total_price","item_status","currency"] },
+          { name: "order_items", columns: ["order_item_id","order_id","product_id","quantity","unit_price","discount_amount","tax_amount","total_price","item_status","currency"] },
           { name: "products", columns: ["product_id","product_name","product_description","category","subcategory","brand","sku","price","cost_price","currency","is_active"] },
           { name: "payments", columns: ["payment_id","order_id","payment_method","payment_provider","transaction_reference","payment_status","amount","currency","refund_amount","refund_date","failure_reason","payment_date","attempt_number"] },
           { name: "delivery_partners", columns: ["delivery_partner_id","partner_name","phone","vehicle_type","vehicle_number","city","status","joining_date","last_active_date","rating","total_deliveries"] },
@@ -541,7 +541,6 @@ export default function SQLAdvancedPage() {
             .from(table.name)
             .select(table.columns.join(","))
             .limit(1000);
-            
 
           if (error || !data || data.length === 0) continue;
 
@@ -580,18 +579,9 @@ export default function SQLAdvancedPage() {
   useEffect(() => {
     const fetchSolvedProblems = async () => {
       const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData?.session) {
-        setIsGuest(true);
-        return;
-      }
-      const userId = sessionData.session.user.id;
-      setUserEmail(sessionData.session.user.email || "");
-      const { data: prof } = await supabase
-    .from("profiles")
-    .select("full_name")
-    .eq("id", userId)
-    .maybeSingle();
-  setUserFullName(prof?.full_name || sessionData.session.user.email?.split("@")[0] || "User");  
+      const session = sessionData?.session;
+      if (!session) return;
+      const userId = session.user.id;
 
   const { data: streakRow } = await supabase
   .from("user_streaks")
@@ -604,18 +594,18 @@ setUserStreak(streakRow?.current_streak || 0);
         .from("submissions")
         .select("problem_id")
         .eq("user_id", userId)
-        .eq("category", "sql_advanced")
+        .eq("category", "sql_basics")
         .eq("status", "correct");
       if (error || !data) return;
       const ids = new Set(data.map((row) => row.problem_id));
-      setSolvedIds(ids);
+setSolvedIds(ids);
 
-      // Auto-open the milestone section where user currently is
+// Auto-open the milestone section where user currently is
 const solvedCount = ids.size;
 if (solvedCount < 25) setExpandedMilestone("bronze");
 else if (solvedCount < 50) setExpandedMilestone("silver");
 else setExpandedMilestone("gold");
-    };
+      };
     fetchSolvedProblems();
   }, []);
 
@@ -755,7 +745,7 @@ else setExpandedMilestone("gold");
     runCountRef.current = 0;
     setRunCountDisplay(0);
     setSelectedProblem(p);
-    setQuery("-- Explore the data first, then write your solution below");
+    setQuery("-- Explore the data first, then write your solution below\nSELECT * FROM customers LIMIT 5;");
     setResults(null);
     setError(null);
     setValidationStatus(null);
@@ -857,14 +847,13 @@ else setExpandedMilestone("gold");
     },
   };
  
-
   const filteredProblems = useMemo(() => {
     if (!searchTerm.trim()) return SQL_ADVANCED_PROBLEMS;
     return SQL_ADVANCED_PROBLEMS.filter((p) => matchesProblem(p, searchTerm));
   }, [searchTerm]);
 
   const crossCategoryMatches = useMemo(
-    () => searchSqlProblems(searchTerm).filter((m) => m.categoryKey !== "advanced").slice(0, 10),
+    () => searchSqlProblems(searchTerm).filter((m) => m.categoryKey !== "Advanced").slice(0, 10),
     [searchTerm]
   );
 
@@ -918,7 +907,6 @@ else setExpandedMilestone("gold");
     const c = configs[validationStatus];
     return (
       <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: "10px", padding: "0.875rem 1rem", marginBottom: "1rem", display: "flex", gap: "10px", alignItems: "flex-start" }}>
-
         <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: c.iconColor, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 700, flexShrink: 0 }}>
           {c.icon}
         </div>
@@ -965,9 +953,9 @@ else setExpandedMilestone("gold");
         validationStatus={validationStatus}
         solvedIds={solvedIds}
         isGuest={isGuest}
-        isPro={false}
-        paywallThreshold={9999}
-        guestThreshold={9999}
+        isPro={isPro}
+        paywallThreshold={30}
+        guestThreshold={10}
         onNavigateSignup={() => navigate("/signup")}
         onNavigateLogin={() => navigate("/login")}
         onNavigatePricing={() => navigate("/pricing")}
@@ -975,14 +963,13 @@ else setExpandedMilestone("gold");
         totalProblems={SQL_ADVANCED_PROBLEMS.length}
         runCountDisplay={runCountDisplay}
         onPostCommunity={handlePostCommunity}
-        shareOpen={shareOpen}
-setShareOpen={setShareOpen}
-user={{ fullName: userFullName, username: userFullName || userEmail?.split("@")[0] || "user" }}
-solvedCount={solvedIds.size}
-streak={userStreak}
-firstTry={runCountDisplay === 1}
-elapsed={elapsed}
-ShareModalComponent={ShareModal}
+        setShareOpen={setShareOpen}
+        user={{ fullName: userFullName, username: userFullName || userEmail?.split("@")[0] || "user" }}
+        solvedCount={solvedIds.size}
+        streak={userStreak}
+        firstTry={runCountDisplay === 1}
+        elapsed={elapsed}
+        ShareModalComponent={ShareModal}
       />
     );
   }
@@ -992,7 +979,7 @@ ShareModalComponent={ShareModal}
          <StructuredData
       problem={selectedProblem}
       category="advanced"
-    />
+      />
       {/* NAV */}
       <nav style={{ padding: "0.85rem 2rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.97)", flexShrink: 0 }}>
         <span onClick={() => navigate("/")} style={{ fontWeight: 800, cursor: "pointer", fontSize: "1.1rem", letterSpacing: "-0.3px" }}>Repractiq</span>
@@ -1158,7 +1145,31 @@ ShareModalComponent={ShareModal}
 
         {/* RIGHT PANEL */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "#ffffff" }}>
-          {selectedProblem.id > 10 && isGuest ? (
+          {selectedProblem.id > 30 && !isGuest && !isPro ? (
+            <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
+              <div style={{ textAlign: "center", maxWidth: "380px" }}>
+                <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🔒</div>
+                <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: "#0f172a", margin: "0 0 0.5rem" }}>
+                  Pro problem
+                </h3>
+                <p style={{ fontSize: "0.88rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.5rem" }}>
+                  You've completed the free tier. Upgrade to Pro to unlock all {SQL_ADVANCED_PROBLEMS.length} SQL Advanced problems.
+                </p>
+                <button
+                  onClick={() => navigate("/pricing")}
+                  style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.88rem", border: "none", cursor: "pointer", marginBottom: "8px" }}
+                >
+                  View Pro Plans →
+                </button>
+                <button
+                  onClick={() => navigate("/pricing")}
+                  style={{ width: "100%", padding: "11px", borderRadius: "8px", background: "#ffffff", color: "#64748b", fontWeight: 600, fontSize: "0.88rem", border: "1.5px solid #e2e8f0", cursor: "pointer" }}
+                >
+                  See what's included
+                </button>
+              </div>
+            </div>
+          ) : selectedProblem.id > 10 && isGuest ? (
             <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
               <div style={{ textAlign: "center", maxWidth: "360px" }}>
                 <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>🔒</div>
@@ -1181,7 +1192,7 @@ ShareModalComponent={ShareModal}
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
                   <div>
                     <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "6px" }}>
-                      <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", fontWeight: 600 }}>Advanced</span>
+                      <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", fontWeight: 600 }}>Easy</span>
                       <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>#{selectedProblem.id}</span>
                       {solvedIds.has(selectedProblem.id) && (
                         <span style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: "10px", background: "#f0fdf4", color: "#16a34a", fontWeight: 600 }}>✓ Attempted</span>
@@ -1189,6 +1200,12 @@ ShareModalComponent={ShareModal}
                     </div>
                     <h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>{selectedProblem.title}</h1>
                   </div>
+                  {/* <button
+                    onClick={handlePostCommunity}
+                    style={{ padding: "8px 16px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.8rem", border: "1.5px solid #bfdbfe", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}
+                  >
+                    🌐 Post to Community
+                  </button> */}
                 </div>
                 <div style={{ marginTop: "0.875rem", background: "#f8fafc", border: "1px solid #e2e8f0", borderLeft: "3px solid #2563eb", borderRadius: "0 8px 8px 0", padding: "0.625rem 0.875rem" }}>
                   <span style={{ fontSize: "0.67rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "3px" }}>Task</span>
@@ -1209,7 +1226,7 @@ ShareModalComponent={ShareModal}
                     </div>
                     <div style={{ display: "flex", gap: "8px" }}>
                     <button
-  onClick={() => { setQuery("-- Explore the data first, then write your solution below"); setResults(null); setError(null); setValidationStatus(null); }}
+  onClick={() => { setQuery("-- Explore the data first, then write your solution below\nSELECT * FROM customers LIMIT 5;"); setResults(null); setError(null); setValidationStatus(null); }}
   style={{ fontSize: "0.75rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 10px", cursor: "pointer" }}
 >
   Reset
@@ -1376,6 +1393,5 @@ ShareModalComponent={ShareModal}
   isMobile={isMobile}
 />
     </div>
-  
   );
 }
