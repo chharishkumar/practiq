@@ -24,6 +24,7 @@ export const TIER_STYLES = {
       threshold:   25,
       description: "Completed 25 SQL Basics problems.",
       shareText:   "I just earned the SQL Beginner badge on Repractiq! 25 SQL Basics down. 🥉",
+      certificate: true,
     },
     {
       id:          "basics_silver",
@@ -34,6 +35,7 @@ export const TIER_STYLES = {
       threshold:   50,
       description: "Completed 50 SQL Basics problems.",
       shareText:   "Earned SQL Explorer on Repractiq — halfway through SQL Basics! 🥈",
+      certificate: true,
     },
     {
       id:          "basics_gold",
@@ -57,6 +59,7 @@ export const TIER_STYLES = {
       threshold:   25,
       description: "Completed 25 SQL Intermediate problems.",
       shareText:   "Earned Query Builder on Repractiq — SQL Intermediate journey started! 🥉",
+      certificate: true,
     },
     {
       id:          "intermediate_silver",
@@ -67,6 +70,7 @@ export const TIER_STYLES = {
       threshold:   50,
       description: "Completed 50 SQL Intermediate problems.",
       shareText:   "Earned Data Analyst badge on Repractiq — 50 Intermediate SQL problems solved! 🥈",
+      certificate: true,
     },
     {
       id:          "intermediate_gold",
@@ -90,6 +94,7 @@ export const TIER_STYLES = {
       threshold:   25,
       description: "Completed 25 SQL Advanced problems.",
       shareText:   "Earned Window Warrior on Repractiq — tackling advanced SQL! 🥉",
+      certificate: true,
     },
     {
       id:          "advanced_silver",
@@ -100,6 +105,7 @@ export const TIER_STYLES = {
       threshold:   50,
       description: "Completed 50 SQL Advanced problems.",
       shareText:   "Earned Query Optimizer on Repractiq — 50 Advanced SQL problems solved! 🥈",
+      certificate: true,
     },
     {
       id:          "advanced_gold",
@@ -123,6 +129,7 @@ export const TIER_STYLES = {
       threshold:   25,
       description: "Completed 25 SQL Interview problems.",
       shareText:   "Earned Interview Ready on Repractiq — SQL interview prep started! 🥉",
+      certificate: true,
     },
     {
       id:          "interview_silver",
@@ -133,6 +140,7 @@ export const TIER_STYLES = {
       threshold:   50,
       description: "Completed 50 SQL Interview problems.",
       shareText:   "Earned Hiring Manager's Pick on Repractiq — 50 interview questions solved! 🥈",
+      certificate: true,
     },
     {
       id:          "interview_gold",
@@ -156,6 +164,7 @@ export const TIER_STYLES = {
       threshold:   25,
       description: "Completed 25 SQL Scenario problems.",
       shareText:   "Earned Business Thinker on Repractiq — solving real-world SQL scenarios! 🥉",
+      certificate: true,
     },
     {
       id:          "scenarios_silver",
@@ -166,6 +175,7 @@ export const TIER_STYLES = {
       threshold:   50,
       description: "Completed 50 SQL Scenario problems.",
       shareText:   "Earned Data Problem Solver on Repractiq — 50 real-world scenarios done! 🥈",
+      certificate: true,
     },
     {
       id:          "scenarios_gold",
@@ -189,6 +199,7 @@ export const TIER_STYLES = {
       threshold:   25,
       description: "Completed 25 Top Company SQL problems.",
       shareText:   "Earned Company Prep Starter on Repractiq — FAANG SQL prep started! 🥉",
+      certificate: true,
     },
     {
       id:          "company_silver",
@@ -199,6 +210,7 @@ export const TIER_STYLES = {
       threshold:   50,
       description: "Completed 50 Top Company SQL problems.",
       shareText:   "Earned FAANG Ready on Repractiq — 50 company interview questions solved! 🥈",
+      certificate: true,
     },
     {
       id:          "company_gold",

@@ -386,6 +386,7 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const isMobile = useMobile();
   const [activeSection, setActiveSection] = useState("overview");
+  const [selectedBadge, setSelectedBadge] = useState(null);
   const [loading, setLoading]             = useState(true);
 
   // Live data
@@ -982,13 +983,33 @@ gap: isMobile ? "8px" : "10px", }}>
           </div>
         </div>
       </div>
-      <BadgeUnlockModal
+      {/* <BadgeUnlockModal
   badges={badges.newlyUnlocked}
   isOpen={badges.newlyUnlocked.length > 0}
   onClose={badges.clearNewlyUnlocked}
   onViewBadges={() => setActiveSection("badges")}
   isMobile={isMobile}
-/>
+/> */}
+
+{/* <BadgeUnlockModal
+  badges={badges.newlyUnlocked}
+  isOpen={badges.newlyUnlocked.length > 0}
+  onClose={badges.clearNewlyUnlocked}
+  onViewBadges={() => setActiveSection("badges")}
+  isMobile={isMobile}
+  userName={profile?.full_name || profile?.email}
+/> */}
+{selectedBadge && (
+  <BadgeUnlockModal
+    badges={[selectedBadge]}
+    isOpen={true}
+    onClose={() => setSelectedBadge(null)}
+    onViewBadges={() => setActiveSection("badges")}
+    isMobile={isMobile}
+    userName={profile?.full_name || profile?.email}
+  />
+)}
+
     </div>
   );
 }
