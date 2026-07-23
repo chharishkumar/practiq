@@ -261,7 +261,7 @@ function CertificateDesign({ badge, userName, solvedCount, earnedDate, forExport
           }}
         >
           {[
-            { label: "Problems Solved", val: solvedCount || "—" },
+            { label: "Problems Solved", val: badge?.threshold || solvedCount || "—" },
             { label: "Platform", val: "Repractiq" },
             { label: "Date Earned", val: dateStr },
           ].map((item) => (

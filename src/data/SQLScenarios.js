@@ -370,13 +370,13 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, isLocked, selectedIte
   const combined = query + " " + desc;
 
   const TABLE_SCHEMAS = {
-    customers: ["customer_id","customer_name","email","phone","city","state","country","status","customer_type","lifetime_value"],
+    customers: ["customer_id","customer_name","email","phone","city","state","country","status","customer_type","lifetime_value", "created_at"],
     orders: ["order_id","customer_id","order_date","order_status","payment_status","total_amount","currency","delivered_date"],
-    order_items: ["order_item_id","order_id","product_id","quantity","unit_price","total_price","item_status"],
-    products: ["product_id","product_name","category","subcategory","brand","price","cost_price"],
+    order_items: ["item_id","order_id","product_id","quantity","unit_price","total_price","item_status"],
+    products: ["product_id","product_name","category","subcategory","brand","price","cost_price", "created_at"],
     payments: ["payment_id","order_id","payment_method","payment_status","amount","currency"],
     delivery_partners: ["delivery_partner_id","partner_name","vehicle_type","city","status","rating"],
-    feedback: ["feedback_id","customer_id","order_id","rating","issue_category"],
+    feedback: ["feedback_id","customer_id","order_id","rating","issue_category", "created_at"],
   };
 
   const usedTables = Object.keys(TABLE_SCHEMAS).filter(t => combined.includes(t));
@@ -527,13 +527,13 @@ export default function SQLBasicsPage() {
         const database = new SQL.Database();
 
         const tables = [
-          { name: "customers", columns: ["customer_id","customer_name","email","phone","city","state","country","postal_code","created_date","activated_date","last_login_date","last_order_date","status","customer_type","acquisition_channel","lifetime_value","is_verified"] },
+          { name: "customers", columns: ["customer_id","customer_name","email","phone","city","state","country","postal_code","created_date","activated_date","last_login_date","last_order_date","status","customer_type","acquisition_channel","lifetime_value","is_verified", "created_at"] },
           { name: "orders", columns: ["order_id","customer_id","order_date","order_status","payment_status","delivery_partner_id","subtotal_amount","tax_amount","discount_amount","delivery_fee","total_amount","currency","estimated_delivery_time","delivered_date","cancelled_date","cancellation_reason"] },
-          { name: "order_items", columns: ["order_item_id","order_id","product_id","quantity","unit_price","discount_amount","tax_amount","total_price","item_status","currency"] },
-          { name: "products", columns: ["product_id","product_name","product_description","category","subcategory","brand","sku","price","cost_price","currency","is_active"] },
+          { name: "order_items", columns: ["item_id","order_id","product_id","quantity","unit_price","discount_amount","tax_amount","total_price","item_status","currency"] },
+          { name: "products", columns: ["product_id","product_name","product_description","category","subcategory","brand","sku","price","cost_price","currency","is_active", "created_at"] },
           { name: "payments", columns: ["payment_id","order_id","payment_method","payment_provider","transaction_reference","payment_status","amount","currency","refund_amount","refund_date","failure_reason","payment_date","attempt_number"] },
           { name: "delivery_partners", columns: ["delivery_partner_id","partner_name","phone","vehicle_type","vehicle_number","city","status","joining_date","last_active_date","rating","total_deliveries"] },
-          { name: "feedback", columns: ["feedback_id","customer_id","order_id","rating","review_text","feedback_channel","issue_category"] },
+          { name: "feedback", columns: ["feedback_id","customer_id","order_id","rating","review_text","feedback_channel","issue_category", "created_at"] },
         ];
 
         for (const table of tables) {

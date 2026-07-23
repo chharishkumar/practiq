@@ -434,7 +434,7 @@ const topics = [
   { key: "sql_intermediate", label: "Intermediate", icon: "📗", total: SQL_INTERMEDIATE_PROBLEMS.length, solved: solvedByCategory["sql_intermediate"]?.size || 0, path: "/sql/intermediate" },
   { key: "sql_advanced", label: "Advanced", icon: "📙", total: SQL_ADVANCED_PROBLEMS.length, solved: solvedByCategory["sql_advanced"]?.size || 0, path: "/sql/advanced" },
   { key: "sql_interview", label: "Interview", icon: "🎯", total: SQL_INTERVIEW_PROBLEMS.length, solved: solvedByCategory["sql_interview"]?.size || 0, path: "/sql/interview" },
-  { key: "sql_scenario", label: "Scenarios", icon: "🏢", total: SQL_SCENARIOS_PROBLEMS.length, solved: solvedByCategory["sql_scenario"]?.size || 0, path: "/sql/scenarios" },
+  { key: "sql_scenario", label: "Scenarios", icon: "🏢", total: SQL_SCENARIOS_PROBLEMS.length, solved: solvedByCategory["sql_scenarios"]?.size || 0, path: "/sql/scenarios" },
   { key: "sql_company", label: "Company", icon: "💼", total: SQL_COMPANY_PROBLEMS.length, solved: solvedByCategory["sql_company"]?.size || 0, path: "/sql/company" },
 ];
 

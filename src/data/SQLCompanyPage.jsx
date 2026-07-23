@@ -14,6 +14,133 @@ import StructuredData from "../components/StructuredData";
 // Lazy-load Monaco — only the expanded/selected question's editor needs it,
 // and with 300 questions on one page we don't want to eagerly bundle/render
 // an editor instance per row.
+const DB_SCHEMAS = {
+  customers: [
+    { name: "customer_id", type: "int64" },
+    { name: "customer_name", type: "string" },
+    { name: "email", type: "string" },
+    { name: "phone", type: "string" },
+    { name: "city", type: "string" },
+    { name: "state", type: "string" },
+    { name: "country", type: "string" },
+    { name: "postal_code", type: "string" },
+    { name: "created_date", type: "datetime" },
+    { name: "activated_date", type: "datetime" },
+    { name: "last_login_date", type: "datetime" },
+    { name: "last_order_date", type: "datetime" },
+    { name: "status", type: "string" },
+    { name: "customer_type", type: "string" },
+    { name: "acquisition_channel", type: "string" },
+    { name: "lifetime_value", type: "decimal" },
+    { name: "is_verified", type: "boolean" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  delivery_partners: [
+    { name: "delivery_partner_id", type: "int64" },
+    { name: "partner_name", type: "string" },
+    { name: "phone", type: "string" },
+    { name: "vehicle_type", type: "string" },
+    { name: "vehicle_number", type: "string" },
+    { name: "city", type: "string" },
+    { name: "status", type: "string" },
+    { name: "joining_date", type: "datetime" },
+    { name: "last_active_date", type: "datetime" },
+    { name: "rating", type: "decimal" },
+    { name: "total_deliveries", type: "int64" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  feedback: [
+    { name: "feedback_id", type: "int64" },
+    { name: "customer_id", type: "int64" },
+    { name: "order_id", type: "int64" },
+    { name: "rating", type: "decimal" },
+    { name: "review_text", type: "string" },
+    { name: "feedback_channel", type: "string" },
+    { name: "issue_category", type: "string" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  order_items: [
+    { name: "item_id", type: "int64" },
+    { name: "order_id", type: "int64" },
+    { name: "product_id", type: "int64" },
+    { name: "quantity", type: "int64" },
+    { name: "unit_price", type: "decimal" },
+    { name: "discount_amount", type: "decimal" },
+    { name: "tax_amount", type: "decimal" },
+    { name: "total_price", type: "decimal" },
+    { name: "item_status", type: "string" },
+    { name: "currency", type: "string" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  orders: [
+    { name: "order_id", type: "int64" },
+    { name: "customer_id", type: "int64" },
+    { name: "order_date", type: "datetime" },
+    { name: "order_status", type: "string" },
+    { name: "payment_status", type: "string" },
+    { name: "delivery_partner_id", type: "int64" },
+    { name: "subtotal_amount", type: "decimal" },
+    { name: "tax_amount", type: "decimal" },
+    { name: "discount_amount", type: "decimal" },
+    { name: "delivery_fee", type: "decimal" },
+    { name: "total_amount", type: "decimal" },
+    { name: "currency", type: "string" },
+    { name: "estimated_delivery_time", type: "datetime" },
+    { name: "out_for_delivery_time", type: "datetime" },
+    { name: "delivered_date", type: "datetime" },
+    { name: "cancelled_date", type: "datetime" },
+    { name: "cancellation_reason", type: "string" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  payments: [
+    { name: "payment_id", type: "int64" },
+    { name: "order_id", type: "int64" },
+    { name: "payment_method", type: "string" },
+    { name: "payment_provider", type: "string" },
+    { name: "transaction_reference", type: "string" },
+    { name: "payment_status", type: "string" },
+    { name: "amount", type: "decimal" },
+    { name: "currency", type: "string" },
+    { name: "refund_amount", type: "decimal" },
+    { name: "refund_date", type: "datetime" },
+    { name: "failure_reason", type: "string" },
+    { name: "payment_date", type: "datetime" },
+    { name: "attempt_number", type: "int64" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ],
+  products: [
+    { name: "product_id", type: "int64" },
+    { name: "product_name", type: "string" },
+    { name: "product_description", type: "string" },
+    { name: "category", type: "string" },
+    { name: "subcategory", type: "string" },
+    { name: "brand", type: "string" },
+    { name: "sku", type: "string" },
+    { name: "price", type: "decimal" },
+    { name: "cost_price", type: "decimal" },
+    { name: "currency", type: "string" },
+    { name: "is_active", type: "boolean" },
+    { name: "created_at", type: "datetime" },
+    { name: "updated_at", type: "datetime" }
+  ]
+};
+
+const getTypeBadgeStyle = (type) => {
+  switch (type) {
+    case "int64": return { color: "#0ea5e9", bg: "#f0f9ff" };     // Sky blue
+    case "boolean": return { color: "#16a34a", bg: "#f0fdf4" };   // Emerald green
+    case "string": return { color: "#a855f7", bg: "#f3e8ff" };    // Purple text badge
+    case "decimal": return { color: "#06b6d4", bg: "#ecfeff" };   // Teal decimal badge
+    case "datetime": return { color: "#ea580c", bg: "#fff7ed" };  // Orange timestamp badge
+    default: return { color: "#64748b", bg: "#f1f5f9" };         // Fallback slate
+  }
+};
 const Editor = lazy(() => import("@monaco-editor/react"));
 
 function slugifyCompany(name) {
@@ -88,6 +215,52 @@ function ExpandedProblemDetails({ p }) {
         </div>
       )}
     </>
+  );
+}
+
+function TableStructure({ tables }) {
+  const [openTable, setOpenTable] = useState(null);
+
+  return (
+    <div style={{ marginTop: "0.75rem" }}>
+      <div style={{ fontSize: "0.67rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "6px" }}>
+        📋 Table Structure
+      </div>
+      {tables.map(table => (
+        <div key={table} style={{ marginBottom: "4px", border: "1px solid #e2e8f0", borderRadius: "6px", overflow: "hidden" }}>
+          <div
+            onClick={() => setOpenTable(openTable === table ? null : table)}
+            style={{ padding: "6px 10px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", background: openTable === table ? "#eff6ff" : "#f8fafc" }}
+          >
+            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: openTable === table ? "#2563eb" : "#0f172a", fontFamily: "monospace" }}>
+              {table}
+            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <span style={{ fontSize: "0.65rem", color: "#94a3b8" }}>{DB_SCHEMAS[table]?.length || 0} cols</span>
+              <span style={{ fontSize: "0.65rem", color: "#94a3b8", transform: openTable === table ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▾</span>
+            </div>
+          </div>
+          {openTable === table && (
+            <div style={{ background: "#ffffff", borderTop: "1px solid #e2e8f0" }}>
+              {(DB_SCHEMAS[table] || []).map((col, i) => {
+                const style = getTypeBadgeStyle(col.type);
+                return (
+                  <div
+                    key={col.name}
+                    style={{ padding: "5px 10px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: i < DB_SCHEMAS[table].length - 1 ? "1px solid #f1f5f9" : "none" }}
+                  >
+                    <span style={{ fontSize: "0.72rem", fontFamily: "monospace", color: "#0f172a" }}>{col.name}</span>
+                    <span style={{ fontSize: "0.62rem", fontWeight: 600, padding: "1px 6px", borderRadius: "4px", background: style.bg, color: style.color }}>
+                      {col.type}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -166,6 +339,30 @@ function ProblemRow({ p, isSelected, isExpanded, isSolved, selectedItemRef, onSe
               {p.hint}
             </div>
           </details>
+          {/* {p.expectedColumns && (() => { */}
+{(() => {
+  // Detect which tables this problem uses based on solutionQuery or description
+  const query = (p.solutionQuery || p.starterQuery || "").toLowerCase();
+  const desc = (p.description || "").toLowerCase();
+  const combined = query + " " + desc;
+
+  const TABLE_SCHEMAS = {
+    customers: ["customer_id","customer_name","email","phone","city","state","country","status","customer_type","lifetime_value"],
+    orders: ["order_id","customer_id","order_date","order_status","payment_status","total_amount","currency","delivered_date"],
+    order_items: ["item_id","order_id","product_id","quantity","unit_price","total_price","item_status"],
+    products: ["product_id","product_name","category","subcategory","brand","price","cost_price"],
+    payments: ["payment_id","order_id","payment_method","payment_status","amount","currency"],
+    delivery_partners: ["delivery_partner_id","partner_name","vehicle_type","city","status","rating"],
+    feedback: ["feedback_id","customer_id","order_id","rating","issue_category"],
+  };
+
+  const usedTables = Object.keys(TABLE_SCHEMAS).filter(t => combined.includes(t));
+  if (usedTables.length === 0) return null;
+
+  return (
+    <TableStructure tables={usedTables} />
+  );
+})()}
         </div>
       )}
     </div>
@@ -245,7 +442,7 @@ export default function SQLCompanyPage() {
         const tables = [
           { name: "customers", columns: ["customer_id","customer_name","email","phone","city","state","country","postal_code","created_date","activated_date","last_login_date","last_order_date","status","customer_type","acquisition_channel","lifetime_value","is_verified"] },
           { name: "orders", columns: ["order_id","customer_id","order_date","order_status","payment_status","delivery_partner_id","subtotal_amount","tax_amount","discount_amount","delivery_fee","total_amount","currency","estimated_delivery_time","delivered_date","cancelled_date","cancellation_reason"] },
-          { name: "order_items", columns: ["order_item_id","order_id","product_id","quantity","unit_price","discount_amount","tax_amount","total_price","item_status","currency"] },
+          { name: "order_items", columns: ["item_id","order_id","product_id","quantity","unit_price","discount_amount","tax_amount","total_price","item_status","currency"] },
           { name: "products", columns: ["product_id","product_name","product_description","category","subcategory","brand","sku","price","cost_price","currency","is_active"] },
           { name: "payments", columns: ["payment_id","order_id","payment_method","payment_provider","transaction_reference","payment_status","amount","currency","refund_amount","refund_date","failure_reason","payment_date","attempt_number"] },
           { name: "delivery_partners", columns: ["delivery_partner_id","partner_name","phone","vehicle_type","vehicle_number","city","status","joining_date","last_active_date","rating","total_deliveries"] },
@@ -292,28 +489,44 @@ export default function SQLCompanyPage() {
 
   useEffect(() => {
     const fetchSolvedProblems = async () => {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const session = sessionData?.session;
-      if (!session) return;
-      const userId = session.user.id;
-
+      // Wait for auth to be ready
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        // Retry once after a short delay in case session is still loading
+        setTimeout(async () => {
+          const { data: { session: retrySession } } = await supabase.auth.getSession();
+          if (!retrySession) return;
+          await loadSolved(retrySession.user.id);
+        }, 800);
+        return;
+      }
+      await loadSolved(session.user.id);
+    };
+  
+    const loadSolved = async (userId) => {
       const { data: streakRow } = await supabase
         .from("user_streaks")
         .select("current_streak")
         .eq("user_id", userId)
         .maybeSingle();
       setUserStreak(streakRow?.current_streak || 0);
-
+  
       const { data, error } = await supabase
-        .from("submissions")
-        .select("problem_id")
-        .eq("user_id", userId)
-        .eq("category", "sql_company")
-        .eq("status", "correct");
-      if (error || !data) return;
-      const ids = new Set(data.map((row) => row.problem_id));
-      setSolvedIds(ids);
+  .from("submissions")
+  .select("problem_id, problem_title")
+  .eq("user_id", userId)
+  .eq("category", "sql_company")
+  .eq("status", "correct");
+
+// Reconstruct composite keys from problem_title which has "Company — Title"
+const ids = new Set(data.map((row) => {
+  // Extract company from problem_title "Amazon — Find top customers"
+  const company = row.problem_title?.split(" — ")[0] || "";
+  return `${company}::${row.problem_id}`;
+}));
+setSolvedIds(ids);
     };
+  
     fetchSolvedProblems();
   }, []);
 
@@ -400,13 +613,12 @@ export default function SQLCompanyPage() {
       const { data: sessionData } = await supabase.auth.getSession();
       if (sessionData?.session) {
         const userId = sessionData.session.user.id;
-        const key = solvedKey(currentProblem);
-
+        
         const { data: existing } = await supabase
           .from("submissions")
           .select("id, status")
           .eq("user_id", userId)
-          .eq("problem_id", key)
+          .eq("problem_id", currentProblem.id)
           .eq("category", "sql_company")
           .maybeSingle();
 
@@ -416,26 +628,39 @@ export default function SQLCompanyPage() {
         }
 
         if (existing) {
-          await supabase.from("submissions").update({
-            query: currentQuery,
-            status,
-            run_count: newRunCount,
-            is_best_attempt: status === "correct",
-            time_taken_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
-            updated_at: new Date().toISOString(),
-          }).eq("id", existing.id);
+          const { data, error } = await supabase
+  .from("submissions")
+  .update({
+    query: currentQuery,
+    status,
+    run_count: newRunCount,
+    is_best_attempt: status === "correct",
+    time_taken_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
+    updated_at: new Date().toISOString(),
+  })
+  .eq("id", existing.id)
+  .select();
+
+console.log("UPDATE DATA:", data);
+console.log("UPDATE ERROR:", error);
         } else {
-          await supabase.from("submissions").insert({
-            user_id: userId,
-            problem_id: key,
-            category: "sql_company",
-            problem_title: `${currentProblem.company} — ${currentProblem.title}`,
-            query: currentQuery,
-            status,
-            run_count: newRunCount,
-            is_best_attempt: status === "correct",
-            time_taken_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
-          });
+          const { data, error } = await supabase
+  .from("submissions")
+  .insert({
+    user_id: userId,
+    problem_id: currentProblem.id,
+    category: "sql_company",
+    problem_title: `${currentProblem.company} — ${currentProblem.title}`,
+    query: currentQuery,
+    status,
+    run_count: newRunCount,
+    is_best_attempt: status === "correct",
+    time_taken_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
+  })
+  .select();
+
+console.log("INSERT DATA:", data);
+console.log("INSERT ERROR:", error);
         }
 
         await updateStreak(userId);
@@ -787,12 +1012,12 @@ export default function SQLCompanyPage() {
                   </div>
                   <h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>{selectedProblem.title}</h1>
                 </div>
-                <button
+                {/* <button
                   onClick={handlePostCommunity}
                   style={{ padding: "8px 16px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.8rem", border: "1.5px solid #bfdbfe", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}
                 >
                   🌐 Post to Community
-                </button>
+                </button> */}
               </div>
               <div style={{ marginTop: "0.875rem", background: "#f8fafc", border: "1px solid #e2e8f0", borderLeft: "3px solid #2563eb", borderRadius: "0 8px 8px 0", padding: "0.625rem 0.875rem" }}>
                 <span style={{ fontSize: "0.67rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "3px" }}>Task</span>
@@ -810,12 +1035,18 @@ export default function SQLCompanyPage() {
                     <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>Ctrl+Enter to run</span>
                   </div>
                   <div style={{ display: "flex", gap: "8px" }}>
-                    <button
-                      onClick={() => { setQuery(selectedProblem.starterQuery); setResults(null); setError(null); }}
-                      style={{ fontSize: "0.75rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 10px", cursor: "pointer" }}
-                    >
-                      Reset
-                    </button>
+                  <button
+  onClick={() => { setQuery("-- Explore the data first, then write your solution below"); setResults(null); setError(null); setValidationStatus(null); }}
+  style={{ fontSize: "0.75rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 10px", cursor: "pointer" }}
+>
+  Reset
+</button>
+<button
+  onClick={() => { setQuery(selectedProblem.solutionQuery); setResults(null); setValidationStatus(null); }}
+  style={{ fontSize: "0.75rem", color: "#d97706", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "6px", padding: "4px 10px", cursor: "pointer", fontWeight: 600 }}
+>
+  💡 Solution
+</button>
                     <button
                       onClick={runQuery}
                       disabled={!dbReady}
