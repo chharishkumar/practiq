@@ -511,7 +511,7 @@ export default function SQLCompanyPage() {
         .maybeSingle();
       setUserStreak(streakRow?.current_streak || 0);
   
-      const { data, error } = await supabase
+      const { data } = await supabase
   .from("submissions")
   .select("problem_id, problem_title")
   .eq("user_id", userId)

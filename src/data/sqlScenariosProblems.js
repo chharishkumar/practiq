@@ -1765,58 +1765,7 @@ export const SQL_SCENARIOS_PROBLEMS = [
     ],
     expectedRowCount: 10,
     validateBy: "exact",
-    solutionQuery: "WITH order_summary AS (\n\
-  SELECT\n\
-  o.order_id,\n\
-  strftime('%Y-%m',o.order_date) AS revenue_month,\n\
-  c.country,\n\
-  o.currency,\n\
-  o.total_amount\n\
-  FROM orders o\n\
-  JOIN customers c\n\
-  ON o.customer_id=c.customer_id\n\
-  ),\n\
-  item_summary AS (\n\
-  SELECT\n\
-  order_id,\n\
-  SUM(total_price) AS item_total\n\
-  FROM order_items\n\
-  GROUP BY order_id\n\
-  ),\n\
-  payment_summary AS (\n\
-  SELECT\n\
-  order_id,\n\
-  SUM(amount) AS payment_total\n\
-  FROM payments\n\
-  GROUP BY order_id\n\
-  )\n\
-  SELECT\n\
-  os.revenue_month,\n\
-  os.country,\n\
-  os.currency,\n\
-  ROUND(SUM(os.total_amount),2) AS order_total,\n\
-  ROUND(SUM(COALESCE(isu.item_total,0)),2) AS item_total,\n\
-  ROUND(SUM(COALESCE(ps.payment_total,0)),2) AS payment_total,\n\
-  ROUND(SUM(os.total_amount)-SUM(COALESCE(isu.item_total,0)),2) AS order_item_gap,\n\
-  ROUND(SUM(os.total_amount)-SUM(COALESCE(ps.payment_total,0)),2) AS order_payment_gap,\n\
-  CASE\n\
-  WHEN ABS(SUM(os.total_amount)-SUM(COALESCE(isu.item_total,0)))<0.01\n\
-  AND ABS(SUM(os.total_amount)-SUM(COALESCE(ps.payment_total,0)))<0.01\n\
-  THEN 'Balanced'\n\
-  ELSE 'Mismatch Detected'\n\
-  END AS audit_status\n\
-  FROM order_summary os\n\
-  LEFT JOIN item_summary isu\n\
-  ON os.order_id=isu.order_id\n\
-  LEFT JOIN payment_summary ps\n\
-  ON os.order_id=ps.order_id\n\
-  GROUP BY\n\
-  os.revenue_month,\n\
-  os.country,\n\
-  os.currency\n\
-  ORDER BY\n\
-  ABS(SUM(os.total_amount)-SUM(COALESCE(ps.payment_total,0))) DESC,\n\
-  ABS(SUM(os.total_amount)-SUM(COALESCE(isu.item_total,0))) DESC;"
+    solutionQuery: "WITH order_summary AS (\nSELECT\n    o.order_id,\n    strftime('%Y-%m', o.order_date) AS revenue_month,\n    c.country,\n    o.currency,\n    o.total_amount\nFROM orders o\nJOIN customers c\n    ON o.customer_id = c.customer_id\n),\nitem_summary AS (\nSELECT\n    order_id,\n    SUM(total_price) AS item_total\nFROM order_items\nGROUP BY order_id\n),\npayment_summary AS (\nSELECT\n    order_id,\n    SUM(amount) AS payment_total\nFROM payments\nGROUP BY order_id\n)\nSELECT\n    os.revenue_month,\n    os.country,\n    os.currency,\n    ROUND(SUM(os.total_amount), 2) AS order_total,\n    ROUND(SUM(COALESCE(isu.item_total, 0)), 2) AS item_total,\n    ROUND(SUM(COALESCE(ps.payment_total, 0)), 2) AS payment_total,\n    ROUND(SUM(os.total_amount) - SUM(COALESCE(isu.item_total, 0)), 2) AS order_item_gap,\n    ROUND(SUM(os.total_amount) - SUM(COALESCE(ps.payment_total, 0)), 2) AS order_payment_gap,\n    CASE\n        WHEN ABS(SUM(os.total_amount) - SUM(COALESCE(isu.item_total, 0))) < 0.01\n         AND ABS(SUM(os.total_amount) - SUM(COALESCE(ps.payment_total, 0))) < 0.01\n        THEN 'Balanced'\n        ELSE 'Mismatch Detected'\n    END AS audit_status\nFROM order_summary os\nLEFT JOIN item_summary isu\n    ON os.order_id = isu.order_id\nLEFT JOIN payment_summary ps\n    ON os.order_id = ps.order_id\nGROUP BY\n    os.revenue_month,\n    os.country,\n    os.currency\nORDER BY\n    ABS(SUM(os.total_amount) - SUM(COALESCE(ps.payment_total, 0))) DESC,\n    ABS(SUM(os.total_amount) - SUM(COALESCE(isu.item_total, 0))) DESC;"
   },
 
   {
@@ -1853,39 +1802,7 @@ export const SQL_SCENARIOS_PROBLEMS = [
   ],
   expectedRowCount: 10,
   validateBy: "exact",
-  solutionQuery: "WITH customer_revenue AS (\n\
-SELECT\n\
-c.customer_id,\n\
-c.customer_name,\n\
-SUM(o.total_amount) AS lifetime_revenue\n\
-FROM customers c\n\
-JOIN orders o\n\
-ON c.customer_id=o.customer_id\n\
-GROUP BY c.customer_id,c.customer_name\n\
-),\n\
-ranked_customers AS (\n\
-SELECT\n\
-customer_id,\n\
-customer_name,\n\
-lifetime_revenue,\n\
-SUM(lifetime_revenue) OVER() AS total_revenue,\n\
-SUM(lifetime_revenue) OVER(ORDER BY lifetime_revenue DESC) AS cumulative_revenue\n\
-FROM customer_revenue\n\
-)\n\
-SELECT\n\
-customer_id,\n\
-customer_name,\n\
-ROUND(lifetime_revenue,2) AS lifetime_revenue,\n\
-ROUND(lifetime_revenue*100.0/total_revenue,2) AS revenue_percentage,\n\
-ROUND(cumulative_revenue*100.0/total_revenue,2) AS cumulative_percentage,\n\
-CASE\n\
-WHEN cumulative_revenue*100.0/total_revenue<=20 THEN 'VIP'\n\
-WHEN cumulative_revenue*100.0/total_revenue<=60 THEN 'High Value'\n\
-WHEN cumulative_revenue*100.0/total_revenue<=90 THEN 'Medium Value'\n\
-ELSE 'Low Value'\n\
-END AS customer_segment\n\
-FROM ranked_customers\n\
-ORDER BY lifetime_revenue DESC;"
+  solutionQuery: "WITH customer_revenue AS (\nSELECT\n    c.customer_id,\n    c.customer_name,\n    SUM(o.total_amount) AS lifetime_revenue\nFROM customers c\nJOIN orders o\n    ON c.customer_id = o.customer_id\nGROUP BY c.customer_id, c.customer_name\n),\nranked_customers AS (\nSELECT\n    customer_id,\n    customer_name,\n    lifetime_revenue,\n    SUM(lifetime_revenue) OVER () AS total_revenue,\n    SUM(lifetime_revenue) OVER (ORDER BY lifetime_revenue DESC) AS cumulative_revenue\nFROM customer_revenue\n)\nSELECT\n    customer_id,\n    customer_name,\n    ROUND(lifetime_revenue, 2) AS lifetime_revenue,\n    ROUND(lifetime_revenue * 100.0 / total_revenue, 2) AS revenue_percentage,\n    ROUND(cumulative_revenue * 100.0 / total_revenue, 2) AS cumulative_percentage,\n    CASE\n        WHEN cumulative_revenue * 100.0 / total_revenue <= 20 THEN 'VIP'\n        WHEN cumulative_revenue * 100.0 / total_revenue <= 60 THEN 'High Value'\n        WHEN cumulative_revenue * 100.0 / total_revenue <= 90 THEN 'Medium Value'\n        ELSE 'Low Value'\n    END AS customer_segment\nFROM ranked_customers\nORDER BY lifetime_revenue DESC;"
 },
   
 {
@@ -2183,34 +2100,7 @@ ORDER BY lifetime_revenue DESC;"
     ],
     expectedRowCount: 10,
     validateBy: "exact",
-    solutionQuery: "WITH customer_revenue AS (\n\
-SELECT\n\
-c.customer_id,\n\
-c.customer_name,\n\
-SUM(o.total_amount) AS lifetime_revenue\n\
-FROM customers c\n\
-JOIN orders o\n\
-ON c.customer_id=o.customer_id\n\
-GROUP BY c.customer_id,c.customer_name\n\
-), ranked_customers AS (\n\
-SELECT\n\
-customer_id,\n\
-customer_name,\n\
-lifetime_revenue,\n\
-DENSE_RANK() OVER(ORDER BY lifetime_revenue DESC) AS customer_rank,\n\
-SUM(lifetime_revenue) OVER(ORDER BY lifetime_revenue DESC) AS cumulative_revenue,\n\
-SUM(lifetime_revenue) OVER() AS total_revenue\n\
-FROM customer_revenue\n\
-)\n\
-SELECT\n\
-customer_rank,\n\
-customer_id,\n\
-customer_name,\n\
-ROUND(lifetime_revenue,2) AS lifetime_revenue,\n\
-ROUND(cumulative_revenue*100.0/total_revenue,2) AS cumulative_revenue_percentage\n\
-FROM ranked_customers\n\
-ORDER BY customer_rank\n\
-LIMIT 10;"
+   solutionQuery: "WITH customer_revenue AS (\nSELECT\n    c.customer_id,\n    c.customer_name,\n    SUM(o.total_amount) AS lifetime_revenue\nFROM customers c\nJOIN orders o\n    ON c.customer_id = o.customer_id\nGROUP BY c.customer_id, c.customer_name\n), ranked_customers AS (\nSELECT\n    customer_id,\n    customer_name,\n    lifetime_revenue,\n    DENSE_RANK() OVER (ORDER BY lifetime_revenue DESC) AS customer_rank,\n    SUM(lifetime_revenue) OVER (ORDER BY lifetime_revenue DESC) AS cumulative_revenue,\n    SUM(lifetime_revenue) OVER () AS total_revenue\nFROM customer_revenue\n)\nSELECT\n    customer_rank,\n    customer_id,\n    customer_name,\n    ROUND(lifetime_revenue, 2) AS lifetime_revenue,\n    ROUND(cumulative_revenue * 100.0 / total_revenue, 2) AS cumulative_revenue_percentage\nFROM ranked_customers\nORDER BY customer_rank\nLIMIT 10;"
 },
   
   {
