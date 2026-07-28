@@ -51,6 +51,34 @@ const validationConfig = {
   },
 };
 
+function MobileTableStructure({ tables, schemas }) {
+  const [openTable, setOpenTable] = React.useState(null);
+  return (
+    <div style={{ marginTop: "0.75rem" }}>
+      <div style={{ fontSize: "0.65rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "6px" }}>📋 Table Structure</div>
+      {tables.map(table => (
+        <div key={table} style={{ marginBottom: "4px", border: "1px solid #e2e8f0", borderRadius: "6px", overflow: "hidden" }}>
+          <div
+            onClick={() => setOpenTable(openTable === table ? null : table)}
+            style={{ padding: "6px 10px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", background: openTable === table ? "#eff6ff" : "#f8fafc" }}
+          >
+            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: openTable === table ? "#2563eb" : "#0f172a", fontFamily: "monospace" }}>{table}</span>
+            <span style={{ fontSize: "0.65rem", color: "#94a3b8", transform: openTable === table ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▾</span>
+          </div>
+          {openTable === table && (
+            <div style={{ background: "#ffffff", borderTop: "1px solid #e2e8f0" }}>
+              {schemas[table].map((col, i) => (
+                <div key={col} style={{ padding: "4px 10px", fontSize: "0.72rem", fontFamily: "monospace", color: "#475569", borderBottom: i < schemas[table].length - 1 ? "1px solid #f1f5f9" : "none" }}>
+                  {col}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 function ExpandedProblemDetails({ p }) {
   return (
     <>
@@ -115,6 +143,7 @@ export default function MobileSQLLayout({
   onQueryChange,
   onRun,
   onReset,
+  onShowSolution,
   dbReady,
   results,
   error,
@@ -318,7 +347,25 @@ setExpandedMilestone,
                                   {p.hint}
                                 </div>
                               </details>
+                              
                             )}
+                            {(() => {
+  const query = (p.solutionQuery || p.starterQuery || "").toLowerCase();
+  const desc = (p.description || "").toLowerCase();
+  const combined = query + " " + desc;
+  const TABLE_SCHEMAS = {
+    customers: ["customer_id","customer_name","email","phone","city","state","country","status","customer_type","lifetime_value"],
+    orders: ["order_id","customer_id","order_date","order_status","payment_status","total_amount","currency","delivered_date"],
+    order_items: ["order_item_id","order_id","product_id","quantity","unit_price","total_price","item_status"],
+    products: ["product_id","product_name","category","subcategory","brand","price","cost_price"],
+    payments: ["payment_id","order_id","payment_method","payment_status","amount","currency"],
+    delivery_partners: ["delivery_partner_id","partner_name","vehicle_type","city","status","rating"],
+    feedback: ["feedback_id","customer_id","order_id","rating","issue_category"],
+  };
+  const usedTables = Object.keys(TABLE_SCHEMAS).filter(t => combined.includes(t));
+  if (usedTables.length === 0) return null;
+  return <MobileTableStructure tables={usedTables} schemas={TABLE_SCHEMAS} />;
+})()}
                             {!locked && (
                               <button
                                 onClick={() => handleSelectProblem(p)}
@@ -577,6 +624,12 @@ setExpandedMilestone,
                     {dbReady ? "▶ Run" : "Loading…"}
                   </button>
                 </div>
+                <button
+  onClick={onShowSolution}
+  style={{ fontSize: "0.72rem", color: "#d97706", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "6px", padding: "4px 8px", cursor: "pointer", fontWeight: 600 }}
+>
+  💡 Solution
+</button>
               </div>
               <textarea
                 value={query}
