@@ -947,6 +947,7 @@ else setExpandedMilestone("gold");
         onQueryChange={setQuery}
         onRun={runQuery}
         onReset={() => { setQuery(selectedProblem.starterQuery); setResults(null); setError(null); }}
+        onShowSolution={() => setQuery(selectedProblem.solutionQuery)}
         dbReady={dbReady}
         results={results}
         error={error}
