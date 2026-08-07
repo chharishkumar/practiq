@@ -13,6 +13,11 @@ import BadgeUnlockModal from "../badges/BadgeUnlockModal";
 import { usePageMeta } from "../hooks/usePageMeta"; 
 import StructuredData from "../components/StructuredData";
 
+import useTimer from "../hooks/useTimer";
+import TimerDisplay from "../components/TimerDisplay";
+import TimesUpModal from "../components/TimesUpModal";
+import PerformanceRating from "../components/PerformanceRating";
+
 const MILESTONES = [
   {
     id: "bronze",
@@ -494,6 +499,28 @@ export default function SQLIntermediatePage() {
   const [unlockedBadges, setUnlockedBadges] = useState([]);
   const isMobile = useMobile();
 
+  const [code, setCode] = useState(SQL_INTERMEDIATE_PROBLEMS[0].starterCode || "");
+  const [mobileCode, setMobileCode] = useState(SQL_INTERMEDIATE_PROBLEMS[0].starterCode || "");
+  const [output, setOutput] = useState(null);
+
+  const {
+    formattedTimeLeft,
+    percentLeft,
+    timerColor,
+    isExpired,
+    isStopped,
+    timeUsed,
+    totalTime,
+    startTimer,
+    stopTimer,
+    resetTimer,
+    getPerformanceRating,
+    formatTime,
+    getExactTimeUsed, // ← ADD
+  } = useTimer(selectedProblem?.difficulty, selectedProblem?.id);
+  const [performanceRating, setPerformanceRating] = useState(null);
+const [attemptNumber, setAttemptNumber] = useState(1);
+
   usePageMeta({
     title: selectedProblem
       ? `${selectedProblem.seoTitle} | Repractiq`
@@ -686,6 +713,10 @@ else setExpandedMilestone("gold");
             status = validateResults(resultData, ref[0]);
             setValidationStatus(status);
             if (status === "correct") {
+              const capturedTimeUsed = getExactTimeUsed(); // ← capture from ref first
+  stopTimer();
+  setPerformanceRating(getPerformanceRating(capturedTimeUsed));
+
               setSolvedIds(prev => new Set([...prev, currentProblem.id]));
               setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
               // Check for newly unlocked badges
@@ -726,7 +757,7 @@ else setExpandedMilestone("gold");
             status,
             run_count: newRunCount,
             is_best_attempt: status === "correct",
-            time_taken_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
+            time_taken_seconds: getExactTimeUsed(),
             updated_at: new Date().toISOString(),
           }).eq("id", existing.id);
         } else {
@@ -739,7 +770,8 @@ else setExpandedMilestone("gold");
             status,
             run_count: newRunCount,
             is_best_attempt: status === "correct",
-            time_taken_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
+            time_taken_seconds: getExactTimeUsed(),  // ← only one, remove the duplicate
+            attempt_number: attemptNumber,
           });
         }
     
@@ -959,6 +991,7 @@ else setExpandedMilestone("gold");
         onQueryChange={setQuery}
         onRun={runQuery}
         onReset={() => { setQuery(selectedProblem.starterQuery); setResults(null); setError(null); }}
+        onShowSolution={() => setQuery(selectedProblem.solutionQuery)}
         dbReady={dbReady}
         results={results}
         error={error}
@@ -1189,6 +1222,19 @@ ShareModalComponent={ShareModal}
                     </div>
                     <h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>{selectedProblem.title}</h1>
                   </div>
+                  {/* ← ADD TIMER HERE */}
+    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <TimerDisplay
+        formattedTimeLeft={formattedTimeLeft}
+        percentLeft={percentLeft}
+        timerColor={timerColor}
+        isExpired={isExpired}
+        isStopped={isStopped}
+        difficulty={selectedProblem?.difficulty || "Easy"}
+        timeUsed={timeUsed}
+        formatTime={formatTime}
+      />
+      </div>
                 </div>
                 <div style={{ marginTop: "0.875rem", background: "#f8fafc", border: "1px solid #e2e8f0", borderLeft: "3px solid #2563eb", borderRadius: "0 8px 8px 0", padding: "0.625rem 0.875rem" }}>
                   <span style={{ fontSize: "0.67rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "3px" }}>Task</span>
@@ -1198,6 +1244,18 @@ ShareModalComponent={ShareModal}
 
               {/* Editor + Results */}
               <div style={{ flex: 1, overflowY: "auto", padding: "1.25rem 1.75rem" }}>
+                  {/* ← ADD PERFORMANCE RATING */}
+  {performanceRating && (
+    <PerformanceRating
+      rating={performanceRating}
+      onShare={handlePostCommunity}
+      onNext={() => {
+        const currentIndex = SQL_INTERMEDIATE_PROBLEMS.findIndex(p => p.id === selectedProblem.id);
+        const next = SQL_INTERMEDIATE_PROBLEMS[currentIndex + 1];
+        if (next) handleSelectProblem(next);
+      }}
+    />
+  )}
               {validationBanner()}
 
                 {/* Editor */}
@@ -1302,6 +1360,50 @@ ShareModalComponent={ShareModal}
           )}
         </div>
       </div>
+      {/* TIMES UP MODAL */}
+{isExpired && (
+  <TimesUpModal
+    problem={selectedProblem}
+    runCount={runCountDisplay}
+    difficulty={selectedProblem?.difficulty || "Easy"}
+    onReset={() => {
+      // New attempt — reset everything
+      setAttemptNumber(prev => prev + 1);
+      setCode(selectedProblem.starterCode || "");
+      setMobileCode(selectedProblem.starterCode || "");
+      setOutput(null);
+      setError(null);
+      setValidationStatus(null);
+      setPerformanceRating(null);
+      runCountRef.current = 0;
+      setRunCountDisplay(0);
+      resetTimer(selectedProblem?.difficulty || "Easy");
+    }}
+    onSkip={() => {
+      // Save skipped to Supabase then move to next
+      supabase.auth.getSession().then(({ data: sessionData }) => {
+        if (sessionData?.session) {
+          supabase.from("submissions").insert({
+            user_id: sessionData.session.user.id,
+            problem_id: selectedProblem.id,
+            category: "python_basics",
+            problem_title: selectedProblem.title,
+            query: isMobile ? mobileCode : code,
+            status: "skipped",
+            run_count: runCountDisplay,
+            is_best_attempt: false,
+            time_taken_seconds: timeUsed,
+            attempt_number: attemptNumber,
+          });
+        }
+      });
+      const currentIndex = SQL_INTERMEDIATE_PROBLEMS.findIndex(p => p.id === selectedProblem.id);
+      const next = SQL_INTERMEDIATE_PROBLEMS[currentIndex + 1];
+      if (next) handleSelectProblem(next);
+    }}
+    onClose={() => resetTimer(selectedProblem?.difficulty || "Easy")}
+  />
+)}
 
       {/* COMMUNITY POST MODAL */}
       {showModal && (

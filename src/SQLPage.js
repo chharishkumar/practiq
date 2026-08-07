@@ -12,6 +12,8 @@ import { SQL_COMPANY_PROBLEMS } from "./data/sqlCompanyProblems";
 import { getCompanyProblemPath } from "./data/sqlSearch";
 import { usePageMeta } from "./hooks/usePageMeta";
 
+import Navbar from "./Navbar";
+
 // ─── SAMPLE DATA ──────────────────────────────────────────────────────────────
 
 
@@ -254,10 +256,7 @@ return (
 );
 }
 
-function Nav({ navigate, isMobile }) {
-const [menuOpen, setMenuOpen] = useState(false);
-return (
-<nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
+{/* <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
 <span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Repractiq</span>
 {isMobile ? (
 <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
@@ -281,7 +280,12 @@ return (
 ))}
 </div>
 )}
-</nav>
+</nav> */}
+function Nav({ navigate, isMobile }) {
+const [menuOpen, setMenuOpen] = useState(false);
+return (
+
+<Navbar />
 );
 }
 

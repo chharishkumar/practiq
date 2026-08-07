@@ -4,35 +4,37 @@ import Editor from "@monaco-editor/react";
 import { supabase } from "./supabase";
 import { useMobile } from "./hooks/useMobile";
 import { usePageMeta } from "./hooks/usePageMeta";
+import Navbar from "./Navbar"; // ← ADD THIS
 
 
 function Nav({ navigate, isMobile }) {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "#ffffff", zIndex: 1000 }}>
-      <span style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "-0.3px", cursor: "pointer" }} onClick={() => navigate("/")}>Repractiq</span>
-      {isMobile ? (
-        <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
-          {menuOpen ? "✕" : "☰"}
-        </button>
-      ) : (
-        <div style={{ display: "flex", gap: "28px", alignItems: "center" }}>
-          <Link to="/sql" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Practice</Link>
-          <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Leaderboard</Link>
-          <Link to="/blog" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Blog</Link>
-          <Link to="/login" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Login</Link>
-        </div>
-      )}
-      {isMobile && menuOpen && (
-        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#ffffff", borderBottom: "1px solid #e2e8f0", padding: "0.5rem 0", zIndex: 200 }}>
-          {[["Practice", "/sql"], ["Leaderboard", "/leaderboard"], ["Blog", "/blog"], ["Login", "/login"]].map(([label, path]) => (
-            <div key={label} onClick={() => { navigate(path); setMenuOpen(false); }} style={{ padding: "0.75rem 1.25rem", fontSize: "0.9rem", color: "#0f172a", fontWeight: 500, cursor: "pointer", borderBottom: "1px solid #f1f5f9" }}>
-              {label}
-            </div>
-          ))}
-        </div>
-      )}
-    </nav>
+    // <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "#ffffff", zIndex: 1000 }}>
+    //   <span style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "-0.3px", cursor: "pointer" }} onClick={() => navigate("/")}>Repractiq</span>
+    //   {isMobile ? (
+    //     <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
+    //       {menuOpen ? "✕" : "☰"}
+    //     </button>
+    //   ) : (
+    //     <div style={{ display: "flex", gap: "28px", alignItems: "center" }}>
+    //       <Link to="/sql" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Practice</Link>
+    //       <Link to="/leaderboard" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Leaderboard</Link>
+    //       <Link to="/blog" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Blog</Link>
+    //       <Link to="/login" style={{ padding: "8px 18px", borderRadius: "7px", background: "#2563eb", color: "#fff", fontWeight: 700, fontSize: "0.85rem", textDecoration: "none" }}>Login</Link>
+    //     </div>
+    //   )}
+    //   {isMobile && menuOpen && (
+    //     <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#ffffff", borderBottom: "1px solid #e2e8f0", padding: "0.5rem 0", zIndex: 200 }}>
+    //       {[["Practice", "/sql"], ["Leaderboard", "/leaderboard"], ["Blog", "/blog"], ["Login", "/login"]].map(([label, path]) => (
+    //         <div key={label} onClick={() => { navigate(path); setMenuOpen(false); }} style={{ padding: "0.75rem 1.25rem", fontSize: "0.9rem", color: "#0f172a", fontWeight: 500, cursor: "pointer", borderBottom: "1px solid #f1f5f9" }}>
+    //           {label}
+    //         </div>
+    //       ))}
+    //     </div>
+    //   )}
+    // </nav>
+    <Navbar />
   );
 }
 

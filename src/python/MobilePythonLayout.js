@@ -18,6 +18,7 @@ export default function MobilePythonLayout({
   onCodeChange,
   onRun,
   onReset,
+  onShowSolution,
   pyodideReady,
   running,
   testResults,
@@ -214,6 +215,12 @@ export default function MobilePythonLayout({
               <span style={{ fontSize: "0.68rem", background: "#dcfce7", color: "#16a34a", padding: "2px 8px", borderRadius: "20px", fontWeight: 700 }}>Python</span>
               <div style={{ display: "flex", gap: "6px" }}>
                 <button onClick={onReset} style={{ fontSize: "0.72rem", color: "#64748b", background: "transparent", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "4px 8px", cursor: "pointer" }}>Reset</button>
+                <button
+  onClick={onShowSolution}
+  style={{ fontSize: "0.72rem", color: "#d97706", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "6px", padding: "4px 8px", cursor: "pointer", fontWeight: 600 }}
+>
+  💡 Solution
+</button>
                 <button
                   onClick={onRun}
                   disabled={!pyodideReady || running}

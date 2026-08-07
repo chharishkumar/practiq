@@ -13,6 +13,11 @@ import BadgeUnlockModal from "../badges/BadgeUnlockModal";
 import { usePageMeta } from "../hooks/usePageMeta"; 
 import StructuredData from "../components/StructuredData";
 
+import useTimer from "../hooks/useTimer";
+import TimerDisplay from "../components/TimerDisplay";
+import TimesUpModal from "../components/TimesUpModal";
+import PerformanceRating from "../components/PerformanceRating";
+
 const MILESTONES = [
   {
     id: "bronze",
@@ -492,6 +497,28 @@ export default function SQLBasicsPage() {
   const { isGuest, isPro, userEmail, userName: userFullName } = useProStatus();
   const isMobile = useMobile();
 
+  const [code, setCode] = useState(SQL_ADVANCED_PROBLEMS[0].starterCode || "");
+  const [mobileCode, setMobileCode] = useState(SQL_ADVANCED_PROBLEMS[0].starterCode || "");
+  const [output, setOutput] = useState(null);
+
+  const {
+    formattedTimeLeft,
+    percentLeft,
+    timerColor,
+    isExpired,
+    isStopped,
+    timeUsed,
+    totalTime,
+    startTimer,
+    stopTimer,
+    resetTimer,
+    getPerformanceRating,
+    formatTime,
+    getExactTimeUsed, // ← ADD
+  } = useTimer(selectedProblem?.difficulty, selectedProblem?.id);
+  const [performanceRating, setPerformanceRating] = useState(null);
+const [attemptNumber, setAttemptNumber] = useState(1);
+
   
 
   usePageMeta({
@@ -676,6 +703,9 @@ else setExpandedMilestone("gold");
             status = validateResults(resultData, ref[0]);
             setValidationStatus(status);
             if (status === "correct") {
+              const capturedTimeUsed = getExactTimeUsed(); // ← capture from ref first
+  stopTimer();
+  setPerformanceRating(getPerformanceRating(capturedTimeUsed));
               setSolvedIds(prev => new Set([...prev, currentProblem.id]));
               setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
               // Check for newly unlocked badges
@@ -716,7 +746,7 @@ else setExpandedMilestone("gold");
             status,
             run_count: newRunCount,
             is_best_attempt: status === "correct",
-            time_taken_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
+            time_taken_seconds: getExactTimeUsed(),
             updated_at: new Date().toISOString(),
           }).eq("id", existing.id);
         } else {
@@ -729,7 +759,8 @@ else setExpandedMilestone("gold");
             status,
             run_count: newRunCount,
             is_best_attempt: status === "correct",
-            time_taken_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
+            time_taken_seconds: getExactTimeUsed(),  // ← only one, remove the duplicate
+            attempt_number: attemptNumber,
           });
         }
     
@@ -1201,6 +1232,19 @@ else setExpandedMilestone("gold");
                     </div>
                     <h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.3px", color: "#0f172a" }}>{selectedProblem.title}</h1>
                   </div>
+                  {/* ← ADD TIMER HERE */}
+    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <TimerDisplay
+        formattedTimeLeft={formattedTimeLeft}
+        percentLeft={percentLeft}
+        timerColor={timerColor}
+        isExpired={isExpired}
+        isStopped={isStopped}
+        difficulty={selectedProblem?.difficulty || "Easy"}
+        timeUsed={timeUsed}
+        formatTime={formatTime}
+      />
+      </div>
                   {/* <button
                     onClick={handlePostCommunity}
                     style={{ padding: "8px 16px", borderRadius: "8px", background: "#ffffff", color: "#2563eb", fontWeight: 600, fontSize: "0.8rem", border: "1.5px solid #bfdbfe", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap" }}
@@ -1216,6 +1260,18 @@ else setExpandedMilestone("gold");
 
               {/* Editor + Results */}
               <div style={{ flex: 1, overflowY: "auto", padding: "1.25rem 1.75rem" }}>
+                  {/* ← ADD PERFORMANCE RATING */}
+  {performanceRating && (
+    <PerformanceRating
+      rating={performanceRating}
+      onShare={handlePostCommunity}
+      onNext={() => {
+        const currentIndex = SQL_ADVANCED_PROBLEMS.findIndex(p => p.id === selectedProblem.id);
+        const next = SQL_ADVANCED_PROBLEMS[currentIndex + 1];
+        if (next) handleSelectProblem(next);
+      }}
+    />
+  )}
               {validationBanner()}
 
                 {/* Editor */}
