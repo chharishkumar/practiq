@@ -101,7 +101,7 @@ function SkeletonCard() {
 // ─── NAV ──────────────────────────────────────────────────────────────────────
 
 function Nav({ navigate, isLoggedIn, isMobile }) {
-  const [menuOpen, setMenuOpen] = useState(false);
+  // const [menuOpen, setMenuOpen] = useState(false);
   return (
     // <nav style={{
     //   padding: isMobile ? "0.75rem 1rem" : "0.875rem 2.5rem",

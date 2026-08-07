@@ -56,13 +56,13 @@ const MILESTONES = [
 ];
 
 // ─── VALIDATE PYTHON ──────────────────────────────────────────────────────────
-function validatePython(output, problem) {
-  if (!output || !problem?.expectedOutput) return null;
-  const normalize = (s) => s.trim().toLowerCase().replace(/\s+/g, " ");
-  if (normalize(output) === normalize(problem.expectedOutput)) return "correct";
-  if (output.trim().length > 0) return "almost";
-  return "wrong";
-}
+// function validatePython(output, problem) {
+//   if (!output || !problem?.expectedOutput) return null;
+//   const normalize = (s) => s.trim().toLowerCase().replace(/\s+/g, " ");
+//   if (normalize(output) === normalize(problem.expectedOutput)) return "correct";
+//   if (output.trim().length > 0) return "almost";
+//   return "wrong";
+// }
 
 // ─── UPDATE STREAK ────────────────────────────────────────────────────────────
 async function updateStreak(userId) {
@@ -135,8 +135,8 @@ export default function PythonBasicsPage() {
   const [postSuccess, setPostSuccess] = useState(false);
   const [showLockModal, setShowLockModal] = useState(false);
 
-  const [testResults, setTestResults] = useState([]);
-const [running, setRunning] = useState(false);
+  // const [testResults, setTestResults] = useState([]);
+// const [running, setRunning] = useState(false);
 
   // Auth
   const [isGuest, setIsGuest] = useState(false);
@@ -158,7 +158,7 @@ const [running, setRunning] = useState(false);
     isExpired,
     isStopped,
     timeUsed,
-    totalTime,
+    // totalTime,
     stopTimer,
     resetTimer,
     getPerformanceRating,
@@ -550,7 +550,7 @@ const runCode = useCallback(async () => {
       .trim();
     setError(cleanMsg || "An unexpected error occurred. Please try again.");
   }
-}, [unlockedMilestones]);
+}, [attemptNumber, unlockedMilestones, getExactTimeUsed, getPerformanceRating, stopTimer]);
 
   // ─── COMMUNITY POST ───────────────────────────────────────────────────────
   const handlePostCommunity = () => {

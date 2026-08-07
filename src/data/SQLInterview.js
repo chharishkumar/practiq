@@ -17,7 +17,7 @@ import useTimer from "../hooks/useTimer";
 import TimerDisplay from "../components/TimerDisplay";
 import TimesUpModal from "../components/TimesUpModal";
 import PerformanceRating from "../components/PerformanceRating";
-import { SQL_ADVANCED_PROBLEMS } from "./sqlAdvancedProblems";
+
 
 const MILESTONES = [
   {
@@ -501,7 +501,7 @@ export default function SQLBasicsPage() {
 
   const [code, setCode] = useState(SQL_INTERVIEW_PROBLEMS[0].starterCode || "");
   const [mobileCode, setMobileCode] = useState(SQL_INTERVIEW_PROBLEMS[0].starterCode || "");
-  const [output, setOutput] = useState(null);
+  const [setOutput] = useState(null);
 
   const {
     formattedTimeLeft,
@@ -510,8 +510,8 @@ export default function SQLBasicsPage() {
     isExpired,
     isStopped,
     timeUsed,
-    totalTime,
-    startTimer,
+    // totalTime,
+    // startTimer,
     stopTimer,
     resetTimer,
     getPerformanceRating,
@@ -771,7 +771,7 @@ else setExpandedMilestone("gold");
     } catch (err) {
       setError(err.message);
     }
-  }, []);
+  }, [attemptNumber, getExactTimeUsed, getPerformanceRating, stopTimer]);
 
   const handleSelectProblem = useCallback((p) => {
     startTimeRef.current = Date.now();

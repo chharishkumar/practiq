@@ -501,7 +501,7 @@ export default function SQLBasicsPage() {
 
   const [code, setCode] = useState(SQL_PROBLEMS[0].starterCode || "");
   const [mobileCode, setMobileCode] = useState(SQL_PROBLEMS[0].starterCode || "");
-  const [output, setOutput] = useState(null);
+  const [setOutput] = useState(null);
 
   const {
     formattedTimeLeft,
@@ -510,8 +510,8 @@ export default function SQLBasicsPage() {
     isExpired,
     isStopped,
     timeUsed,
-    totalTime,
-    startTimer,
+    // totalTime,
+    // startTimer,
     stopTimer,
     resetTimer,
     getPerformanceRating,
@@ -779,7 +779,7 @@ else setExpandedMilestone("gold");
     } catch (err) {
       setError(err.message);
     }
-  }, []);
+  }, [attemptNumber, getExactTimeUsed, getPerformanceRating, stopTimer]);
 
   const handleSelectProblem = useCallback((p) => {
     startTimeRef.current = Date.now();

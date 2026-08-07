@@ -500,7 +500,7 @@ export default function SQLBasicsPage() {
 
   const [code, setCode] = useState(SQL_SCENARIOS_PROBLEMS[0].starterCode || "");
   const [mobileCode, setMobileCode] = useState(SQL_SCENARIOS_PROBLEMS[0].starterCode || "");
-  const [output, setOutput] = useState(null);
+  const [setOutput] = useState(null);
 
   const {
     formattedTimeLeft,
@@ -509,8 +509,8 @@ export default function SQLBasicsPage() {
     isExpired,
     isStopped,
     timeUsed,
-    totalTime,
-    startTimer,
+    // totalTime,
+    // startTimer,
     stopTimer,
     resetTimer,
     getPerformanceRating,
@@ -769,7 +769,7 @@ else setExpandedMilestone("gold");
     } catch (err) {
       setError(err.message);
     }
-  }, []);
+  }, [attemptNumber, getExactTimeUsed, getPerformanceRating, stopTimer]);
 
   const handleSelectProblem = useCallback((p) => {
     startTimeRef.current = Date.now();
@@ -1404,6 +1404,51 @@ else setExpandedMilestone("gold");
           )}
         </div>
       </div>
+
+      {/* TIMES UP MODAL */}
+{isExpired && (
+  <TimesUpModal
+    problem={selectedProblem}
+    runCount={runCountDisplay}
+    difficulty={selectedProblem?.difficulty || "Easy"}
+    onReset={() => {
+      // New attempt — reset everything
+      setAttemptNumber(prev => prev + 1);
+      setCode(selectedProblem.starterCode || "");
+      setMobileCode(selectedProblem.starterCode || "");
+      setOutput(null);
+      setError(null);
+      setValidationStatus(null);
+      setPerformanceRating(null);
+      runCountRef.current = 0;
+      setRunCountDisplay(0);
+      resetTimer(selectedProblem?.difficulty || "Easy");
+    }}
+    onSkip={() => {
+      // Save skipped to Supabase then move to next
+      supabase.auth.getSession().then(({ data: sessionData }) => {
+        if (sessionData?.session) {
+          supabase.from("submissions").insert({
+            user_id: sessionData.session.user.id,
+            problem_id: selectedProblem.id,
+            category: "sql_scenarios",
+            problem_title: selectedProblem.title,
+            query: isMobile ? mobileCode : code,
+            status: "skipped",
+            run_count: runCountDisplay,
+            is_best_attempt: false,
+            time_taken_seconds: timeUsed,
+            attempt_number: attemptNumber,
+          });
+        }
+      });
+      const currentIndex = SQL_SCENARIOS_PROBLEMS.findIndex(p => p.id === selectedProblem.id);
+      const next = SQL_SCENARIOS_PROBLEMS[currentIndex + 1];
+      if (next) handleSelectProblem(next);
+    }}
+    onClose={() => resetTimer(selectedProblem?.difficulty || "Easy")}
+  />
+)}
 
       {/* COMMUNITY POST MODAL */}
       {showModal && (

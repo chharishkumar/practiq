@@ -255,34 +255,8 @@ return (
 </span>
 );
 }
-
-{/* <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "rgba(255,255,255,0.97)", zIndex: 100 }}>
-<span onClick={() => navigate("/")} style={{ fontWeight: 800, fontSize: "1rem", color: "#0f172a", letterSpacing: "-0.3px", cursor: "pointer" }}>Repractiq</span>
-{isMobile ? (
-<button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: "#0f172a" }}>
-{menuOpen ? "✕" : "☰"}
-</button>
-) : (
-<div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
-<span onClick={() => navigate("/home")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Home</span>
-<span onClick={() => navigate("/sql")} style={{ fontSize: "0.85rem", color: "#2563eb", fontWeight: 600, cursor: "pointer", borderBottom: "2px solid #2563eb", paddingBottom: "2px" }}>Practice</span>
-<span onClick={() => navigate("/leaderboard")} style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 600, cursor: "pointer" }}>Leaderboard</span>
-<Link to="/profile" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Profile</Link>
-<Link to="/blog" style={{ fontSize: "0.85rem", color: "#64748b", textDecoration: "none", fontWeight: 600 }}>Blog</Link>
-</div>
-)}
-{isMobile && menuOpen && (
-<div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#ffffff", borderBottom: "1px solid #e2e8f0", padding: "0.5rem 0", zIndex: 200 }}>
-{[["Home", "/home"], ["Practice", "/sql"], ["Leaderboard", "/leaderboard"], ["Profile", "/profile"], ["Blog", "/blog"]].map(([label, path]) => (
-<div key={label} onClick={() => { navigate(path); setMenuOpen(false); }} style={{ padding: "0.75rem 1.25rem", fontSize: "0.9rem", color: "#0f172a", fontWeight: 500, cursor: "pointer", borderBottom: "1px solid #f1f5f9" }}>
-{label}
-</div>
-))}
-</div>
-)}
-</nav> */}
 function Nav({ navigate, isMobile }) {
-const [menuOpen, setMenuOpen] = useState(false);
+// const [menuOpen, setMenuOpen] = useState(false);
 return (
 
 <Navbar />

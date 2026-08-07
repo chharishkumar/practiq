@@ -8,7 +8,7 @@ import Navbar from "./Navbar"; // ← ADD THIS
 
 
 function Nav({ navigate, isMobile }) {
-  const [menuOpen, setMenuOpen] = useState(false);
+  // const [menuOpen, setMenuOpen] = useState(false);
   return (
     // <nav style={{ padding: isMobile ? "0.75rem 1rem" : "1rem 2.5rem", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "#ffffff", zIndex: 1000 }}>
     //   <span style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "-0.3px", cursor: "pointer" }} onClick={() => navigate("/")}>Repractiq</span>
