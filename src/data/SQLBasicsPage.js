@@ -634,8 +634,8 @@ setUserStreak(streakRow?.current_streak || 0);
         .eq("category", "sql_basics")
         .eq("status", "correct");
       if (error || !data) return;
-      const ids = new Set(data.map((row) => row.problem_id));
-      setSolvedIds(ids);
+      const ids = new Set(data.map((row) => Number(row.problem_id)));
+setSolvedIds(ids);
 
       // Auto-open the milestone section where user currently is
 const solvedCount = ids.size;
@@ -685,25 +685,25 @@ else setExpandedMilestone("gold");
     const currentDb = dbRef.current;
     const currentQuery = queryRef.current;
     const currentProblem = selectedProblemRef.current;
-
+  
     if (!currentDb) return;
     setError(null);
     setResults(null);
-
+  
     try {
       const res = currentDb.exec(currentQuery);
       if (res.length === 0) {
         setError("Query executed but returned no rows. Check your logic.");
         return;
       }
-    
+  
       const resultData = res[0];
       setResults(resultData);
-    
+  
       runCountRef.current += 1;
       const newRunCount = runCountRef.current;
       setRunCountDisplay(newRunCount);
-    
+  
       // Run reference solution and validate
       let status = "attempted";
       if (currentProblem.solutionQuery) {
@@ -712,30 +712,27 @@ else setExpandedMilestone("gold");
           if (ref.length > 0) {
             status = validateResults(resultData, ref[0]);
             setValidationStatus(status);
+            
             if (status === "correct") {
-              const capturedTimeUsed = getExactTimeUsed(); // ← capture from ref first
-  stopTimer();
-  setPerformanceRating(getPerformanceRating(capturedTimeUsed));
-              setSolvedIds(prev => new Set([...prev, currentProblem.id]));
+              const capturedTimeUsed = getExactTimeUsed();
+              stopTimer();
+              setPerformanceRating(getPerformanceRating(capturedTimeUsed));
+  
+              // FIX 1: Safely convert Set to Array and enforce numeric ID format for state updates
+              setSolvedIds((prev) => new Set(Array.from(prev).concat(Number(currentProblem.id))));
               setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
-              // Check for newly unlocked badges
-              const { data: sessionData } = await supabase.auth.getSession();
-              if (sessionData?.session?.user?.id) {
-                const newBadges = await checkAndSaveBadges(sessionData.session.user.id);
-                if (newBadges.length > 0) setUnlockedBadges(newBadges);
-              }
             }
           }
         } catch (_) {
-          // solution query failed silently — dont block user
+          // solution query failed silently — don't block user
         }
       }
-    
-      // Save to Supabase
+  
+      // Save to Supabase FIRST
       const { data: sessionData } = await supabase.auth.getSession();
       if (sessionData?.session) {
         const userId = sessionData.session.user.id;
-    
+  
         const { data: existing } = await supabase
           .from("submissions")
           .select("id, status")
@@ -743,13 +740,13 @@ else setExpandedMilestone("gold");
           .eq("problem_id", currentProblem.id)
           .eq("category", "sql_basics")
           .maybeSingle();
-    
-        // Never overwrite correct with worse
+  
+        // Never overwrite correct with worse status
         if (existing?.status === "correct" && status !== "correct") {
           await updateStreak(userId);
           return;
         }
-    
+  
         if (existing) {
           await supabase.from("submissions").update({
             query: currentQuery,
@@ -769,18 +766,26 @@ else setExpandedMilestone("gold");
             status,
             run_count: newRunCount,
             is_best_attempt: status === "correct",
-            time_taken_seconds: getExactTimeUsed(),  // ← only one, remove the duplicate
-    attempt_number: attemptNumber,
+            time_taken_seconds: getExactTimeUsed(),
+            attempt_number: attemptNumber,
           });
         }
-    
+  
         await updateStreak(userId);
+  
+        // FIX 2: Check for badges AFTER writing the submission into Supabase so database query isn't stale
+        if (status === "correct") {
+          const newBadges = await checkAndSaveBadges(userId);
+          if (newBadges && newBadges.length > 0) {
+            setUnlockedBadges(newBadges);
+          }
+        }
       }
     } catch (err) {
       setError(err.message);
     }
   }, [attemptNumber, getExactTimeUsed, getPerformanceRating, stopTimer]);
-
+ 
   const handleSelectProblem = useCallback((p) => {
     startTimeRef.current = Date.now();
     runCountRef.current = 0;
@@ -793,7 +798,7 @@ else setExpandedMilestone("gold");
     setPerformanceRating(null);  // ← ADD
   setAttemptNumber(1);          // ← ADD
     navigate(`/sql/basics/${p.id}-${p.slug}`);
-  }, [navigate]);
+  }, [navigate, resetTimer]);
 
   const handleToggleExpand = (id) => {
     setExpandedId((prev) => (prev === id ? null : id));
