@@ -798,7 +798,7 @@ else setExpandedMilestone("gold");
     setPerformanceRating(null);  // ← ADD
   setAttemptNumber(1);          // ← ADD
     navigate(`/sql/basics/${p.id}-${p.slug}`);
-  }, [navigate, resetTimer]);
+  }, [navigate]);
 
   const handleToggleExpand = (id) => {
     setExpandedId((prev) => (prev === id ? null : id));
