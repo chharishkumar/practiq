@@ -686,11 +686,15 @@ else setExpandedMilestone("gold");
     const currentQuery = queryRef.current;
     const currentProblem = selectedProblemRef.current;
   
+    // Guard — db must be ready
     if (!currentDb) return;
+  
     setError(null);
     setResults(null);
+    setValidationStatus(null);
   
     try {
+      // ── Run user query ──────────────────────────────────────────────────────
       const res = currentDb.exec(currentQuery);
       if (res.length === 0) {
         setError("Query executed but returned no rows. Check your logic.");
@@ -704,7 +708,7 @@ else setExpandedMilestone("gold");
       const newRunCount = runCountRef.current;
       setRunCountDisplay(newRunCount);
   
-      // Run reference solution and validate
+      // ── Validate against solution query ────────────────────────────────────
       let status = "attempted";
       if (currentProblem.solutionQuery) {
         try {
@@ -712,15 +716,12 @@ else setExpandedMilestone("gold");
           if (ref.length > 0) {
             status = validateResults(resultData, ref[0]);
             setValidationStatus(status);
-            
+  
             if (status === "correct") {
               const capturedTimeUsed = getExactTimeUsed();
               stopTimer();
               setPerformanceRating(getPerformanceRating(capturedTimeUsed));
-  
-              // FIX 1: Safely convert Set to Array and enforce numeric ID format for state updates
-              setSolvedIds((prev) => new Set(Array.from(prev).concat(Number(currentProblem.id))));
-              setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
+              setSolvedIds((prev) => new Set([...prev, Number(currentProblem.id)]));
             }
           }
         } catch (_) {
@@ -728,59 +729,89 @@ else setExpandedMilestone("gold");
         }
       }
   
-      // Save to Supabase FIRST
+      // ── Save to Supabase ───────────────────────────────────────────────────
       const { data: sessionData } = await supabase.auth.getSession();
-      if (sessionData?.session) {
-        const userId = sessionData.session.user.id;
+      
+      if (!sessionData?.session) return;
+      
+      const userId = sessionData.session.user.id;
   
-        const { data: existing } = await supabase
-          .from("submissions")
-          .select("id, status")
-          .eq("user_id", userId)
-          .eq("problem_id", currentProblem.id)
-          .eq("category", "sql_basics")
-          .maybeSingle();
+      const { data: existing, error: fetchError } = await supabase
+        .from("submissions")
+        .select("id, status")
+        .eq("user_id", userId)
+        .eq("problem_id", currentProblem.id)
+        .eq("category", "sql_basics")
+        .maybeSingle();
   
-        // Never overwrite correct with worse status
-        if (existing?.status === "correct" && status !== "correct") {
-          await updateStreak(userId);
-          return;
-        }
+      if (fetchError) {
+        console.error("Fetch error:", fetchError.message);
+        return;
+      }
   
-        if (existing) {
-          await supabase.from("submissions").update({
-            query: currentQuery,
-            status,
-            run_count: newRunCount,
-            is_best_attempt: status === "correct",
-            time_taken_seconds: getExactTimeUsed(),
-            updated_at: new Date().toISOString(),
-          }).eq("id", existing.id);
-        } else {
-          await supabase.from("submissions").insert({
-            user_id: userId,
-            problem_id: currentProblem.id,
-            category: "sql_basics",
-            problem_title: currentProblem.title,
-            query: currentQuery,
-            status,
-            run_count: newRunCount,
-            is_best_attempt: status === "correct",
-            time_taken_seconds: getExactTimeUsed(),
-            attempt_number: attemptNumber,
-          });
-        }
-  
+      // Never overwrite a correct submission with a worse one
+      if (existing?.status === "correct" && status !== "correct") {
         await updateStreak(userId);
+        return;
+      }
   
-        // FIX 2: Check for badges AFTER writing the submission into Supabase so database query isn't stale
-        if (status === "correct") {
-          const newBadges = await checkAndSaveBadges(userId);
-          if (newBadges && newBadges.length > 0) {
-            setUnlockedBadges(newBadges);
-          }
+      if (existing) {
+        const { error: updateError } = await supabase
+          .from("submissions")
+          .update({
+            query:              currentQuery,
+            status,
+            run_count:          newRunCount,
+            is_best_attempt:    status === "correct",
+            time_taken_seconds: getExactTimeUsed(),
+            updated_at:         new Date().toISOString(),
+          })
+          .eq("id", existing.id);
+  
+        if (updateError) console.error("Update error:", updateError.message);
+  
+      } else {
+//         const { error: insertError } = await supabase
+//   .from("submissions")
+//   .insert({
+//     user_id:       userId,
+//     problem_id:    currentProblem.id,
+//     category:      "sql_basics",
+//     problem_title: currentProblem.title,
+//     query:         currentQuery,
+//     status,
+//   });
+
+// console.log("Insert error:", insertError);
+// console.log("Insert success:", !insertError);
+        const { error: insertError } = await supabase
+          .from("submissions")
+          .insert({
+            user_id:            userId,
+            problem_id:         currentProblem.id,
+            category:           "sql_basics",
+            problem_title:      currentProblem.title,
+            query:              currentQuery,
+            status,
+            run_count:          newRunCount,
+            is_best_attempt:    status === "correct",
+            time_taken_seconds: getExactTimeUsed(),
+            attempt_number:     attemptNumber,
+          });
+  
+        if (insertError) console.error("Insert error:", insertError.message);
+      }
+  
+      await updateStreak(userId);
+  
+      // ── Check badges after submission saved ────────────────────────────────
+      if (status === "correct") {
+        const newBadges = await checkAndSaveBadges(userId);
+        if (newBadges?.length > 0) {
+          setUnlockedBadges(newBadges);
         }
       }
+  
     } catch (err) {
       setError(err.message);
     }
