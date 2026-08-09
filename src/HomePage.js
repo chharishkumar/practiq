@@ -969,9 +969,12 @@ export default function HomePage() {
       const lastWeekCount = correctSubs.filter((s) => isLastWeek(s.updated_at)).length;
 
       // Accuracy: unique problems attempted vs unique problems correct
-      const totalAttempts = new Set(subs.map((s) => s.problem_id)).size;
-      const correctCount  = solvedIdSet.size;
-
+      const attemptedIdSet = new Set(
+        subs.map((s) => getSubmissionKey(s.category, s.problem_id))
+      );
+      
+      const totalAttempts = attemptedIdSet.size;
+      const correctCount = solvedIdSet.size;
       // Fast solves: correct problems solved in under 120s
       const fastSolves = correctSubs.filter((s) => (s.time_taken_seconds || 999) < 120).length;
 

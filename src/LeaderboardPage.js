@@ -47,6 +47,20 @@ const STRENGTH_LABEL = {
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
+function formatLocalDate(date) {
+  const d = new Date(date);
+
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+
+  return `${y}-${m}-${day}`;
+}
+
+function getLocalToday() {
+  return formatLocalDate(new Date());
+}
+
 function getBadge(solved, streak) {
   if (streak >= 30)  return "Streak King";
   if (solved >= 100) return "SQL Master";
@@ -144,9 +158,11 @@ export default function LeaderboardPage() {
 
       // 2. Fetch all correct submissions
       const { data: allCorrect } = await supabase
-        .from("submissions")
-        .select("user_id, problem_id, category, updated_at")
-        .eq("status", "correct");
+      .from("submissions")
+      .select("user_id, problem_id, category, updated_at")
+      .eq("status", "correct")
+      .order("updated_at", { ascending: false })
+      .range(0, 4999);
 
       // 3. Fetch all profiles
       const { data: allProfiles } = await supabase
@@ -225,12 +241,36 @@ export default function LeaderboardPage() {
       });
 
       // 7. Stats
-      const today = new Date().toISOString().split("T")[0];
-      const solvedToday = (allCorrect || []).filter(s => s.updated_at?.startsWith(today)).length;
+      // const today = new Date().toISOString().split("T")[0];
+      // const solvedToday = (allCorrect || []).filter(s => s.updated_at?.startsWith(today)).length;
+      const todayLocal = getLocalToday();
+      const solvedToday = (allCorrect || []).filter(
+        s => formatLocalDate(s.updated_at) === getLocalToday()
+      ).length;
+
+console.log("Today local:", todayLocal);
+console.log("All correct count:", allCorrect?.length);
+console.log("Sample updated_at values:", allCorrect?.slice(0, 3).map(s => s.updated_at));
+console.log("Sample converted dates:", allCorrect?.slice(0, 3).map(s => getLocalToday(s.updated_at)));
+console.log("Solved today:", solvedToday);
+console.log("Today:", new Date());
+
+(allCorrect || []).slice(0, 5).forEach((s) => {
+  console.log({
+    raw: s.updated_at,
+    parsed: new Date(s.updated_at),
+    iso: new Date(s.updated_at).toISOString(),
+    year: new Date(s.updated_at).getFullYear(),
+    month: new Date(s.updated_at).getMonth() + 1,
+    day: new Date(s.updated_at).getDate(),
+  });
+});
+
       const uniqueCountries = new Set((allProfiles || []).map(p => p.country).filter(Boolean)).size;
 
       setStats({
-        total:     Object.keys(userMap).length,
+        // total:     Object.keys(userMap).length,
+        total: allProfiles?.length || 0,
         today:     solvedToday,
         countries: uniqueCountries,
       });

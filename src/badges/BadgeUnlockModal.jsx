@@ -1,11 +1,67 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { supabase } from "../supabase"; // Ensure this matches your supabase client path
 
 export default function BadgeUnlockModal({ badges, isOpen, onClose, onViewBadges, isMobile, userName }) {
   const certRef = useRef(null);
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [resolvedUserName, setResolvedUserName] = useState(userName || "");
+
+  useEffect(() => {
+    if (userName && userName.trim() !== "") {
+      setResolvedUserName(userName);
+      return;
+    }
+  
+    async function fetchUserName() {
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const user = sessionData?.session?.user;
+        if (!user) return;
+  
+        // 1. First check the profiles table
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name, username")
+          .eq("id", user.id)
+          .maybeSingle();
+  
+        if (profile?.full_name?.trim()) {
+          setResolvedUserName(profile.full_name);
+          return;
+        }
+  
+        if (profile?.username?.trim()) {
+          setResolvedUserName(profile.username);
+          return;
+        }
+  
+        // 2. Then check auth metadata
+        const metaName =
+          user.user_metadata?.username ||
+          user.user_metadata?.full_name ||
+          user.user_metadata?.name;
+  
+        if (metaName?.trim()) {
+          setResolvedUserName(metaName);
+          return;
+        }
+  
+        // 3. Final fallback
+        if (user.email) {
+          setResolvedUserName(user.email.split("@")[0]);
+        }
+      } catch (err) {
+        console.error("Error resolving user name for certificate:", err);
+      }
+    }
+  
+    if (isOpen) {
+      fetchUserName();
+    }
+  }, [userName, isOpen]);
 
   const badge = badges?.[0];
   if (!isOpen || !badge) return null;
@@ -340,7 +396,7 @@ export default function BadgeUnlockModal({ badges, isOpen, onClose, onViewBadges
             }}
           />
 
-          {/* Corner decorations */}
+          {/* Corner decorations
           {["top-left", "top-right", "bottom-left", "bottom-right"].map((pos, i) => (
             <div
               key={pos}
@@ -356,7 +412,7 @@ export default function BadgeUnlockModal({ badges, isOpen, onClose, onViewBadges
                 borderRadius: "4px",
               }}
             />
-          ))}
+          ))} */}
 
           {/* Watermark background pattern */}
           <div
@@ -425,7 +481,7 @@ export default function BadgeUnlockModal({ badges, isOpen, onClose, onViewBadges
             This is to certify that
           </div>
 
-          {/* User name */}
+          {/* User name - resolved automatically */}
           <div
             style={{
               fontSize: "46px",
@@ -437,7 +493,7 @@ export default function BadgeUnlockModal({ badges, isOpen, onClose, onViewBadges
               textAlign: "center",
             }}
           >
-            {userName || "Repractiq User"}
+            {resolvedUserName || "Repractiq User"}
           </div>
 
           {/* Name underline */}
@@ -607,6 +663,618 @@ export default function BadgeUnlockModal({ badges, isOpen, onClose, onViewBadges
     </>
   );
 }
+// import React, { useState, useRef } from "react";
+// import jsPDF from "jspdf";
+// import html2canvas from "html2canvas";
+
+// export default function BadgeUnlockModal({ badges, isOpen, onClose, onViewBadges, isMobile, userName }) {
+//   const certRef = useRef(null);
+//   const [copied, setCopied] = useState(false);
+//   const [downloading, setDownloading] = useState(false);
+
+//   const badge = badges?.[0];
+//   if (!isOpen || !badge) return null;
+
+//   // Safe fallback properties for badge naming schema
+//   const badgeName = badge?.name || badge?.title || badge?.label || "SQL Achievement";
+//   const badgeDescription = badge?.description || "Completed SQL practice challenges on Repractiq.";
+//   const badgeIcon = badge?.icon || "🏆";
+
+//   const shareText = `I just earned the ${badgeName} badge on Repractiq! ${badgeDescription} 🎯\n\nPractice SQL & Python on real business datasets → www.repractiq.com`;
+
+//   const handleCopy = () => {
+//     navigator.clipboard.writeText(shareText);
+//     setCopied(true);
+//     setTimeout(() => setCopied(false), 2000);
+//   };
+
+//   const handleLinkedInShare = () => {
+//     const url = encodeURIComponent("https://www.repractiq.com");
+//     const text = encodeURIComponent(shareText);
+//     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&summary=${text}`, "_blank");
+//   };
+
+//   const downloadCertificate = async () => {
+//     const el = certRef.current;
+//     if (!el) {
+//       console.error("Certificate element reference not found.");
+//       return;
+//     }
+//     setDownloading(true);
+
+//     try {
+//       // Small pause to allow DOM styles to render properly before capture
+//       await new Promise((resolve) => setTimeout(resolve, 150));
+
+//       const canvas = await html2canvas(el, {
+//         scale: 2,
+//         useCORS: true,
+//         allowTaint: true,
+//         backgroundColor: "#ffffff",
+//         logging: false,
+//         width: 1122,
+//         height: 794,
+//         windowWidth: 1122,
+//         windowHeight: 794,
+//       });
+
+//       const imgData = canvas.toDataURL("image/png");
+//       const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+//       const pdfWidth = pdf.internal.pageSize.getWidth();
+//       const pdfHeight = pdf.internal.pageSize.getHeight();
+
+//       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+//       pdf.save(`Repractiq-${badgeName.replace(/\s+/g, "-")}-Certificate.pdf`);
+//     } catch (err) {
+//       console.error("PDF generation failed:", err);
+//     } finally {
+//       setDownloading(false);
+//     }
+//   };
+
+//   return (
+//     <>
+//       {/* ── MODAL OVERLAY ─────────────────────────────────────────────── */}
+//       <div
+//         onClick={onClose}
+//         style={{
+//           position: "fixed",
+//           inset: 0,
+//           background: "rgba(15,23,42,0.6)",
+//           zIndex: 1000,
+//           display: "flex",
+//           alignItems: "center",
+//           justifyContent: "center",
+//           padding: "1rem",
+//         }}
+//       >
+//         <div
+//           onClick={(e) => e.stopPropagation()}
+//           style={{
+//             background: "#ffffff",
+//             borderRadius: "20px",
+//             width: "100%",
+//             maxWidth: "440px",
+//             overflow: "hidden",
+//             boxShadow: "0 24px 64px rgba(0,0,0,0.18)",
+//             fontFamily: "Inter, -apple-system, sans-serif",
+//           }}
+//         >
+//           {/* Header */}
+//           <div
+//             style={{
+//               background: "linear-gradient(135deg, #1e40af 0%, #2563eb 100%)",
+//               padding: "1.75rem 1.75rem 1.5rem",
+//               position: "relative",
+//             }}
+//           >
+//             <button
+//               onClick={onClose}
+//               style={{
+//                 position: "absolute",
+//                 top: "1rem",
+//                 right: "1rem",
+//                 background: "rgba(255,255,255,0.15)",
+//                 border: "none",
+//                 borderRadius: "50%",
+//                 width: "32px",
+//                 height: "32px",
+//                 cursor: "pointer",
+//                 color: "#ffffff",
+//                 fontSize: "1rem",
+//                 display: "flex",
+//                 alignItems: "center",
+//                 justifyContent: "center",
+//               }}
+//             >
+//               ✕
+//             </button>
+//             <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+//               <div
+//                 style={{
+//                   width: "60px",
+//                   height: "60px",
+//                   borderRadius: "14px",
+//                   background: "rgba(255,255,255,0.15)",
+//                   display: "flex",
+//                   alignItems: "center",
+//                   justifyContent: "center",
+//                   fontSize: "2rem",
+//                   flexShrink: 0,
+//                 }}
+//               >
+//                 {badgeIcon}
+//               </div>
+//               <div>
+//                 <div
+//                   style={{
+//                     fontSize: "0.72rem",
+//                     color: "rgba(255,255,255,0.7)",
+//                     fontWeight: 600,
+//                     textTransform: "uppercase",
+//                     letterSpacing: "1px",
+//                     marginBottom: "4px",
+//                   }}
+//                 >
+//                   Achievement Unlocked
+//                 </div>
+//                 <div style={{ fontSize: "1.25rem", fontWeight: 800, color: "#ffffff", letterSpacing: "-0.3px", lineHeight: 1.2 }}>
+//                   {badgeName}
+//                 </div>
+//                 <div style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.8)", marginTop: "4px" }}>
+//                   {badgeDescription}
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Body */}
+//           <div style={{ padding: "1.5rem 1.75rem" }}>
+//             {/* Motivational message */}
+//             <div
+//               style={{
+//                 background: "#f0fdf4",
+//                 border: "1px solid #bbf7d0",
+//                 borderRadius: "10px",
+//                 padding: "0.875rem 1rem",
+//                 marginBottom: "1.25rem",
+//                 fontSize: "0.85rem",
+//                 color: "#15803d",
+//                 lineHeight: 1.6,
+//                 textAlign: "center",
+//               }}
+//             >
+//               🎉 You've earned this. Share it with your network and show the world your progress.
+//             </div>
+
+//             {/* Share text preview */}
+//             <div
+//               style={{
+//                 background: "#f8fafc",
+//                 border: "1.5px solid #e2e8f0",
+//                 borderRadius: "10px",
+//                 padding: "0.875rem 1rem",
+//                 marginBottom: "1.25rem",
+//                 fontSize: "0.82rem",
+//                 color: "#475569",
+//                 lineHeight: 1.65,
+//                 fontStyle: "italic",
+//               }}
+//             >
+//               {shareText}
+//             </div>
+
+//             {/* Buttons */}
+//             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+//               {/* Download Certificate */}
+//               <button
+//                 onClick={downloadCertificate}
+//                 disabled={downloading}
+//                 style={{
+//                   width: "100%",
+//                   padding: "13px",
+//                   borderRadius: "10px",
+//                   background: downloading
+//                     ? "#94a3b8"
+//                     : "linear-gradient(135deg, #1e40af 0%, #2563eb 100%)",
+//                   color: "#ffffff",
+//                   fontWeight: 700,
+//                   fontSize: "0.92rem",
+//                   border: "none",
+//                   cursor: downloading ? "not-allowed" : "pointer",
+//                   display: "flex",
+//                   alignItems: "center",
+//                   justifyContent: "center",
+//                   gap: "8px",
+//                   boxShadow: downloading ? "none" : "0 4px 12px rgba(37,99,235,0.3)",
+//                   transition: "all 0.2s",
+//                 }}
+//               >
+//                 {downloading ? "⏳ Generating PDF..." : "🏆 Download Certificate (PDF)"}
+//               </button>
+
+//               {/* Share on LinkedIn */}
+//               <button
+//                 onClick={handleLinkedInShare}
+//                 style={{
+//                   width: "100%",
+//                   padding: "12px",
+//                   borderRadius: "10px",
+//                   background: "#0077B5",
+//                   color: "#ffffff",
+//                   fontWeight: 700,
+//                   fontSize: "0.88rem",
+//                   border: "none",
+//                   cursor: "pointer",
+//                   display: "flex",
+//                   alignItems: "center",
+//                   justifyContent: "center",
+//                   gap: "8px",
+//                 }}
+//               >
+//                 <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+//                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+//                 </svg>
+//                 Share on LinkedIn
+//               </button>
+
+//               {/* Copy text */}
+//               <button
+//                 onClick={handleCopy}
+//                 style={{
+//                   width: "100%",
+//                   padding: "12px",
+//                   borderRadius: "10px",
+//                   background: "#f8fafc",
+//                   color: copied ? "#16a34a" : "#475569",
+//                   fontWeight: 600,
+//                   fontSize: "0.88rem",
+//                   border: "1.5px solid",
+//                   borderColor: copied ? "#bbf7d0" : "#e2e8f0",
+//                   cursor: "pointer",
+//                   display: "flex",
+//                   alignItems: "center",
+//                   justifyContent: "center",
+//                   gap: "8px",
+//                   transition: "all 0.2s",
+//                 }}
+//               >
+//                 {copied ? "✓ Copied!" : "📋 Copy share text"}
+//               </button>
+//             </div>
+//           </div>
+
+//           {/* Footer */}
+//           <div style={{ padding: "0 1.75rem 1.25rem", textAlign: "center" }}>
+//             <div style={{ fontSize: "0.72rem", color: "#94a3b8" }}>
+//               www.repractiq.com · Practice SQL & Python
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* ── HIDDEN CERTIFICATE FOR PDF ────────────────── */}
+//       <div
+//         style={{
+//           position: "fixed",
+//           top: 0,
+//           left: "-9999px",
+//           width: "1122px",
+//           height: "794px",
+//           overflow: "hidden",
+//           pointerEvents: "none",
+//         }}
+//       >
+//         <div
+//           ref={certRef}
+//           style={{
+//             width: "1122px",
+//             height: "794px",
+//             background: "#ffffff",
+//             display: "flex",
+//             flexDirection: "column",
+//             alignItems: "center",
+//             justifyContent: "center",
+//             fontFamily: "Georgia, serif",
+//             position: "relative",
+//             overflow: "hidden",
+//             padding: "60px 80px",
+//             boxSizing: "border-box",
+//           }}
+//         >
+//           {/* Top border */}
+//           <div
+//             style={{
+//               position: "absolute",
+//               top: 0,
+//               left: 0,
+//               right: 0,
+//               height: "8px",
+//               background: "linear-gradient(90deg, #1e40af 0%, #2563eb 50%, #1e40af 100%)",
+//             }}
+//           />
+//           {/* Bottom border */}
+//           <div
+//             style={{
+//               position: "absolute",
+//               bottom: 0,
+//               left: 0,
+//               right: 0,
+//               height: "8px",
+//               background: "linear-gradient(90deg, #1e40af 0%, #2563eb 50%, #1e40af 100%)",
+//             }}
+//           />
+
+//           {/* Corner decorations */}
+//           {["top-left", "top-right", "bottom-left", "bottom-right"].map((pos, i) => (
+//             <div
+//               key={pos}
+//               style={{
+//                 position: "absolute",
+//                 top: i < 2 ? "24px" : "auto",
+//                 bottom: i >= 2 ? "24px" : "auto",
+//                 left: i % 2 === 0 ? "24px" : "auto",
+//                 right: i % 2 !== 0 ? "24px" : "auto",
+//                 width: "60px",
+//                 height: "60px",
+//                 border: "2px solid #e2e8f0",
+//                 borderRadius: "4px",
+//               }}
+//             />
+//           ))}
+
+//           {/* Watermark background pattern */}
+//           <div
+//             style={{
+//               position: "absolute",
+//               inset: 0,
+//               opacity: 0.03,
+//               backgroundImage: "radial-gradient(circle, #2563eb 1px, transparent 1px)",
+//               backgroundSize: "30px 30px",
+//             }}
+//           />
+
+//           {/* REPRACTIQ header */}
+//           <div
+//             style={{
+//               fontSize: "13px",
+//               fontWeight: 700,
+//               color: "#2563eb",
+//               letterSpacing: "5px",
+//               textTransform: "uppercase",
+//               marginBottom: "6px",
+//               fontFamily: "Inter, sans-serif",
+//             }}
+//           >
+//             REPRACTIQ
+//           </div>
+//           <div
+//             style={{
+//               fontSize: "10px",
+//               color: "#94a3b8",
+//               letterSpacing: "3px",
+//               textTransform: "uppercase",
+//               marginBottom: "36px",
+//               fontFamily: "Inter, sans-serif",
+//             }}
+//           >
+//             Certificate of Achievement
+//           </div>
+
+//           {/* Top divider */}
+//           <div
+//             style={{
+//               display: "flex",
+//               alignItems: "center",
+//               gap: "16px",
+//               marginBottom: "36px",
+//               width: "100%",
+//               maxWidth: "600px",
+//             }}
+//           >
+//             <div style={{ flex: 1, height: "1px", background: "#e2e8f0" }} />
+//             <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#2563eb" }} />
+//             <div style={{ flex: 1, height: "1px", background: "#e2e8f0" }} />
+//           </div>
+
+//           <div
+//             style={{
+//               fontSize: "13px",
+//               color: "#94a3b8",
+//               marginBottom: "14px",
+//               fontFamily: "Inter, sans-serif",
+//               letterSpacing: "2px",
+//               textTransform: "uppercase",
+//             }}
+//           >
+//             This is to certify that
+//           </div>
+
+//           {/* User name */}
+//           <div
+//             style={{
+//               fontSize: "46px",
+//               fontWeight: 700,
+//               color: "#0f172a",
+//               marginBottom: "6px",
+//               fontFamily: "Georgia, serif",
+//               letterSpacing: "-1px",
+//               textAlign: "center",
+//             }}
+//           >
+//             {userName || "Repractiq User"}
+//           </div>
+
+//           {/* Name underline */}
+//           <div
+//             style={{
+//               width: "240px",
+//               height: "2px",
+//               background: "linear-gradient(90deg, transparent, #2563eb, transparent)",
+//               marginBottom: "24px",
+//             }}
+//           />
+
+//           <div
+//             style={{
+//               fontSize: "14px",
+//               color: "#64748b",
+//               marginBottom: "20px",
+//               fontFamily: "Inter, sans-serif",
+//               textAlign: "center",
+//               lineHeight: 1.8,
+//               maxWidth: "560px",
+//             }}
+//           >
+//             has demonstrated excellence, consistent practice, and the commitment
+//             <br />
+//             to grow as a data professional by successfully earning the
+//           </div>
+
+//           {/* Badge display */}
+//           <div
+//             style={{
+//               display: "flex",
+//               alignItems: "center",
+//               gap: "16px",
+//               marginBottom: "10px",
+//               background: "#f8fafc",
+//               border: "1.5px solid #e2e8f0",
+//               borderRadius: "14px",
+//               padding: "14px 28px",
+//             }}
+//           >
+//             <span style={{ fontSize: "44px" }}>{badgeIcon}</span>
+//             <div>
+//               <div
+//                 style={{
+//                   fontSize: "26px",
+//                   fontWeight: 800,
+//                   color: "#0f172a",
+//                   fontFamily: "Inter, sans-serif",
+//                   letterSpacing: "-0.5px",
+//                 }}
+//               >
+//                 {badgeName}
+//               </div>
+//               <div
+//                 style={{
+//                   fontSize: "13px",
+//                   color: "#64748b",
+//                   fontFamily: "Inter, sans-serif",
+//                   marginTop: "2px",
+//                 }}
+//               >
+//                 {badgeDescription}
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Bottom divider */}
+//           <div
+//             style={{
+//               display: "flex",
+//               alignItems: "center",
+//               gap: "16px",
+//               margin: "28px 0",
+//               width: "100%",
+//               maxWidth: "600px",
+//             }}
+//           >
+//             <div style={{ flex: 1, height: "1px", background: "#e2e8f0" }} />
+//             <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#2563eb" }} />
+//             <div style={{ flex: 1, height: "1px", background: "#e2e8f0" }} />
+//           </div>
+
+//           {/* Date + Signature */}
+//           <div
+//             style={{
+//               display: "flex",
+//               justifyContent: "space-between",
+//               alignItems: "flex-end",
+//               width: "100%",
+//               maxWidth: "680px",
+//             }}
+//           >
+//             <div style={{ textAlign: "center" }}>
+//               <div
+//                 style={{
+//                   fontSize: "15px",
+//                   fontWeight: 700,
+//                   color: "#0f172a",
+//                   fontFamily: "Inter, sans-serif",
+//                   marginBottom: "6px",
+//                 }}
+//               >
+//                 {new Date().toLocaleDateString("en-US", {
+//                   year: "numeric",
+//                   month: "long",
+//                   day: "numeric",
+//                 })}
+//               </div>
+//               <div style={{ width: "160px", height: "1px", background: "#cbd5e1", marginBottom: "6px" }} />
+//               <div
+//                 style={{
+//                   fontSize: "10px",
+//                   color: "#94a3b8",
+//                   fontFamily: "Inter, sans-serif",
+//                   letterSpacing: "1.5px",
+//                   textTransform: "uppercase",
+//                 }}
+//               >
+//                 Date Earned
+//               </div>
+//             </div>
+
+//             <div style={{ textAlign: "center" }}>
+//               <div
+//                 style={{
+//                   fontSize: "26px",
+//                   fontFamily: "Georgia, serif",
+//                   color: "#2563eb",
+//                   fontStyle: "italic",
+//                   marginBottom: "6px",
+//                   letterSpacing: "1px",
+//                 }}
+//               >
+//                 Repractiq
+//               </div>
+//               <div style={{ width: "160px", height: "1px", background: "#cbd5e1", marginBottom: "6px" }} />
+//               <div
+//                 style={{
+//                   fontSize: "10px",
+//                   color: "#94a3b8",
+//                   fontFamily: "Inter, sans-serif",
+//                   letterSpacing: "1.5px",
+//                   textTransform: "uppercase",
+//                 }}
+//               >
+//                 Authorized By
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Footer */}
+//           <div style={{ position: "absolute", bottom: "16px", left: 0, right: 0, textAlign: "center" }}>
+//             <div
+//               style={{
+//                 fontSize: "10px",
+//                 color: "#cbd5e1",
+//                 fontFamily: "Inter, sans-serif",
+//                 letterSpacing: "1px",
+//               }}
+//             >
+//               www.repractiq.com · Practice SQL & Python with real business datasets · Build skills that get you hired
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// }
+
+
+
 // import jsPDF from "jspdf";
 // import html2canvas from "html2canvas";
 // import { useRef } from "react";

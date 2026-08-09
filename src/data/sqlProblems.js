@@ -377,30 +377,30 @@ export const SQL_PROBLEMS = [
   },
   {
     id: 15,
-    title: "Find Customers Without an Email Address",
+    title: "Find Customers Whose Email Is Not a Gmail Address",
     difficulty: "Easy",
-    slug: "sql-customers-without-email",
-    seoTitle: "SQL Basics | IS NULL",
-    metaDescription: "Learn how to identify NULL values using IS NULL.",
-    tags: ["SQL", "Basics", "NULL"],
-    description: "Retrieve all customers whose email address is missing.",
-    explanation: "NULL represents missing data. Use IS NULL instead of = NULL.",
-    scenario: "The CRM team wants to identify customers missing email addresses.",
+    slug: "sql-customers-non-gmail-email",
+    seoTitle: "SQL Basics | NOT LIKE",
+    metaDescription: "Learn how to filter text using NOT LIKE in SQL.",
+    tags: ["SQL", "Basics", "NOT LIKE"],
+    description: "Retrieve all customers whose email address does not belong to Gmail.",
+    explanation: "Use NOT LIKE with wildcard (%) to exclude values matching a specific pattern.",
+    scenario: "The CRM team wants to identify customers using non-Gmail email addresses.",
     useCases: [
-      "Data quality",
       "Customer management",
+      "Email analysis",
       "Learning SQL"
     ],
-    hint: "Use IS NULL.",
+    hint: "Use NOT LIKE '%@gmail.com'.",
     starterQuery: `SELECT *
   FROM customers
-  WHERE email IS NULL;`,
+  WHERE email NOT LIKE '%@gmail.com';`,
     expectedColumns: [
       "*"
     ],
     solutionQuery: `SELECT *
   FROM customers
-  WHERE email IS NULL;`
+  WHERE email NOT LIKE '%@gmail.com';`
   },
   {
     id: 16,
