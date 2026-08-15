@@ -133,7 +133,7 @@ export function useBadges({ userId: externalUserId = null, category = "sql", aut
     } finally {
       setLoading(false);
     }
-  }, [externalUserId, category, autoSave, isPython]);
+  },[externalUserId, autoSave, isPython]);
 
   useEffect(() => {
     fetchAndCalculate();

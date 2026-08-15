@@ -547,7 +547,7 @@ const [attemptNumber, setAttemptNumber] = useState(1);
   } catch (err) {
     setError(err.message);
   }
-}, [attemptNumber, getExactTimeUsed, getPerformanceRating, stopTimer, unlockedMilestones, checkAndSaveBadges]);
+}, [attemptNumber, getExactTimeUsed, getPerformanceRating, stopTimer, unlockedMilestones]);
 
   // ─── COMMUNITY POST ───────────────────────────────────────────────────────
   const handlePostCommunity = () => {
