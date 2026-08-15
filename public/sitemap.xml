@@ -3,39 +3,69 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <sitemap>
+<loc>https://www.repractiq.com/pages-sitemap.xml</loc>
+<lastmod>2026-08-15</lastmod>
+</sitemap>
+
+<sitemap>
 <loc>https://www.repractiq.com/blog-sitemap.xml</loc>
-<lastmod>2026-07-01</lastmod>
+<lastmod>2026-08-15</lastmod>
 </sitemap>
 
 
 <sitemap>
 <loc>https://www.repractiq.com/sql-basics-sitemap.xml</loc>
-<lastmod>2026-07-01</lastmod>
+<lastmod>2026-08-15</lastmod>
 </sitemap>
 
 <sitemap>
 <loc>https://www.repractiq.com/sql-intermediate-sitemap.xml</loc>
-<lastmod>2026-07-01</lastmod>
+<lastmod>2026-08-15</lastmod>
 </sitemap>
 
 <sitemap>
 <loc>https://www.repractiq.com/sql-advanced-sitemap.xml</loc>
-<lastmod>2026-07-01</lastmod>
+<lastmod>2026-08-15</lastmod>
 </sitemap>
 
 <sitemap>
 <loc>https://www.repractiq.com/sql-interview-sitemap.xml</loc>
-<lastmod>2026-07-01</lastmod>
+<lastmod>2026-08-15</lastmod>
 </sitemap>
 
 <sitemap>
 <loc>https://www.repractiq.com/sql-scenarios-sitemap.xml</loc>
-<lastmod>2026-07-01</lastmod>
+<lastmod>2026-08-15</lastmod>
 </sitemap>
 
 <sitemap>
 <loc>https://www.repractiq.com/sql-company-sitemap.xml</loc>
-<lastmod>2026-07-01</lastmod>
+<lastmod>2026-08-15</lastmod>
+</sitemap>
+
+<sitemap>
+<loc>https://www.repractiq.com/python-basics-sitemap.xml</loc>
+<lastmod>2026-08-15</lastmod>
+</sitemap>
+
+<sitemap>
+<loc>https://www.repractiq.com/python-intermediate-sitemap.xml</loc>
+<lastmod>2026-08-15</lastmod>
+</sitemap>
+
+<sitemap>
+<loc>https://www.repractiq.com/python-advanced-sitemap.xml</loc>
+<lastmod>2026-08-15</lastmod>
+</sitemap>
+
+<sitemap>
+<loc>https://www.repractiq.com/python-interview-sitemap.xml</loc>
+<lastmod>2026-08-15</lastmod>
+</sitemap>
+
+<sitemap>
+<loc>https://www.repractiq.com/python-scenarios-sitemap.xml</loc>
+<lastmod>2026-08-15</lastmod>
 </sitemap>
 
 </sitemapindex>

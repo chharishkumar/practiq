@@ -4,700 +4,700 @@
 
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/1-sql-display-all-customers</loc>
+    <loc>https://www.repractiq.com/python/basics/1-python-hello-world-print-function</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/2-sql-display-customer-names</loc>
+    <loc>https://www.repractiq.com/python/basics/2-python-sum-two-numbers-function</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/3-sql-find-delivered-orders</loc>
+    <loc>https://www.repractiq.com/python/basics/3-python-even-odd-modulo-operator</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/4-sql-sort-products-by-price</loc>
+    <loc>https://www.repractiq.com/python/basics/4-python-reverse-string-slicing</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/5-sql-show-first-10-customers</loc>
+    <loc>https://www.repractiq.com/python/basics/5-python-find-max-in-list</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/6-sql-find-customers-from-india</loc>
+    <loc>https://www.repractiq.com/python/basics/6-python-count-vowels-in-string</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/7-sql-find-premium-customers</loc>
+    <loc>https://www.repractiq.com/python/basics/7-python-fizzbuzz-classic-interview-problem</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/8-sql-products-price-greater-than-1000</loc>
+    <loc>https://www.repractiq.com/python/basics/8-python-filter-even-numbers-list-comprehension</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/9-sql-display-orders-newest-first</loc>
+    <loc>https://www.repractiq.com/python/basics/9-python-word-count-dictionary</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/10-sql-top-5-most-expensive-products</loc>
+    <loc>https://www.repractiq.com/python/basics/10-python-factorial-recursion</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/11-sql-find-unique-customer-countries</loc>
+    <loc>https://www.repractiq.com/python/basics/11-python-sum-list-elements</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/12-sql-customers-name-starts-with-a</loc>
+    <loc>https://www.repractiq.com/python/basics/12-python-celsius-to-fahrenheit-converter</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/13-sql-customers-from-india-or-usa</loc>
+    <loc>https://www.repractiq.com/python/basics/13-python-is-palindrome-string</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/14-sql-products-price-between-100-and-500</loc>
+    <loc>https://www.repractiq.com/python/basics/14-python-length-of-list-without-len</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/15-sql-customers-non-gmail-email</loc>
+    <loc>https://www.repractiq.com/python/basics/15-python-merge-two-dictionaries</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/16-sql-customers-with-email</loc>
+    <loc>https://www.repractiq.com/python/basics/16-python-convert-minutes-to-seconds</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/17-sql-premium-customers-from-india</loc>
+    <loc>https://www.repractiq.com/python/basics/17-python-find-common-elements-sets</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/18-sql-india-or-premium-customers</loc>
+    <loc>https://www.repractiq.com/python/basics/18-python-remove-duplicates-list</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/19-sql-products-not-electronics</loc>
+    <loc>https://www.repractiq.com/python/basics/19-python-calculate-power-exponentiation</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/20-sql-sort-customers-by-country-and-name</loc>
+    <loc>https://www.repractiq.com/python/basics/20-python-sum-of-digits-loop</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/21-sql-string-concatenation-pipe-operator</loc>
+    <loc>https://www.repractiq.com/python/basics/21-python-leap-year-checker-conditionals</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/22-sql-clv-customer-lifetime-spend-ranking</loc>
+    <loc>https://www.repractiq.com/python/basics/22-python-capitalize-words-title-method</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/23-sql-between-operator-inclusive-range</loc>
+    <loc>https://www.repractiq.com/python/basics/23-python-find-minimum-list</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/24-sql-not-in-exclusion-filtering</loc>
+    <loc>https://www.repractiq.com/python/basics/24-python-check-key-exists-dictionary</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/25-sql-min-date-chronological-baseline</loc>
+    <loc>https://www.repractiq.com/python/basics/25-python-calculate-average-list</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/26-sql-calculate-total-revenue</loc>
+    <loc>https://www.repractiq.com/python/basics/26-python-fahrenheit-to-celsius-converter</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/27-sql-count-orders-by-status</loc>
+    <loc>https://www.repractiq.com/python/basics/27-python-count-substring-occurrences-string</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/28-sql-count-customers-by-country</loc>
+    <loc>https://www.repractiq.com/python/basics/28-python-convert-list-of-strings-to-string-join</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/29-sql-count-products-by-category</loc>
+    <loc>https://www.repractiq.com/python/basics/29-python-check-sign-of-number-conditionals</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/30-sql-average-product-price-by-category</loc>
+    <loc>https://www.repractiq.com/python/basics/30-python-multiply-all-list-elements</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/31-sql-product-column-projection-pricing</loc>
+    <loc>https://www.repractiq.com/python/basics/31-python-generate-range-list-function</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/32-sql-where-string-filtering-category</loc>
+    <loc>https://www.repractiq.com/python/basics/32-python-anagram-checker-sorted-strings</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/33-sql-numeric-comparison-operators-pricing</loc>
+    <loc>https://www.repractiq.com/python/basics/33-python-swap-two-variables-tuple-packing</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/34-sql-order-by-ascending-sorting-default</loc>
+    <loc>https://www.repractiq.com/python/basics/34-python-count-characters-dictionary</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/35-sql-like-wildcard-substring-searches</loc>
+    <loc>https://www.repractiq.com/python/basics/35-python-check-substring-membership</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/36-sql-count-global-catalog-records</loc>
+    <loc>https://www.repractiq.com/python/basics/36-python-element-search-list-membership</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/37-sql-distinct-category-extraction</loc>
+    <loc>https://www.repractiq.com/python/basics/37-python-get-dictionary-keys-list</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/38-sql-where-or-disjunction-multi-category</loc>
+    <loc>https://www.repractiq.com/python/basics/38-python-sort-list-numbers</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/39-sql-between-operator-product-id-range</loc>
+    <loc>https://www.repractiq.com/python/basics/39-python-absolute-value-checker</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/40-sql-min-max-product-pricing-bounds</loc>
+    <loc>https://www.repractiq.com/python/basics/40-python-repeat-string-n-times</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/41-sql-exact-string-matching-where-equals</loc>
+    <loc>https://www.repractiq.com/python/basics/41-python-count-occurrences-in-list</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/42-sql-order-by-sorting-customer-ids</loc>
+    <loc>https://www.repractiq.com/python/basics/42-python-square-list-elements-comprehension</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/43-sql-less-than-operator-numeric-threshold</loc>
+    <loc>https://www.repractiq.com/python/basics/43-python-find-index-of-element-list</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/44-sql-sum-total-catalog-valuation</loc>
+    <loc>https://www.repractiq.com/python/basics/44-python-string-length-checker-len</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/45-sql-avg-conditional-category-benchmarks</loc>
+    <loc>https://www.repractiq.com/python/basics/45-python-remove-whitespace-strip</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/46-sql-find-customers-with-gmail-account</loc>
+    <loc>https://www.repractiq.com/python/basics/46-python-check-empty-list-conditionals</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/47-sql-count-daily-order-volume</loc>
+    <loc>https://www.repractiq.com/python/basics/47-python-convert-string-lowercase-lower</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/48-sql-order-by-alphabetical-text-sorting</loc>
+    <loc>https://www.repractiq.com/python/basics/48-python-convert-string-uppercase-upper</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/49-sql-in-operator-primary-key-lookup</loc>
+    <loc>https://www.repractiq.com/python/basics/49-python-get-dictionary-values-list</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/50-sql-dynamic-arithmetic-calculated-columns</loc>
+    <loc>https://www.repractiq.com/python/basics/50-python-square-root-calculator-exponentiation</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/51-sql-substr-instr-email-domain-extraction</loc>
+    <loc>https://www.repractiq.com/python/basics/51-python-check-even-number-boolean</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/52-sql-orders-using-cash-on-delivery</loc>
+    <loc>https://www.repractiq.com/python/basics/52-python-check-odd-number-boolean</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/53-sql-customers-name-starts-with-a</loc>
+    <loc>https://www.repractiq.com/python/basics/53-python-concatenate-strings-plus-operator</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/54-sql-multi-column-order-by-asc-desc</loc>
+    <loc>https://www.repractiq.com/python/basics/54-python-last-element-of-list-negative-indexing</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/55-sql-find-orders-this-year</loc>
+    <loc>https://www.repractiq.com/python/basics/55-python-first-element-of-list-indexing</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/56-sql-find-product-with-longest-name</loc>
+    <loc>https://www.repractiq.com/python/basics/56-python-convert-string-to-integer-int-cast</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/57-sql-calculate-revenue-by-customer</loc>
+    <loc>https://www.repractiq.com/python/basics/57-python-convert-integer-to-string-str-cast</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/58-sql-products-above-average-price</loc>
+    <loc>https://www.repractiq.com/python/basics/58-python-find-smallest-word-string</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/59-sql-like-operator-prefix-wildcard-matching</loc>
+    <loc>https://www.repractiq.com/python/basics/59-python-find-largest-word-string</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/60-sql-dynamic-multiplication-tax-estimation</loc>
+    <loc>https://www.repractiq.com/python/basics/60-python-calculate-perimeter-square</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/61-sql-greater-than-operator-above-average-orders</loc>
+    <loc>https://www.repractiq.com/python/basics/61-python-calculate-area-rectangle</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/62-sql-not-like-operator-domain-exclusion</loc>
+    <loc>https://www.repractiq.com/python/basics/62-python-list-comprehension-greater-than-five</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/63-sql-count-distinct-unique-categories</loc>
+    <loc>https://www.repractiq.com/python/basics/63-python-count-dictionary-keys-total</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/64-sql-like-date-prefix-year-filtering</loc>
+    <loc>https://www.repractiq.com/python/basics/64-python-convert-float-to-integer-truncation</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/65-sql-sum-single-customer-spend</loc>
+    <loc>https://www.repractiq.com/python/basics/65-python-convert-integer-to-float-casting</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/66-sql-limit-offset-next-five-customers</loc>
+    <loc>https://www.repractiq.com/python/basics/66-python-string-multiplication-repeater</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/67-sql-average-price-each-category</loc>
+    <loc>https://www.repractiq.com/python/basics/67-python-check-vowel-existence-membership</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/68-sql-customers-with-yahoo-email</loc>
+    <loc>https://www.repractiq.com/python/basics/68-python-calculate-cube-of-number</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/69-sql-calculate-total-cost-five-products</loc>
+    <loc>https://www.repractiq.com/python/basics/69-python-verify-dictionary-value-membership</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/70-sql-orders-total-amount-greater-than-1000</loc>
+    <loc>https://www.repractiq.com/python/basics/70-python-split-string-into-words-split</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/71-sql-like-wildcard-anywhere-substring-match</loc>
+    <loc>https://www.repractiq.com/python/basics/71-python-celsius-to-fahrenheit-converter</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/72-sql-sum-annual-revenue-wildcard-dates</loc>
+    <loc>https://www.repractiq.com/python/basics/72-python-find-average-of-list</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/73-sql-order-by-descending-alphabetical-sorting</loc>
+    <loc>https://www.repractiq.com/python/basics/73-python-string-starts-with-prefix</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/74-sql-find-products-in-electronics-category</loc>
+    <loc>https://www.repractiq.com/python/basics/74-python-string-ends-with-suffix</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/75-sql-avg-global-average-order-value</loc>
+    <loc>https://www.repractiq.com/python/basics/75-python-filter-odd-numbers-list-comprehension</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/76-sql-order-by-desc-limit-ranking-bounds</loc>
+    <loc>https://www.repractiq.com/python/basics/76-python-merge-two-dictionaries</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/77-sql-customers-from-india-or-usa</loc>
+    <loc>https://www.repractiq.com/python/basics/77-python-generate-range-list-constructor</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/78-sql-find-mid-value-orders</loc>
+    <loc>https://www.repractiq.com/python/basics/78-python-check-substring-existence-in-operator</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/79-sql-as-alias-column-renaming</loc>
+    <loc>https://www.repractiq.com/python/basics/79-python-count-capital-letters-isupper</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/80-sql-length-function-conditional-text-filtering</loc>
+    <loc>https://www.repractiq.com/python/basics/80-python-absolute-value-calculator-abs</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/81-sql-not-equal-operator-category-exclusion</loc>
+    <loc>https://www.repractiq.com/python/basics/81-python-list-element-multiplier-loop</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/82-sql-subtraction-arithmetic-calculated-fields</loc>
+    <loc>https://www.repractiq.com/python/basics/82-python-find-key-maximum-value-dictionary</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/83-sql-display-product-name-length</loc>
+    <loc>https://www.repractiq.com/python/basics/83-python-string-character-replacer-replace</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/84-sql-count-rows-targeted-where-filter</loc>
+    <loc>https://www.repractiq.com/python/basics/84-python-check-dictionary-key-membership</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/85-sql-modulo-operator-whole-number-filtering</loc>
+    <loc>https://www.repractiq.com/python/basics/85-python-list-element-swapper-indices</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/86-sql-select-static-literals-without-table</loc>
+    <loc>https://www.repractiq.com/python/basics/86-python-leap-year-identifier-conditionals</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/87-sql-like-operator-suffix-character-matching</loc>
+    <loc>https://www.repractiq.com/python/basics/87-python-calculate-triangle-area-formula</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/88-sql-max-function-chronological-dates</loc>
+    <loc>https://www.repractiq.com/python/basics/88-python-get-dictionary-keys-list</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/89-sql-price-unit-conversion-multiplication</loc>
+    <loc>https://www.repractiq.com/python/basics/89-python-flatten-list-of-lists-comprehension</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/90-sql-find-electronics-products-like</loc>
+    <loc>https://www.repractiq.com/python/basics/90-python-convert-string-to-float-casting</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/91-sql-or-operator-compound-outlier-filtering</loc>
+    <loc>https://www.repractiq.com/python/basics/91-python-remove-evens-list-comprehension</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/92-sql-order-by-chronological-and-financial-metrics</loc>
+    <loc>https://www.repractiq.com/python/basics/92-python-calculate-cube-root-exponentiation</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/93-sql-fractional-multiplication-markdown-pricing</loc>
+    <loc>https://www.repractiq.com/python/basics/93-python-list-element-inversion-negatives</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/94-sql-date-comparison-greater-than-equals</loc>
+    <loc>https://www.repractiq.com/python/basics/94-python-count-character-occurrences-string</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/95-sql-find-shipped-orders</loc>
+    <loc>https://www.repractiq.com/python/basics/95-python-find-maximum-of-three-numbers</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/96-sql-length-function-less-than-bound</loc>
+    <loc>https://www.repractiq.com/python/basics/96-python-check-all-elements-equal-list</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/97-sql-sum-global-processed-revenue</loc>
+    <loc>https://www.repractiq.com/python/basics/97-python-convert-list-strings-to-upper-comprehension</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/98-sql-find-customers-with-com-email</loc>
+    <loc>https://www.repractiq.com/python/basics/98-python-sum-dictionary-values-total</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/99-sql-greater-than-operator-foreign-key-validation</loc>
+    <loc>https://www.repractiq.com/python/basics/99-python-find-minimum-of-three-numbers</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
 </url>
 
 <url>
-    <loc>https://www.repractiq.com/sql/basics/100-sql-avg-combined-with-in-list-filtering</loc>
+    <loc>https://www.repractiq.com/python/basics/100-python-calculate-simple-interest-formula</loc>
     <lastmod>2026-08-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
