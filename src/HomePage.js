@@ -731,42 +731,41 @@ function EmptyState({ navigate }) {
 }
 
 // ─── ONBOARDING MODAL ─────────────────────────────────────────────────────────
-
 const ONBOARDING_QUESTIONS = [
   {
-    key: "experience",
-    title: "What's your SQL experience?",
+    key: "tool",
+    title: "Which tool do you want to learn?",
     options: [
-      { value: "beginner", label: "Complete beginner", sub: "I've never written SQL before" },
-      { value: "basics",   label: "Know the basics", sub: "Comfortable with SELECT, WHERE" },
-      { value: "joins",    label: "Comfortable with JOINs and aggregations", sub: "Can combine tables and group data" },
-      { value: "advanced", label: "Advanced", sub: "Window functions, CTEs, optimization" },
+      { 
+        value: "sql", 
+        label: "SQL", 
+        sub: "Master database queries, joins, window functions, and data analytics" 
+      },
+      { 
+        value: "python", 
+        label: "Python", 
+        sub: "Learn programming basics, data structures, and data manipulation" 
+      },
     ],
   },
   {
     key: "goal",
     title: "What's your goal?",
     options: [
-      { value: "job",       label: "Get a data analyst job" },
+      { value: "job",       label: "Get a data analyst / engineer job" },
       { value: "improve",   label: "Improve at my current job" },
       { value: "interview", label: "Crack a technical interview" },
       { value: "fun",       label: "Just learning for fun" },
     ],
   },
-  {
-    key: "time",
-    title: "How much time per day?",
-    options: [
-      { value: "15min", label: "15 minutes" },
-      { value: "30min", label: "30 minutes" },
-      { value: "1hour", label: "1 hour+" },
-    ],
-  },
 ];
 
+// ─── ONBOARDING MODAL COMPONENT ─────────────────────────────────────────────
+
 function OnboardingModal({ step, answers, setAnswers, setStep, onFinish, isMobile }) {
+  const navigate = useNavigate();
   const question = ONBOARDING_QUESTIONS[step];
-  const selected  = answers[question.key];
+  const selected = answers[question.key];
 
   const handleSelect = (value) => {
     setAnswers((prev) => ({ ...prev, [question.key]: value }));
@@ -776,7 +775,20 @@ function OnboardingModal({ step, answers, setAnswers, setStep, onFinish, isMobil
     if (step < ONBOARDING_QUESTIONS.length - 1) {
       setStep(step + 1);
     } else {
-      onFinish({ ...answers });
+      // Complete answers object
+      const finalAnswers = { ...answers };
+      
+      // Call parent onFinish handler if provided
+      if (onFinish) {
+        onFinish(finalAnswers);
+      }
+
+      // Route based on selected tool
+      if (finalAnswers.tool === "python") {
+        navigate("/python"); // Adjust path to your Python landing page route
+      } else {
+        navigate("/sql");    // Adjust path to your SQL landing page route
+      }
     }
   };
 
@@ -785,24 +797,70 @@ function OnboardingModal({ step, answers, setAnswers, setStep, onFinish, isMobil
   };
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, padding: isMobile ? "1rem" : "2rem" }}>
-      <div style={{ background: "#ffffff", borderRadius: "20px", padding: isMobile ? "1.5rem" : "2.5rem", width: "100%", maxWidth: "480px", boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
-
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(15,23,42,0.6)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 2000,
+        padding: isMobile ? "1rem" : "2rem",
+      }}
+    >
+      <div
+        style={{
+          background: "#ffffff",
+          borderRadius: "20px",
+          padding: isMobile ? "1.5rem" : "2.5rem",
+          width: "100%",
+          maxWidth: "480px",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
+        }}
+      >
         {/* Progress bar */}
         <div style={{ display: "flex", gap: "6px", marginBottom: "1.5rem" }}>
           {ONBOARDING_QUESTIONS.map((_, i) => (
-            <div key={i} style={{ flex: 1, height: "4px", borderRadius: "2px", background: i <= step ? "#2563eb" : "#e2e8f0" }} />
+            <div
+              key={i}
+              style={{
+                flex: 1,
+                height: "4px",
+                borderRadius: "2px",
+                background: i <= step ? "#2563eb" : "#e2e8f0",
+                transition: "background 0.3s ease",
+              }}
+            />
           ))}
         </div>
 
-        <div style={{ fontSize: "0.7rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.5rem" }}>
+        <div
+          style={{
+            fontSize: "0.7rem",
+            color: "#94a3b8",
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+            marginBottom: "0.5rem",
+          }}
+        >
           Question {step + 1} of {ONBOARDING_QUESTIONS.length}
         </div>
 
-        <h2 style={{ fontSize: "1.3rem", fontWeight: 800, color: "#0f172a", letterSpacing: "-0.5px", margin: "0 0 1.5rem" }}>
+        <h2
+          style={{
+            fontSize: "1.3rem",
+            fontWeight: 800,
+            color: "#0f172a",
+            letterSpacing: "-0.5px",
+            margin: "0 0 1.5rem",
+          }}
+        >
           {question.title}
         </h2>
 
+        {/* Options list */}
         <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "2rem" }}>
           {question.options.map((opt) => {
             const isSelected = selected === opt.value;
@@ -819,49 +877,221 @@ function OnboardingModal({ step, answers, setAnswers, setStep, onFinish, isMobil
                   display: "flex",
                   alignItems: "center",
                   gap: "10px",
-                  transition: "all 0.15s",
+                  transition: "all 0.15s ease",
                 }}
               >
-                <div style={{
-                  width: "18px", height: "18px", borderRadius: "50%",
-                  border: `2px solid ${isSelected ? "#2563eb" : "#cbd5e1"}`,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  flexShrink: 0,
-                }}>
-                  {isSelected && <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#2563eb" }} />}
+                <div
+                  style={{
+                    width: "18px",
+                    height: "18px",
+                    borderRadius: "50%",
+                    border: `2px solid ${isSelected ? "#2563eb" : "#cbd5e1"}`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  {isSelected && (
+                    <div
+                      style={{
+                        width: "10px",
+                        height: "10px",
+                        borderRadius: "50%",
+                        background: "#2563eb",
+                      }}
+                    />
+                  )}
                 </div>
                 <div>
-                  <div style={{ fontSize: "0.88rem", fontWeight: 600, color: "#0f172a" }}>{opt.label}</div>
-                  {opt.sub && <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "2px" }}>{opt.sub}</div>}
+                  <div style={{ fontSize: "0.88rem", fontWeight: 600, color: "#0f172a" }}>
+                    {opt.label}
+                  </div>
+                  {opt.sub && (
+                    <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "2px" }}>
+                      {opt.sub}
+                    </div>
+                  )}
                 </div>
               </div>
             );
           })}
         </div>
 
+        {/* Actions */}
         <div style={{ display: "flex", gap: "10px", justifyContent: "space-between" }}>
           {step > 0 ? (
-            <button onClick={handleBack} style={{ padding: "10px 20px", borderRadius: "8px", border: "1.5px solid #e2e8f0", background: "#fff", color: "#64748b", fontWeight: 600, fontSize: "0.85rem", cursor: "pointer" }}>
+            <button
+              onClick={handleBack}
+              style={{
+                padding: "10px 20px",
+                borderRadius: "8px",
+                border: "1.5px solid #e2e8f0",
+                background: "#fff",
+                color: "#64748b",
+                fontWeight: 600,
+                fontSize: "0.85rem",
+                cursor: "pointer",
+              }}
+            >
               ← Back
             </button>
-          ) : <div />}
+          ) : (
+            <div />
+          )}
+
           <button
             onClick={handleContinue}
             disabled={!selected}
             style={{
-              padding: "10px 28px", borderRadius: "8px", border: "none",
+              padding: "10px 28px",
+              borderRadius: "8px",
+              border: "none",
               background: selected ? "#2563eb" : "#cbd5e1",
-              color: "#fff", fontWeight: 700, fontSize: "0.85rem",
+              color: "#fff",
+              fontWeight: 700,
+              fontSize: "0.85rem",
               cursor: selected ? "pointer" : "not-allowed",
             }}
           >
-            {step === ONBOARDING_QUESTIONS.length - 1 ? "Finish →" : "Continue →"}
+            {step === ONBOARDING_QUESTIONS.length - 1 ? "Get Started →" : "Continue →"}
           </button>
         </div>
       </div>
     </div>
   );
 }
+
+// const ONBOARDING_QUESTIONS = [
+//   {
+//     key: "experience",
+//     title: "What's your SQL experience?",
+//     options: [
+//       { value: "beginner", label: "Complete beginner", sub: "I've never written SQL before" },
+//       { value: "basics",   label: "Know the basics", sub: "Comfortable with SELECT, WHERE" },
+//       { value: "joins",    label: "Comfortable with JOINs and aggregations", sub: "Can combine tables and group data" },
+//       { value: "advanced", label: "Advanced", sub: "Window functions, CTEs, optimization" },
+//     ],
+//   },
+//   {
+//     key: "goal",
+//     title: "What's your goal?",
+//     options: [
+//       { value: "job",       label: "Get a data analyst job" },
+//       { value: "improve",   label: "Improve at my current job" },
+//       { value: "interview", label: "Crack a technical interview" },
+//       { value: "fun",       label: "Just learning for fun" },
+//     ],
+//   },
+//   {
+//     key: "time",
+//     title: "How much time per day?",
+//     options: [
+//       { value: "15min", label: "15 minutes" },
+//       { value: "30min", label: "30 minutes" },
+//       { value: "1hour", label: "1 hour+" },
+//     ],
+//   },
+// ];
+
+// function OnboardingModal({ step, answers, setAnswers, setStep, onFinish, isMobile }) {
+//   const question = ONBOARDING_QUESTIONS[step];
+//   const selected  = answers[question.key];
+
+//   const handleSelect = (value) => {
+//     setAnswers((prev) => ({ ...prev, [question.key]: value }));
+//   };
+
+//   const handleContinue = () => {
+//     if (step < ONBOARDING_QUESTIONS.length - 1) {
+//       setStep(step + 1);
+//     } else {
+//       onFinish({ ...answers });
+//     }
+//   };
+
+//   const handleBack = () => {
+//     if (step > 0) setStep(step - 1);
+//   };
+
+//   return (
+//     <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, padding: isMobile ? "1rem" : "2rem" }}>
+//       <div style={{ background: "#ffffff", borderRadius: "20px", padding: isMobile ? "1.5rem" : "2.5rem", width: "100%", maxWidth: "480px", boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
+
+//         {/* Progress bar */}
+//         <div style={{ display: "flex", gap: "6px", marginBottom: "1.5rem" }}>
+//           {ONBOARDING_QUESTIONS.map((_, i) => (
+//             <div key={i} style={{ flex: 1, height: "4px", borderRadius: "2px", background: i <= step ? "#2563eb" : "#e2e8f0" }} />
+//           ))}
+//         </div>
+
+//         <div style={{ fontSize: "0.7rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.5rem" }}>
+//           Question {step + 1} of {ONBOARDING_QUESTIONS.length}
+//         </div>
+
+//         <h2 style={{ fontSize: "1.3rem", fontWeight: 800, color: "#0f172a", letterSpacing: "-0.5px", margin: "0 0 1.5rem" }}>
+//           {question.title}
+//         </h2>
+
+//         <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "2rem" }}>
+//           {question.options.map((opt) => {
+//             const isSelected = selected === opt.value;
+//             return (
+//               <div
+//                 key={opt.value}
+//                 onClick={() => handleSelect(opt.value)}
+//                 style={{
+//                   padding: "0.875rem 1rem",
+//                   borderRadius: "10px",
+//                   border: `1.5px solid ${isSelected ? "#2563eb" : "#e2e8f0"}`,
+//                   background: isSelected ? "#eff6ff" : "#ffffff",
+//                   cursor: "pointer",
+//                   display: "flex",
+//                   alignItems: "center",
+//                   gap: "10px",
+//                   transition: "all 0.15s",
+//                 }}
+//               >
+//                 <div style={{
+//                   width: "18px", height: "18px", borderRadius: "50%",
+//                   border: `2px solid ${isSelected ? "#2563eb" : "#cbd5e1"}`,
+//                   display: "flex", alignItems: "center", justifyContent: "center",
+//                   flexShrink: 0,
+//                 }}>
+//                   {isSelected && <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#2563eb" }} />}
+//                 </div>
+//                 <div>
+//                   <div style={{ fontSize: "0.88rem", fontWeight: 600, color: "#0f172a" }}>{opt.label}</div>
+//                   {opt.sub && <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "2px" }}>{opt.sub}</div>}
+//                 </div>
+//               </div>
+//             );
+//           })}
+//         </div>
+
+//         <div style={{ display: "flex", gap: "10px", justifyContent: "space-between" }}>
+//           {step > 0 ? (
+//             <button onClick={handleBack} style={{ padding: "10px 20px", borderRadius: "8px", border: "1.5px solid #e2e8f0", background: "#fff", color: "#64748b", fontWeight: 600, fontSize: "0.85rem", cursor: "pointer" }}>
+//               ← Back
+//             </button>
+//           ) : <div />}
+//           <button
+//             onClick={handleContinue}
+//             disabled={!selected}
+//             style={{
+//               padding: "10px 28px", borderRadius: "8px", border: "none",
+//               background: selected ? "#2563eb" : "#cbd5e1",
+//               color: "#fff", fontWeight: 700, fontSize: "0.85rem",
+//               cursor: selected ? "pointer" : "not-allowed",
+//             }}
+//           >
+//             {step === ONBOARDING_QUESTIONS.length - 1 ? "Finish →" : "Continue →"}
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
 
 // ─── LOADING SCREEN ───────────────────────────────────────────────────────────
 
@@ -907,21 +1137,35 @@ export default function HomePage() {
     const userId = sessionData?.session?.user?.id;
     if (!userId) return;
 
-    const pathMap = {
+    const sqlPathMap = {
       beginner: "/sql/basics",
-      basics:   "/sql/intermediate",
-      joins:    "/sql/advanced",
+      basics: "/sql/intermediate",
+      joins: "/sql/advanced",
       advanced: "/sql/interview",
       interview: "/sql/company",
     };
-    const recommendedPath = pathMap[answers.experience] || "/sql/basics";
+    
+    const pythonPathMap = {
+      beginner: "/python/basics",
+      basics: "/python/intermediate",
+      joins: "/python/advanced",
+      advanced: "/python/interview",
+      interview: "/python/company",
+    };
+    
+    const pathMap =
+      answers.tool === "python" ? pythonPathMap : sqlPathMap;
+    
+    const recommendedPath =
+      pathMap[answers.experience] ||
+      (answers.tool === "python" ? "/python" : "/sql/basics");
 
     await supabase.from("profiles").update({
       experience_level:    answers.experience,
       goal:                answers.goal,
       daily_time:          answers.time,
       recommended_path:    recommendedPath,
-      onboarding_complete: true,
+      onboarding_complete: true,    
     }).eq("id", userId);
 
     setShowOnboarding(false);

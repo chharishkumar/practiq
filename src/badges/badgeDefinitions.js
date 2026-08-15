@@ -296,6 +296,88 @@ export const TIER_STYLES = {
   // ─── SPECIAL ACHIEVEMENT BADGES ──────────────────────────────────────────────
   // Earned by specific behaviors (streak, speed, accuracy etc.)
   
+  // ── Python Badges ─────────────────────────────────────────────────────────────
+export const PYTHON_BADGES = [
+  {
+    id: "python_first_query",
+    title: "Python Pioneer",
+    description: "Solved your first Python problem. The journey begins!",
+    icon: "🐍",
+    color: "#7c3aed",
+    bg: "#f5f3ff",
+    border: "#ddd6fe",
+    category: "python_basics",
+    requirement: 1,
+    xp: 50,
+    shareText: "I just earned the Python Pioneer badge on Repractiq! 🐍 Practice Python → www.repractiq.com",
+  },
+  {
+    id: "python_on_a_roll",
+    title: "Python On a Roll",
+    description: "Solved 5 Python problems. You're building momentum!",
+    icon: "🔥",
+    color: "#7c3aed",
+    bg: "#f5f3ff",
+    border: "#ddd6fe",
+    category: "python_basics",
+    requirement: 5,
+    xp: 100,
+    shareText: "I just earned Python On a Roll badge on Repractiq! 🔥 → www.repractiq.com",
+  },
+  {
+    id: "python_problem_solver",
+    title: "Python Problem Solver",
+    description: "Solved 10 Python problems. You're getting the hang of it!",
+    icon: "💡",
+    color: "#7c3aed",
+    bg: "#f5f3ff",
+    border: "#ddd6fe",
+    category: "python_basics",
+    requirement: 10,
+    xp: 150,
+    shareText: "I just earned Python Problem Solver badge on Repractiq! 💡 → www.repractiq.com",
+  },
+  {
+    id: "python_bronze",
+    title: "Python Beginner",
+    description: "Solved 25 Python problems. Bronze tier achieved!",
+    icon: "🥉",
+    color: "#cd7f32",
+    bg: "#fdf6ec",
+    border: "#f0c080",
+    category: "python_basics",
+    requirement: 25,
+    xp: 250,
+    shareText: "I just earned Python Bronze badge on Repractiq! 🥉 → www.repractiq.com",
+  },
+  {
+    id: "python_silver",
+    title: "Python Practitioner",
+    description: "Solved 50 Python problems. Silver tier achieved!",
+    icon: "🥈",
+    color: "#94a3b8",
+    bg: "#f8fafc",
+    border: "#cbd5e1",
+    category: "python_basics",
+    requirement: 50,
+    xp: 500,
+    shareText: "I just earned Python Silver badge on Repractiq! 🥈 → www.repractiq.com",
+  },
+  {
+    id: "python_gold",
+    title: "Python Master",
+    description: "Completed all 100 Python problems. Legendary!",
+    icon: "🏆",
+    color: "#f59e0b",
+    bg: "#fffbeb",
+    border: "#fcd34d",
+    category: "python_basics",
+    requirement: 100,
+    xp: 1000,
+    shareText: "I just earned Python Master badge on Repractiq! 🏆 → www.repractiq.com",
+  },
+];
+
   export const SPECIAL_BADGES = [
     {
       id:          "streak_7",
@@ -392,4 +474,11 @@ export const TIER_STYLES = {
     sql_interview:    "SQL Interview",
     sql_scenario:     "SQL Scenarios",
     sql_company:      "Top Company Questions",
+    python_basics:    "Python Basics",     // ← ADD
+  python_intermediate: "Python Intermediate",
   };
+  // Also add Python to your badge lookup if you have one:
+export function getBadgesByCategory(category) {
+  if (category === "python_basics") return PYTHON_BADGES;
+  return SECTION_BADGES; // your existing SQL badges
+}

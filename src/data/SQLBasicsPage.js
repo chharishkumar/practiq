@@ -492,7 +492,7 @@ export default function SQLBasicsPage() {
   const [postSuccess, setPostSuccess] = useState(false);
   const [validationStatus, setValidationStatus] = useState(null);
   const [shareOpen, setShareOpen] = useState(false);
-  const [elapsed, setElapsed] = useState(null);
+  const [elapsed] = useState(null);
   const [userFullName, setUserFullName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userStreak, setUserStreak] = useState(0);

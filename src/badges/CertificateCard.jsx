@@ -624,3 +624,75 @@ export function CertificateModal({
     </div>
   );
 }
+// Add this at the end of CertificateCard.js
+
+export async function generateCertificate(data) {
+  const { name, badge, title, category, date, solvedCount } = data;
+
+  // 1. Create temporary off-screen container for rendering A4 format
+  const container = document.createElement("div");
+  container.style.position = "fixed";
+  container.style.top = "-9999px";
+  container.style.left = "-9999px";
+  container.style.width = "1122px";
+  container.style.height = "794px";
+  container.style.zIndex = "-9999";
+  document.body.appendChild(container);
+
+  // 2. Render Certificate layout HTML directly
+  container.innerHTML = `
+    <div style="width: 1122px; height: 794px; background: #ffffff; position: relative; font-family: Inter, sans-serif; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; padding: 3rem 4rem;">
+      <div style="position: absolute; top: 0; left: 0; right: 0; height: 8px; background: linear-gradient(90deg, #2563eb, #fbbf24, #2563eb);"></div>
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 800; color: #2563eb; letter-spacing: 0.15em;">REPRACTIQ</div>
+            <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 500;">repractiq.com</div>
+          </div>
+          <div style="background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 20px; padding: 6px 16px; font-size: 0.75rem; font-weight: 700; color: #2563eb; text-transform: uppercase;">
+            ${badge || "Achievement"}
+          </div>
+        </div>
+        <div style="font-size: 0.85rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.25rem;">Certificate of Achievement</div>
+        <div style="font-size: 0.95rem; color: #64748b;">This certifies that</div>
+        <div style="font-size: 2.75rem; font-weight: 800; color: #0f172a; margin: 0.25rem 0;">${name || "Learner"}</div>
+        <div style="width: 50px; height: 3px; background: #2563eb; margin: 0.75rem 0;"></div>
+        <div style="font-size: 0.95rem; color: #64748b; margin-bottom: 0.5rem;">has successfully completed</div>
+        <div style="font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 1.25rem;">${title || "Python Basics"}</div>
+        <div style="display: flex; gap: 1.25rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.85rem 1.25rem;">
+          <div style="flex: 1;"><div style="font-size: 0.65rem; font-weight: 700; color: #94a3b8;">PROBLEMS SOLVED</div><div style="font-size: 0.9rem; font-weight: 700; color: #0f172a;">${solvedCount || "—"}</div></div>
+          <div style="flex: 1;"><div style="font-size: 0.65rem; font-weight: 700; color: #94a3b8;">CATEGORY</div><div style="font-size: 0.9rem; font-weight: 700; color: #0f172a;">${category || "Python"}</div></div>
+          <div style="flex: 1;"><div style="font-size: 0.65rem; font-weight: 700; color: #94a3b8;">DATE EARNED</div><div style="font-size: 0.9rem; font-weight: 700; color: #0f172a;">${date}</div></div>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; border-top: 1px solid #f1f5f9; padding-top: 0.75rem; font-size: 0.7rem; color: #94a3b8;">
+        <div>Verify at repractiq.com · Practice SQL & Python</div>
+        <div>© ${new Date().getFullYear()} Repractiq</div>
+      </div>
+    </div>
+  `;
+
+  try {
+    const html2canvas = (await import("html2canvas")).default;
+    const canvas = await html2canvas(container, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+      logging: false,
+      width: 1122,
+      height: 794,
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, "FAST");
+    pdf.save(`repractiq-${(title || "certificate").toLowerCase().replace(/\s+/g, "-")}.pdf`);
+  } catch (err) {
+    console.error("PDF generation error:", err);
+  } finally {
+    document.body.removeChild(container);
+  }
+}

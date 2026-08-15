@@ -1,17 +1,35 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "../supabase";
-import { calculateEarnedBadges, buildStatsFromSubmissions, getNewlyEarnedBadges } from "./badgeCalculator";
-import { getEarnedBadgeObjects, getClosestBadges, getCertificateBadges, getTopBadge, getTopNBadges, getBadgesForProfile } from "./badgeUtils";
+import { 
+  calculateEarnedBadges, 
+  buildStatsFromSubmissions, 
+  getNewlyEarnedBadges,
+  calculatePythonBadges, 
+  getNewlyUnlockedPythonBadges 
+} from "./badgeCalculator";
 
-export function useBadges({ userId: externalUserId = null, autoSave = true } = {}) {
+import { 
+  getEarnedBadgeObjects, 
+  getClosestBadges, 
+  getCertificateBadges, 
+  getTopBadge, 
+  getTopNBadges, 
+  getBadgesForProfile 
+} from "./badgeUtils";
+
+import { SECTION_BADGES, PYTHON_BADGES } from "./badgeDefinitions";
+
+// ── MAIN HOOK: useBadges ─────────────────────────────────────────────────────
+export function useBadges({ userId: externalUserId = null, category = "sql", autoSave = true } = {}) {
   const [loading, setLoading]             = useState(true);
   const [earnedIds, setEarnedIds]         = useState([]);
   const [newlyUnlocked, setNewlyUnlocked] = useState([]);
   const [stats, setStats]                 = useState({});
+  const [badgesWithStatus, setBadgesWithStatus] = useState([]);
 
   const prevEarnedIdsRef = useRef([]);
+  const isPython = category === "python_basics";
 
-  // ── Core fetch + calculate ─────────────────────────────────────────────────
   const fetchAndCalculate = useCallback(async () => {
     setLoading(true);
 
@@ -22,47 +40,75 @@ export function useBadges({ userId: externalUserId = null, autoSave = true } = {
         const { data: sessionData } = await supabase.auth.getSession();
         userId = sessionData?.session?.user?.id;
       }
+
       if (!userId) {
         setLoading(false);
         return;
       }
 
-      // 2. Fetch all submissions for this user
-      const { data: submissions } = await supabase
-        .from("submissions")
-        .select("problem_id, category, status, created_at, updated_at")
-        .eq("user_id", userId);
+      // 2. Fetch submissions, streaks, profile data, and user_badges table in parallel
+      const [
+        { data: submissions },
+        { data: streakRow },
+        { data: profile },
+        { data: userBadgesData }
+      ] = await Promise.all([
+        supabase
+          .from("submissions")
+          .select("problem_id, category, status, created_at, updated_at")
+          .eq("user_id", userId),
+        supabase
+          .from("user_streaks")
+          .select("current_streak, longest_streak")
+          .eq("user_id", userId)
+          .maybeSingle(),
+        supabase
+          .from("profiles")
+          .select("earned_badges")
+          .eq("id", userId)
+          .maybeSingle(),
+        supabase
+          .from("user_badges")
+          .select("badge_id, earned_at")
+          .eq("user_id", userId)
+      ]);
 
-      // 3. Fetch streak data
-      const { data: streakRow } = await supabase
-        .from("user_streaks")
-        .select("current_streak, longest_streak")
-        .eq("user_id", userId)
-        .maybeSingle();
+      const currentStreak = streakRow?.current_streak || 0;
+      const longestStreak = streakRow?.longest_streak || 0;
 
-      const currentStreak  = streakRow?.current_streak  || 0;
-      const longestStreak  = streakRow?.longest_streak  || 0;
-
-      // 4. Fetch previously stored badge IDs from profiles
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("earned_badges")
-        .eq("id", userId)
-        .maybeSingle();
-
-      // Ensure storedBadgeIds defaults to an array
+      // 3. Stored badge IDs
       const storedBadgeIds = Array.isArray(profile?.earned_badges) ? profile.earned_badges : [];
       prevEarnedIdsRef.current = storedBadgeIds;
 
-      // 5. Build stats and calculate current earned badges
-      const builtStats    = buildStatsFromSubmissions(submissions || [], currentStreak, longestStreak);
-      const currentEarned = calculateEarnedBadges(builtStats);
+      // 4. Calculate earned badges based on Category (Python vs SQL)
+      let builtStats = {};
+      let currentEarned = [];
+
+      if (isPython) {
+        builtStats = buildStatsFromSubmissions(submissions || [], currentStreak, longestStreak);
+        currentEarned = calculatePythonBadges(builtStats);
+      } else {
+        builtStats = buildStatsFromSubmissions(submissions || [], currentStreak, longestStreak);
+        currentEarned = calculateEarnedBadges(builtStats);
+      }
+
+      // 5. Build category-specific status array (for UI badge grids)
+      const allDefinitions = isPython ? PYTHON_BADGES : SECTION_BADGES;
+      const earnedSet = new Set(userBadgesData ? userBadgesData.map(b => b.badge_id) : currentEarned);
+
+      const computedBadgesWithStatus = allDefinitions.map(badge => ({
+        ...badge,
+        earned: earnedSet.has(badge.id),
+        earnedAt: userBadgesData?.find(b => b.badge_id === badge.id)?.earned_at || null,
+      }));
 
       // 6. Detect newly unlocked badges
-      const justUnlocked = getNewlyEarnedBadges(storedBadgeIds, currentEarned);
+      const justUnlocked = isPython 
+        ? getNewlyUnlockedPythonBadges(storedBadgeIds, currentEarned)
+        : getNewlyEarnedBadges(storedBadgeIds, currentEarned);
       const justUnlockedObjects = getEarnedBadgeObjects(justUnlocked);
 
-      // 7. Save back to Supabase if autoSave is on
+      // 7. Save updated badges to profile if autoSave is active
       if (autoSave && (justUnlocked.length > 0 || !profile?.earned_badges)) {
         const { error: updateErr } = await supabase
           .from("profiles")
@@ -74,9 +120,10 @@ export function useBadges({ userId: externalUserId = null, autoSave = true } = {
         }
       }
 
-      // 8. Update state
+      // 8. Update State
       setStats(builtStats);
       setEarnedIds(currentEarned);
+      setBadgesWithStatus(computedBadgesWithStatus);
       if (justUnlockedObjects.length > 0) {
         setNewlyUnlocked(justUnlockedObjects);
       }
@@ -86,7 +133,7 @@ export function useBadges({ userId: externalUserId = null, autoSave = true } = {
     } finally {
       setLoading(false);
     }
-  }, [externalUserId, autoSave]);
+  }, [externalUserId, category, autoSave, isPython]);
 
   useEffect(() => {
     fetchAndCalculate();
@@ -101,6 +148,7 @@ export function useBadges({ userId: externalUserId = null, autoSave = true } = {
 
   return {
     loading,
+    badges: badgesWithStatus,
     earnedIds,
     earnedBadges,
     newlyUnlocked,
@@ -110,11 +158,12 @@ export function useBadges({ userId: externalUserId = null, autoSave = true } = {
     topTwoBadges,
     profileBadges,
     certificateBadges,
-    refresh:            fetchAndCalculate,
+    refresh: fetchAndCalculate,
     clearNewlyUnlocked: () => setNewlyUnlocked([]),
   };
 }
 
+// ── READ-ONLY STORED BADGES HOOK ─────────────────────────────────────────────
 export function useStoredBadges(userId) {
   const [loading, setLoading]     = useState(true);
   const [earnedIds, setEarnedIds] = useState([]);
@@ -122,7 +171,7 @@ export function useStoredBadges(userId) {
   useEffect(() => {
     if (!userId) return;
 
-    const fetch = async () => {
+    const fetchStored = async () => {
       setLoading(true);
       try {
         const { data } = await supabase
@@ -139,7 +188,7 @@ export function useStoredBadges(userId) {
       }
     };
 
-    fetch();
+    fetchStored();
   }, [userId]);
 
   return {
@@ -150,6 +199,7 @@ export function useStoredBadges(userId) {
   };
 }
 
+// ── ASYNC BADGE CHECK & SAVE UTILITY ────────────────────────────────────────
 export async function checkAndSaveBadges(userId) {
   if (!userId) return [];
 
@@ -199,7 +249,6 @@ export async function checkAndSaveBadges(userId) {
     return [];
   }
 }
-
 // import { useState, useEffect, useCallback, useRef } from "react";
 // import { supabase } from "../supabase";
 // import { calculateEarnedBadges, buildStatsFromSubmissions, getNewlyEarnedBadges } from "./badgeCalculator";

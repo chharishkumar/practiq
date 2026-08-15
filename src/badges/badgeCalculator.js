@@ -1,4 +1,5 @@
 import { SECTION_BADGES, GLOBAL_BADGES, SPECIAL_BADGES, GRANDMASTER_BADGE } from "./badgeDefinitions";
+import { PYTHON_BADGES } from "./badgeDefinitions";
 
 /**
  * Main calculator — takes user stats, returns array of earned badge IDs.
@@ -114,6 +115,19 @@ export function calculateEarnedBadges(stats = {}) {
   }
 
   return earned;
+}
+// ADD this function after your existing calculateBadges
+export function calculatePythonBadges(solvedCount) {
+  return PYTHON_BADGES.filter(badge => solvedCount >= badge.requirement);
+}
+
+// ADD this to check newly unlocked Python badges
+export function getNewlyUnlockedPythonBadges(prevSolvedCount, newSolvedCount) {
+  return PYTHON_BADGES.filter(
+    badge =>
+      newSolvedCount >= badge.requirement &&
+      prevSolvedCount < badge.requirement
+  );
 }
 
 /**

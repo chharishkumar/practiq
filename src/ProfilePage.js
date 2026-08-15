@@ -10,6 +10,7 @@ import { SQL_ADVANCED_PROBLEMS } from "./data/sqlAdvancedProblems";
 import { SQL_INTERVIEW_PROBLEMS } from "./data/sqlInterviewProblems";
 import { SQL_SCENARIOS_PROBLEMS } from "./data/sqlScenariosProblems";
 import { SQL_COMPANY_PROBLEMS } from "./data/sqlCompanyProblems";
+import { PYTHON_PROBLEMS } from "./python/data/pythonProblems"; // adjust path as needed
 import { getCompanyProblemKey, getSubmissionProblemPath } from "./data/sqlSearch";
 
 import { useBadges } from "./badges/useBadges";
@@ -22,6 +23,7 @@ import Navbar from "./Navbar";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
+// 1. Define ALL_SQL_PROBLEMS first
 const ALL_SQL_PROBLEMS = [
   ...SQL_PROBLEMS.map((p) => ({ ...p, category: "Basics" })),
   ...(SQL_INTERMEDIATE_PROBLEMS || []).map((p) => ({ ...p, category: "Intermediate" })),
@@ -29,6 +31,13 @@ const ALL_SQL_PROBLEMS = [
   ...(SQL_INTERVIEW_PROBLEMS || []).map((p) => ({ ...p, category: "Interview" })),
   ...(SQL_SCENARIOS_PROBLEMS || []).map((p) => ({ ...p, category: "Scenarios" })),
   ...(SQL_COMPANY_PROBLEMS || []).map((p) => ({ ...p, category: "Company", submissionId: getCompanyProblemKey(p) })),
+];
+
+// 2. Now safe to reference ALL_SQL_PROBLEMS in ALL_PROBLEMS
+const ALL_PROBLEMS = [
+  ...ALL_SQL_PROBLEMS,
+  ...(PYTHON_PROBLEMS || []).map((p) => ({ ...p, category: "Python Basics" })),
+  // ... other Python problem modules
 ];
 
 const CATEGORY_TOTALS = {
@@ -39,7 +48,6 @@ const CATEGORY_TOTALS = {
   Scenarios:    SQL_SCENARIOS_PROBLEMS?.length || 0,
   Company:      SQL_COMPANY_PROBLEMS?.length || 0,
 };
-
 // const CATEGORY_PATH_MAP = {
 //   sql_basics:       "/sql/basics",
 //   sql_intermediate: "/sql/intermediate",
@@ -59,6 +67,13 @@ const CATEGORY_LABEL_MAP = {
   sql_scenario:     "Scenarios",  // ← add this
   sql_scenarios:    "Scenarios",
   sql_company:      "Company",
+
+  // Python (ADD THESE)
+  python_basics:         "Python Basics",
+  python_control_flow:   "Python Control Flow",
+  python_data_structures:"Python Data Structures",
+  python_functions:      "Python Functions",
+  python_oop:            "Python OOP",
 };
 
 const DIFF_STYLE = {
@@ -494,7 +509,10 @@ const accuracy = totalAttempted > 0 ? Math.round((solvedCount / totalAttempted) 
   });
 
   // Solved by category
-  const solvedByCategory = { Basics: 0, Intermediate: 0, Advanced: 0, Interview: 0, Scenarios: 0, Company: 0 };
+  const solvedByCategory = { 
+    Basics: 0, Intermediate: 0, Advanced: 0, Interview: 0, Scenarios: 0, Company: 0,
+    "Python Basics": 0, "Python Control Flow": 0, "Python Data Structures": 0, "Python Functions": 0, "Python OOP": 0
+  };
   correctSubs.forEach((s) => {
     const label = CATEGORY_LABEL_MAP[s.category];
     if (label && solvedByCategory[label] !== undefined) {
@@ -506,7 +524,7 @@ const accuracy = totalAttempted > 0 ? Math.round((solvedCount / totalAttempted) 
   const byDifficulty = { Easy: 0, Medium: 0, Hard: 0 };
   correctSubs.forEach((s) => {
     const label = CATEGORY_LABEL_MAP[s.category] || "Basics";
-    const match = ALL_SQL_PROBLEMS.find((p) => {
+    const match = ALL_PROBLEMS.find((p) => {
       const submissionId = p.submissionId ?? p.id;
       return String(submissionId) === String(s.problem_id) && p.category === label;
     });
@@ -525,7 +543,7 @@ const accuracy = totalAttempted > 0 ? Math.round((solvedCount / totalAttempted) 
   const currentStreak  = streakData?.current_streak  || 0;
   const longestStreak  = streakData?.longest_streak  || 0;
 
-  const totalProblems = ALL_SQL_PROBLEMS.length;
+  const totalProblems = ALL_PROBLEMS.length;
 
 const lastSub = submissions[0];
 const lastProblemPath = lastSub
@@ -540,7 +558,7 @@ const lastProblemPath = lastSub
     if (seenProblems.has(s.problem_id)) return;
     seenProblems.add(s.problem_id);
     const label = CATEGORY_LABEL_MAP[s.category] || "Basics";
-    const match = ALL_SQL_PROBLEMS.find((p) => {
+    const match = ALL_PROBLEMS.find((p) => {
       const submissionId = p.submissionId ?? p.id;
       return String(submissionId) === String(s.problem_id) && p.category === label;
     });
