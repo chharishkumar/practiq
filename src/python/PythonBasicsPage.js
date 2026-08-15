@@ -320,36 +320,36 @@ const [attemptNumber, setAttemptNumber] = useState(1);
     setExpandedId((prev) => (prev === id ? null : id));
   };
 
-  const checkAndSaveBadges = useCallback(async (userId) => {
-    const { data: alreadyEarned } = await supabase
-      .from("user_badges")
-      .select("badge_id")
-      .eq("user_id", userId);
+  // const checkAndSaveBadges = useCallback(async (userId) => {
+  //   const { data: alreadyEarned } = await supabase
+  //     .from("user_badges")
+  //     .select("badge_id")
+  //     .eq("user_id", userId);
   
-    const earnedSet = new Set((alreadyEarned || []).map(b => b.badge_id));
-    const currentSolvedCount = solvedIds.size;
+  //   const earnedSet = new Set((alreadyEarned || []).map(b => b.badge_id));
+  //   const currentSolvedCount = solvedIds.size;
   
-    const BADGE_CONDITIONS = [
-      { id: "python_first_query",    condition: currentSolvedCount >= 1   },
-      { id: "python_on_a_roll",      condition: currentSolvedCount >= 5   },
-      { id: "python_problem_solver", condition: currentSolvedCount >= 10  },
-      { id: "python_bronze",         condition: currentSolvedCount >= 25  },
-      { id: "python_silver",         condition: currentSolvedCount >= 50  },
-      { id: "python_gold",           condition: currentSolvedCount >= 100 },
-    ];
+  //   const BADGE_CONDITIONS = [
+  //     { id: "python_first_query",    condition: currentSolvedCount >= 1   },
+  //     { id: "python_on_a_roll",      condition: currentSolvedCount >= 5   },
+  //     { id: "python_problem_solver", condition: currentSolvedCount >= 10  },
+  //     { id: "python_bronze",         condition: currentSolvedCount >= 25  },
+  //     { id: "python_silver",         condition: currentSolvedCount >= 50  },
+  //     { id: "python_gold",           condition: currentSolvedCount >= 100 },
+  //   ];
   
-    const newBadges = [];
-    for (const badge of BADGE_CONDITIONS) {
-      if (badge.condition && !earnedSet.has(badge.id)) {
-        await supabase.from("user_badges").upsert({
-          user_id:  userId,
-          badge_id: badge.id,
-        }, { onConflict: "user_id,badge_id" });
-        newBadges.push(badge.id);
-      }
-    }
-    return newBadges;
-  }, [solvedIds]);
+  //   const newBadges = [];
+  //   for (const badge of BADGE_CONDITIONS) {
+  //     if (badge.condition && !earnedSet.has(badge.id)) {
+  //       await supabase.from("user_badges").upsert({
+  //         user_id:  userId,
+  //         badge_id: badge.id,
+  //       }, { onConflict: "user_id,badge_id" });
+  //       newBadges.push(badge.id);
+  //     }
+  //   }
+  //   return newBadges;
+  // }, [solvedIds]);
  // ─── RUN CODE ─────────────────────────────────────────────────────────────
  const runCode = useCallback(async () => {
   const currentProblem = selectedProblemRef.current;
